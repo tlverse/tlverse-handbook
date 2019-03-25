@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Chapter 6 tmle3shift: Targeted Learning of the Causal Effects of Stochastic Interventions | A Minimal Book Example</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook.">
+  <meta name="generator" content="bookdown  and GitBook 2.6.7">
+
+  <meta property="og:title" content="Chapter 6 tmle3shift: Targeted Learning of the Causal Effects of Stochastic Interventions | A Minimal Book Example" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapter 6 tmle3shift: Targeted Learning of the Causal Effects of Stochastic Interventions | A Minimal Book Example" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Yihui Xie">
+
+
+<meta name="date" content="2019-03-17">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="applications.html">
+<link rel="next" href="references-1.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Prerequisites</a></li>
+<li class="chapter" data-level="2" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>2</b> Introduction</a></li>
+<li class="chapter" data-level="3" data-path="literature.html"><a href="literature.html"><i class="fa fa-check"></i><b>3</b> Literature</a></li>
+<li class="chapter" data-level="4" data-path="methods.html"><a href="methods.html"><i class="fa fa-check"></i><b>4</b> Methods</a></li>
+<li class="chapter" data-level="5" data-path="applications.html"><a href="applications.html"><i class="fa fa-check"></i><b>5</b> Applications</a><ul>
+<li class="chapter" data-level="5.1" data-path="applications.html"><a href="applications.html#example-one"><i class="fa fa-check"></i><b>5.1</b> Example one</a></li>
+<li class="chapter" data-level="5.2" data-path="applications.html"><a href="applications.html#example-two"><i class="fa fa-check"></i><b>5.2</b> Example two</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><i class="fa fa-check"></i><b>6</b> <code>tmle3shift</code>: Targeted Learning of the Causal Effects of Stochastic Interventions</a><ul>
+<li class="chapter" data-level="6.1" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#learning-objectives"><i class="fa fa-check"></i><b>6.1</b> Learning Objectives</a></li>
+<li class="chapter" data-level="6.2" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#introduction-to-stochastic-interventions"><i class="fa fa-check"></i><b>6.2</b> Introduction to Stochastic Interventions</a></li>
+<li class="chapter" data-level="6.3" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#data-structure-and-notation"><i class="fa fa-check"></i><b>6.3</b> Data Structure and Notation</a></li>
+<li class="chapter" data-level="6.4" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#defining-the-causal-effect-of-a-stochastic-intervention"><i class="fa fa-check"></i><b>6.4</b> Defining the Causal Effect of a Stochastic Intervention</a></li>
+<li class="chapter" data-level="6.5" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#interpreting-the-causal-effect-of-a-stochastic-intervention"><i class="fa fa-check"></i><b>6.5</b> Interpreting the Causal Effect of a Stochastic Intervention</a></li>
+<li class="chapter" data-level="6.6" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#evaluating-the-causal-effect-of-a-stochastic-intervention"><i class="fa fa-check"></i><b>6.6</b> Evaluating the Causal Effect of a Stochastic Intervention</a><ul>
+<li class="chapter" data-level="6.6.1" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#simulate-data"><i class="fa fa-check"></i><b>6.6.1</b> Simulate Data</a></li>
+<li class="chapter" data-level="6.6.2" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#targeted-estimation-of-stochastic-interventions-effects"><i class="fa fa-check"></i><b>6.6.2</b> Targeted Estimation of Stochastic Interventions Effects</a></li>
+<li class="chapter" data-level="6.6.3" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#statistical-inference-for-targeted-maximum-likelihood-estimates"><i class="fa fa-check"></i><b>6.6.3</b> Statistical Inference for Targeted Maximum Likelihood Estimates</a></li>
+</ul></li>
+<li class="chapter" data-level="6.7" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#extensions-variable-importance-analysis-with-stochastic-interventions"><i class="fa fa-check"></i><b>6.7</b> Extensions: Variable Importance Analysis with Stochastic Interventions</a></li>
+<li class="chapter" data-level="6.8" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#exercises"><i class="fa fa-check"></i><b>6.8</b> Exercises</a><ul>
+<li class="chapter" data-level="6.8.1" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#introductory"><i class="fa fa-check"></i><b>6.8.1</b> Introductory</a></li>
+<li class="chapter" data-level="6.8.2" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#intermediate"><i class="fa fa-check"></i><b>6.8.2</b> Intermediate</a></li>
+<li class="chapter" data-level="6.8.3" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#advanced"><i class="fa fa-check"></i><b>6.8.3</b> Advanced</a></li>
+</ul></li>
+<li class="chapter" data-level="6.9" data-path="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html"><a href="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions.html#references"><i class="fa fa-check"></i><b>6.9</b> References</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references-1.html"><a href="references-1.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">A Minimal Book Example</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="tmle3shift-targeted-learning-of-the-causal-effects-of-stochastic-interventions" class="section level1">
+<h1><span class="header-section-number">Chapter 6</span> <code>tmle3shift</code>: Targeted Learning of the Causal Effects of Stochastic Interventions</h1>
+<!--
+NOTE: YOU CAN'T USE THE STANDARD RMARKDOWN YAML IN BOOKDOWN
+---
+title: "`tmle3shift`: Targeted Learning of the Causal Effects of Stochastic
+  Interventions"
+author: "Nima Hejazi and Jeremy Coyle"
+date: "2019-03-17"
+output: rmarkdown::html_vignette
+bibliography: template_refs.bib
+---
+-->
+<div id="learning-objectives" class="section level2">
+<h2><span class="header-section-number">6.1</span> Learning Objectives</h2>
+<!--- appears as "X.1: Learning Objectives" in the book, where X is the chapter
+corresponding to stochastic interventions -->
+<ol style="list-style-type: decimal">
+<li>…</li>
+<li>…</li>
+<li>…</li>
+<li>…</li>
+<li>…</li>
+</ol>
+</div>
+<div id="introduction-to-stochastic-interventions" class="section level2">
+<h2><span class="header-section-number">6.2</span> Introduction to Stochastic Interventions</h2>
+<p>Stochastic treatment regimes present a relatively simple manner in which to
+assess the effects of continuous treatments by way of parameters that examine
+the effects induced by the counterfactual shifting of the observed values of a
+treatment of interest. Here, we present an implementation of a new algorithm for
+computing targeted minimum loss-based estimates of treatment shift parameters
+defined based on a shifting function <span class="math inline">\(d(A,W)\)</span>. For a technical presentation of
+the algorithm, the interested reader is invited to consult <span class="citation">Díaz and van der Laan (<a href="#ref-diaz2018stochastic">2018</a>)</span>.
+For additional background on Targeted Learning and previous work on stochastic
+treatment regimes, please consider consulting <span class="citation">van der Laan and Rose (<a href="#ref-vdl2011targeted">2011</a>)</span>,
+<span class="citation">van der Laan and Rose (<a href="#ref-vdl2018targeted">2018</a>)</span>, and <span class="citation">Díaz and van der Laan (<a href="#ref-diaz2012population">2012</a>)</span>.</p>
+</div>
+<div id="data-structure-and-notation" class="section level2">
+<h2><span class="header-section-number">6.3</span> Data Structure and Notation</h2>
+<p>Consider <span class="math inline">\(n\)</span> observed units <span class="math inline">\(O_1, \ldots, O_n\)</span>, where each random variable <span class="math inline">\(O = (W, A, Y)\)</span> corresponds to a single observational unit. As discussed before, <span class="math inline">\(W\)</span>
+are baseline covariates, <span class="math inline">\(A\)</span> is a continuous-valued intervention, and <span class="math inline">\(Y\)</span> an
+outcome of interest. We will consider a simple stochastic intervention that
+considers counterfactual interventions defined through scalar shifts of the
+observed/natural value of the intervention <span class="math inline">\(A\)</span>. We’ll start by considering a
+simple additive shift <span class="math inline">\(d(a,w) = a + \delta\)</span>, assuming support a.e. of
+<span class="math inline">\(P(A\midW)\)</span>. To ease violations of the positivity assumption, we may consider
+extensions where <span class="math inline">\(a \leq u(w) - \delta\)</span> or <span class="math inline">\(d(a, w) = a\)</span> if <span class="math inline">\(a \geq u(w) - \delta\)</span>.</p>
+</div>
+<div id="defining-the-causal-effect-of-a-stochastic-intervention" class="section level2">
+<h2><span class="header-section-number">6.4</span> Defining the Causal Effect of a Stochastic Intervention</h2>
+<p>…</p>
+</div>
+<div id="interpreting-the-causal-effect-of-a-stochastic-intervention" class="section level2">
+<h2><span class="header-section-number">6.5</span> Interpreting the Causal Effect of a Stochastic Intervention</h2>
+<p>…</p>
+</div>
+<div id="evaluating-the-causal-effect-of-a-stochastic-intervention" class="section level2">
+<h2><span class="header-section-number">6.6</span> Evaluating the Causal Effect of a Stochastic Intervention</h2>
+<p>To start, let’s load the packages we’ll use and set a seed for simulation:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidyverse)
+<span class="kw">library</span>(data.table)
+<span class="kw">library</span>(condensier)
+<span class="kw">library</span>(sl3)
+<span class="kw">library</span>(tmle3)
+<span class="kw">library</span>(tmle3shift)
+<span class="kw">set.seed</span>(<span class="dv">429153</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify outcome and treatment regressions and create learner list</span>
+Q_learner &lt;-<span class="st"> </span>sl_lrn
+g_learner &lt;-<span class="st"> </span>sl_lrn_dens
+learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner)</code></pre>
+<p>The <code>learner_list</code> object above specifies the role that each of the ensemble
+learners we’ve generated is to play in computing initial estimators to be used
+in building a TMLE for the parameter of interest here. In particular, it makes
+explicit the fact that our <code>Q_learner</code> is used in fitting the outcome regression
+while our <code>g_learner</code> is used in fitting our treatment mechanism regression.</p>
+<div id="simulate-data" class="section level3">
+<h3><span class="header-section-number">6.6.1</span> Simulate Data</h3>
+<!--
+NOTE: WE DON'T NEED THIS SINCE WE'LL USE THE SAME DATA SET ACROSS ALL VIGNETTES
+-->
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># simulate simple data for tmle-shift sketch</span>
+n_obs &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># number of observations</span>
+n_w &lt;-<span class="st"> </span><span class="dv">1</span> <span class="co"># number of baseline covariates</span>
+tx_mult &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># multiplier for the effect of W = 1 on the treatment</span>
+
+## baseline covariates -- simple, binary
+W &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">replicate</span>(n_w, <span class="kw">rbinom</span>(n_obs, <span class="dv">1</span>, <span class="fl">0.5</span>)))
+
+## create treatment based on baseline W
+A &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">rnorm</span>(n_obs, <span class="dt">mean =</span> tx_mult <span class="op">*</span><span class="st"> </span>W, <span class="dt">sd =</span> <span class="dv">1</span>))
+
+## create outcome as a linear function of A, W + white noise
+Y &lt;-<span class="st"> </span>A <span class="op">+</span><span class="st"> </span>W <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n_obs, <span class="dt">mean =</span> <span class="dv">0</span>, <span class="dt">sd =</span> <span class="dv">1</span>)</code></pre>
+<p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. To formally
+express this fact using the <code>tlverse</code> grammar introduced by the <code>tmle3</code> package,
+we create a single data object and specify the functional relationships between
+the nodes in the <em>directed acyclic graph</em> (DAG) via <em>nonparametric structural
+equation models</em> (NPSEMs), reflected in the node list that we set up:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># organize data and nodes for tmle3</span>
+data &lt;-<span class="st"> </span><span class="kw">data.table</span>(W, A, Y)
+node_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">W =</span> <span class="st">&quot;W&quot;</span>, <span class="dt">A =</span> <span class="st">&quot;A&quot;</span>, <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span>)
+<span class="kw">head</span>(data)</code></pre>
+<pre><code>##    W          A          Y
+## 1: 1  2.4031607  4.0283549
+## 2: 1  4.4973744  6.4329477
+## 3: 1  2.0330871  1.4733069
+## 4: 0 -0.8089023 -0.9610039
+## 5: 1  1.8432067  2.5954114
+## 6: 1  1.3555863  2.7855801</code></pre>
+<p>We now have an observed data structure (<code>data</code>) and a specification of the role
+that each variable in the data set plays as the nodes in a DAG.</p>
+<p>To start, we will initialize a specification for the TMLE of our parameter of
+interest (called a <code>tmle3_Spec</code> in the <code>tlverse</code> nomenclature) simply by calling
+<code>tmle_shift</code>. We specify the argument <code>shift_val = 0.5</code> when initializing the
+<code>tmle3_Spec</code> object to communicate that we’re interested in a shift of <span class="math inline">\(0.5\)</span> on
+the scale of the treatment <span class="math inline">\(A\)</span> – that is, we specify <span class="math inline">\(\delta = 0.5\)</span> (note that
+this is an arbitrarily chosen value for this example).</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># initialize a tmle specification</span>
+tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle_shift</span>(<span class="dt">shift_val =</span> <span class="fl">0.5</span>,
+                        <span class="dt">shift_fxn =</span> shift_additive_bounded,
+                        <span class="dt">shift_fxn_inv =</span> shift_additive_bounded_inv)</code></pre>
+<p>As seen above, the <code>tmle_shift</code> specification object (like all <code>tmle3_Spec</code>
+objects) does <em>not</em> store the data for our specific analysis of interest. Later,
+we’ll see that passing a data object directly to the <code>tmle3</code> wrapper function,
+alongside the instantiated <code>tmle_spec</code>, will serve to construct a <code>tmle3_Task</code>
+object internally (see the <code>tmle3</code> documentation for details).</p>
+</div>
+<div id="targeted-estimation-of-stochastic-interventions-effects" class="section level3">
+<h3><span class="header-section-number">6.6.2</span> Targeted Estimation of Stochastic Interventions Effects</h3>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</code></pre>
+<pre><code>## 
+## Iter: 1 fn: 1829.0370     Pars:  0.896093266 0.103898486 0.000008247
+## Iter: 2 fn: 1829.0370     Pars:  0.896094322 0.103901280 0.000004397
+## solnp--&gt; Completed in 2 iterations</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_fit</code></pre>
+<pre><code>## A tmle3_Fit that took 1 step(s)
+##    type         param init_est tmle_est         se    lower    upper
+## 1:  TSM E[Y_{A=NULL}] 2.029112  2.03477 0.06480381 1.907757 2.161783
+##    psi_transformed lower_transformed upper_transformed
+## 1:         2.03477          1.907757          2.161783</code></pre>
+<p>The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently displays the
+results from computing our TML estimator.</p>
+</div>
+<div id="statistical-inference-for-targeted-maximum-likelihood-estimates" class="section level3">
+<h3><span class="header-section-number">6.6.3</span> Statistical Inference for Targeted Maximum Likelihood Estimates</h3>
+<p>Recall that the asymptotic distribution of TML estimators has been studied
+thoroughly:
+<span class="math display">\[\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^*, g_n) + R(\hat{P}^*, P_0),\]</span>
+which suggests the following behavior for inferential purposes:</p>
+<p><span class="math display">\[\psi_n \pm z_{\alpha} \cdot \frac{\sigma_n}{\sqrt{n}},\]</span>
+where <span class="math inline">\(\sigma_n^2\)</span> is an estimator of <span class="math inline">\(V(D(P_0))\)</span>. The estimator <span class="math inline">\(\sigma_n^2\)</span>
+may be obtained using the bootstrap or computed directly via the following</p>
+<p><span class="math display">\[\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^*, g_n)(O_i).\]</span></p>
+</div>
+</div>
+<div id="extensions-variable-importance-analysis-with-stochastic-interventions" class="section level2">
+<h2><span class="header-section-number">6.7</span> Extensions: Variable Importance Analysis with Stochastic Interventions</h2>
+<p>…</p>
+</div>
+<div id="exercises" class="section level2">
+<h2><span class="header-section-number">6.8</span> Exercises</h2>
+<div id="introductory" class="section level3">
+<h3><span class="header-section-number">6.8.1</span> Introductory</h3>
+<ol style="list-style-type: decimal">
+<li><p>…</p></li>
+<li><p>…</p></li>
+<li><p>…</p></li>
+<li><p>…</p></li>
+<li><p>…</p></li>
+</ol>
+</div>
+<div id="intermediate" class="section level3">
+<h3><span class="header-section-number">6.8.2</span> Intermediate</h3>
+<ol style="list-style-type: decimal">
+<li><p>…</p></li>
+<li><p>…</p></li>
+<li><p>…</p></li>
+</ol>
+</div>
+<div id="advanced" class="section level3">
+<h3><span class="header-section-number">6.8.3</span> Advanced</h3>
+<ol style="list-style-type: decimal">
+<li><p>…</p></li>
+<li><p>…</p></li>
+</ol>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2><span class="header-section-number">6.9</span> References</h2>
+
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-diaz2018stochastic">
+<p>Díaz, Iván, and Mark J van der Laan. 2018. “Stochastic Treatment Regimes.” In <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>, 167–80. Springer Science &amp; Business Media.</p>
+</div>
+<div id="ref-vdl2011targeted">
+<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
+</div>
+<div id="ref-vdl2018targeted">
+<p>van der Laan, Mark J, and Sherri Rose. 2018. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
+</div>
+<div id="ref-diaz2012population">
+<p>Díaz, Iván, and Mark J van der Laan. 2012. “Population Intervention Causal Effects Based on Stochastic Interventions.” <em>Biometrics</em> 68 (2). Wiley Online Library: 541–49.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="applications.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references-1.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["handbook.pdf", "handbook.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
