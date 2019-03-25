@@ -4,5 +4,6 @@ TITLE=handbook
 all: book
 
 book:
-	Rscript -e "bookdown::render_book('.')"
+	Rscript -e "bookdown::clean_book(TRUE)"
+	Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
 
