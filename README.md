@@ -1,4 +1,4 @@
-This is the repostory for the book [**A Hitchhiker's Guide to the tlverse:
+This is the repository for the book [**A Hitchhiker's Guide to the tlverse:
 A Targeted Learning Practitioner's
 Handbook**](http://tlverse.org/tlverse-handbook), by Mark van der Laan, Alan
 Hubbard, Jeremy Coyle, Nima Hejazi, Ivana Malenica, and Rachael Phillips.
