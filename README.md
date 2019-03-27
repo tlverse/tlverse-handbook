@@ -11,9 +11,9 @@ Handbook**](http://tlverse.org/tlverse-handbook), by Mark van der Laan, Alan
 Hubbard, Jeremy Coyle, Nima Hejazi, Ivana Malenica, and Rachael Phillips. This
 is very much a work-in-progress and updates are made available frequently.
 
-This workshop handbook is built using RStudio's
+This work is built using RStudio's excellent
 [`bookdown`](https://www.rstudio.com/resources/webinars/introducing-bookdown/)
-package; for more information on how to use `bookdown` see
+R package; for more information on how to use `bookdown` see
 [bookdown.org](https://bookdown.org/).
 
 Please note that this work is written under a [Contributor Code of
@@ -22,4 +22,3 @@ license](https://creativecommons.org/licenses/by-nc-sa/3.0/us/). By
 participating in this project (for example, by submitting a [pull
 request](https://github.com/tlverse/tlverse-handbook/issues) with suggestions or
 edits) you agree to abide by its terms.
-
