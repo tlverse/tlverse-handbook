@@ -7,9 +7,10 @@ GitHub Pages at https://tlverse.org/tlverse-handbook.
 
 Welcome to the GitHub repository for an early draft of [**The Hitchhiker's
 Guide to the `tlverse`, or a Targeted Learning Practitioner's
-Handbook**](http://tlverse.org/tlverse-handbook), by Mark van der Laan, Alan
-Hubbard, Jeremy Coyle, Nima Hejazi, Ivana Malenica, and Rachael Phillips. This
-is very much a work-in-progress and updates are made available frequently.
+Handbook**](http://tlverse.org/tlverse-handbook), by Jeremy Coyle, Nima
+Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, and Mark van der
+Laan. This is very much a work-in-progress and updates are made available
+frequently.
 
 This work is built using RStudio's excellent
 [`bookdown`](https://www.rstudio.com/resources/webinars/introducing-bookdown/)
