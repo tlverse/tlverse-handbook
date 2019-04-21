@@ -117,12 +117,11 @@ library(data.table)
 library(sl3)
 library(SuperLearner)
 library(origami)
-
 set.seed(7194)
 
 # load data set and take a peek
 washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
-head(washb_data,3)
+head(washb_data, 3)
 ```
 
 **1. Define the machine learning task**
@@ -164,7 +163,8 @@ in the task. The default number of folds is 10.
 Now that we have defined our machine learning problem with the task, we are
 ready to **"make"** the machine learning algorithms.
 
-Learners have properties that indicate what features they support. We may use `sl3_list_properties()` to get a list of all properties supported by at least
+Learners have properties that indicate what features they support. We may use
+`sl3_list_properties()` to get a list of all properties supported by at least
 one learner.
 
 ```{r list_properties}
@@ -174,7 +174,7 @@ Since we have a continuous outcome, we may identify the learners that support
 this outcome type with `sl3_list_learners()`.
 
 ```{r list_learners}
-sl3_list_learners(c("continuous"))
+sl3_list_learners("continuous")
 ```
 
 Now that we have an idea of some learners, we can construct them using the
@@ -241,7 +241,7 @@ values, and we can also obtain a summary of the results.
 ```{r sl_basic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-sl_fit$print() %>% kable(format = 'latex', digits = 3
+sl_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
 Explain summary
 
@@ -267,7 +267,7 @@ a new super learner.
 new_stack <- make_learner(
   Stack,
   lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet, lrnr_ranger1k, lrnr_ranger100,
-  lrnr_polymars, lrnr_gam, lrnr_bayesglm
+  lrnr_gam, lrnr_bayesglm
 )
 ```
 
@@ -278,7 +278,7 @@ those variables to the modeling algorithm. This screening can be particularly
 important when there are many variables.
 
 Let's see how this works. Consider screening covariates based on their
-correlation with the outcome (`cor.test` p-value < .1), and `randomForest`
+correlation with the outcome (`cor.test` p-value $\leq 0.1$), and `randomForest`
 variable importance (top 10 most important variables).
 
 ```{r screeners}
@@ -294,10 +294,10 @@ to define the task for the next learner.
 cor_pipeline <- make_learner(Pipeline, screen_cor, new_stack)
 rf_pipeline <- make_learner(Pipeline, screen_rf, new_stack)
 ```
-Lastly, we just have to stack all of these pipelines together, so we may use them
-as base learners in our super learner. Let's also consider the `new_stack`, just
-to compare how the feature selection methods perform in comparison to the methods
-without feature selection.
+Lastly, we just have to stack all of these pipelines together, so we may use
+them as base learners in our super learner. Let's also consider the `new_stack`,
+just to compare how the feature selection methods perform in comparison to the
+methods without feature selection.
 
 ```{r screeners-stack}
 fancy_stack <- make_learner(Stack, cor_pipeline, rf_pipeline, new_stack)
@@ -305,12 +305,12 @@ fancy_stack <- make_learner(Stack, cor_pipeline, rf_pipeline, new_stack)
 
 Now we can Super Learn with this fancy base learner stack.
 
-```{r sl_fancy}
+```{r sl_fancy, eval=FALSE}
 # run sl and predict on WASH
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
 sl_fancy_fit <- sl_fancy$train(washb_task)
 sl_preds <- sl_fancy_fit$predict()
-sl_fancy_fit$print() %>% kable(format = 'latex', digits = 3)
+sl_fancy_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
 
 **Cross-validated super learner**
