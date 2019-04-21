@@ -247,7 +247,7 @@ Explain summary
 
 ## Extensions
 
-**Customize learner hyperparameters**
+### Customize learner hyperparameters
 
 We can customize learner hyperparameters to incorporate a diversity of different
 settings. We can also include learners from the `SuperLearner` `R` package.
@@ -271,7 +271,7 @@ new_stack <- make_learner(
 )
 ```
 
-**Screening covariates**
+### Screening covariates
 
 Why stop now? We can also select a subset of available covariates and pass only
 those variables to the modeling algorithm. This screening can be particularly
@@ -313,30 +313,30 @@ sl_preds <- sl_fancy_fit$predict()
 sl_fancy_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
 
-**Cross-validated super learner**
+### Cross-validated super learner
 
 We can cross-validate the super learner to see how well the super learner
 performs on unseen data. This requires an “external” layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
 holdout sample that we don’t use to fit the super learner. This
 external cross validation procedure may also incorporate 10 folds, but this is
-very time consuming. The default in `sl3` is ______.
+very time consuming. The default in `sl3` is [TODO].
 
 ```{r CVsl}
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
-CVsl_fancy %>% kable(format = 'latex', digits = 3)
+CVsl_fancy %>% knitr::kable(format = "markdown", digits = 3)
 ```
 
-**Variable importance**
+## Variable importance
 
 Variable importance can be interesting and informative. Let's explore how it
 works in `sl3`.
 
 ```{r varimp}
 washb_varimp <- varimp(sl_fit, loss_squared_error, type = "permute")
-washb_varimp %>% kable(format = 'latex', digits = 3)
+washb_varimp %>% knitr::kable(format = "markdown", digits = 3)
 ```
-Explain output..
+Explain output...
 
 This function calculates the risk difference between the learner fit with a
 scrambled covariate and the learner fit with the true covariate, across all
@@ -374,6 +374,7 @@ risk?
 9. What is the cross-validated risk of the continuous super learner?
 
 ## Concluding Remarks
+
 The general ensemble learning approach of super learner can be applied to all
 kinds of estimation problems that can be defined by a loss function. We just
 discussed conditional mean estimation, and in the appendix we delve into
@@ -459,7 +460,7 @@ sl <- Lrnr_sl$new(learners = stack,
                   metalearner =metalearner
 )
 sl_fit <-sl$train(task)
-sl_fit$print() %>% kable(format = 'latex', digits = 3)
+sl_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
 
 ### Super learning of a conditional density
