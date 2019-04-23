@@ -247,6 +247,14 @@ Explain summary
 
 ## Extensions
 
+In this section, we will introduce a few extensions of the `sl3` framework,
+including
+
+1. Customizing learner hyperparameters
+2. Feature selection
+3. Cross-validated super learner
+4. Variable importance with `sl3`.
+
 ### Customize learner hyperparameters
 
 We can customize learner hyperparameters to incorporate a diversity of different
@@ -319,8 +327,7 @@ We can cross-validate the super learner to see how well the super learner
 performs on unseen data. This requires an “external” layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
 holdout sample that we don’t use to fit the super learner. This
-external cross validation procedure may also incorporate 10 folds, but this is
-very time consuming. The default in `sl3` is [TODO].
+external cross validation procedure may also incorporate 10 folds, which is the default in `sl3`.
 
 ```{r CVsl}
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
@@ -376,40 +383,34 @@ on the task.
 
 ## Concluding Remarks
 
-The general ensemble learning approach of super learner can be applied to all
-kinds of estimation problems that can be defined by a loss function. We just
-discussed conditional mean estimation, and in the appendix we delve into
-prediction of a conditional density, and the optimal individualized treatment
-rule. We like to use a plug-in estimator of the statistical functional, since
-the plug-in estimator respects both the local and global constraints of the
-statistical model. We could just plug-in the estimator returned by super learner;
+The general ensemble learning approach of super learner can be applied to a
+diversity of estimation and prediction problems that can be defined by a loss function. We just discussed conditional mean estimation, and in the appendix we delve into prediction of a conditional density, and the optimal individualized treatment rule. Plug-in estimators of the estimand are desirable because a plug-in estimator respects both the local and global constraints of the statistical model. We could just plug-in the estimator returned by super learner;
 however, this is problematic because the super learner estimators are trading
 off bias and variance in an optimal way and as a result their bias is
 essentially the rate of convergence of these algorithms, which is always slower
 than $1/\sqrt{n}$. Therefore, if we plug-in the estimator returned by super
-learner into the target parameter mapping, then we would end up with an
-estimator which has the same bias as what we plugged in which is greater than
-$1/\sqrt{n}$, so we end up with an estimator which is not asymptotically normal,
-since it does not converge to the estimand at $1/\sqrt{n}$ rate.
+learner into the target parameter mapping, we would end up with an
+estimator which has the same bias as what we plugged in, which is greater than
+$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
 
 An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$), and
 can be written as an empirical mean in first order of a function of the data,
 the influence curve, plus some negligable remainder term. Once an estimator
 is asymptotically linear with an influence curve it’s normally distributed, so
 the standardized estimator converges to a normal distribution with mean 0 and
-variance is the variance of the influence curve. Thus, we prefer to construct
-asymptotically linear estimators to allow us to have inference. Among the class
-of regular asymptotically linear estimators, there is an optimal estimator which
-is an efficient estimator and that’s the one with influence curve equal to the
-canonical gradient of the path-wise derivative of the target parameter. The
-canonical gradient is the direction of the path through the data distribution
-where the parameter is steepest. An estimator is efficient if and only if is
-asymptotically linear with influence curve equal to the canonical gradient. One
-can calculate the canonical gradient with the statistical model and the
-statistical target parameter. Techniques for calculating the canonical gradient
-include projecting an initial gradient on the tangent space of the model at the
-particular distribution in the model in which you want to calculate the
-canonical gradient.
+variance is the variance of the influence curve. Thus, it is advantageous to
+construct asymptotically linear estimators since they permit formal statistical
+inference. Among the class of regular asymptotically linear estimators, there is
+an optimal estimator which is an efficient estimator, and that’s the one with
+influence curve equal to the canonical gradient of the path-wise derivative of
+the target parameter. The canonical gradient is the direction of the path
+through the data distribution where the parameter is steepest. An estimator is
+efficient if and only if is asymptotically linear with influence curve equal to
+the canonical gradient. One can calculate the canonical gradient with the
+statistical model and the statistical target parameter. Techniques for
+calculating the canonical gradient entail projecting an initial gradient on the
+tangent space of the model at the particular distribution in the model in which
+you want to calculate the canonical gradient.
 
 Now we know what it takes to construct an efficient estimator. Namely, we need
 to construct an estimator which is asymptotically linear with influence curve
@@ -463,6 +464,8 @@ sl <- Lrnr_sl$new(learners = stack,
 sl_fit <-sl$train(task)
 sl_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
+
+<!--
 
 ### Super learning of a conditional density
 
@@ -579,3 +582,5 @@ the training sample. The empirical distribution $P_{n,B_n}^0$ corresponds to the
 split $B_n$ of the training sample and the empirical distribution of the
 validation sample is $P_{n,B_n}^1$.
 * Super-learner of optimal rule $\psi_0$: $\hat{\Psi}_{k_n}(P_n)$.
+
+-->
