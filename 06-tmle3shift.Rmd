@@ -223,12 +223,12 @@ which may be reduced to
 \begin{equation*}\label{eqn:aux_covar_simple}
   H(a,w) = \frac{g_0(a - \delta \mid w)}{g_0(a \mid w)} + 1
 \end{equation*}
-in the case that the treatment is in the limits that arise from conditioning on
-$W$, i.e., for $A_i \in (u(w) - \delta, u(w))$.
+in the case that the treatment is within the limits that arise from conditioning
+on $W$, i.e., for $A_i \in (u(w) - \delta, u(w))$.
 
 The efficient influence function allows the construction of a
-semiparametric-efficient estimators may be constructed. In the sequel, we focus on
-a targeted maximum likelihood (TML) estimator, for which @diaz2018stochastic
+semiparametric-efficient estimators may be constructed. In the sequel, we focus
+on a targeted maximum likelihood (TML) estimator, for which @diaz2018stochastic
 give a recipe:
 
 1. Construct initial estimators $g_n$ of $g_0(A, W)$ and $Q_n$ of
@@ -280,9 +280,8 @@ regression techniques:
 lrn_mean <- Lrnr_mean$new()
 lrn_fglm <- Lrnr_glm_fast$new()
 lrn_xgb <- Lrnr_xgboost$new(nrounds = 200)
-lrn_hal <- Lrnr_hal9001$new()
 sl_lrn <- Lrnr_sl$new(
-  learners = list(lrn_mean, lrn_fglm), # , lrn_xgb, lrn_hal),
+  learners = list(lrn_mean, lrn_fglm, lrn_xgb),
   metalearner = Lrnr_nnls$new()
 )
 ```
@@ -340,7 +339,7 @@ regression while our `g_learner` is used in estimating the treatment mechanism.
 
 ```{r sim_data, message=FALSE, warning=FALSE}
 # simulate simple data for tmle-shift sketch
-n_obs <- 1000 # number of observations
+n_obs <- 500 # number of observations
 tx_mult <- 2 # multiplier for the effect of W = 1 on the treatment
 
 ## baseline covariates -- simple, binary
@@ -675,16 +674,34 @@ encouragement design deployed in a clinical setting.
 
 For this example, we'll use the variable importance strategy of considering a
 grid of stochastic interventions to evaluate the weight-for-height Z-score under
-a shift in the mother's age down by two years ($\delta = -2$), up by two years
-($\delta = 2$), and under no shift at all ($\delta = 0$). To do this, we simply
-initialize a `Spec` `tmle_vimshift_delta` just as we did in a previous example
+a shift in the mother's age down by two years ($\delta = -2$) or up by two years
+($\delta = 2$). To do this, we simply initialize a `Spec` `tmle_vimshift_delta`
+just as we did in a previous example:
 
 ```{r vim_spec_init, message=FALSE, warning=FALSE}
 # initialize a tmle specification for the variable importance parameter
 washb_vim_spec <- tmle_vimshift_delta(
-  shift_grid = seq(-2, 2, 2),
+  shift_grid = c(-2, 2),
   max_shifted_ratio = 2
 )
+```
+
+Prior to running our analysis, we'll modify the `learner_list` object we had
+created such that the density estimation procedure we rely on will be only the
+random forest conditional density estimation procedure of @pospisil2018rfcde, as
+the nonparametric conditional density approach based on the highly adaptive
+lasso [@diaz2011super; @benkeser2016hal; @coyle2018hal9001;
+@hejazi2019haldensify] is currently unable to accommodate large datasets.
+
+```{r sl3_lrnrs-gfit-shift-washb, message=FALSE, warning=FALSE}
+# learners used for conditional density regression (i.e., propensity score)
+lrn_rfcde <- Lrnr_rfcde$new(
+  n_trees = 500, node_size = 3,
+  n_basis = 20, output_type = "observed"
+)
+
+# modify learner list, using existing SL for Q fit
+learner_list <- list(Y = sl_lrn, A = lrn_rfcde)
 ```
 
 Having made the above preparations, we're now ready to estimate the
