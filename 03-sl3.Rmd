@@ -24,17 +24,18 @@ performance of the ensemble itself.
 bias–variance tradeoff for the parameter of interest.
 
 ## Introduction
+
 In \@ref(intro), we introduced the road map for targeted learning as a
 general template to translate real-world data applications into formal
 statistical estimation problems. The first steps of this roadmap define the
 *statistical estimation problem*, which establish
 
 1. Data as a realization of a random variable, or equivalently, an outcome of a
-particular experiment
+   particular experiment
 2. A statistical model, representing the true knowledge about the
-data-generating experiment
+   data-generating experiment
 3. A translation of the scientific question, which is often causal, into a
-target parameter.
+   target parameter.
 
 Note that if the target parameter is causal, step 3 also requires
 establishing identifiability of the target quantity from the observed data
@@ -47,7 +48,7 @@ construct the TMLE; an asymptotically linear and efficient substitution
 estimator of this target quantity. The first step in this estimation procedure
 is an initial estimate of the data-generating distribution, or the relevant part
 of this distribution that is needed to evaluate the target parameter. For this
-initial estimation, we use the super learner @van2007super. The super learner
+initial estimation, we use the Super Learner [@van2007super]. The super learner
 provides an important step in creating a robust estimator. It is a
 loss-function-based tool that uses V-fold cross-validation to obtain the best
 prediction of our target parameter, based on a weighted average of a library of
@@ -55,9 +56,10 @@ machine learning algorithms. This library of machine learning algorithms
 consists of functions ("learners" in the `sl3` nomenclature) that we think
 might be consistent with the true data-generating distribution. The
 ensembling of algorithms with weights ("metalearning" in the `sl3` nomenclature)
-has been shown to be adaptive and robust, even in small samples @polley2010super.
-The super learner has been proven to be asymptotically as accurate as the best
-possible prediction algorithm in the library @vdl2003unified @van2006oracle.
+has been shown to be adaptive and robust, even in small samples
+[@polley2010super]. The Super Learner has been proven to be asymptotically as
+accurate as the best possible prediction algorithm in the library
+[@vdl2003unified; @van2006oracle].
 
 ### Background
 
@@ -80,8 +82,8 @@ The *continuous/ensemble super learner* is a weighted average of the library of
 algorithms, where the weights are chosen to minimize the V-fold cross-validated
 empirical risk of the library. Restricting the weights ("metalearner" in `sl3`
 nomenclature) to be positive and sum to one (convex combination) has been shown
-to improve upon the discrete super learner @polley2010super @van2007super. This
-notion of weighted combinations was introduced in @wolpert1992stacked for
+to improve upon the discrete Super Learner [@polley2010super; @van2007super].
+This notion of weighted combinations was introduced in @wolpert1992stacked for
 neural networks and adapted for regressions in @breiman1996stacked.
 
 For more detail on super learner we refer the reader to @van2007super and
@@ -91,8 +93,8 @@ in @van2006oracle.
 
 ## Basic Implementation
 
-We begin by illustrating the basic functionality of the super learner
-algorithm as implemented in `sl3`. `sl3` implementation consists of the
+We begin by illustrating the basic functionality of the Super Learner
+algorithm as implemented in `sl3`. The `sl3` implementation consists of the
 following steps:
 
 0. Load the necessary libraries and data
@@ -258,9 +260,10 @@ including
 ### Customize learner hyperparameters
 
 We can customize learner hyperparameters to incorporate a diversity of different
-settings. We can also include learners from the `SuperLearner` `R` package.
-Documentation for the learners and their hyperparameters can be found in the
-[`sl3 Learners Reference`](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
+settings. We can also include learners from the [`SuperLearner` `R`
+package](https://github.com/ecpolley/superlearner). Documentation for the
+learners and their hyperparameters can be found in the [`sl3 Learners
+Reference`](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
 
 ```{r extra-lrnr}
 lrnr_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
@@ -321,15 +324,16 @@ sl_preds <- sl_fancy_fit$predict()
 sl_fancy_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
 ```
 
-### Cross-validated super learner
+### Cross-validated Super Learner
 
 We can cross-validate the super learner to see how well the super learner
-performs on unseen data. This requires an “external” layer of cross-validation,
+performs on unseen data. This requires an "external" layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
-holdout sample that we don’t use to fit the super learner. This
-external cross validation procedure may also incorporate 10 folds, which is the default in `sl3`.
+holdout sample that we don’t use to fit the super learner. This external
+cross-validation procedure may also incorporate 10 folds, which is the default
+in `sl3`.
 
-```{r CVsl}
+```{r CVsl, eval=FALSE}
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
 CVsl_fancy %>% knitr::kable(format = "markdown", digits = 3)
 ```
@@ -339,7 +343,7 @@ CVsl_fancy %>% knitr::kable(format = "markdown", digits = 3)
 Variable importance can be interesting and informative. Let's explore how it
 works in `sl3`.
 
-```{r varimp}
+```{r varimp, eval=FALSE}
 washb_varimp <- varimp(sl_fit, loss_squared_error, type = "permute")
 washb_varimp %>% knitr::kable(format = "markdown", digits = 3)
 ```
@@ -360,7 +364,7 @@ the `chspred` data (loaded below) accessible.
 ```{r, ex-setup}
 # load the data set
 db_data <-
-  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+ url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
 head(chspred, 3)
@@ -384,14 +388,20 @@ on the task.
 ## Concluding Remarks
 
 The general ensemble learning approach of super learner can be applied to a
-diversity of estimation and prediction problems that can be defined by a loss function. We just discussed conditional mean estimation, and in the appendix we delve into prediction of a conditional density, and the optimal individualized treatment rule. Plug-in estimators of the estimand are desirable because a plug-in estimator respects both the local and global constraints of the statistical model. We could just plug-in the estimator returned by super learner;
-however, this is problematic because the super learner estimators are trading
-off bias and variance in an optimal way and as a result their bias is
+diversity of estimation and prediction problems that can be defined by a loss
+function. We just discussed conditional mean estimation, and in the appendix we
+delve into prediction of a conditional density, and the optimal individualized
+treatment rule. Plug-in estimators of the estimand are desirable because a
+plug-in estimator respects both the local and global constraints of the
+statistical model. We could just plug-in the estimator returned by Super
+Learner; however, this is problematic because the Super Learner estimators are
+trading off bias and variance in an optimal way and as a result their bias is
 essentially the rate of convergence of these algorithms, which is always slower
 than $1/\sqrt{n}$. Therefore, if we plug-in the estimator returned by super
 learner into the target parameter mapping, we would end up with an
 estimator which has the same bias as what we plugged in, which is greater than
-$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
+$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically
+normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
 
 An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$), and
 can be written as an empirical mean in first order of a function of the data,
@@ -582,5 +592,4 @@ the training sample. The empirical distribution $P_{n,B_n}^0$ corresponds to the
 split $B_n$ of the training sample and the empirical distribution of the
 validation sample is $P_{n,B_n}^1$.
 * Super-learner of optimal rule $\psi_0$: $\hat{\Psi}_{k_n}(P_n)$.
-
 -->

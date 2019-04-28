@@ -8,15 +8,24 @@ Updated: `r Sys.Date()`
 
 ## Learning Objectives
 
-1. Differentiate stochastic treatment regimes from static, dynamic, and optimal treatment regimes.
-2. Describe how estimating causal effects of stochastic interventions informs a real-world data analysis.
-3. Contrast a population level stochastic intervention policy from a modified treatment policy.
-4. Estimate causal effects under stochastic treatment regimes with the `tmle3shift` `R` package.
-5. Construct marginal structural models to measure variable importance in terms of stochastic interventions, using the grid of shift interventions.
-6. Specify a grid of counterfactual shift interventions to be used for defining a set of stochastic intervention policies.
-7. Interpret a set of effect estimates from a grid of counterfactual shift interventions.
-8. Implement a shift intervention at the individual level, to facilitate shifting each individual to a value that's supported by the data.
-9. Define novel shift intervention functions to extend the `tmle3shift` `R` package.
+1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
+   treatment regimes.
+2. Describe how estimating causal effects of stochastic interventions informs a
+   real-world data analysis.
+3. Contrast a population level stochastic intervention policy from a modified
+   treatment policy.
+4. Estimate causal effects under stochastic treatment regimes with the
+   `tmle3shift` `R` package.
+5. Construct marginal structural models to measure variable importance in terms
+   of stochastic interventions, using the grid of shift interventions.
+6. Specify a grid of counterfactual shift interventions to be used for defining
+   a set of stochastic intervention policies.
+7. Interpret a set of effect estimates from a grid of counterfactual shift
+   interventions.
+8. Implement a shift intervention at the individual level, to facilitate
+   shifting each individual to a value that's supported by the data.
+9. Define novel shift intervention functions to extend the `tmle3shift` `R`
+   package.
 
 ## Introduction to Stochastic Interventions
 
@@ -217,9 +226,9 @@ which may be reduced to
 in the case that the treatment is in the limits that arise from conditioning on
 $W$, i.e., for $A_i \in (u(w) - \delta, u(w))$.
 
-Using the efficient influence function, a few different varieties of
-semiparametric-efficient estimators may be constructed. In the sequel, we focus
-on a targeted maximum likelihood (TML) estimator, for which @diaz2018stochastic
+The efficient influence function allows the construction of a
+semiparametric-efficient estimators may be constructed. In the sequel, we focus on
+a targeted maximum likelihood (TML) estimator, for which @diaz2018stochastic
 give a recipe:
 
 1. Construct initial estimators $g_n$ of $g_0(A, W)$ and $Q_n$ of
@@ -249,9 +258,9 @@ knitr::include_graphics(path = "img/gif/shift_animation.gif")
 To start, let us load the packages we will use and set a seed for simulation:
 
 ```{r setup-shift, message=FALSE, warning=FALSE}
+library(here)
 library(tidyverse)
 library(data.table)
-library(condensier)
 library(sl3)
 library(tmle3)
 library(tmle3shift)
@@ -282,36 +291,43 @@ The second of these is an estimate of the treatment mechanism, $\hat{g}_n$,
 i.e., the _propensity score_. In the case of a continuous intervention node
 $A$, such a quantity takes the form $p(A \mid W)$, which is a conditional
 density. Generally speaking, conditional density estimation is a challenging
-problem that has received much attention in the literature. To perform
-conditional density estimation, we focus on an approach advocated by
-@diaz2011super, in which arbitrary regression functions may be used to generate
-conditional density estimates based on a hazard-based approach. A Super
-Learner may be constructed by pooling estimates from each of these modified
-conditional density regression techniques.
+problem that has received much attention in the literature. To estimate the
+treatment mechanism, we must make use of learning algorithms specifically suited
+to conditional density estimation; a list of such learners may be extracted from
+`sl3` by using `sl3_list_learners()`:
 
-```{r l3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
-# learners used for conditional density regression
-lrn_mean_dens <- Lrnr_condensier$new(
-  nbins = 20, bin_estimator = lrn_mean,
-  bin_method = "dhist"
+```{r sl3_density_lrnrs_search-shift, message=FALSE, warning=FALSE}
+sl3_list_learners("density")
+```
+
+To proceed, we'll select two of the above learners, `Lrnr_haldensify` for using
+the highly adaptive lasso for conditional density estimation, based on an
+algorithm given by @diaz2011super and implemented in @hejazi2019haldensify, and
+`Lrnr_rfcde`, an approach for using random forests for conditional density
+estimation [@pospisil2018rfcde]. A Super Learner may be constructed by pooling
+estimates from each of these modified conditional density regression techniques.
+
+```{r sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
+# learners used for conditional density regression (i.e., propensity score)
+lrn_haldensify <- Lrnr_haldensify$new(
+  n_bins = 5, grid_type = "equal_mass",
+  lambda_seq = exp(seq(-1, -13, length = 500))
 )
-lrn_fglm_dens <- Lrnr_condensier$new(
-  nbins = 10, bin_estimator = lrn_fglm,
-  bin_method = "dhist"
-)
-lrn_xgb_dens <- Lrnr_condensier$new(
-  nbins = 5, bin_estimator = lrn_xgb,
-  bin_method = "dhist"
+lrn_rfcde <- Lrnr_rfcde$new(
+  n_trees = 1000, node_size = 5,
+  n_basis = 31, output_type = "observed"
 )
 sl_lrn_dens <- Lrnr_sl$new(
-  learners = list(lrn_mean_dens, lrn_fglm_dens, lrn_xgb_dens),
+  learners = list(lrn_haldensify, lrn_rfcde),
   metalearner = Lrnr_solnp_density$new()
 )
+```
 
-# specify outcome and treatment regressions and create learner list
-Q_learner <- sl_lrn
-g_learner <- sl_lrn_dens
-learner_list <- list(Y = Q_learner, A = g_learner)
+Finally, we construct a `learner_list` object for use in constructing a TML
+estimator of our target parameter of interest:
+
+```{r learner-list-shift, message=FALSE, warning=FALSE}
+learner_list <- list(Y = sl_lrn, A = sl_lrn_dens)
 ```
 
 The `learner_list` object above specifies the role that each of the ensemble
@@ -320,7 +336,7 @@ used in building a TMLE for the parameter of interest here. In particular, it
 makes explicit the fact that our `Q_learner` is used in fitting the outcome
 regression while our `g_learner` is used in estimating the treatment mechanism.
 
-### Simulate Data
+### Example with Simulated Data
 
 ```{r sim_data, message=FALSE, warning=FALSE}
 # simulate simple data for tmle-shift sketch
@@ -626,25 +642,80 @@ tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 tmle_msm_fit
 ```
 
+### Example with the WASH Benefits Data
+
+To complete our walk through, let's turn to using stochastic interventions to
+investigate the data from the WASH Benefits trial. To start, let's load the
+data, convert all columns to be of class `numeric`, and take a quick look at it
+
+```{r load-washb-data, message=FALSE, warning=FALSE, cache=FALSE}
+washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
+washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
+head(washb_data, 3)
+```
+
+Next, we specify our NPSEM via the `node_list` object. For our example analysis,
+we'll consider the outcome to be the weight-for-height Z-score (as in previous
+chapters), the intervention of interest to be the mother's age at time of
+child's birth, and take all other covariates to be potential confounders.
+
+```{r washb-data-npsem-shift, message=FALSE, warning=FALSE, cache=FALSE}
+node_list <- list(W = names(washb_data)[!(names(washb_data) %in%
+                                          c("whz", "momage"))],
+                  A = "momage", Y = "whz")
+```
+
+Were we to consider the counterfactual weight-for-height Z-score under shifts in
+the age of the mother at child's birth, how would we interpret estimates of our
+parameter? To simplify our interpretation, consider a shift of just a year in
+the mother's age (i.e., $\delta = 1$); in this setting, a stochastic
+intervention would correspond to a policy advocating that potential mothers
+defer having a child for a single calendar year, possibly implemented through an
+encouragement design deployed in a clinical setting.
+
+For this example, we'll use the variable importance strategy of considering a
+grid of stochastic interventions to evaluate the weight-for-height Z-score under
+a shift in the mother's age down by two years ($\delta = -2$), up by two years
+($\delta = 2$), and under no shift at all ($\delta = 0$). To do this, we simply
+initialize a `Spec` `tmle_vimshift_delta` just as we did in a previous example
+
+```{r vim_spec_init, message=FALSE, warning=FALSE}
+# initialize a tmle specification for the variable importance parameter
+washb_vim_spec <- tmle_vimshift_delta(
+  shift_grid = seq(-2, 2, 2),
+  max_shifted_ratio = 2
+)
+```
+
+Having made the above preparations, we're now ready to estimate the
+counterfactual mean of the weight-for-height Z-score under a small grid of
+shifts in the mother's age at child's birth. Just as before, we do this through
+a simple call to our `tmle3` wrapper function:
+
+```{r fit_tmle_wrapper, message=FALSE, warning=FALSE, cache=FALSE, eval=FALSE}
+washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
+washb_tmle_fit
+```
+
 ---
 
 ## Exercises
 
-### Basics/Review
+### Review of Key Concepts
 
 1. TODO
 
 2. Set the `sl3` library of algorithms for the Super Learner to a simple,
    interpretable library and use this new library to estimate the counterfactual
-   mean of [VARIABLE WE'VE BEEN WORKING WITH] under a shift $\delta = 0$. What
-   does this counterfactual mean equate to?
+   mean of mother's age at child's birth (`momage`) under a shift $\delta = 0$.
+   What does this counterfactual mean equate to in terms of the observed data?
 
 3. Describe two (equivalent) ways in which the causal effects of stochastic
    interventions may be interpreted.
 
 4. TODO
 
-### Using the Ideas
+### The Ideas in Action
 
 1. Choose a different variable of interest (e.g., TBD) and repeat the initial
    analysis we performed. That is, estimate the counterfactual mean under a
@@ -661,7 +732,7 @@ tmle_msm_fit
    the results -- that is, what does the slope of the marginal structural model
    tell us about the trend across the chosen sequence of shifts?
 
-### Advanced
+### Advanced Topics
 
 1. How does the marginal structural model we used to summarize the trend along
    the sequence of shifts previously help to contextualize the estimated effect
@@ -669,7 +740,7 @@ tmle_msm_fit
    shifts and the marginal structural model parameters allow us to more richly
    interpret our findings?
 
-2. What advantages, if any, are there to targeted directly the parameters of a
+2. What advantages, if any, are there to targeting directly the parameters of a
    marginal structural model?
 
 <!--
