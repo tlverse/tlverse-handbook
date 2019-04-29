@@ -43,14 +43,14 @@ distribution, under possible non-testable assumptions that may not necessarily
 be reasonable. Still, the target quantity does have a valid statistical
 interpretation.
 
-Now that we have defined the statistical estimation problem, we are ready
+Now that we have defined the statistical estimation problem, we are ready to
 construct the TMLE; an asymptotically linear and efficient substitution
 estimator of this target quantity. The first step in this estimation procedure
 is an initial estimate of the data-generating distribution, or the relevant part
 of this distribution that is needed to evaluate the target parameter. For this
 initial estimation, we use the Super Learner [@van2007super]. The super learner
 provides an important step in creating a robust estimator. It is a
-loss-function-based tool that uses V-fold cross-validation to obtain the best
+loss-function-based tool that uses cross-validation to obtain the best
 prediction of our target parameter, based on a weighted average of a library of
 machine learning algorithms. This library of machine learning algorithms
 consists of functions ("learners" in the `sl3` nomenclature) that we think
@@ -73,13 +73,13 @@ minimizes the risk of the squared error loss. Thus, it is a valid loss function
 when estimating the conditional mean.
 
 The *discrete super learner*, or cross-validated selector, is the algorithm in
-the library that minimizes the V-fold cross-validated empirical risk. The V-fold
+the library that minimizes the cross-validated empirical risk. The
 cross-validated empirical risk of an algorithm is defined as the empirical mean
 over a validation sample of the loss of the algorithm fitted on the training
-sample, averaged across the V splits of the data.
+sample, averaged across the splits of the data.
 
 The *continuous/ensemble super learner* is a weighted average of the library of
-algorithms, where the weights are chosen to minimize the V-fold cross-validated
+algorithms, where the weights are chosen to minimize the cross-validated
 empirical risk of the library. Restricting the weights ("metalearner" in `sl3`
 nomenclature) to be positive and sum to one (convex combination) has been shown
 to improve upon the discrete Super Learner [@polley2010super; @van2007super].
@@ -158,7 +158,8 @@ which is particularly handy when the missingness in the data might be
 informative.
 
 Also, notice that we did not specify the number of folds, or the loss function
-in the task. The default number of folds is 10.
+in the task. The default cross-validation scheme is V-fold, with the number of folds
+$V=10$.
 
 **2. Make a super learner**
 
@@ -299,14 +300,18 @@ screen_rf <- Lrnr_pkg_SuperLearner_screener$new("screen.randomForest")
 Now we need to **"pipe"**  only those selected covariates to the modeling
 algorithm. To accomplish this, we need to make a `Pipeline`, which is a just
 set of learners to be fit sequentially, where the fit from one learner is used
-to define the task for the next learner.
+to define the task for the next learner. Note the difference between `Pipeline`
+and `Stack` here- one is necessary in order to define a sequential process, 
+whereas the other one establishes parallel function of learners. 
 
 ```{r screeners-pipe}
 cor_pipeline <- make_learner(Pipeline, screen_cor, new_stack)
 rf_pipeline <- make_learner(Pipeline, screen_rf, new_stack)
 ```
-Lastly, we just have to stack all of these pipelines together, so we may use
-them as base learners in our super learner. Let's also consider the `new_stack`,
+Lastly, we have to stack all of these pipelines together, so we may use
+them as base learners in our super learner, analagous to what we have seen before. 
+Now however, our learners will be preceded by a screening step.
+Let's also consider the `new_stack`,
 just to compare how the feature selection methods perform in comparison to the
 methods without feature selection.
 
