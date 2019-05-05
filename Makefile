@@ -8,3 +8,7 @@ book:
 
 style:
 	Rscript -e "styler::style_dir(filetype = 'rmd')"
+
+code:
+	R CMD BATCH purl.R
+	rm purl.Rout
