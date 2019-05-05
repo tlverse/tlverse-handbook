@@ -11,4 +11,4 @@ style:
 
 code:
 	R CMD BATCH purl.R
-	rm purl.Rout
+	rm purl.Rout .RData
