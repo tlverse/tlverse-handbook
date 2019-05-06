@@ -9,19 +9,19 @@ Updated: `r Sys.Date()`
 By the end of this chapter you will be able to:
 
 1. Select a loss function that is appropriate for the functional parameter to be
-estimated.
+   estimated.
 2. Assemble an ensemble of learners based on the properties that identify what
-features they support.
+   features they support.
 3. Customize learner hyperparameters to incorporate a diversity of different
-settings.
+   settings.
 4. Select a subset of available covariates and pass only those variables to the
-modeling algorithm.
+   modeling algorithm.
 5. Fit an ensemble with nested cross-validation to obtain an estimate of the
-performance of the ensemble itself.
+   performance of the ensemble itself.
 6. Obtain `sl3` variable importance metrics.
 7. Interpret the discrete and continuous super learner fits.
 8. Rationalize the need to remove bias from the super learner to make an optimal
-bias–variance tradeoff for the parameter of interest.
+   bias–variance tradeoff for the parameter of interest.
 
 ## Introduction
 
@@ -217,8 +217,8 @@ are ready to make the super learner.
 
 ```{r make sl}
 sl <- make_learner(Lrnr_sl,
-                   learners = stack,
-                   metalearner = metalearner
+  learners = stack,
+  metalearner = metalearner
 )
 ```
 
@@ -244,7 +244,8 @@ values, and we can also obtain a summary of the results.
 ```{r sl_basic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-sl_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
+sl_fit$print() %>%
+  knitr::kable(format = "markdown", digits = 3)
 ```
 Explain summary
 
@@ -301,19 +302,18 @@ Now we need to **"pipe"**  only those selected covariates to the modeling
 algorithm. To accomplish this, we need to make a `Pipeline`, which is a just
 set of learners to be fit sequentially, where the fit from one learner is used
 to define the task for the next learner. Note the difference between `Pipeline`
-and `Stack` here- one is necessary in order to define a sequential process, 
-whereas the other one establishes parallel function of learners. 
+and `Stack` here- one is necessary in order to define a sequential process,
+whereas the other one establishes parallel function of learners.
 
 ```{r screeners-pipe}
 cor_pipeline <- make_learner(Pipeline, screen_cor, new_stack)
 rf_pipeline <- make_learner(Pipeline, screen_rf, new_stack)
 ```
 Lastly, we have to stack all of these pipelines together, so we may use
-them as base learners in our super learner, analagous to what we have seen before. 
-Now however, our learners will be preceded by a screening step.
-Let's also consider the `new_stack`,
-just to compare how the feature selection methods perform in comparison to the
-methods without feature selection.
+them as base learners in our super learner, analogous to what we have seen
+before. Now however, our learners will be preceded by a screening step. Let's
+also consider the `new_stack`, just to compare how the feature selection methods
+perform in comparison to the methods without feature selection.
 
 ```{r screeners-stack}
 fancy_stack <- make_learner(Stack, cor_pipeline, rf_pipeline, new_stack)
@@ -326,7 +326,8 @@ Now we can Super Learn with this fancy base learner stack.
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
 sl_fancy_fit <- sl_fancy$train(washb_task)
 sl_preds <- sl_fancy_fit$predict()
-sl_fancy_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
+sl_fancy_fit$print() %>%
+  knitr::kable(format = "markdown", digits = 3)
 ```
 
 ### Cross-validated Super Learner
@@ -340,7 +341,8 @@ in `sl3`.
 
 ```{r CVsl, eval=FALSE}
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
-CVsl_fancy %>% knitr::kable(format = "markdown", digits = 3)
+CVsl_fancy %>%
+  knitr::kable(format = "markdown", digits = 3)
 ```
 
 ## Variable importance
@@ -350,7 +352,8 @@ works in `sl3`.
 
 ```{r varimp, eval=FALSE}
 washb_varimp <- varimp(sl_fit, loss_squared_error, type = "permute")
-washb_varimp %>% knitr::kable(format = "markdown", digits = 3)
+washb_varimp %>%
+  knitr::kable(format = "markdown", digits = 3)
 ```
 Explain output...
 
@@ -369,7 +372,7 @@ the `chspred` data (loaded below) accessible.
 ```{r, ex-setup}
 # load the data set
 db_data <-
- url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
 head(chspred, 3)
@@ -444,9 +447,10 @@ the target parameter. In the following chapters, we focus on
 Here's a potential solution to the exercise above.
 
 ```{r, key}
-chspred_task <- make_sl3_Task(data = chspred,
-                              covariates = head(colnames(chspred), -1),
-                              outcome = 'mi'
+chspred_task <- make_sl3_Task(
+  data = chspred,
+  covariates = head(colnames(chspred), -1),
+  outcome = "mi"
 )
 
 glm_learner <- Lrnr_glm$new()
@@ -460,24 +464,27 @@ ranger_learner <- Lrnr_ranger$new()
 svm_learner <- Lrnr_svm$new()
 xgb_learner <- Lrnr_xgboost$new()
 
-screen_cor <-Lrnr_pkg_SuperLearner_screener$new("screen.corP")
-glm_pipeline <-make_learner(Pipeline, screen_cor, glm_learner)
-ranger_pipeline <-make_learner(Pipeline, screen_cor, ranger_learner)
+screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
+glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
+ranger_pipeline <- make_learner(Pipeline, screen_cor, ranger_learner)
 
-stack <- make_learner(Stack,
-                      glm_pipeline, ranger_pipeline, glm_learner,
-                      lasso_learner, ridge_learner, enet_learner,
-                      curated_glm_learner, mean_learner, glm_fast_learner,
-                      ranger_learner, svm_learner, xgb_learner
+stack <- make_learner(
+  Stack,
+  glm_pipeline, ranger_pipeline, glm_learner,
+  lasso_learner, ridge_learner, enet_learner,
+  curated_glm_learner, mean_learner, glm_fast_learner,
+  ranger_learner, svm_learner, xgb_learner
 )
 
 metalearner <- make_learner(Lrnr_nnls)
 
-sl <- Lrnr_sl$new(learners = stack,
-                  metalearner =metalearner
+sl <- Lrnr_sl$new(
+  learners = stack,
+  metalearner = metalearner
 )
-sl_fit <-sl$train(task)
-sl_fit$print() %>% knitr::kable(format = "markdown", digits = 3)
+sl_fit <- sl$train(task)
+sl_fit$print() %>%
+  knitr::kable(format = "markdown", digits = 3)
 ```
 
 <!--
