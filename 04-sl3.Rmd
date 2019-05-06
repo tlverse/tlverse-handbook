@@ -339,7 +339,7 @@ holdout sample that we don’t use to fit the super learner. This external
 cross-validation procedure may also incorporate 10 folds, which is the default
 in `sl3`.
 
-```{r CVsl, eval=FALSE}
+```{r CVsl}
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
 CVsl_fancy %>%
   knitr::kable(format = "markdown", digits = 3)
@@ -347,20 +347,20 @@ CVsl_fancy %>%
 
 ## Variable importance
 
-Variable importance can be interesting and informative. Let's explore how it
-works in `sl3`.
+Variable importance can be interesting and informative. The `sl3` `varimp`
+function returns a table with variables listed in decreasing order of
+importance, in which the measure of importance is based on a risk difference
+between the learner fit with a permuted covariate and the learner fit with the
+true covariate, across all covariates. In this manner, the larger the risk
+difference, the more important the variable is in the prediction. Let's explore
+the `sl3` variable importance measurements for the washb data.
 
-```{r varimp, eval=FALSE}
-washb_varimp <- varimp(sl_fit, loss_squared_error, type = "permute")
+```{r varimp}
+washb_varimp <- varimp(sl_fit, loss_squared_error)
 washb_varimp %>%
   knitr::kable(format = "markdown", digits = 3)
 ```
 Explain output...
-
-This function calculates the risk difference between the learner fit with a
-scrambled covariate and the learner fit with the true covariate, across all
-covariates. In this manner, the larger the risk difference the more important
-the variable is in the prediction.
 
 ## Exercise
 
@@ -381,9 +381,9 @@ head(chspred, 3)
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
    using all available covariate data.
-2. Make a library of 10 base learning algorithms. Customize hyperparameters for at
-   least two of your learners. Feel free to use learners from `sl3` or
-   `SuperLearner`.
+2. Make a library of 10 base learning algorithms. Customize hyperparameters for
+at least two of your learners. Feel free to use learners from `sl3` or
+`SuperLearner`.
 3. Incorporate feature selection.
 4. Choose an appropriate learner to fit the metalearning step.
 5. Justify your selection of metalearner and base learners.
@@ -439,7 +439,9 @@ estimator, but it is not a plug-in estimator; (2) the targeted maximum
 likelihood estimator, which is a super learner targeted towards the target
 parameter and it is a plug-in estimator; and (3) estimating equation based
 estimators, which use the canonical gradient but as an estimating function in
-the target parameter. In the following chapters, we focus on
+the target parameter. In the following chapters, we focus on the targeted
+maximum likelihood estimator and the targeted minimum loss-based estimator,
+both referred to as TMLE.
 
 ## Appendix
 
