@@ -878,7 +878,7 @@ ITR for the main intervention in WASH Benefits data.
 To start, let's load the data, convert all columns to be of class `numeric`, and
 take a quick look at it:
 
-```{r load-washb-data, message=FALSE, warning=FALSE, cache=FALSE}
+```{r load_washb_data_mopttx, message=FALSE, warning=FALSE, cache=FALSE}
 washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
@@ -889,7 +889,7 @@ interest is the weight-for-height Z-score which we seek to maximize, whereas our
 treatment is the six intervention groups aimed at improving living conditions.
 All the other collected baseline covariates correspond to $W$.
 
-```{r washb-data-npsem-shift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r washb_data_npsem_mopttx, message=FALSE, warning=FALSE, cache=FALSE}
 node_list <- list(
   W = names(washb_data)[!(names(washb_data) %in%
     c("whz", "tr"))],
@@ -900,7 +900,7 @@ node_list <- list(
 
 We specify the Super Learner library as in the categorical simulation:
 
-```{r sl3_lrnrs-WASH}
+```{r sl3_lrnrs_washb_mopttx}
 xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
 xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
 glm_fast <- Lrnr_glm_fast$new()
@@ -939,7 +939,7 @@ living conditions (floor), and possession of material items including the
 refrigerator.  concentrate of these covariates as they might be indicative of
 the socio-economic status of individuals involved in the trial.
 
-```{r spec_init_WASH}
+```{r spec_init_washb_mopttx}
 table(washb_data$momedu)
 table(washb_data$floor)
 table(washb_data$asset_refrig)
@@ -953,7 +953,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 ```
 
-```{r fit_tmle_auto_washb, eval=T}
+```{r fit_tmle_auto_washb_mopttx, eval=T}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
 fit
