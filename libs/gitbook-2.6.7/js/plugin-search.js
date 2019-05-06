@@ -63,11 +63,8 @@ gitbook.require(["gitbook", "lodash", "jQuery"], function(gitbook, _, $) {
       if (!$highlighted) return;
       var n = $highlighted.length;
       if (n === 0) return;
-      var $p = $highlighted.eq(hi), p = $p[0], rect = p.getBoundingClientRect();
-      if (rect.top < 0 || rect.bottom > $(window).height()) {
-        ($(window).width() >= 1240 ? $('.body-inner') : $('.book-body'))
-          .scrollTop(p.offsetTop - 100);
-      }
+      var $p = $highlighted.eq(hi);
+      $p[0].scrollIntoView();
       $highlighted.css('background-color', '');
       // an orange background color on the current item and removed later
       $p.css('background-color', 'orange');
@@ -111,7 +108,8 @@ gitbook.require(["gitbook", "lodash", "jQuery"], function(gitbook, _, $) {
             'type': 'search',
             'class': 'form-control',
             'val': value,
-            'placeholder': 'Type to search'
+            'placeholder': 'Type to search (Enter for navigation)',
+            'title': 'Use Enter or the <Down> key to navigate to the next match, or the <Up> key to the previous match'
         });
 
         $searchLabel.append("Type to search");
@@ -176,7 +174,7 @@ gitbook.require(["gitbook", "lodash", "jQuery"], function(gitbook, _, $) {
         // Type in search bar
         $(document).on("keyup", ".book-search input", function(e) {
             var key = (e.keyCode ? e.keyCode : e.which);
-            // [Yihui] Escape -> close search box; Up/Down: previous/next highlighted
+            // [Yihui] Escape -> close search box; Up/Down/Enter: previous/next highlighted
             if (key == 27) {
                 e.preventDefault();
                 toggleSearch(false);
@@ -184,7 +182,7 @@ gitbook.require(["gitbook", "lodash", "jQuery"], function(gitbook, _, $) {
               if (hi <= 0 && $highlighted) hi = $highlighted.length;
               hi--;
               scrollToHighlighted();
-            } else if (key == 40) {
+            } else if (key == 40 || key == 13) {
               hi++;
               if ($highlighted && hi >= $highlighted.length) hi = 0;
               scrollToHighlighted();

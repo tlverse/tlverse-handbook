@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | The Hitchhiker’s Guide to the tlverse</title>
+  <title>Chapter 2 Welcome to the tlverse | The Hitchhiker’s Guide to the tlverse</title>
   <meta name="description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   <meta name="generator" content="bookdown  and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | The Hitchhiker’s Guide to the tlverse" />
+  <meta property="og:title" content="Chapter 2 Welcome to the tlverse | The Hitchhiker’s Guide to the tlverse" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://tlverse.org/tlverse-handbook/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="tlverse/tlverse-handbook" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | The Hitchhiker’s Guide to the tlverse" />
+  <meta name="twitter:title" content="Chapter 2 Welcome to the tlverse | The Hitchhiker’s Guide to the tlverse" />
   
   <meta name="twitter:description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/logos/favicons/favicon.png" type="image/x-icon" />
-<link rel="prev" href="stochastic-treatment-regimes.html">
-
+<link rel="prev" href="intro.html">
+<link rel="next" href="modern-super-machine-learning-with-sl3.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -309,133 +309,151 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="tlverse" class="section level1">
+<h1><span class="header-section-number">Chapter 2</span> Welcome to the <code>tlverse</code></h1>
+<div id="learning-objectives-1" class="section level2">
+<h2><span class="header-section-number">2.1</span> Learning Objectives</h2>
+<ol style="list-style-type: decimal">
+<li>Understand the <code>tlverse</code> concept</li>
+<li>Identify the core components of the <code>tlverse</code></li>
+<li>Install <code>tlverse</code> R packages</li>
+<li>Learn about the WASH Benefits example data</li>
+</ol>
+</div>
+<div id="what-is-the-tlverse" class="section level2">
+<h2><span class="header-section-number">2.2</span> What is the <code>tlverse</code>?</h2>
+<p>The <code>tlverse</code> is a new framework for doing Targeted Learning in R, inspired by
+the <a href="https://tidyverse.org"><code>tidyverse</code> ecosystem</a> of R packages.</p>
+<p>By analogy to the <a href="https://tidyverse.org/"><code>tidyverse</code></a>:</p>
+<blockquote>
+<p>The <code>tidyverse</code> is an opinionated collection of R packages designed for data
+science. All packages share an underlying design philosophy, grammar, and data
+structures.</p>
+</blockquote>
+<p>So, the <a href="https://tlverse.org"><code>tlverse</code></a> is</p>
+<ul>
+<li>an opinionated collection of R packages for Targeted Learning,</li>
+<li>sharing an underlying philosophy, grammar, and set of data structures.</li>
+</ul>
+</div>
+<div id="tlverse-components" class="section level2">
+<h2><span class="header-section-number">2.3</span> <code>tlverse</code> components</h2>
+<p>These are the main packages that represent the <strong>core</strong> of the <code>tlverse</code>:</p>
+<ul>
+<li><a href="https://github.com/tlverse/sl3"><code>sl3</code></a>: Modern Super Learning with Pipelines
+<ul>
+<li><em>What?</em> A modern object-oriented re-implementation of the Super Learner
+algorithm, employing recently developed paradigms for <code>R</code> programming.</li>
+<li><em>Why?</em> A design that leverages modern tools for fast computation, is
+forward-looking, and can form one of the cornerstones of the <code>tlverse</code>.</li>
+</ul></li>
+<li><a href="https://github.com/tlverse/tmle3"><code>tmle3</code></a>: An Engine for Targeted Learning
+<ul>
+<li><em>What?</em> A generalized framework that simplifies Targeted Learning by
+identifying and implementing a series of common statistical estimation
+procedures.</li>
+<li><em>Why?</em> A common interface and engine that accommodates current algorithmic
+approaches to Targeted Learning and is still flexible enough to remain the
+engine even as new techniques are developed.</li>
+</ul></li>
+</ul>
+<p>In addition to the engines that drive development in the <code>tlverse</code>, there are
+some supporting packages – in particular, we have two…</p>
+<ul>
+<li><a href="https://github.com/tlverse/origami"><code>origami</code></a>: A Generalized Framework for
+Cross-Validation
+<ul>
+<li><em>What?</em> A generalized framework for flexible cross-validation</li>
+<li><em>Why?</em> Cross-validation is a key part of ensuring error estimates are honest
+and preventing overfitting. It is an essential part of the both the Super
+Learner algorithm and Targeted Learning.</li>
+</ul></li>
+<li><a href="https://github.com/tlverse/delayed"><code>delayed</code></a>: Parallelization Framework for
+Dependent Tasks
+<ul>
+<li><em>What?</em> A framework for delayed computations (futures) based on task
+dependencies.</li>
+<li><em>Why?</em> Efficient allocation of compute resources is essential when deploying
+large-scale, computationally intensive algorithms.</li>
+</ul></li>
+</ul>
+<p>A key principle of the <code>tlverse</code> is extensibility. That is, we want to support
+new Targeted Learning estimators as they are developed. The model for this is
+new estimators are implemented in additional packages using the core packages
+above. There are currently two featured examples of this:</p>
+<ul>
+<li><a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code></a>: Optimal Treatments
+in <code>tlverse</code>
+<ul>
+<li><em>What?</em> Learn an optimal rule and estimate the mean outcome under the rule.</li>
+<li><em>Why?</em> Optimal Treatment is a powerful tool in precision healthcare and
+other settings where a one-size-fits-all treatment approach is not
+appropriate.</li>
+</ul></li>
+<li><a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code></a>: Shift Interventions in
+<code>tlverse</code>
+<ul>
+<li><em>What?</em> Shift interventions for continuous treatments.</li>
+<li><em>Why?</em> Not all treatment variables are discrete. Being able to estimate the
+effects of continuous treatment represents a powerful extension of the
+Targeted Learning approach.</li>
+</ul></li>
+</ul>
+</div>
+<div id="installation" class="section level2">
+<h2><span class="header-section-number">2.4</span> Installation</h2>
+<p>The <code>tlverse</code> ecosystem of packages are currently hosted at
+<a href="https://github.com/tlverse" class="uri">https://github.com/tlverse</a>, not yet on <a href="http://cran.r-project.org/">CRAN</a>. You
+can use the <code>devtools</code> package to install them:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">&quot;devtools&quot;</span>)
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;tlverse/tlverse&quot;</span>)</code></pre>
+<p>The <code>tlverse</code> depends on a large number of other packages that are also hosted
+on GitHub. Because of this, you may see the followig error:</p>
+<pre><code>Error: HTTP error 403.
+  API rate limit exceeded for 71.204.135.82. (But here&#39;s the good news: Authenticated requests get a higher rate limit. Check out the documentation for more details.)
 
+  Rate limit remaining: 0/60
+  Rate limit reset at: 2019-03-04 19:39:05 UTC
+
+  To increase your GitHub API rate limit
+  - Use `usethis::browse_github_pat()` to create a Personal Access Token.
+  - Use `usethis::edit_r_environ()` and add the token as `GITHUB_PAT`.</code></pre>
+<p>This just means that R tried to install too many packages from GitHub in too
+short of a window. To fix this, you need to tell R how to use github as your
+user (you’ll need a GitHub user account). Follow these two steps:</p>
+<ol style="list-style-type: decimal">
+<li>Use <code>usethis::browse_github_pat()</code> to create a Personal Access Token.</li>
+<li>Use <code>usethis::edit_r_environ()</code> and add the token as <code>GITHUB_PAT</code>.</li>
+</ol>
+</div>
+<div id="example-data---wash-benefits" class="section level2">
+<h2><span class="header-section-number">2.5</span> Example Data - WASH Benefits</h2>
+<!-- This will be it's own chapter written by Alan. Including an expert here for now -->
+<p>The data come from the Effect of water quality, sanitation, hand washing, and
+nutritional interventions on child development in rural
+Bangladesh (WASH Benefits Bangladesh):
+a cluster-randomised controlled trial (<span class="citation">(“Temporary,” <a href="#ref-luby2018effects">n.d.</a>)</span>). The study enrolled
+pregnant women in their first or second trimester from rural villages
+of Gazipur, Kishoreganj, Mymensingh, and Tangail districts of central
+Bangladesh, with an average
+of eight women per cluster. Groups of eight geographically adjacent clusters
+were block-randomised, using a random number generator, into six intervention
+groups (all of which received weekly visits from a community health promoter
+for the first 6 months and every 2 weeks for the next 18 months) and a
+double-sized control group (no intervention or health promoter visit). The six
+intervention groups were: chlorinated drinking water; improved sanitation;
+handwashing with soap; combined water, sanitation, and handwashing; improved
+nutrition through counselling and provision of lipid-based nutrient supplements;
+and combined water, sanitation, handwashing, and nutrition. In the workshop, we
+concentrate child-growth (size for age) as the outcome. This trial was
+registered with ClinicalTrials.gov, number NCT01590095.</p>
+
+</div>
+</div>
+<h3>References</h3>
 <div id="refs" class="references">
-<div>
-<p>Baker, Monya. 2016. “Is There a Reproducibility Crisis? A Nature Survey Lifts the Lid on How Researchers View the Crisis Rocking Science and What They Think Will Help.” <em>Nature</em> 533 (7604). Nature Publishing Group: 452–55.</p>
-</div>
-<div>
-<p>Benkeser, David, and Mark J van der Laan. 2016. “The Highly Adaptive Lasso Estimator.” In <em>2016 IEEE International Conference on Data Science and Advanced Analytics (DSAA)</em>. IEEE. <a href="https://doi.org/10.1109/dsaa.2016.93" class="uri">https://doi.org/10.1109/dsaa.2016.93</a>.</p>
-</div>
-<div>
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64.</p>
-</div>
-<div>
-<p>Buckheit, Jonathan B, and David L Donoho. 1995. “Wavelab and Reproducible Research.” In <em>Wavelets and Statistics</em>, 55–81. Springer.</p>
-</div>
-<div>
-<p>Coyle, Jeremy R, and Nima S Hejazi. 2018. “hal9001: The Scalable Highly Adaptive LASSO.” <a href="https://github.com/tlverse/hal9001" class="uri">https://github.com/tlverse/hal9001</a>.</p>
-</div>
-<div>
-<p>Díaz, Iván, and Mark J van der Laan. 2011. “Super Learner Based Conditional Density Estimation with Application to Marginal Structural Models.” <em>The International Journal of Biostatistics</em> 7 (1). De Gruyter: 1–20.</p>
-</div>
-<div>
-<p>———. 2012. “Population Intervention Causal Effects Based on Stochastic Interventions.” <em>Biometrics</em> 68 (2). Wiley Online Library: 541–49.</p>
-</div>
-<div>
-<p>———. 2018. “Stochastic Treatment Regimes.” In <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>, 167–80. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>Haneuse, Sebastian, and Andrea Rotnitzky. 2013. “Estimation of the Effect of Interventions That Modify the Received Treatment.” <em>Statistics in Medicine</em> 32 (30). Wiley Online Library: 5260–77.</p>
-</div>
-<div>
-<p>Hejazi, Nima S. 2019. <em>Haldensify: Nonparametric Conditional Density Estimation with the Highly Adaptive Lasso in R</em>. <a href="https://github.com/nhejazi/haldensify" class="uri">https://github.com/nhejazi/haldensify</a>.</p>
-</div>
-<div>
-<p>Hejazi, Nima S, David C Benkeser, Holly E Janes, Peter B Gilbert, and Mark J van der Laan. n.d. “Generally Efficient Nonparametric Inference Under Two-Phase Sampling, with Applications to Stochastic Interventions.”</p>
-</div>
-<div>
-<p>“How Scientists Fool Themselves – and How They Can Stop.” 2015. <em>Nature</em> 526 (7572). Springer Nature.</p>
-</div>
-<div>
-<p>“Let’s Think About Cognitive Bias.” 2015. <em>Nature</em> 526 (7572). Springer Nature.</p>
-</div>
-<div>
-<p>Luedtke, A., and M. J van der Laan. 2016. “Super-Learning of an Optimal Dynamic Treatment Rule.” <em>International Journal of Biostatistics</em> 12 (1): 305–32.</p>
-</div>
-<div>
-<p>Munafò, Marcus R, Brian A Nosek, Dorothy VM Bishop, Katherine S Button, Christopher D Chambers, Nathalie Percie Du Sert, Uri Simonsohn, Eric-Jan Wagenmakers, Jennifer J Ware, and John PA Ioannidis. 2017. “A Manifesto for Reproducible Science.” <em>Nature Human Behaviour</em> 1 (1). Nature Publishing Group: 0021.</p>
-</div>
-<div>
-<p>Murphy, Susan A. 2003. “Optimal Dynamic Treatment Regimes.” <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 65 (2). Wiley Online Library: 331–55.</p>
-</div>
-<div>
-<p>Nosek, Brian A, Charles R Ebersole, Alexander C DeHaven, and David T Mellor. 2018. “The Preregistration Revolution.” <em>Proceedings of the National Academy of Sciences</em> 115 (11). National Acad Sciences: 2600–2606.</p>
-</div>
-<div>
-<p>Pearl, Judea. 2009. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
-</div>
-<div>
-<p>Peng, Roger. 2015. “The Reproducibility Crisis in Science: A Statistical Counterattack.” <em>Significance</em> 12 (3). Wiley Online Library: 30–32.</p>
-</div>
-<div>
-<p>Pospisil, Taylor, and Ann B Lee. 2018. “RFCDE: Random Forests for Conditional Density Estimation.” <em>arXiv Preprint arXiv:1804.05753</em>.</p>
-</div>
-<div>
-<p>Pullenayegum, Eleanor M, Robert W Platt, Melanie Barwick, Brian M Feldman, Martin Offringa, and Lehana Thabane. 2016. “Knowledge Translation in Biostatistics: A Survey of Current Practices, Preferences, and Barriers to the Dissemination and Uptake of New Statistical Methods.” <em>Statistics in Medicine</em> 35 (6). Wiley Online Library: 805–18.</p>
-</div>
-<div>
-<p>Robins, James M. 2004. “Optimal Structural Nested Models for Optimal Sequential Decisions.” In <em>Proceedings of the Second Seattle Symposium in Biostatistics: Analysis of Correlated Data</em>, edited by D. Y. Lin and P. J. Heagerty, 189–326. New York, NY: Springer New York. <a href="https://doi.org/10.1007/978-1-4419-9076-1_11" class="uri">https://doi.org/10.1007/978-1-4419-9076-1_11</a>.</p>
-</div>
-<div>
-<p>Rubin, Donald B. 1978. “Bayesian Inference for Causal Effects: The Role of Randomization.” <em>The Annals of Statistics</em>. JSTOR, 34–58.</p>
-</div>
-<div>
-<p>———. 1980. “Randomization Analysis of Experimental Data: The Fisher Randomization Test Comment.” <em>Journal of the American Statistical Association</em> 75 (371). JSTOR: 591–93.</p>
-</div>
-<div>
-<p>Stark, Philip B, and Andrea Saltelli. 2018. “Cargo-Cult Statistics and Scientific Crisis.” <em>Significance</em> 15 (4). Wiley Online Library: 40–43.</p>
-</div>
-<div>
-<p>Stromberg, Arnold, and others. 2004. “Why Write Statistical Software? The Case of Robust Statistical Methods.”</p>
-</div>
-<div>
-<p>Sutton, Richard S, Andrew G Barto, and others. 1998. <em>Introduction to Reinforcement Learning</em>. Vol. 135. MIT press Cambridge.</p>
-</div>
-<div>
-<p>Szucs, Denes, and John Ioannidis. 2017. “When Null Hypothesis Significance Testing Is Unsuitable for Research: A Reassessment.” <em>Frontiers in Human Neuroscience</em> 11. Frontiers: 390.</p>
-</div>
-<div>
+<div id="ref-luby2018effects">
 <p>“Temporary.” n.d.</p>
-</div>
-<div>
-<p>“Temporary.” n.d.</p>
-</div>
-<div>
-<p>“Temporary.” n.d.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Sandrine Dudoit. 2003. “Unified Cross-Validation Methodology for Selection Among Estimators and a General Cross-Validated Adaptive Epsilon-Net Estimator: Finite Sample Oracle Inequalities and Examples.” bepress.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1).</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>———. 2018. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Richard JCM Starmans. 2014. “Entering the Era of Data Science: Targeted Learning and the Integration of Statistics and Computational Data Analysis.” <em>Advances in Statistics</em> 2014. Hindawi.</p>
-</div>
-<div>
-<p>van der Laan, M. J, and A. Luedtke. 2015. “Targeted Learning of the Mean Outcome Under an Optimal Dynamic Treatment Rule.” <em>Journal of Causal Inference</em> 3 (1): 61–95.</p>
-</div>
-<div>
-<p>Van der Vaart, Aad W, Sandrine Dudoit, and Mark J van der Laan. 2006. “Oracle Inequalities for Multi-Fold Cross Validation.” <em>Statistics &amp; Decisions</em> 24 (3). Oldenbourg Wissenschaftsverlag: 351–71.</p>
-</div>
-<div>
-<p>Wolpert, David H. 1992. “Stacked Generalization.” <em>Neural Networks</em> 5 (2). Elsevier: 241–59.</p>
-</div>
-<div>
-<p>Young, Jessica G, Miguel A Hernán, and James M Robins. 2014. “Identification, Estimation and Approximation of Risk Under Interventions That Depend on the Natural Value of Treatment Using Observational Data.” <em>Epidemiologic Methods</em> 3 (1). De Gruyter: 1–19.</p>
-</div>
-<div>
-<p>Zheng, W., and M. J van der Laan. 2010. “Asymptotic Theory for Cross-validated Targeted Maximum Likelihood Estimation.” <em>U.C. Berkeley Division of Biostatistics Working Paper Series.</em></p>
-</div>
 </div>
 </div>
             </section>
@@ -443,8 +461,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="stochastic-treatment-regimes.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modern-super-machine-learning-with-sl3.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -474,7 +492,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/tlverse/tlverse-handbook/edit/master/99-references.Rmd",
+"link": "https://github.com/tlverse/tlverse-handbook/edit/master/03-tlverse.Rmd",
 "text": "Edit"
 },
 "history": {
