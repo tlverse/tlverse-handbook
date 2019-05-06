@@ -47,6 +47,10 @@
 
 
 
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.6/visNetwork.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -431,27 +435,169 @@ following steps:</p>
 <span class="kw">library</span>(sl3)
 <span class="kw">library</span>(SuperLearner)
 <span class="kw">library</span>(origami)
+<span class="kw">library</span>(knitr)
 <span class="kw">set.seed</span>(<span class="dv">7194</span>)
 
 <span class="co"># load data set and take a peek</span>
 washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;washb_data.csv&quot;</span>), <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)
-<span class="kw">head</span>(washb_data, <span class="dv">3</span>)</code></pre>
-<pre><code>     whz      tr fracode month aged  sex momage         momedu momheight
-1:  0.00 Control  N05265     9  268 male     30 Primary (1-5y)    146.40
-2: -1.16 Control  N05265     9  286 male     25 Primary (1-5y)    148.75
-3: -1.05 Control  N08002     9  264 male     25 Primary (1-5y)    152.15
-                    hfiacat Nlt18 Ncomp watmin elec floor walls roof
-1:              Food Secure     3    11      0    1     0     1    1
-2: Moderately Food Insecure     2     4      0    1     0     1    1
-3:              Food Secure     1    10      0    0     0     1    1
-   asset_wardrobe asset_table asset_chair asset_khat asset_chouki asset_tv
-1:              0           1           1          1            0        1
-2:              0           1           0          1            1        0
-3:              0           0           1          0            1        0
-   asset_refrig asset_bike asset_moto asset_sewmach asset_mobile
-1:            0          0          0             0            1
-2:            0          0          0             0            1
-3:            0          0          0             0            1</code></pre>
+<span class="kw">head</span>(washb_data, <span class="dv">3</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="1%" />
+<col width="2%" />
+<col width="5%" />
+<col width="3%" />
+<col width="9%" />
+<col width="2%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="2%" />
+<col width="2%" />
+<col width="1%" />
+<col width="5%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="3%" />
+<col width="4%" />
+<col width="4%" />
+<col width="4%" />
+<col width="5%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">whz</th>
+<th align="left">tr</th>
+<th align="left">fracode</th>
+<th align="right">month</th>
+<th align="right">aged</th>
+<th align="left">sex</th>
+<th align="right">momage</th>
+<th align="left">momedu</th>
+<th align="right">momheight</th>
+<th align="left">hfiacat</th>
+<th align="right">Nlt18</th>
+<th align="right">Ncomp</th>
+<th align="right">watmin</th>
+<th align="right">elec</th>
+<th align="right">floor</th>
+<th align="right">walls</th>
+<th align="right">roof</th>
+<th align="right">asset_wardrobe</th>
+<th align="right">asset_table</th>
+<th align="right">asset_chair</th>
+<th align="right">asset_khat</th>
+<th align="right">asset_chouki</th>
+<th align="right">asset_tv</th>
+<th align="right">asset_refrig</th>
+<th align="right">asset_bike</th>
+<th align="right">asset_moto</th>
+<th align="right">asset_sewmach</th>
+<th align="right">asset_mobile</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">0.00</td>
+<td align="left">Control</td>
+<td align="left">N05265</td>
+<td align="right">9</td>
+<td align="right">268</td>
+<td align="left">male</td>
+<td align="right">30</td>
+<td align="left">Primary (1-5y)</td>
+<td align="right">146.40</td>
+<td align="left">Food Secure</td>
+<td align="right">3</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="right">-1.16</td>
+<td align="left">Control</td>
+<td align="left">N05265</td>
+<td align="right">9</td>
+<td align="right">286</td>
+<td align="left">male</td>
+<td align="right">25</td>
+<td align="left">Primary (1-5y)</td>
+<td align="right">148.75</td>
+<td align="left">Moderately Food Insecure</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="right">-1.05</td>
+<td align="left">Control</td>
+<td align="left">N08002</td>
+<td align="right">9</td>
+<td align="right">264</td>
+<td align="left">male</td>
+<td align="right">25</td>
+<td align="left">Primary (1-5y)</td>
+<td align="right">152.15</td>
+<td align="left">Food Secure</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
 <p><strong>1. Define the machine learning task</strong></p>
 <p>To define the machine learning <strong>“task”</strong> (predict weight-for-height z-score
 <code>whz</code> using the available covariate data), we need to create an <code>sl3_Task</code>
@@ -574,9 +720,9 @@ cross-validated risk.</p>
 values, and we can also obtain a summary of the results.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sl_preds &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">predict</span>()
 <span class="kw">head</span>(sl_preds)</code></pre>
-<pre><code>[1] -0.4809031 -0.9063907 -0.7586360 -0.8081527 -0.6453236 -0.7170514</code></pre>
+<pre><code>[1] -0.4853747 -0.9142497 -0.7937170 -0.8065230 -0.6591488 -0.7048947</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">sl_fit<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 <pre><code>[1] &quot;SuperLearner:&quot;
 List of 4
  $ : chr &quot;Lrnr_glm_TRUE&quot;
@@ -585,23 +731,23 @@ List of 4
  $ : chr &quot;Lrnr_glmnet_NULL_deviance_10_1_100_TRUE&quot;
 [1] &quot;Lrnr_nnls&quot;
                                      lrnrs   weights
-1:                           Lrnr_glm_TRUE 0.1434794
+1:                           Lrnr_glm_TRUE 0.1408596
 2:                               Lrnr_mean 0.0000000
-3:                    Lrnr_ranger_500_TRUE 0.5080306
-4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE 0.3564469
+3:                    Lrnr_ranger_500_TRUE 0.5341937
+4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE 0.3313667
 [1] &quot;Cross-validated risk (MSE, squared error loss):&quot;
                                    learner coefficients mean_risk    SE_risk
 1:                           Lrnr_glm_TRUE           NA  1.018612 0.02380402
 2:                               Lrnr_mean           NA  1.065282 0.02502664
-3:                    Lrnr_ranger_500_TRUE           NA  1.011545 0.02335158
-4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE           NA  1.012373 0.02359790
-5:                            SuperLearner           NA  1.006157 0.02336433
+3:                    Lrnr_ranger_500_TRUE           NA  1.010837 0.02343648
+4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE           NA  1.012672 0.02360018
+5:                            SuperLearner           NA  1.006015 0.02340582
       fold_SD fold_min_risk fold_max_risk
 1: 0.07799191     0.8956048      1.134940
 2: 0.09191791     0.9264292      1.196647
-3: 0.08606345     0.8676055      1.151924
-4: 0.07949658     0.8826979      1.130236
-5: 0.08250449     0.8692515      1.136087</code></pre>
+3: 0.08484930     0.8719906      1.150575
+4: 0.07917019     0.8827155      1.130114
+5: 0.08175782     0.8716275      1.135812</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -636,16 +782,16 @@ List of 4
 <tr class="odd">
 <td align="left">Lrnr_ranger_500_TRUE</td>
 <td align="right">NA</td>
-<td align="right">1.012</td>
+<td align="right">1.011</td>
 <td align="right">0.023</td>
-<td align="right">0.086</td>
-<td align="right">0.868</td>
-<td align="right">1.152</td>
+<td align="right">0.085</td>
+<td align="right">0.872</td>
+<td align="right">1.151</td>
 </tr>
 <tr class="even">
 <td align="left">Lrnr_glmnet_NULL_deviance_10_1_100_TRUE</td>
 <td align="right">NA</td>
-<td align="right">1.012</td>
+<td align="right">1.013</td>
 <td align="right">0.024</td>
 <td align="right">0.079</td>
 <td align="right">0.883</td>
@@ -656,8 +802,8 @@ List of 4
 <td align="right">NA</td>
 <td align="right">1.006</td>
 <td align="right">0.023</td>
-<td align="right">0.083</td>
-<td align="right">0.869</td>
+<td align="right">0.082</td>
+<td align="right">0.872</td>
 <td align="right">1.136</td>
 </tr>
 </tbody>
@@ -716,14 +862,17 @@ them as base learners in our super learner, analogous to what we have seen
 before. Now however, our learners will be preceded by a screening step. Let’s
 also consider the <code>new_stack</code>, just to compare how the feature selection methods
 perform in comparison to the methods without feature selection.</p>
-<pre class="sourceCode r"><code class="sourceCode r">fancy_stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, cor_pipeline, rf_pipeline, new_stack)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">fancy_stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, cor_pipeline, rf_pipeline, new_stack)
+dt &lt;-<span class="st"> </span><span class="kw">delayed_learner_train</span>(fancy_stack, washb_task)
+<span class="kw">plot</span>(dt, <span class="dt">color =</span> <span class="ot">FALSE</span>, <span class="dt">height =</span> <span class="st">&quot;300px&quot;</span>)</code></pre>
+<div id="htmlwidget-1a4f9189295480f05f49" style="width:100%;height:300px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1a4f9189295480f05f49">{"x":{"nodes":{"id":["98a29cf0-7045-11e9-af85-42010a140559","98a28512-7045-11e9-af85-42010a140559","989fd92a-7045-11e9-af85-42010a140559","989fc02a-7045-11e9-af85-42010a140559","989e02bc-7045-11e9-af85-42010a140559","989f8ad8-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989e681a-7045-11e9-af85-42010a140559","989e91dc-7045-11e9-af85-42010a140559","989eba4a-7045-11e9-af85-42010a140559","989ee22c-7045-11e9-af85-42010a140559","989f0824-7045-11e9-af85-42010a140559","989f246c-7045-11e9-af85-42010a140559","989f3f06-7045-11e9-af85-42010a140559","989f57a2-7045-11e9-af85-42010a140559","98a16bb4-7045-11e9-af85-42010a140559","98a1521e-7045-11e9-af85-42010a140559","989ffa40-7045-11e9-af85-42010a140559","98a12172-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a02ed4-7045-11e9-af85-42010a140559","98a04ca2-7045-11e9-af85-42010a140559","98a066c4-7045-11e9-af85-42010a140559","98a0828a-7045-11e9-af85-42010a140559","98a09c7a-7045-11e9-af85-42010a140559","98a0b76e-7045-11e9-af85-42010a140559","98a0d21c-7045-11e9-af85-42010a140559","98a0ecd4-7045-11e9-af85-42010a140559","98a26ca8-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a18c2a-7045-11e9-af85-42010a140559","98a1a412-7045-11e9-af85-42010a140559","98a1bca4-7045-11e9-af85-42010a140559","98a1d4b4-7045-11e9-af85-42010a140559","98a1ec60-7045-11e9-af85-42010a140559","98a2072c-7045-11e9-af85-42010a140559","98a221da-7045-11e9-af85-42010a140559","98a23b0c-7045-11e9-af85-42010a140559"],"label":["Stack","bundle","Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP->Stack)","bundle","Lrnr_pkg_SuperLearner_screener_screen.corP","Stack","chain","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_1000_TRUE","Lrnr_ranger_100_TRUE","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm","Pipeline(Lrnr_pkg_SuperLearner_screener_screen.randomForest->Stack)","bundle","Lrnr_pkg_SuperLearner_screener_screen.randomForest","Stack","chain","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_1000_TRUE","Lrnr_ranger_100_TRUE","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_1000_TRUE","Lrnr_ranger_100_TRUE","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm"],"level":[1,2,3,4,9,5,8,6,7,7,7,7,7,7,7,7,3,4,9,5,8,6,7,7,7,7,7,7,7,7,3,4,5,5,5,5,5,5,5,5],"sequential":[true,true,true,true,false,true,true,true,false,false,false,false,false,false,false,false,true,true,false,true,true,true,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false],"state":["waiting","waiting","waiting","waiting","ready","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","ready","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","ready","ready","ready","ready","ready","ready","ready","ready"],"group":["none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none"]},"edges":{"from":["989e02bc-7045-11e9-af85-42010a140559","989e02bc-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989e681a-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989e91dc-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989eba4a-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989ee22c-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f0824-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f246c-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f3f06-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f57a2-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f8ad8-7045-11e9-af85-42010a140559","989fc02a-7045-11e9-af85-42010a140559","989fd92a-7045-11e9-af85-42010a140559","989ffa40-7045-11e9-af85-42010a140559","989ffa40-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a02ed4-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a04ca2-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a066c4-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a0828a-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a09c7a-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a0b76e-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a0d21c-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a0ecd4-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a12172-7045-11e9-af85-42010a140559","98a1521e-7045-11e9-af85-42010a140559","98a16bb4-7045-11e9-af85-42010a140559","98a18c2a-7045-11e9-af85-42010a140559","98a1a412-7045-11e9-af85-42010a140559","98a1bca4-7045-11e9-af85-42010a140559","98a1d4b4-7045-11e9-af85-42010a140559","98a1ec60-7045-11e9-af85-42010a140559","98a2072c-7045-11e9-af85-42010a140559","98a221da-7045-11e9-af85-42010a140559","98a23b0c-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a26ca8-7045-11e9-af85-42010a140559","98a28512-7045-11e9-af85-42010a140559"],"to":["989fc02a-7045-11e9-af85-42010a140559","989e394e-7045-11e9-af85-42010a140559","989f8ad8-7045-11e9-af85-42010a140559","989e681a-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989e91dc-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989eba4a-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989ee22c-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f0824-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f246c-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f3f06-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f57a2-7045-11e9-af85-42010a140559","989f70ac-7045-11e9-af85-42010a140559","989f8ad8-7045-11e9-af85-42010a140559","989fc02a-7045-11e9-af85-42010a140559","989fd92a-7045-11e9-af85-42010a140559","98a28512-7045-11e9-af85-42010a140559","98a1521e-7045-11e9-af85-42010a140559","98a0125a-7045-11e9-af85-42010a140559","98a12172-7045-11e9-af85-42010a140559","98a02ed4-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a04ca2-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a066c4-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a0828a-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a09c7a-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a0b76e-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a0d21c-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a0ecd4-7045-11e9-af85-42010a140559","98a1062e-7045-11e9-af85-42010a140559","98a12172-7045-11e9-af85-42010a140559","98a1521e-7045-11e9-af85-42010a140559","98a16bb4-7045-11e9-af85-42010a140559","98a28512-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a25376-7045-11e9-af85-42010a140559","98a26ca8-7045-11e9-af85-42010a140559","98a28512-7045-11e9-af85-42010a140559","98a29cf0-7045-11e9-af85-42010a140559"],"label":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"300px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <p>Now we can Super Learn with this fancy base learner stack.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># run sl and predict on WASH</span>
 sl_fancy &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(<span class="dt">learners =</span> fancy_stack, <span class="dt">metalearner =</span> metalearner)
-sl_fancy_fit &lt;-<span class="st"> </span>sl_fancy<span class="op">$</span><span class="kw">train</span>(washb_task)
-sl_preds &lt;-<span class="st"> </span>sl_fancy_fit<span class="op">$</span><span class="kw">predict</span>()
-sl_fancy_fit<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+sl_fancy_feast &lt;-<span class="st"> </span>sl_fancy<span class="op">$</span><span class="kw">train</span>(washb_task)
+sl_fancy_feast<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 </div>
 <div id="cross-validated-super-learner" class="section level3">
 <h3><span class="header-section-number">3.4.3</span> Cross-validated Super Learner</h3>
@@ -735,7 +884,7 @@ cross-validation procedure may also incorporate 10 folds, which is the default
 in <code>sl3</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">CVsl_fancy &lt;-<span class="st"> </span><span class="kw">CV_lrnr_sl</span>(sl_fit, washb_task, loss_squared_error)
 CVsl_fancy <span class="op">%&gt;%</span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 </div>
 </div>
 <div id="variable-importance" class="section level2">
@@ -749,7 +898,7 @@ difference, the more important the variable is in the prediction. Let’s explor
 the <code>sl3</code> variable importance measurements for the <code>washb</code> data.</p>
 <pre class="sourceCode r"><code class="sourceCode r">washb_varimp &lt;-<span class="st"> </span><span class="kw">varimp</span>(sl_fit, loss_squared_error)
 washb_varimp <span class="op">%&gt;%</span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -760,119 +909,119 @@ washb_varimp <span class="op">%&gt;%</span>
 <tbody>
 <tr class="odd">
 <td align="left">aged</td>
-<td align="right">0.485</td>
+<td align="right">0.505</td>
 </tr>
 <tr class="even">
 <td align="left">momedu</td>
-<td align="right">0.459</td>
-</tr>
-<tr class="odd">
-<td align="left">tr</td>
-<td align="right">0.453</td>
-</tr>
-<tr class="even">
-<td align="left">month</td>
-<td align="right">0.452</td>
+<td align="right">0.478</td>
 </tr>
 <tr class="odd">
 <td align="left">momheight</td>
-<td align="right">0.452</td>
+<td align="right">0.472</td>
 </tr>
 <tr class="even">
-<td align="left">asset_refrig</td>
-<td align="right">0.451</td>
+<td align="left">month</td>
+<td align="right">0.472</td>
 </tr>
 <tr class="odd">
-<td align="left">Nlt18</td>
-<td align="right">0.451</td>
+<td align="left">tr</td>
+<td align="right">0.471</td>
 </tr>
 <tr class="even">
 <td align="left">asset_chair</td>
-<td align="right">0.450</td>
+<td align="right">0.470</td>
 </tr>
 <tr class="odd">
-<td align="left">fracode</td>
-<td align="right">0.449</td>
+<td align="left">asset_refrig</td>
+<td align="right">0.470</td>
 </tr>
 <tr class="even">
+<td align="left">Nlt18</td>
+<td align="right">0.469</td>
+</tr>
+<tr class="odd">
 <td align="left">elec</td>
-<td align="right">0.449</td>
-</tr>
-<tr class="odd">
-<td align="left">asset_chouki</td>
-<td align="right">0.448</td>
-</tr>
-<tr class="even">
-<td align="left">asset_wardrobe</td>
-<td align="right">0.448</td>
-</tr>
-<tr class="odd">
-<td align="left">momage</td>
-<td align="right">0.448</td>
+<td align="right">0.468</td>
 </tr>
 <tr class="even">
 <td align="left">hfiacat</td>
-<td align="right">0.448</td>
+<td align="right">0.468</td>
 </tr>
 <tr class="odd">
-<td align="left">asset_moto</td>
-<td align="right">0.448</td>
+<td align="left">asset_wardrobe</td>
+<td align="right">0.467</td>
 </tr>
 <tr class="even">
 <td align="left">walls</td>
-<td align="right">0.447</td>
+<td align="right">0.467</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_chouki</td>
+<td align="right">0.467</td>
+</tr>
+<tr class="even">
+<td align="left">momage</td>
+<td align="right">0.467</td>
+</tr>
+<tr class="odd">
+<td align="left">fracode</td>
+<td align="right">0.467</td>
+</tr>
+<tr class="even">
+<td align="left">asset_moto</td>
+<td align="right">0.467</td>
 </tr>
 <tr class="odd">
 <td align="left">asset_tv</td>
-<td align="right">0.447</td>
+<td align="right">0.467</td>
 </tr>
 <tr class="even">
 <td align="left">asset_bike</td>
-<td align="right">0.447</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="odd">
+<td align="left">asset_khat</td>
+<td align="right">0.466</td>
+</tr>
+<tr class="even">
 <td align="left">sex</td>
-<td align="right">0.447</td>
-</tr>
-<tr class="even">
-<td align="left">asset_sewmach</td>
-<td align="right">0.447</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="odd">
-<td align="left">floor</td>
-<td align="right">0.447</td>
+<td align="left">asset_sewmach</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="even">
-<td align="left">asset_mobile</td>
-<td align="right">0.447</td>
+<td align="left">asset_table</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="odd">
 <td align="left">delta_momage</td>
-<td align="right">0.447</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="even">
+<td align="left">floor</td>
+<td align="right">0.466</td>
+</tr>
+<tr class="odd">
 <td align="left">roof</td>
-<td align="right">0.446</td>
-</tr>
-<tr class="odd">
-<td align="left">asset_table</td>
-<td align="right">0.446</td>
-</tr>
-<tr class="even">
-<td align="left">asset_khat</td>
-<td align="right">0.446</td>
-</tr>
-<tr class="odd">
-<td align="left">delta_momheight</td>
-<td align="right">0.446</td>
+<td align="right">0.466</td>
 </tr>
 <tr class="even">
 <td align="left">watmin</td>
-<td align="right">0.446</td>
+<td align="right">0.466</td>
+</tr>
+<tr class="odd">
+<td align="left">delta_momheight</td>
+<td align="right">0.466</td>
+</tr>
+<tr class="even">
+<td align="left">asset_mobile</td>
+<td align="right">0.465</td>
 </tr>
 <tr class="odd">
 <td align="left">Ncomp</td>
-<td align="right">0.445</td>
+<td align="right">0.465</td>
 </tr>
 </tbody>
 </table>
@@ -895,17 +1044,164 @@ cols(
 )</code></pre>
 <pre><code>See spec(...) for full column specifications.</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># take a quick peek</span>
-<span class="kw">head</span>(chspred, <span class="dv">3</span>)</code></pre>
-<pre><code># A tibble: 3 x 28
-  waist alcoh   hdl  beta smoke   ace   ldl   bmi aspirin  gend   age estrgn
-  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-1 110.   0     66.5     0     0     1  114.  28.0       0     0  73.5      0
-2  90.0  0     50.1     0     0     0  104.  20.9       0     0  61.8      0
-3 106.   8.42  40.5     0     0     0  166.  28.5       1     1  72.9      0
-# … with 16 more variables: glu &lt;dbl&gt;, ins &lt;dbl&gt;, cysgfr &lt;dbl&gt;, dm &lt;dbl&gt;,
-#   fetuina &lt;dbl&gt;, whr &lt;dbl&gt;, hsed &lt;dbl&gt;, race &lt;dbl&gt;, logcystat &lt;dbl&gt;,
-#   logtrig &lt;dbl&gt;, logcrp &lt;dbl&gt;, logcre &lt;dbl&gt;, health &lt;dbl&gt;, logkcal &lt;dbl&gt;,
-#   sysbp &lt;dbl&gt;, mi &lt;dbl&gt;</code></pre>
+<span class="kw">head</span>(chspred, <span class="dv">3</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<table style="width:100%;">
+<colgroup>
+<col width="4%" />
+<col width="3%" />
+<col width="3%" />
+<col width="2%" />
+<col width="3%" />
+<col width="2%" />
+<col width="4%" />
+<col width="3%" />
+<col width="4%" />
+<col width="2%" />
+<col width="3%" />
+<col width="3%" />
+<col width="4%" />
+<col width="4%" />
+<col width="3%" />
+<col width="1%" />
+<col width="4%" />
+<col width="3%" />
+<col width="2%" />
+<col width="2%" />
+<col width="5%" />
+<col width="4%" />
+<col width="3%" />
+<col width="3%" />
+<col width="3%" />
+<col width="4%" />
+<col width="4%" />
+<col width="1%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">waist</th>
+<th align="right">alcoh</th>
+<th align="right">hdl</th>
+<th align="right">beta</th>
+<th align="right">smoke</th>
+<th align="right">ace</th>
+<th align="right">ldl</th>
+<th align="right">bmi</th>
+<th align="right">aspirin</th>
+<th align="right">gend</th>
+<th align="right">age</th>
+<th align="right">estrgn</th>
+<th align="right">glu</th>
+<th align="right">ins</th>
+<th align="right">cysgfr</th>
+<th align="right">dm</th>
+<th align="right">fetuina</th>
+<th align="right">whr</th>
+<th align="right">hsed</th>
+<th align="right">race</th>
+<th align="right">logcystat</th>
+<th align="right">logtrig</th>
+<th align="right">logcrp</th>
+<th align="right">logcre</th>
+<th align="right">health</th>
+<th align="right">logkcal</th>
+<th align="right">sysbp</th>
+<th align="right">mi</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">110.164</td>
+<td align="right">0.000</td>
+<td align="right">66.497</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">114.216</td>
+<td align="right">27.997</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">73.518</td>
+<td align="right">0</td>
+<td align="right">159.931</td>
+<td align="right">70.334</td>
+<td align="right">75.008</td>
+<td align="right">1</td>
+<td align="right">0.175</td>
+<td align="right">1.169</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">-0.342</td>
+<td align="right">5.406</td>
+<td align="right">2.013</td>
+<td align="right">-0.674</td>
+<td align="right">0</td>
+<td align="right">4.393</td>
+<td align="right">177.135</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">89.976</td>
+<td align="right">0.000</td>
+<td align="right">50.065</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">103.777</td>
+<td align="right">20.893</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">61.772</td>
+<td align="right">0</td>
+<td align="right">153.389</td>
+<td align="right">33.969</td>
+<td align="right">82.743</td>
+<td align="right">1</td>
+<td align="right">0.572</td>
+<td align="right">0.901</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">-0.085</td>
+<td align="right">4.859</td>
+<td align="right">3.293</td>
+<td align="right">-0.555</td>
+<td align="right">1</td>
+<td align="right">6.207</td>
+<td align="right">136.374</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="right">106.194</td>
+<td align="right">8.417</td>
+<td align="right">40.506</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">165.716</td>
+<td align="right">28.455</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">72.931</td>
+<td align="right">0</td>
+<td align="right">121.715</td>
+<td align="right">-17.302</td>
+<td align="right">74.699</td>
+<td align="right">0</td>
+<td align="right">0.352</td>
+<td align="right">1.180</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-0.445</td>
+<td align="right">4.509</td>
+<td align="right">0.301</td>
+<td align="right">-0.012</td>
+<td align="right">0</td>
+<td align="right">6.732</td>
+<td align="right">135.199</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
 <ol style="list-style-type: decimal">
 <li>Create an <code>sl3</code> task, setting myocardial infarction <code>mi</code> as the outcome and
 using all available covariate data.</li>
@@ -1013,7 +1309,7 @@ sl &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw
 )
 sl_fit &lt;-<span class="st"> </span>sl<span class="op">$</span><span class="kw">train</span>(task)
 sl_fit<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span>knitr<span class="op">::</span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">format =</span> <span class="st">&quot;markdown&quot;</span>, <span class="dt">digits =</span> <span class="dv">3</span>)</code></pre>
 <!--
 
 ### Super learning of a conditional density
