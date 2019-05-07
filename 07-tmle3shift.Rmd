@@ -448,16 +448,16 @@ stochastic intervention policies in an _a priori_ manner, let us consider an
 arbitrary scalar $\delta$ that defines a counterfactual outcome $\psi_n =
 Q_n(d(A, W), W)$, where, for simplicity, let $d(A, W) = A + \delta$. A
 simplified expression of the auxiliary covariate for the TMLE of $\psi$ is
-$H_n = \frac{g^*(a \mid w)}{g(a \mid w)}$, where $g^*(a \mid w)$ defines the
-treatment mechanism with the stochastic intervention implemented. Then, to
-ascertain whether a given choice of the shift $\delta$ is admissable (in the
-sense of avoiding violations of the positivity assumption), let there be a bound
-$C(\delta) = \frac{g^*(a \mid w)}{g(a \mid w)} < M$, where $g^*(a \mid w)$ is a
-function of $\delta$ in part, and $M$ is a potentially user-specified upper
-bound of $C(\delta)$. Then, $C(\delta)$ is a measure of the influence of a given
-observation (under a bound of the conditional densities), which provides a way
-to limit the maximum influence of a given observation through a choice of the
-shift $\delta$.
+$H_n = \frac{g^{\star}(a \mid w)}{g(a \mid w)}$, where $g^{\star}(a \mid w)$
+defines the treatment mechanism with the stochastic intervention implemented.
+Then, to ascertain whether a given choice of the shift $\delta$ is admissable
+(in the sense of avoiding violations of the positivity assumption), let there
+be a bound $C(\delta) = \frac{g^{\star}(a \mid w)}{g(a \mid w)} < M$, where
+$g^{\star}(a \mid w)$ is a function of $\delta$ in part, and $M$ is a potentially
+user-specified upper bound of $C(\delta)$. Then, $C(\delta)$ is a measure of
+the influence of a given observation, thereby providing a way to limit the
+maximum influence of a given observation (by way of the bound $M$ placed on
+$C(\delta)$) through a choice of the shift $\delta$.
 
 We formalize and extend the procedure to determine an acceptable set of values
 for the shift $\delta$ in the sequel. Specifically, let there be a shift $d(A,
@@ -479,9 +479,27 @@ $$\delta_{\text{min}}(a, w) = \text{argmin}_{\left\{\delta \leq 0,
 \mid w)}{g(a \mid w)}.$$
 
 The above provides a strategy for implementing a shift at the level of a given
-observation $(a_i, w_i)$, thereby allowing for all observations to be shifted to
-an appropriate value -- whether $\delta_{\text{min}}$, $\delta$, or
+observation $(a_i, w_i)$, thereby allowing for all observations to be shifted
+to an appropriate value -- whether $\delta_{\text{min}}$, $\delta$, or
 $\delta_{\text{max}}$.
+
+For the purpose of using such a shift in practice, the present software
+provides the functions `shift_additive_bounded` and
+`shift_additive_bounded_inv`, which define a variation of this shift:
+\begin{equation}
+  \delta(a, w) =
+    \begin{cases}
+      \delta, & C(\delta) \leq M \\
+      0, \text{otherwise} \\
+    \end{cases},
+\end{equation}
+which corresponds to an intervention in which the natural value of treatment
+of a given observational unit is shifted by a value $\delta$ in the case that
+the ratio of the intervened density $g^{\star}(a \mid w)$ to the natural
+density $g(a \mid w)$ (that is, $C(\delta)$) does not exceed a bound $M$. In
+the case that the ratio $C(\delta)$ exceeds the bound $M$, the stochastic
+intervention policy does not apply to the given unit and they remain at their
+natural value of treatment $a$.
 
 ### Initializing `vimshift` through its `tmle3_Spec`
 
@@ -530,18 +548,17 @@ displays the results from computing our TML estimator.
 
 ### Inference with Marginal Structural Models
 
-In the directly preceding section, we consider estimating the mean
-counterfactual outcome $\psi_n$ under several values of the intervention
-$\delta$, taken from the aforementioned $\delta$-grid. We now turn our attention
-to an approach for obtaining inference on a single summary measure of these
-estimated quantities. In particular, we propose summarizing the estimates
-$\psi_n$ through a marginal structural model (MSM), obtaining inference by way
-of a hypothesis test on a parameter of this working MSM. For a data structure
-$O = (W, A, Y)$, let $\psi_{\delta}(P_0)$ be the mean outcome under a shift
-$\delta$ of the treatment, so that we have $\vec{\psi}_{\delta} =
-(\psi_{\delta}: \delta)$ with corresponding estimators $\vec{\psi}_{n, \delta}
-= (\psi_{n, \delta}: \delta)$. Further, let $\beta(\vec{\psi}_{\delta}) =
-\phi((\psi_{\delta}: \delta))$.
+Since we consider estimating the mean counterfactual outcome $\psi_n$ under
+several values of the intervention $\delta$, taken from the aforementioned
+$\delta$-grid, one approach for obtaining inference on a single summary measure
+of these estimated quantities involves leveraging working marginal structural
+models (MSMs). Summarizing the estimates $\psi_n$ through a working MSM allows
+for inference on the _trend_ imposed by a $\delta$-grid to be evaluated via a
+simple hypothesis test on a parameter of this working MSM. Letting
+$\psi_{\delta}(P_0)$ be the mean outcome under a shift $\delta$ of the
+treatment, we have $\vec{\psi}_{\delta} = (\psi_{\delta}: \delta)$ with
+corresponding estimators $\vec{\psi}_{n, \delta} = (\psi_{n, \delta}: \delta)$.
+Further, let $\beta(\vec{\psi}_{\delta}) = \phi((\psi_{\delta}: \delta))$.
 
 For a given MSM $m_{\beta}(\delta)$, we have that
 $$\beta_0 = \text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) -
@@ -573,34 +590,23 @@ where $\text{EIF}_{\psi_{\delta}}$ is the efficient influence function (EIF) of
 $\vec{\psi}$.
 
 Now, say, $\vec{\psi} = (\psi(\delta): \delta)$ is d-dimensional, then we may
-write the efficient influence function of the MSM parameter $\beta$ (assuming a
-linear MSM) as follows
+write the efficient influence function of the MSM parameter $\beta$ as follows
 $$\text{EIF}_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
 m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
 \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
 \text{EIF}_{\psi_{\delta}}(O),$$ where the first term is of dimension
-$d \times d$ and the second term is of dimension $d \times 1$.
+$d \times d$ and the second term is of dimension $d \times 1$. In the above, we
+assume a linear working MSM; however, an analogous procedure may be applied for
+working MSMs based on GLMs.
 
-In an effort to generalize still further, consider the case where
-$\psi_{\delta}(P_0) \in (0, 1)$ -- that is, $\psi_{\delta}(P_0)$ corresponds
-to the probability of some event of interest. In such a case, it would be more
-natural to consider a logistic MSM
-$$m_{\beta}(\delta) = \frac{1}{1 + \exp(-f_{\beta}(\delta))},$$
-where $f_{\beta}$ is taken to be linear in $\beta$ (e.g.,
-$f_{\beta} = \beta_0 + \beta_1 \delta + \ldots$). In such a case, we have the
-parameter of interest
-$$\beta_0 = \text{argmax}_{\beta} \sum_{\delta} \left(\psi_{\delta}(P_0)
-\text{log} m_{\beta}(\delta) + (1 - \psi_{\delta}(P_0))\log(1 -
-m_{\beta}(\delta))\right)h(\delta),$$
-where $\beta_0$ solves the following
-$$
-\sum_{\delta} h(\delta) \frac{d}{d\beta} f_{\beta}(\delta) (\psi_{\delta}(P_0)
-- m_{\beta}(\delta)) = 0.$$
-
-Inference from a working MSM is rather straightforward. To wit, the limiting
-distribution for $m_{\beta}(\delta)$ may be expressed
-$$\sqrt{n}(\beta_n - \beta_0) \to N(0, \Sigma),$$
-where $\Sigma$ is the empirical covariance matrix of $\text{EIF}_{\beta}(O)$.
+Inference for a parameter of an MSM may be obtained by straightforward
+application of the delta method (discussed previously) -- that is, we may
+write the efficient influence function of the MSM parameter $\beta$ in terms of
+the EIFs of each of the corresponding point estimates. Based on this, inference
+from a working MSM is rather straightforward. To wit, the limiting distribution
+for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
+\Sigma),$$ where $\Sigma$ is the empirical covariance matrix of
+$\text{EIF}_{\beta}(O)$.
 
 ```{r msm_fit, message=FALSE, warning=FALSE}
 tmle_fit$summary[4:5, ]
