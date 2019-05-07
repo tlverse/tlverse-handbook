@@ -72,46 +72,47 @@ $\sigma^2$. More formally, a parametric model may be defined
   \mathcal{M} = \{P_{\theta} : \theta \in \mathcal{R}^d \}
 \end{equation*}
 
-Sadly, it is all-too-common to assume the data-generating distributions have
-specific forms when such a statement is a leap of faith. This lack of truth
-in the current culture of analysis typically trumps any attempt at trying to
-answer the scientific question at hand; alas, such statements as the
-ever-popular quip of Box that "All models are wrong but some are useful,"
-encourage the data analyst to make arbitrary choices even when differences in
-these choices may drive differences in the resultant answers to the same
-estimation problem. The Targeted Learning methodology does not suffer from this
-bias since it defines the statistical model as a representation for the true
-data-generating distribution that produced the observed data.
+Sadly, the assumption that the data-generating distribution has a specific,
+parametric forms is all-too-common, even when such is a leap of faith. This
+practice of oversimplification in the current culture of data analysis typically
+derails any attempt at trying to answer the scientific question at hand; alas,
+such statements as the ever-popular quip of Box that "All models are wrong but
+some are useful," encourage the data analyst to make arbitrary choices even when
+that often force significant differences in answers to the same estimation
+problem. The Targeted Learning paradigm does not suffer from this bias since it
+defines the statistical model through a representation of the true
+data-generating distribution corresponding to the observed data.
 
-Our next question becomes, *``What are we trying to learn from the data?"*
-This brings us to Step 3.
+Now, on to Step 3: *``What are we trying to learn from the data?"*
 
 ### (3) The statistical target parameter, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$ {#step3}
 
-<!--
-Nima's edits paused here. 06 May 2019.
--->
+The statistical target parameter, $\Psi$, is defined as a mapping from the
+statistical model, $\mathcal{M}$, to the parameter space (i.e., a real number)
+$\mathcal{R}$. The target parameter may be seen as a representation of the
+quantity that we wish to learn from the data, the answer to a well-specified
+(often causal) question of interest. In contrast to purely statistical target
+parameters, causal target parameters require _identification from the observed
+data_, based on causal models that include several untestable assumptions (see
+the appendix of this chapter for further details).
 
-The statistical target parameter, $\Psi$ is defined as a mapping from the
-statistical model, $\mathcal{M}$ to the parameter space (i.e., a number),
-$\mathcal{R}$. It is defined by the query mentioned at the end of Step 2. Target
-parameters of interest represent questions, which are often causal.
-Causal target parameters require identifiability, and causal models (see
-appendix of this chapter for more detail).
+For a simple example, consider a data set which contains observations of a
+survival time on every subject, for which our question of interest is "What's
+the probability that someone lives longer than five years?" We have,
+\begin{equation*}
+  \Psi(P_0) = P_0(O > 5)
+\end{equation*}
 
-For example, say we observe a survival time on every subject and our question
-of interest is "What's the probability that someone lives longer than five
-years?" We have,
-
-$$\Psi(P_0) = P_0(O > 5)$$
-
-This answer to this question brings us to Step 4.
+This answer to this question brings us next to Step 4.
 
 ### (4) The estimand, $\Psi(P_0)$ {#step4}
+<!--
+This still needs some work --Nima
+-->
 
-The answer to the query asked in Step 3. This estimand is quantity we're really
-trying to learn. Once we have defined $O$, $\mathcal{M}$ and $\Psi(P_0)$ we have
-formally defined the statistical estimation problem.
+The estimand is the quantity we're really trying to learn. Once we have defined
+$O$, $\mathcal{M}$ and $\Psi(P_0)$ we have formally defined the statistical
+estimation problem.
 
 After formally defining the statistical estimation problem, we use the data to
 estimate the estimand and hopefully the estimator has good statistical
@@ -122,26 +123,32 @@ estimators.
 
 ### (5) The estimator, $\hat{\Psi} : \mathcal{M}_{NP} \rightarrow \mathbb{R}^d$ {#step5}
 
-To come up with a good estimand we need an estimator, an a-priori specified
-algorithm defined as a mapping from the set of possible empirical distributions,
-$P_n$, which live in a non-parametric statistical model, $\mathcal{M}_{NP}$
-($P_n \in \mathcal{M}_{NP}$), to the parameter space for our parameter of
-interest. It is a function that takes as input the observed data, a realization
-of $P_n$, and gives as output a value in the parameter space.
+To obtain a good approximation of the estimand, we need an estimator, an _a
+priori_-specified algorithm defined as a mapping from the set of possible
+empirical distributions, $P_n$, which live in a non-parametric statistical
+model, $\mathcal{M}_{NP}$ ($P_n \in \mathcal{M}_{NP}$), to the parameter space
+of the parameter of interest. The estimator is a function that takes as input
+the observed data, a realization of $P_n$, and gives as output a value in the
+parameter space.
 
 ### (6) The estimate, $\hat{\Psi}(P_n)$ {#step6}
 
-The output mentioned at the end of Step 5 is defined as the estimate. It is a
-function of the empirical probability distribution of the data that is an
-element of the parameter space. If we plug in a realization of $P_n$ (based on
-a sample size $n$ of the random variable $O$), we get back an estimate
-$\hat{\Psi}(P_n)$ of the true parameter value $\Psi(P_0)$.\\
+Where the estimator may be seen as an operator that map the observed data and
+corresponding empirical distribution to a value in the parameter space, the
+numerical output produced such a function is the estimate. Thus, it is an
+element of the parameter space based on the empirical probability distribution
+of the observed data. If we plug in a realization of $P_n$ (based on a sample
+size $n$ of the random variable $O$), we get back an estimate $\hat{\Psi}(P_n)$
+of the true parameter value $\Psi(P_0)$.
 
-In order to have any hope of coming up with the quantification of the
-uncertainty (i.e. statistical inference), we need to understand the sampling
-distribution of our estimator. This brings us to step 7.
+In order to quantify the uncertainty in our estimate of the target parameter
+(i.e., to construct statistical inference), an understanding of the sampling
+distribution of our estimator will be necessary. This brings us to Step 7.
 
 ### (7) Sampling distribution of $\hat{\Psi}(P_n)$ {#step7}
+<!--
+This still needs some work --Nima
+-->
 
 The sampling distribution of $\hat{\Psi}(P_n)$ says that the estimator itself
 is a random variable. So, if we repeat the experiment of drawing $n$
@@ -152,26 +159,30 @@ normally distributed.
 
 ## Statistical Inference
 
-The \textbf{Central Limit Theorem} (CLT) allows us to make statements regarding
-the \textit{sampling distribution of our estimator} approximating a normal
-distribution when the sample size gets large enough. For large $n$ we have,
+A class of __Central Limit Theorems__ (CLTs) allow for statements regarding
+the __(limit) sampling distribution of an estimator__ to be made. In general, we
+will construct estimators whose limit sampling distributions may be shown to be
+approximately normal distributed as sample size increases. For large $n$ we
+have,
+\begin{equation*}
+  \hat{\Psi}(P_n) \sim N \left(\Psi(P_0), \frac{\sigma^2}{n}\right),
+\end{equation*}
+permitting statistical inference. Now, we can proceed to quantify the
+uncertainty of our chosen estimator by construction of hypothesis tests and
+confidence intervals. For example, we may construct a 95% confidence interval
+for our estimand, $\Psi(P_0)$:
+\begin{equation*}
+  $$\hat{\Psi}(P_n) \pm 1.96 \left(\frac{\sigma}{\sqrt{n}}\right)
+\end{equation*}
 
-$$\hat{\Psi}(P_n) \sim N\Big( \Psi(P_0), \frac{\sigma^2}{n} \Big)$$
-
-This permits statistical inference. Now we can quantify the uncertainty in our
-estimator. For example, we can construct a 95\% confidence interval for our
-estimand, $\Psi(P_0)$:
-
-$$\hat{\Psi}(P_n) \pm 1.96 \Big( \frac{\sigma}{\sqrt{n}} \Big)$$
-
-Note: we typically have to estimate the standard error,
-$\frac{\sigma}{\sqrt{n}}$.\\
+_Note:_ we typically have to estimate the standard error,
+$\frac{\sigma}{\sqrt{n}}$.
 
 A 95\% confidence interval means that if we were to take 100 different samples
-of size $n$ and compute a 95\% confidence interval for each sample then
+of size $n$ and compute a 95% confidence interval for each sample then
 approximately 95 of the 100 confidence intervals would contain the estimand,
-$\Psi(P_0)$. More practically, this means that there is a 95\% probability
-(or 95\% confidence) that the confidence interval procedure will contain the
+$\Psi(P_0)$. More practically, this means that there is a 95% probability
+(or 95% confidence) that the confidence interval procedure will contain the
 true estimand. However, any single estimated confidence interval either will
 contain the true estimand or will not.
 
@@ -179,7 +190,7 @@ contain the true estimand or will not.
 
 Data, $O$, is viewed as a random variable that has a probability distribution.
 We often have $n$ units of independent identically distributed units with
-probability distribution $P_0$ ($O_1, \ldots, O_n \simiid P_0$). We have
+probability distribution $P_0$ ($O_1, \ldots, O_n \sim P_0$). We have
 statistical knowledge about the experiment that generated this data. In other
 words, we make a statement that the true data distribution $P_0$ falls in a
 certain set called a statistical model, $\mathcal{M}$. Often these sets are very
@@ -192,106 +203,114 @@ statistical theory to guide us in the construction of estimators. There's a lot
 of statistical theory we will review in this course that, in particular, relies
 on the Central Limit Theorem, allowing us to come up with estimators that are
 approximately normally distributed and also allowing us to come with statistical
-inference (i.e., confidence intervals).
+inference (i.e., confidence intervals and hypothesis tests).
 
 ## Appendix
 
 ## Causal models
 
-A causal framework may be employed to formalize the experiment and enrich the
-parameter of interest, or research question, by asking a causal question opposed
-to a statistical (i.e., associational/relational) question. Causal graphs are
-one useful tool to express what we know about the causal relations among
-variables that are relevant to the question under study @pearl_causality_2000.
-An illustration shows a simple causal graph, specifically a *directed acyclic
-graph or DAG*, to depict the causal relations between variables with a simple
-example of a binary exposure $A$, a binary outcome $Y$, and one categorical
-confounding variable $W$. The DAG for these relations is depicted below.
+## The Causal Model
 
-The $U_W$, $U_A$, and $U_Y$ are the unmeasured exogenous background
-characteristics that influence the value of each variable. Alternatively, the
-same causal relations among variables can be represented with a series of equations:
+The next step in the roadmap is to use a causal framework to formalize the
+experiment and thereby define the parameter of interest. Causal graphs are one
+useful tool to express what we know about the causal relations among variables
+that are relevant to the question under study [@pearl2009causality]. While
+directed acyclic graphs (DAGs) provide a convenient means by which to visualize
+causal relations between variables, the same causal relations among variables
+can be represented via a set of structural equations:
+\begin{align*}
+  W &= f_W(U_W) \\
+  A &= f_A(W, U_A) \\
+  Y &= f_Y(W, A, U_Y),
+\end{align*}
+where $U_W$, $U_A$, and $U_Y$ represent the unmeasured exogenous background
+characteristics that influence the value of each variable. In the NPSEM, $f_W$,
+$f_A$ and $f_Y$ denote that each variable (for $W$, $A$ and $Y$, respectively)
+is a function of its parents and unmeasured background characteristics, but note
+that there is no imposition of any particular functional constraints. For this
+reason, they are called non-parametric structural equation models (NPSEMs). The
+DAG and set of nonparametric structural equations represent exactly the same
+information and so may be used interchangeably.
 
-\begin{eqnarray*}
-W &=& f_W(U_W) \\
-A &=& f_A(W,U_A) \\
-Y&=&f_Y(W,A,U_Y).
-\end{eqnarray*}
+The first hypothetical experiment we will consider is assigning exposure to the
+whole population and observing the outcome, and then assigning no exposure to
+the whole population and observing the outcome. On the nonparametric structural
+equations, this corresponds to a comparison of the outcome distribution in the
+population under two interventions:
 
-Here $f_W, f_A$ and $f_Y$ denote that each variable ($W, A$ and $Y$
-respectively) is a function of its parents and unmeasured background
-characteristics, but there is no imposition of any particular functional
-constraints.  For this reason, these equations represent a *non-parametric
-structural equation model (NPSEM)* @pearl2009causality. The DAG and this series
-of non-parametric structural equations represent the same information.
+1. $A$ is set to $1$ for all individuals, and
+2. $A$ is set to $0$ for all individuals.
 
-Let's consider a hypothetical experiment in which we assign the
-exposure to the whole population and observe the outcome, and then assign no
-exposure to the whole population and observe the outcome. This hypothetical
-experiment is "counterfactual" and thus can never be observed in practice, but
-allows one to imagine an ideal experiment in which we observe everyone's
-potential outcome. On the NPSEM, this corresponds to a comparison of the outcome
-distribution in the population under two interventions: 1) $A$ is set to 1 for
-all individuals, and 2) $A$ is set to 0 for all individuals. These interventions
-imply two post-intervention NPSEMs with first being:
-\begin{eqnarray*}
-W &=& f_W(U_W) \\
-A &=& 1 \\
-Y(1)&=&f_Y(W,1,U_Y),
-\end{eqnarray*}
-and second just replacing the intervention of $A=1$ to $A=0$,
-\begin{eqnarray*}
-W &=& f_W(U_W) \\
-A &=& 0 \\
-Y(0)&=&f_Y(W,0,U_Y).
-\end{eqnarray*}
+These interventions imply two new nonparametric structural equation models. For
+the case $A = 1$, we have
+\begin{align*}
+  W &= f_W(U_W) \\
+  A &= 1 \\
+  Y(1) &= f_Y(W, 1, U_Y),
+\end{align*}
+and for the case $A=0$,
+\begin{align*}
+  W &= f_W(U_W) \\
+  A &= 0 \\
+  Y(1) &= f_Y(W, 0, U_Y).
+\end{align*}
 
 In these equations, $A$ is no longer a function of $W$ because we have
-intervened on the graph and set $A$ to the values 1 and 0. The new symbols
-$Y(1)$ and $Y(0)$ indicate the outcome variable in our population if it were
-generated by the respective NPSEMs above; often called counterfactuals. The
-difference between the means of the outcome under these two interventions
-defines a parameter that is often called the “Average Treatment Effect (ATE), or
-\begin{equation}
-\label{ate}
-ATE = E_X(Y(1)-Y(0)),
+intervened on the system, setting $A$ deterministically to either of the values
+$1$ or $0$. The new symbols $Y(1)$ and $Y(0)$ indicate the outcome variable in
+our population if it were generated by the respective NPSEMs above; these are
+often called _counterfactuals_ (since they run contrary-to-fact). The difference
+between the means of the outcome under these two interventions defines a
+parameter that is often called the "average treatment effect" (ATE), denoted
+\begin{equation}\label{eqn:ate}
+  ATE = \mathbb{E}_X(Y(1)-Y(0)),
 \end{equation}
-where $E_X$ is the mean under the theoretical full data: $X=(W,Y(1),Y(0))$.
-Because we can never observe both $Y(0)$ (counterfactual when $A=0$) and $Y(1)$,
-we can not estimate \ref{ate} directly.  
+where $\mathbb{E}_X$ is the mean under the theoretical (unobserved) full data
+$X = (W, Y(1), Y(0))$.
 
 ## Identifiability
 
-We have to make assumptions to estimate this quantity from $O \sim P_0$, or the
-data-generating distribution. Fortunately, given our causal model shown in the
-graph above, we can, with a couple of more assumptions, estimate the ATE even
-from observational data. First, the causal graph implies that $Y(a) \perp A$ for
-all $a \in \mathcal{A}$, which is the randomization assumption. The
-randomization assumption is also referred to as no unmeasured confounding or
-*strong ignorability*. Outside of the graph, we also need to assume *no
-interference*, the outcome for unit $i$ $Y_i$ is not affected by exposure for
-unit $j$ $A_j$ unless $i=j$; *consistency*: the outcome for unit $i$ is $Y_i(a)$
-whenever $A_i = a$, also known as "no other versions of treatment”, and these
-two assumptions (consistency and no interference) are jointly referred to as
-*stable unit value of treatment assignment (SUTVA)*. We also need to make the
-positivity assumption ($0<P_0(A=a\mid W)< 1$ for all $a$ and $W$) for our target
-parameter to be well defined. Given these assumptions, then we can re-write the
-target parameter as a function of the observed data distribution.
+Because we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
+and $Y(1)$, we cannot estimate \ref{eqn:ate} directly. Instead, we have to make
+assumptions under which this quantity may be estimated from the observed data
+$O \sim P_0$ under the data-generating distribution $P_0$. Fortunately, given
+the causal model specified in the NPSEM above, we can, with a handful of
+untestable assumptions, estimate the ATE, even from observational data. These
+assumptions may be summarized as follows
 
-Continuing from our example above, we may write the ATE as a function of $P_0$.
-Specifically,
-\begin{equation}
-\label{estimand}
-ATE = E_0(Y(1)=Y(0)) = E_0\left( E_0[Y \mid A=1,W]-E_0[Y \mid A=0,W] \right),
+1. The causal graph implies $Y(a) \perp A$ for all $a \in \mathcal{A}$, which
+   is the _randomization_ assumption. In the case of observational data, the
+   analogous assumption is _strong ignorability_ or _no unmeasured confounding_
+   $Y(a) \perp A \mid W$ for all $a \in \mathcal{A}$;
+2. Although not represented in the causal graph, also required is the assumption
+   of no interference between units, that is, the outcome for unit $i$ $Y_i$ is
+   not affected by exposure for unit $j$ $A_j$ unless $i=j$;
+3. _Consistency_ of the treatment mechanism is also required, i.e., the outcome
+   for unit $i$ is $Y_i(a)$ whenever $A_i = a$, an assumption also known as "no
+   other versions of treatment";
+4. It is also necessary that all observed units, across strata defined by $W$,
+   have a bounded (non-deterministic) probability of receiving treatment --
+   that is, $0 < P_0(A = a \mid W) < 1$ for all $a$ and $W$). This assumption is
+   referred to as _positivity_.
+
+_Remark_: Together, (2) and (3), the assumptions of no interference and
+consistency, respectively, are jointly referred to as the *stable unit
+treatment value assumption* (SUTVA).
+
+Given these assumptions, the ATE may be re-written as a function of $P_0$,
+specifically
+\begin{equation}\label{eqn:estimand}
+  ATE = \mathbb{E}_0(Y(1) - Y(0)) = \mathbb{E}_0
+    \left(\mathbb{E}_0[Y \mid A = 1, W] - \mathbb{E}_0[Y \mid A = 0, W]\right),
 \end{equation}
-or the difference in predicted values for each subject in population and then
-averaging over those subjects.
-
-Thus, a parameter of a theoretical "full" data distribution can be represented
-as an estimand of the observed data distribution. Moreover, there is nothing
-about the representation in \ref{estimand} that requires parameteric
-assumptions, so that the regressions on the right hand side of the equation
-above can be estimated freely with machine learning. With
-different parameters, there may be different/additional identifiability
+or the difference in the predicted outcome values for each subject, under the
+contrast of treatment conditions ($A = 0$ vs. $A = 1$), in the population,
+averaged over all observations. Thus, a parameter of a theoretical "full" data
+distribution can be represented as an estimand of the observed data
+distribution. Significantly, there is nothing about the representation in
+\ref{eqn:estimand} that requires parameteric assumptions; thus, the regressions
+on the right hand side may be estimated freely with machine learning. With
+different parameters, there will be potentially different identifiability
 assumptions and the resulting estimands can be functions of different components
-of $P_0$. We discuss several more complex ones in this workshop later.
+of $P_0$. We discuss several more complex estimands in later sections of this
+workshop.
