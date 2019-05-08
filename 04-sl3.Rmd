@@ -1,4 +1,4 @@
-# Modern Super (Machine) Learning with `sl3`
+# Modern Machine Learning with `sl3`
 
 _Rachael Phillips_, based on the [`sl3` package](https://github.com/tlverse/sl3)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica, and Oleg Sofrygin_
@@ -25,15 +25,15 @@ By the end of this chapter you will be able to:
 
 ## Introduction
 
-In \@ref(intro), we introduced the road map for targeted learning as a
+In [Chapter 1](#intro), we introduced the road map for targeted learning as a
 general template to translate real-world data applications into formal
 statistical estimation problems. The first steps of this roadmap define the
 *statistical estimation problem*, which establish
 
 1. Data as a realization of a random variable, or equivalently, an outcome of a
-   particular experiment
+   particular experiment.
 2. A statistical model, representing the true knowledge about the
-   data-generating experiment
+   data-generating experiment.
 3. A translation of the scientific question, which is often causal, into a
    target parameter.
 
@@ -41,7 +41,8 @@ Note that if the target parameter is causal, step 3 also requires
 establishing identifiability of the target quantity from the observed data
 distribution, under possible non-testable assumptions that may not necessarily
 be reasonable. Still, the target quantity does have a valid statistical
-interpretation.
+interpretation. See [causal target parameters](#causal) for more detail on
+causal models and identifiability.
 
 Now that we have defined the statistical estimation problem, we are ready to
 construct the TMLE; an asymptotically linear and efficient substitution
@@ -172,13 +173,13 @@ Learners have properties that indicate what features they support. We may use
 `sl3_list_properties()` to get a list of all properties supported by at least
 one learner.
 
-```{r list_properties}
+```{r list-properties}
 sl3_list_properties()
 ```
 Since we have a continuous outcome, we may identify the learners that support
 this outcome type with `sl3_list_learners()`.
 
-```{r list_learners}
+```{r list-learners}
 sl3_list_learners("continuous")
 ```
 
@@ -217,7 +218,7 @@ metalearner <- make_learner(Lrnr_nnls)
 Now that we have made a library/stack of base learners and a metalearner, we
 are ready to make the super learner.
 
-```{r make sl}
+```{r make-sl}
 sl <- make_learner(Lrnr_sl,
   learners = stack,
   metalearner = metalearner
@@ -232,9 +233,10 @@ procedure is referred to as the *continuous* super learner. The cross-validation
 selector, or *discrete* super learner, is the base learner with the lowest
 cross-validated risk.
 
-Now we are ready to **"train"** our super learner on our `sl3_task` object.
+Now we are ready to **"train"** our super learner on our `sl3_task` object,
+`washb_task`.
 
-```{r sl_basic}
+```{r slbasic}
 sl_fit <- sl$train(washb_task)
 ```
 
@@ -243,13 +245,13 @@ sl_fit <- sl$train(washb_task)
 Now that we have fit the super learner, we are ready to obtain our predicted
 values, and we can also obtain a summary of the results.
 
-```{r sl_basic-summary}
+```{r slbasic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
 sl_fit$print() %>%
   kable(format = "markdown", digits = 3)
 ```
-Explain summary
+<!-- Explain summary!!!! -->
 
 ## Extensions
 
@@ -261,7 +263,7 @@ including
 3. Cross-validated super learner
 4. Variable importance with `sl3`.
 
-### Customize learner hyperparameters
+### Customize Learner Hyperparameters
 
 We can customize learner hyperparameters to incorporate a diversity of different
 settings. We can also include learners from the [`SuperLearner` `R`
@@ -286,19 +288,17 @@ new_stack <- make_learner(
 )
 ```
 
-### Screening covariates
+### Screening Covariates
 
 Why stop now? We can also select a subset of available covariates and pass only
 those variables to the modeling algorithm. This screening can be particularly
 important when there are many variables.
 
 Let's see how this works. Consider screening covariates based on their
-correlation with the outcome (`cor.test` p-value $\leq 0.1$), and `randomForest`
-variable importance (top 10 most important variables).
+correlation with the outcome (`cor.test` p-value $\leq 0.1$).
 
 ```{r screeners}
 screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
-screen_rf <- Lrnr_pkg_SuperLearner_screener$new("screen.randomForest")
 ```
 Now we need to **"pipe"**  only those selected covariates to the modeling
 algorithm. To accomplish this, we need to make a `Pipeline`, which is a just
@@ -309,29 +309,29 @@ whereas the other one establishes parallel function of learners.
 
 ```{r screeners-pipe}
 cor_pipeline <- make_learner(Pipeline, screen_cor, new_stack)
-rf_pipeline <- make_learner(Pipeline, screen_rf, new_stack)
 ```
-Lastly, we have to stack all of these pipelines together, so we may use
-them as base learners in our super learner, analogous to what we have seen
-before. Now however, our learners will be preceded by a screening step. Let's
-also consider the `new_stack`, just to compare how the feature selection methods
-perform in comparison to the methods without feature selection.
+Now, our learners will be preceded by a screening step. Let's also consider the
+`new_stack`, just to compare how the feature selection methods perform in
+comparison to the methods without feature selection. Analogous to what we have
+seen before, we have to stack the pipeline and `new_stack` together, so we may
+use them as base learners in our super learner.
 
 ```{r screeners-stack}
-fancy_stack <- make_learner(Stack, cor_pipeline, rf_pipeline, new_stack)
+fancy_stack <- make_learner(Stack, cor_pipeline, new_stack)
 dt <- delayed_learner_train(fancy_stack, washb_task)
 plot(dt, color = FALSE, height = "300px")
 ```
 
 Now we can Super Learn with this fancy base learner stack.
 
-```{r sl_fancy, eval=FALSE}
+```{r sl-fancy, eval=FALSE}
 # run sl and predict on WASH
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
 sl_fancy_feast <- sl_fancy$train(washb_task)
 sl_fancy_feast$print() %>%
   kable(format = "markdown", digits = 3)
 ```
+<!-- Explain summary!!!! -->
 
 ### Cross-validated Super Learner
 
@@ -340,15 +340,22 @@ performs on unseen data. This requires an "external" layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
 holdout sample that we don’t use to fit the super learner. This external
 cross-validation procedure may also incorporate 10 folds, which is the default
-in `sl3`.
+in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for computational efficiency.
 
-```{r CVsl, eval=FALSE}
-CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task, loss_squared_error)
+```{r CVsl}
+washb_task_new <- make_sl3_Task(
+  data = washb_data,
+  covariates = covars,
+  outcome = outcome,
+  folds = make_folds(washb_data, fold_fun = folds_vfold, V = 2)
+)
+CVsl_fancy <- CV_lrnr_sl(sl_fit_fancy, washb_task_new, loss_squared_error)
 CVsl_fancy %>%
   kable(format = "markdown", digits = 3)
 ```
+<!-- Explain summary!!!! -->
 
-## Variable importance
+## Variable Importance Analysis with `sl3`
 
 Variable importance can be interesting and informative. The `sl3` `varimp`
 function returns a table with variables listed in decreasing order of
@@ -359,15 +366,15 @@ difference, the more important the variable is in the prediction. Let's explore
 the `sl3` variable importance measurements for the `washb` data.
 
 ```{r varimp}
-washb_varimp <- varimp(sl_fit, loss_squared_error)
+washb_varimp <- varimp(sl_fit_fancy, loss_squared_error)
 washb_varimp %>%
   kable(format = "markdown", digits = 3)
 ```
-Explain output...
+<!-- Explain summary!!!! -->
 
 ## Exercise
 
-### Predicting myocardial infarction
+### Predicting Myocardial Infarction with `sl3`
 
 Answer the questions below to predict myocardial infarction (`mi`) using the
 available covariate data. Special thanks to David Benkeser at Emory for making
@@ -443,7 +450,7 @@ estimator, but it is not a plug-in estimator; (2) the targeted maximum
 likelihood estimator, which is a super learner targeted towards the target
 parameter and it is a plug-in estimator; and (3) estimating equation based
 estimators, which use the canonical gradient but as an estimating function in
-the target parameter. In the following chapters, we focus on the targeted
+the target parameter. In the chapters that follow, we focus on the targeted
 maximum likelihood estimator and the targeted minimum loss-based estimator,
 both referred to as TMLE.
 
