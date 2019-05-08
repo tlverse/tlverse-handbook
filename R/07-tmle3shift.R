@@ -114,19 +114,21 @@ tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 tmle_msm_fit
 
 
-## ----load-washb-data, message=FALSE, warning=FALSE, cache=FALSE----------
+## ----load_washb_data_shift, message=FALSE, warning=FALSE, cache=FALSE----
 washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
 
 
-## ----washb-data-npsem-shift, message=FALSE, warning=FALSE, cache=FALSE----
-node_list <- list(W = names(washb_data)[!(names(washb_data) %in%
-                                          c("whz", "momage"))],
-                  A = "momage", Y = "whz")
+## ----washb_data_npsem_shift, message=FALSE, warning=FALSE, cache=FALSE----
+node_list <- list(
+  W = names(washb_data)[!(names(washb_data) %in%
+    c("whz", "momage"))],
+  A = "momage", Y = "whz"
+)
 
 
-## ----vim_spec_init_washb, message=FALSE, warning=FALSE-------------------
+## ----vim_spec_init_washb_shift, message=FALSE, warning=FALSE-------------
 # initialize a tmle specification for the variable importance parameter
 washb_vim_spec <- tmle_vimshift_delta(
   shift_grid = c(-2, 2),
@@ -134,7 +136,7 @@ washb_vim_spec <- tmle_vimshift_delta(
 )
 
 
-## ----sl3_lrnrs-gfit-shift-washb, message=FALSE, warning=FALSE------------
+## ----sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE------------
 # learners used for conditional density regression (i.e., propensity score)
 lrn_rfcde <- Lrnr_rfcde$new(
   n_trees = 500, node_size = 3,
@@ -145,7 +147,7 @@ lrn_rfcde <- Lrnr_rfcde$new(
 learner_list <- list(Y = sl_lrn, A = lrn_rfcde)
 
 
-## ----fit_tmle_wrapper_washb, message=FALSE, warning=FALSE, eval=FALSE----
+## ----fit_tmle_wrapper_washb_shift, message=FALSE, warning=FALSE, eval=FALSE----
 ## washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
 ## washb_tmle_fit
 

@@ -42,10 +42,12 @@ lrnr_xgboost <- make_learner(Lrnr_xgboost)
 
 # define metalearners appropriate to data types
 ls_metalearner <- make_learner(Lrnr_nnls)
-mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial, loss_loglik_multinomial)
-sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost), metalearner = ls_metalearner)
-sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost), metalearner = mn_metalearner)
-
+mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial,
+                               loss_loglik_multinomial)
+sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
+                    metalearner = ls_metalearner)
+sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
+                    metalearner = mn_metalearner)
 learner_list <- list(A = sl_A, Y = sl_Y)
 
 
@@ -129,4 +131,13 @@ tmle_fit_multiparam <- fit_tmle3(
 )
 
 print(tmle_fit_multiparam)
+
+
+## ----data, message=FALSE, warning=FALSE----------------------------------
+# load the data set
+data(cpp)
+cpp <- cpp[!is.na(cpp[, "haz"]), ]
+cpp$parity01 <- as.numeric(cpp$parity > 0)
+cpp[is.na(cpp)] <- 0
+cpp$haz01 <- as.numeric(cpp$haz > 0)
 
