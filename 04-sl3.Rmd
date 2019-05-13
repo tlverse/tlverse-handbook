@@ -283,7 +283,6 @@ Reference`](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
 
 ```{r extra-lrnr}
 lrnr_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
-lrnr_ranger1k <- make_learner(Lrnr_ranger, num.trees = 1000)
 lrnr_gam <- Lrnr_pkg_SuperLearner$new("SL.gam")
 lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
@@ -293,7 +292,7 @@ a new super learner.
 ```{r new-stack}
 new_stack <- make_learner(
   Stack,
-  lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet, lrnr_ranger1k, lrnr_ranger100,
+  lrnr_glm, lrnr_mean, lrnr_glmnet, lrnr_ranger100,
   lrnr_gam, lrnr_bayesglm
 )
 ```
@@ -352,7 +351,8 @@ performs on unseen data. This requires an "external" layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
 holdout sample that we don’t use to fit the super learner. This external
 cross-validation procedure may also incorporate 10 folds, which is the default
-in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for computational efficiency.
+in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for
+computational efficiency.
 
 ```{r CVsl}
 washb_task_new <- make_sl3_Task(
