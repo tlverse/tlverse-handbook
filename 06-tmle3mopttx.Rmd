@@ -601,6 +601,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 ```{r fit_tmle_auto, eval=T}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
+
 fit
 ```
 
@@ -640,6 +641,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 ```{r mopttx_fit_tmle_auto_blip_revere_noncomplex, eval=T}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
+
 fit
 ```
 
@@ -728,7 +730,6 @@ described in section 5.7.1:
 ```{r data_vim-nodes-mopttx}
 # bin baseline covariates to 3 categories:
 data$W1<-ifelse(data$W1<quantile(data$W1)[2],1,ifelse(data$W1<quantile(data$W1)[3],2,3))
-#data$W2<-ifelse(data$W2<quantile(data$W2)[3],0,ifelse(data$W2<quantile(data$W2)[4],1,2))
 
 node_list <- list(
   W = c("W3", "W4", "W2"),
@@ -737,7 +738,7 @@ node_list <- list(
 )
 ```
 
-Note that our node list now includes $W_1$ and $W_2$ as treatments as well!
+Note that our node list now includes $W_1$ as treatments as well!
 Don't worry, we will still properly adjust for all baseline covariates when 
 considering $A$ as treatment.
 
@@ -791,7 +792,8 @@ tmle_spec <- tmle3_mopttx_vim(
 vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
   adjust_for_other_A = TRUE
 )
-vim_results
+
+print(vim_results)
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list
@@ -836,7 +838,7 @@ is the weight-for-height Z-score which we seek to maximize, whereas our treatmen
 the six intervention groups aimed at improving living conditions. All the other 
 collected baseline covariates correspond to $W$.
 
-```{r washb-data-npsem-shift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r washb-data-npsem-mopttx, message=FALSE, warning=FALSE, cache=FALSE}
 node_list <- list(W = names(washb_data)[!(names(washb_data) %in% c("whz", "tr"))],
                   A = "tr", Y = "whz")
 ```
@@ -852,6 +854,7 @@ table(washb_data$floor)
 table(washb_data$asset_refrig)
 summary(washb_data$whz)
 ```
+
 ```{r sl3_lrnrs-WASH-mopttx}
 # Initialize few of the learners:
 lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
@@ -887,7 +890,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 ```
 
-```{r fit_tmle_auto, eval=T}
+```{r fit_tmle_auto_WASH, eval=T}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data=washb_data, node_list, learner_list)
 fit
