@@ -1,7 +1,9 @@
-# Modern Machine Learning with `sl3`
+# Ensemble Machine Learning
 
-_Rachael Phillips_, based on the [`sl3` package](https://github.com/tlverse/sl3)
-by _Jeremy Coyle, Nima Hejazi, Ivana Malenica, and Oleg Sofrygin_
+_Rachael Phillips_
+
+Based on the [`sl3` `R` package](https://github.com/tlverse/sl3) by _Jeremy
+Coyle, Nima Hejazi, Ivana Malenica, and Oleg Sofrygin_.
 
 Updated: `r Sys.Date()`
 
@@ -114,6 +116,9 @@ Using the WASH data, we are interested in predicting weight-for-height z-score
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
 ```{r setup, message=FALSE, warning=FALSE}
+# pretty table output
+options(knitr.table.format = "html")
+
 library(here)
 library(tidyverse)
 library(data.table)
@@ -126,7 +131,7 @@ set.seed(7194)
 # load data set and take a peek
 washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
 head(washb_data, 3) %>%
-  kable(format = "markdown", digits = 3)
+  kable(digits = 3)
 ```
 
 **1. Define the machine learning task**
@@ -248,8 +253,8 @@ values, and we can also obtain a summary of the results.
 ```{r slbasic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-sl_fit$print() %>%
-  kable(format = "markdown", digits = 3)
+sl_fit %>%
+  kable(digits = 3)
 ```
 <!-- Explain summary!!!! -->
 
@@ -319,7 +324,7 @@ use them as base learners in our super learner.
 ```{r screeners-stack}
 fancy_stack <- make_learner(Stack, cor_pipeline, new_stack)
 dt <- delayed_learner_train(fancy_stack, washb_task)
-plot(dt, color = FALSE, height = "300px")
+plot(dt, color = FALSE, height = "200px")
 ```
 
 Now we can Super Learn with this fancy base learner stack.
@@ -327,9 +332,9 @@ Now we can Super Learn with this fancy base learner stack.
 ```{r sl-fancy, eval=FALSE}
 # run sl and predict on WASH
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
-sl_fancy_feast <- sl_fancy$train(washb_task)
-sl_fancy_feast$print() %>%
-  kable(format = "markdown", digits = 3)
+sl_fancy_fit <- sl_fancy$train(washb_task)
+sl_fancy_fit %>%
+  kable(digits = 3)
 ```
 <!-- Explain summary!!!! -->
 
@@ -349,9 +354,9 @@ washb_task_new <- make_sl3_Task(
   outcome = outcome,
   folds = make_folds(washb_data, fold_fun = folds_vfold, V = 2)
 )
-CVsl_fancy <- CV_lrnr_sl(sl_fit_fancy, washb_task_new, loss_squared_error)
+CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
 CVsl_fancy %>%
-  kable(format = "markdown", digits = 3)
+  kable(digits = 3)
 ```
 <!-- Explain summary!!!! -->
 
@@ -368,7 +373,7 @@ the `sl3` variable importance measurements for the `washb` data.
 ```{r varimp}
 washb_varimp <- varimp(sl_fit_fancy, loss_squared_error)
 washb_varimp %>%
-  kable(format = "markdown", digits = 3)
+  kable(digits = 3)
 ```
 <!-- Explain summary!!!! -->
 
@@ -387,7 +392,7 @@ db_data <-
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
 head(chspred, 3) %>%
-  kable(format = "markdown", digits = 3)
+  kable(digits = 3)
 ```
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
@@ -497,8 +502,8 @@ sl <- Lrnr_sl$new(
   metalearner = metalearner
 )
 sl_fit <- sl$train(task)
-sl_fit$print() %>%
-  kable(format = "markdown", digits = 3)
+sl_fit %>%
+  kable(digits = 3)
 ```
 
 <!--
