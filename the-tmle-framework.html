@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>The Hitchhiker’s Guide to the tlverse</title>
+  <title>Chapter 4 The TMLE Framework | The Hitchhiker’s Guide to the tlverse</title>
   <meta name="description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   <meta name="generator" content="bookdown 0.10.1 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="The Hitchhiker’s Guide to the tlverse" />
+  <meta property="og:title" content="Chapter 4 The TMLE Framework | The Hitchhiker’s Guide to the tlverse" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://tlverse.org/tlverse-handbook/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="tlverse/tlverse-handbook" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="The Hitchhiker’s Guide to the tlverse" />
+  <meta name="twitter:title" content="Chapter 4 The TMLE Framework | The Hitchhiker’s Guide to the tlverse" />
   
   <meta name="twitter:description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/logos/favicons/favicon.png" type="image/x-icon" />
-
-<link rel="next" href="motivation.html">
+<link rel="prev" href="ensemble-machine-learning.html">
+<link rel="next" href="optimal-individualized-treatment-regimes.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -318,288 +318,398 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">The Hitchhiker’s Guide to the <code>tlverse</code></h1>
-<h2 class="subtitle"><em>or a Targeted Learning Practitioner’s Handbook</em></h2>
-<p class="author"><em>Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan</em></p>
-<p class="date"><em>May 14, 2019</em></p>
+<div id="the-tmle-framework" class="section level1">
+<h1><span class="header-section-number">Chapter 4</span> The TMLE Framework</h1>
+<p><em>Jeremy Coyle</em></p>
+<p>Based on the <a href="https://github.com/tlverse/tmle3"><code>tmle3</code> <code>R</code> package</a>.</p>
+<div id="learning-objectives-3" class="section level2">
+<h2><span class="header-section-number">4.1</span> Learning Objectives</h2>
+<ol style="list-style-type: decimal">
+<li>Use <code>tmle3</code> to estimate an Average Treatment Effect (ATE)</li>
+<li>Understand <code>tmle3</code> “Specs”</li>
+<li>Fit <code>tmle3</code> for a custom set of parameters</li>
+<li>Use the delta method to estimate transformations of parameters</li>
+</ol>
 </div>
-<div id="preface" class="section level1 unnumbered">
-<h1>Preface</h1>
-<img style="float: left; margin-right: 1%; margin-bottom: 0.5em"
-     src="img/logos/tlverse-logo.png" width="30%" height="30%">
-<img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
-     src="img/logos/Rlogo.svg" width="33%" height="33%">
-<img style="float: right; margin-right: 1%; margin-bottom: 0.5em"
-     src="img/logos/vdl-logo-transparent.png" width="33%" height="33%">
-<p style="clear: both;">
-<p><br></p>
-<div id="about-this-book" class="section level2 unnumbered">
-<h2>About this book</h2>
-<p><em>The Hitchhiker’s Guide to the <code>tlverse</code>, or a Targeted Learning Practitioner’s
-Handbook</em> is an open-source and fully-reproducible electronic handbook for
-applying the targeted learning methodology in practice using the <a href="https://github.com/tlverse"><code>tlverse</code>
-software ecosystem</a>. This work is currently in an
-early draft phase and is available to facilitate input from the community. To
-view or contribute to the available content, consider visiting the
-<a href="https://github.com/tlverse/tlverse-handbook">GitHub repository for this site</a>.</p>
+<div id="example-tmle3-for-ate" class="section level2">
+<h2><span class="header-section-number">4.2</span> Example: <code>tmle3</code> for ATE</h2>
+<p>We’ll illustrate the most basic use of TMLE using the WASH Benefits data
+introduced earlier and estimating an Average Treatment Effect (ATE).</p>
+<p>As a reminder, the ATE is identified with the following statistical parameter
+(under assumptions): <span class="math inline">\(ATE = \mathbb{E}_0(Y(1)-Y(0)) = \mathbb{E}_0 \left(\mathbb{E}_0[Y \mid A=1,W] - \mathbb{E}_0[Y \mid A=0,W] \right),\)</span></p>
+<div id="load-the-data" class="section level3">
+<h3><span class="header-section-number">4.2.1</span> Load the Data</h3>
+<p>We’ll use the same WASH Benefits data as the earlier chapters:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(here)
+<span class="kw">library</span>(data.table)
+<span class="kw">library</span>(tmle3)
+<span class="kw">library</span>(sl3)
+washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;washb_data.csv&quot;</span>), <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</code></pre>
 </div>
-<div id="outline" class="section level2 unnumbered">
-<h2>Outline</h2>
-<p>The contents of this handbook are meant to serve as a reference guide for
-applied research as well as materials that can be taught in a series of short
-courses focused on the applications of Targeted Learning. Each section
-introduces a set of distinct causal questions, motivated by a case study,
-alongside statistical methodology and software for assessing the causal claim of
-interest. The (evolving) set of materials includes</p>
+<div id="define-the-variable-roles" class="section level3">
+<h3><span class="header-section-number">4.2.2</span> Define the variable roles</h3>
+<p>We’ll use the common W (covariates), A (treatment/intervention), Y (outcome)
+data structure. <code>tmle3</code> needs to know what variables in the dataset correspond
+to each of these roles. We use a list of character vectors to tell it. We call
+this a “Node List” as it corresponds to the nodes in a Directed Acyclic Graph
+(DAG), a way of displaying causal relationships between variables.</p>
+<pre class="sourceCode r"><code class="sourceCode r">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(
+  <span class="dt">W =</span> <span class="kw">c</span>(
+    <span class="st">&quot;month&quot;</span>, <span class="st">&quot;aged&quot;</span>, <span class="st">&quot;sex&quot;</span>, <span class="st">&quot;momage&quot;</span>, <span class="st">&quot;momedu&quot;</span>,
+    <span class="st">&quot;momheight&quot;</span>, <span class="st">&quot;hfiacat&quot;</span>, <span class="st">&quot;Nlt18&quot;</span>, <span class="st">&quot;Ncomp&quot;</span>, <span class="st">&quot;watmin&quot;</span>,
+    <span class="st">&quot;elec&quot;</span>, <span class="st">&quot;floor&quot;</span>, <span class="st">&quot;walls&quot;</span>, <span class="st">&quot;roof&quot;</span>, <span class="st">&quot;asset_wardrobe&quot;</span>,
+    <span class="st">&quot;asset_table&quot;</span>, <span class="st">&quot;asset_chair&quot;</span>, <span class="st">&quot;asset_khat&quot;</span>,
+    <span class="st">&quot;asset_chouki&quot;</span>, <span class="st">&quot;asset_tv&quot;</span>, <span class="st">&quot;asset_refrig&quot;</span>,
+    <span class="st">&quot;asset_bike&quot;</span>, <span class="st">&quot;asset_moto&quot;</span>, <span class="st">&quot;asset_sewmach&quot;</span>,
+    <span class="st">&quot;asset_mobile&quot;</span>
+  ),
+  <span class="dt">A =</span> <span class="st">&quot;tr&quot;</span>,
+  <span class="dt">Y =</span> <span class="st">&quot;whz&quot;</span>
+)</code></pre>
+</div>
+<div id="handle-missingness" class="section level3">
+<h3><span class="header-section-number">4.2.3</span> Handle Missingness</h3>
+<p>Currently, missingness in <code>tmle3</code> is handled in a fairly simple way:</p>
 <ul>
-<li>Motivation: <a href="https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/">Why we need a statistical
-revolution</a></li>
-<li>The Roadmap and introductory case study: the WASH Beneifits data</li>
-<li>Introduction to the <a href="https://tlverse.org"><code>tlverse</code> software
-ecosystem</a></li>
-<li>Ensemble machine learning with the
-<a href="https://github.com/tlverse/sl3"><code>sl3</code></a> package</li>
-<li>Targeted learning for causal inference with the
-<a href="https://github.com/tlverse/tmle3"><code>tmle3</code></a> package</li>
-<li>Optimal treatments regimes and the
-<a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code></a> package</li>
-<li>Stochastic treatment regimes and the
-<a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code></a> package</li>
-<li><em>Coda</em>: <a href="https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/">Why we need a statistical
-revolution</a></li>
+<li>Missing covariates are median (for continuous) or mode (for discrete)
+imputed, and additional covariates indicating imputation are generated</li>
+<li>Observations missing either treatment or outcome variables are excluded.</li>
 </ul>
+<p>We plan to implement IPCW-TMLE to more efficiently handle missingness in the
+treatment and outcome variables.</p>
+<p>These steps are implemented in the <code>process_missing</code> function in <code>tmle3</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">processed &lt;-<span class="st"> </span><span class="kw">process_missing</span>(washb_data, node_list)
+washb_data &lt;-<span class="st"> </span>processed<span class="op">$</span>data
+node_list &lt;-<span class="st"> </span>processed<span class="op">$</span>node_list</code></pre>
 </div>
-<div id="what-this-book-is-not" class="section level2 unnumbered">
-<h2>What this book is not</h2>
-<p>The focus of this work is <strong>not</strong> on providing in-depth technical descriptions
-of current statistical methodology or recent advancements. Instead, the goal is
-to convey key details of state-of-the-art techniques in an manner that is both
-clear and complete, without burdening the reader with extraneous information.
-We hope that the presentations herein will serve as references for researchers
-– methodologists and domain specialists alike – that empower them to deploy
-the central tools of Targeted Learning in an efficient manner. For technical
-details and in-depth descriptions of both classical theory and recent advances
-in the field of Targeted Learning, the interested reader is invited to consult
-<span class="citation">van der Laan and Rose (<a href="#ref-vdl2011targeted">2011</a>)</span> and/or <span class="citation">van der Laan and Rose (<a href="#ref-vdl2018targeted">2018</a>)</span> as appropriate. The primary literature
-in statistical causal inference, machine learning, and non/semiparametric theory
-include many of the most recent advances in Targeted Learning and related areas.</p>
+<div id="create-a-spec-object" class="section level3">
+<h3><span class="header-section-number">4.2.4</span> Create a “Spec” Object</h3>
+<p><code>tmle3</code> is general, and allows most components of the TMLE procedure to be
+specified in a modular way. However, most end-users will not be interested in
+manually specifying all of these components. Therefore, <code>tmle3</code> implements a
+<code>tmle3_Spec</code> object that bundles a set ofcomponents into a <em>specification</em>
+that, with minimal additional detail, can be run by an end-user.</p>
+<p>We’ll start with using one of the specs, and then work our way down into the
+internals of <code>tmle3</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">ate_spec &lt;-<span class="st"> </span><span class="kw">tmle_ATE</span>(
+  <span class="dt">treatment_level =</span> <span class="st">&quot;Nutrition + WSH&quot;</span>,
+  <span class="dt">control_level =</span> <span class="st">&quot;Control&quot;</span>
+)</code></pre>
 </div>
-<div id="about-the-authors" class="section level2 unnumbered">
-<h2>About the authors</h2>
-<div id="jeremy-coyle" class="section level3 unnumbered">
-<h3>Jeremy Coyle</h3>
-<p>Jeremy R. Coyle, Ph.D., is a consulting data scientist and statistical
-programmer, currently leading the software development effort that has produced
-the <code>tlverse</code> ecosystem of R packages and related software tools. Jeremy earned
-his Ph.D. in Biostatistics from UC Berkeley in 2016, primarily under the
-supervision of Alan Hubbard.</p>
-</div>
-<div id="nima-hejazi" class="section level3 unnumbered">
-<h3>Nima Hejazi</h3>
-<p>Nima S. Hejazi is a Ph.D. candidate in biostatistics with a designated emphasis
-in computational and genomic biology, working jointly with Mark van der Laan and
-Alan Hubbard. Nima is affiliated with UC Berkeley’s Center for Computational
-Biology and NIH Biomedical Big Data training program. His research interests
-span causal inference, nonparametric inference and machine learning, targeted
-loss-based estimation, survival analysis, statistical computing, reproducible
-research, and high-dimensional biology. He is also passionate about software
-development for applied statistics, including software design, automated
-testing, and reproducible coding practices. For more information, see
-<a href="https://nimahejazi.org" class="uri">https://nimahejazi.org</a>.</p>
-</div>
-<div id="ivana-malenica" class="section level3 unnumbered">
-<h3>Ivana Malenica</h3>
-<p>Ivana Malenica is a Ph.D. student in biostatistics advised by Mark van der Laan.
-Ivana is currently a fellow at the Berkeley Institute for Data Science, after
-serving as a NIH Biomedical Big Data and Freeport-McMoRan Genomic Engine fellow.
-She earned her Master’s in Biostatistics and Bachelor’s in Mathematics, and
-spent some time at the Translational Genomics Research Institute. Very broadly,
-her research interests span non/semi-parametric theory, probability theory,
-machine learning, causal inference and high-dimensional statistics. Most of her
-current work involves complex dependent settings (dependence through time and
-network) and adaptive sequential designs.</p>
-</div>
-<div id="rachael-phillips" class="section level3 unnumbered">
-<h3>Rachael Phillips</h3>
-<p>Rachael V. Phillips is a Ph.D. student in biostatistics, advised by Alan Hubbard
-and Mark van der Laan. She has an M.A. in Biostatistics, B.S. in Biology with a
-Chemistry minor and a B.A. in Mathematics with a Spanish minor. Rachael is
-motivated to solve real-world, high-dimensional problems in human health. Her
-research interests span causal inference, machine learning, nonparametric
-statistical estimation, and finite sample inference. She is also passionate
-about online mediated education. Rachael is affiliated with UC Berkeley’s Center
-for Computational Biology, NIH Biomedical Big Data Training Program, and
-Superfund Research Program.</p>
-</div>
-<div id="alan-hubbard" class="section level3 unnumbered">
-<h3>Alan Hubbard</h3>
-<p>Alan E. Hubbard is Professor of Biostatistics, former head of the Division of
-Biostatistics at UC Berkeley, and head of data analytics core at UC Berkeley’s
-SuperFund research program. His current research interests include causal
-inference, variable importance analysis, statistical machine learning,
-estimation of and inference for data-adaptive statistical target parameters, and
-targeted minimum loss-based estimation. Research in his group is generally
-motivated by applications to problems in computational biology, epidemiology,
-and precision medicine.</p>
-</div>
-<div id="mark-van-der-laan" class="section level3 unnumbered">
-<h3>Mark van der Laan</h3>
-<p>Mark J. van der Laan, PhD, is Professor of Biostatistics and Statistics at UC
-Berkeley. His research interests include statistical methods in computational
-biology, survival analysis, censored data, adaptive designs, targeted maximum
-likelihood estimation, causal inference, data-adaptive loss-based learning, and
-multiple testing. His research group developed loss-based super learning in
-semiparametric models, based on cross-validation, as a generic optimal tool for
-the estimation of infinite-dimensional parameters, such as nonparametric density
-estimation and prediction with both censored and uncensored data. Building on
-this work, his research group developed targeted maximum likelihood estimation
-for a target parameter of the data-generating distribution in arbitrary
-semiparametric and nonparametric models, as a generic optimal methodology for
-statistical and causal inference. Most recently, Mark’s group has focused in
-part on the development of a centralized, principled set of software tools for
-targeted learning, the <code>tlverse</code>. For more information, see
-<a href="https://vanderlaan-lab.org" class="uri">https://vanderlaan-lab.org</a>.</p>
-</div>
-</div>
-<div id="acknowledgements" class="section level2 unnumbered">
-<h2>Acknowledgements</h2>
-</div>
-<div id="learn" class="section level2">
-<h2><span class="header-section-number">0.1</span> Recommended Learning Resources</h2>
-<p>To effectively utilize this handbook, the reader need not be a fully trained
-statistician to begin understanding and applying these methods. However, it is
-highly recommended for the reader to have an understanding of basic statistical
-concepts such as confounding, probability distributions, confidence intervals,
-hypothesis tests, and regression. Advanced knowledge of mathematical statistics
-may be useful but is not necessary. Familiarity with the <code>R</code> programming
-language will be essential. We also recommend an understanding of introductory
-causal inference.</p>
-<p>For learning the <code>R</code> programming language we recommend the following (free)
-introductory resources:</p>
-<ul>
-<li><a href="http://swcarpentry.github.io/r-novice-inflammation/">Software Carpentry’s <em>Programming with
-<code>R</code></em></a></li>
-<li><a href="http://swcarpentry.github.io/r-novice-gapminder/">Software Carpentry’s <em><code>R</code> for Reproducible Scientific
-Analysis</em></a></li>
-<li><a href="https://r4ds.had.co.nz">Garret Grolemund and Hadley Wickham’s <em><code>R</code> for Data
-Science</em></a></li>
-</ul>
-<p>For a general introduction to causal inference, we recommend</p>
-<ul>
-<li><a href="https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/">Miguel A. Hernán and James M. Robins’ <em>Causal Inference</em>, forthcoming
-2019</a></li>
-<li><a href="https://www.coursera.org/learn/crash-course-in-causality">Jason A. Roy’s <em>A Crash Course in Causality: Inferring Causal Effects from
-Observational Data</em> on
-Coursera</a></li>
-</ul>
-</div>
-<div id="setup-instructions" class="section level2">
-<h2><span class="header-section-number">0.2</span> Setup instructions</h2>
-<div id="r-and-rstudio" class="section level3">
-<h3><span class="header-section-number">0.2.1</span> R and RStudio</h3>
-<p><strong>R</strong> and <strong>RStudio</strong> are separate downloads and installations. R is the
-underlying statistical computing environment. RStudio is a graphical integrated
-development environment (IDE) that makes using R much easier and more
-interactive. You need to install R before you install RStudio.</p>
-<div id="windows" class="section level4">
-<h4><span class="header-section-number">0.2.1.1</span> Windows</h4>
-<div id="if-you-already-have-r-and-rstudio-installed" class="section level5">
-<h5><span class="header-section-number">0.2.1.1.1</span> If you already have R and RStudio installed</h5>
-<ul>
-<li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is
-available, quit RStudio, and download the latest version for RStudio.</li>
-<li>To check which version of R you are using, start RStudio and the first thing
-that appears in the console indicates the version of R you are
-running. Alternatively, you can type <code>sessionInfo()</code>, which will also display
-which version of R you are running. Go on
-the <a href="https://cran.r-project.org/bin/windows/base/">CRAN website</a> and check
-whether a more recent version is available. If so, please download and install
-it. You can <a href="https://cran.r-project.org/bin/windows/base/rw-FAQ.html#How-do-I-UNinstall-R_003f">check here</a>
-for more information on how to remove old versions from your system if you
-wish to do so.</li>
-</ul>
-</div>
-<div id="if-you-dont-have-r-and-rstudio-installed" class="section level5">
-<h5><span class="header-section-number">0.2.1.1.2</span> If you don’t have R and RStudio installed</h5>
-<ul>
-<li>Download R from
-the <a href="http://cran.r-project.org/bin/windows/base/release.htm">CRAN website</a>.</li>
-<li>Run the <code>.exe</code> file that was just downloaded</li>
-<li>Go to the <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio download page</a></li>
-<li>Under <em>Installers</em> select <strong>RStudio x.yy.zzz - Windows
-XP/Vista/7/8</strong> (where x, y, and z represent version numbers)</li>
-<li>Double click the file to install it</li>
-<li>Once it’s installed, open RStudio to make sure it works and you don’t get any
-error messages.</li>
-</ul>
-</div>
-</div>
-<div id="macos" class="section level4">
-<h4><span class="header-section-number">0.2.1.2</span> macOS</h4>
-<div id="if-you-already-have-r-and-rstudio-installed-1" class="section level5">
-<h5><span class="header-section-number">0.2.1.2.1</span> If you already have R and RStudio installed</h5>
-<ul>
-<li>Open RStudio, and click on “Help” &gt; “Check for updates”. If a new version is
-available, quit RStudio, and download the latest version for RStudio.</li>
-<li>To check the version of R you are using, start RStudio and the first thing
-that appears on the terminal indicates the version of R you are running.
-Alternatively, you can type <code>sessionInfo()</code>, which will also display which
-version of R you are running. Go on the <a href="https://cran.r-project.org/bin/macosx/">CRAN
-website</a> and check whether a more
-recent version is available. If so, please download and install it.</li>
-</ul>
-</div>
-<div id="if-you-dont-have-r-and-rstudio-installed-1" class="section level5">
-<h5><span class="header-section-number">0.2.1.2.2</span> If you don’t have R and RStudio installed</h5>
-<ul>
-<li>Download R from
-the <a href="http://cran.r-project.org/bin/macosx">CRAN website</a>.</li>
-<li>Select the <code>.pkg</code> file for the latest R version</li>
-<li>Double click on the downloaded file to install R</li>
-<li>It is also a good idea to install <a href="https://www.xquartz.org/">XQuartz</a> (needed
-by some packages)</li>
-<li>Go to the <a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio download page</a></li>
-<li>Under <em>Installers</em> select <strong>RStudio x.yy.zzz - Mac OS X 10.6+ (64-bit)</strong>
-(where x, y, and z represent version numbers)</li>
-<li>Double click the file to install RStudio</li>
-<li>Once it’s installed, open RStudio to make sure it works and you don’t get any
-error messages.</li>
-</ul>
-</div>
-</div>
-<div id="linux" class="section level4">
-<h4><span class="header-section-number">0.2.1.3</span> Linux</h4>
-<ul>
-<li>Follow the instructions for your distribution
-from <a href="https://cloud.r-project.org/bin/linux">CRAN</a>, they provide information
-to get the most recent version of R for common distributions. For most
-distributions, you could use your package manager (e.g., for Debian/Ubuntu run
-<code>sudo apt-get install r-base</code>, and for Fedora <code>sudo yum install R</code>), but we
-don’t recommend this approach as the versions provided by this are
-usually out of date. In any case, make sure you have at least R 3.3.1.</li>
-<li>Go to the
-<a href="https://www.rstudio.com/products/rstudio/download/#download">RStudio download page</a></li>
-<li>Under <em>Installers</em> select the version that matches your distribution, and
-install it with your preferred method (e.g., with Debian/Ubuntu <code>sudo dpkg -i rstudio-x.yy.zzz-amd64.deb</code> at the terminal).</li>
-<li>Once it’s installed, open RStudio to make sure it works and you don’t get any
-error messages.</li>
-</ul>
-<p>These setup instructions are adapted from those written for <a href="http://www.datacarpentry.org/R-ecology-lesson/">Data Carpentry: R
-for Data Analysis and Visualization of Ecological
-Data</a>.</p>
+<div id="define-the-learners" class="section level3">
+<h3><span class="header-section-number">4.2.5</span> Define the learners</h3>
+<p>Currently, the only other thing a user must define are the <code>sl3</code> learners used
+to estimate the relevant factors of the likelihood: Q and g.</p>
+<p>This takes the form of a list of <code>sl3</code> learners, one for each likelihood factor
+to be estimated with <code>sl3</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># choose base learners</span>
+lrnr_mean &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_mean)
+lrnr_xgboost &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_xgboost)
 
+<span class="co"># define metalearners appropriate to data types</span>
+ls_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_nnls)
+mn_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_solnp, metalearner_linear_multinomial,
+                               loss_loglik_multinomial)
+sl_Y &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(<span class="dt">learners =</span> <span class="kw">list</span>(lrnr_mean, lrnr_xgboost),
+                    <span class="dt">metalearner =</span> ls_metalearner)
+sl_A &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(<span class="dt">learners =</span> <span class="kw">list</span>(lrnr_mean, lrnr_xgboost),
+                    <span class="dt">metalearner =</span> mn_metalearner)
+learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">A =</span> sl_A, <span class="dt">Y =</span> sl_Y)</code></pre>
+<p>Here, we use a Super Learner as defined in the previous chapter. In the future,
+we plan to include reasonable defaults learners.</p>
+</div>
+<div id="fit-the-tmle" class="section level3">
+<h3><span class="header-section-number">4.2.6</span> Fit the TMLE</h3>
+<p>We now have everything we need to fit the tmle using <code>tmle3</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(ate_spec, washb_data, node_list, learner_list)</code></pre>
+</div>
+<div id="evaluate-the-estimates" class="section level3">
+<h3><span class="header-section-number">4.2.7</span> Evaluate the Estimates</h3>
+<p>We can see the summary results by printing the fit object. Alternatively, we
+can extra results from the summary by indexing into it:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(tmle_fit)</code></pre>
+<pre><code>A tmle3_Fit that took 1 step(s)
+   type                                    param    init_est    tmle_est
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002413691 0.005699422
+           se       lower     upper psi_transformed lower_transformed
+1: 0.05063367 -0.09354074 0.1049396     0.005699422       -0.09354074
+   upper_transformed
+1:         0.1049396</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">estimates &lt;-<span class="st"> </span>tmle_fit<span class="op">$</span>summary<span class="op">$</span>psi_transformed
+<span class="kw">print</span>(estimates)</code></pre>
+<pre><code>[1] 0.005699422</code></pre>
 </div>
 </div>
+<div id="tmle3-components" class="section level2">
+<h2><span class="header-section-number">4.3</span> <code>tmle3</code> Components</h2>
+<p>Now that we’ve successfully used a spec to obtain a TML estimate, let’s look
+under the hood at the components. The spec has a number of functions that
+generate the objects necessary to define and fit a TMLE.</p>
+<div id="tmle3_task" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> <code>tmle3_task</code></h3>
+<p>First is, a <code>tmle3_Task</code>, analogous to an <code>sl3_Task</code>, containing the data we’re
+fitting the TMLE to, as well as an NP-SEM generated from the <code>node_list</code>
+defined above, describing the variables and their relationships.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_task &lt;-<span class="st"> </span>ate_spec<span class="op">$</span><span class="kw">make_tmle_task</span>(washb_data, node_list)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_task<span class="op">$</span>npsem</code></pre>
+<pre><code>$W
+tmle3_Node: W
+    Variables: month, aged, sex, momedu, hfiacat, Nlt18, Ncomp, watmin, elec, floor, walls, roof, asset_wardrobe, asset_table, asset_chair, asset_khat, asset_chouki, asset_tv, asset_refrig, asset_bike, asset_moto, asset_sewmach, asset_mobile, momage, momheight, delta_momage, delta_momheight
+    Parents: 
+
+$A
+tmle3_Node: A
+    Variables: tr
+    Parents: W
+
+$Y
+tmle3_Node: Y
+    Variables: whz
+    Parents: A, W</code></pre>
+</div>
+<div id="initial-likelihood" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> Initial Likelihood</h3>
+<p>Next, is an object representing the likelihood, factorized according to the
+NPSEM described above:</p>
+<pre class="sourceCode r"><code class="sourceCode r">initial_likelihood &lt;-<span class="st"> </span>ate_spec<span class="op">$</span><span class="kw">make_initial_likelihood</span>(
+  tmle_task,
+  learner_list
+)
+<span class="kw">print</span>(initial_likelihood)</code></pre>
+<pre><code>W: Lf_emp
+A: LF_fit
+Y: LF_fit</code></pre>
+<p>These components of the likelihood indicate how the factors were estimated: the
+marginal distribution of <span class="math inline">\(W\)</span> was estimated using NP-MLE, and the conditional
+distributions of <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> were estimated using <code>sl3</code> fits (as defined with
+the <code>learner_list</code>) above.</p>
+<p>We can use this in tandem with the <code>tmle_task</code> object to obtain likelihood
+estimates for each observation:</p>
+<pre class="sourceCode r"><code class="sourceCode r">initial_likelihood<span class="op">$</span><span class="kw">get_likelihoods</span>(tmle_task)</code></pre>
+<pre><code>                 W         A          Y
+   1: 0.0002129925 0.2482512 -0.6531069
+   2: 0.0002129925 0.2541445 -0.6280393
+   3: 0.0002129925 0.2579896 -0.6167108
+   4: 0.0002129925 0.2761062 -0.5979172
+   5: 0.0002129925 0.2532464 -0.5454508
+  ---                                  
+4691: 0.0002129925 0.1338515 -0.4713444
+4692: 0.0002129925 0.1263455 -0.4887982
+4693: 0.0002129925 0.1265552 -0.5671941
+4694: 0.0002129925 0.1685176 -0.7979616
+4695: 0.0002129925 0.1295674 -0.5427513</code></pre>
+<!-- TODO: make helper to get learners out of fit objects -->
+</div>
+<div id="targeted-likelihood-updater" class="section level3">
+<h3><span class="header-section-number">4.3.3</span> Targeted Likelihood (updater)</h3>
+<p>We also need to define a “Targeted Likelihood” object. This is a special type
+of likelihood that is able to be updated using an <code>tmle3_Update</code> object. This
+object defines the update strategy (e.g. submodel, loss function, CV-TMLE or
+not, etc).</p>
+<pre class="sourceCode r"><code class="sourceCode r">targeted_likelihood &lt;-<span class="st"> </span>Targeted_Likelihood<span class="op">$</span><span class="kw">new</span>(initial_likelihood)</code></pre>
+<p>When constructing the targeted likelihood, you can specify different update
+options. See the documentation for <code>tmle3_Update</code> for details of the different
+options. For example, you can disable CV-TMLE (the default in <code>tmle3</code>) as
+follows:</p>
+<pre class="sourceCode r"><code class="sourceCode r">targeted_likelihood_no_cv &lt;-
+<span class="st">  </span>Targeted_Likelihood<span class="op">$</span><span class="kw">new</span>(initial_likelihood,
+    <span class="dt">updater =</span> <span class="kw">list</span>(<span class="dt">cvtmle =</span> <span class="ot">FALSE</span>)
+  )</code></pre>
+</div>
+<div id="parameter-mapping" class="section level3">
+<h3><span class="header-section-number">4.3.4</span> Parameter Mapping</h3>
+<p>Finally, we need to define the parameters of interest. Here, the spec defines a
+single parameter, the ATE. In the next section, we’ll see how to add additional
+parameters.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_params &lt;-<span class="st"> </span>ate_spec<span class="op">$</span><span class="kw">make_params</span>(tmle_task, targeted_likelihood)
+<span class="kw">print</span>(tmle_params)</code></pre>
+<pre><code>[[1]]
+Param_ATE: ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}]</code></pre>
+</div>
+<div id="putting-it-all-together" class="section level3">
+<h3><span class="header-section-number">4.3.5</span> Putting it all together</h3>
+<p>Having used the spec to manually generate all these components, we can now
+manually fit a <code>tmle3</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tmle_fit_manual &lt;-<span class="st"> </span><span class="kw">fit_tmle3</span>(
+  tmle_task, targeted_likelihood, tmle_params,
+  targeted_likelihood<span class="op">$</span>updater
+)
+<span class="kw">print</span>(tmle_fit_manual)</code></pre>
+<pre><code>A tmle3_Fit that took 1 step(s)
+   type                                    param    init_est   tmle_est
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002242537 0.00349764
+           se       lower    upper psi_transformed lower_transformed
+1: 0.05070416 -0.09588068 0.102876      0.00349764       -0.09588068
+   upper_transformed
+1:          0.102876</code></pre>
+<p>The result is equivalent to fitting using the <code>tmle3</code> function as above.</p>
 </div>
 </div>
-<h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-vdl2011targeted">
-<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
+<div id="fitting-tmle3-with-multiple-parameters" class="section level2">
+<h2><span class="header-section-number">4.4</span> Fitting <code>tmle3</code> with multiple parameters</h2>
+<p>Above, we fit a <code>tmle3</code> with just one parameter. <code>tmle3</code> also supports fitting
+multiple parameters simultaneously. To illustrate this, we’ll use the
+<code>tmle_TSM_all</code> spec:</p>
+<pre class="sourceCode r"><code class="sourceCode r">tsm_spec &lt;-<span class="st"> </span><span class="kw">tmle_TSM_all</span>()
+targeted_likelihood &lt;-<span class="st"> </span>Targeted_Likelihood<span class="op">$</span><span class="kw">new</span>(initial_likelihood)
+all_tsm_params &lt;-<span class="st"> </span>tsm_spec<span class="op">$</span><span class="kw">make_params</span>(tmle_task, targeted_likelihood)
+<span class="kw">print</span>(all_tsm_params)</code></pre>
+<pre><code>[[1]]
+Param_TSM: E[Y_{A=Control}]
+
+[[2]]
+Param_TSM: E[Y_{A=Handwashing}]
+
+[[3]]
+Param_TSM: E[Y_{A=Nutrition}]
+
+[[4]]
+Param_TSM: E[Y_{A=Nutrition + WSH}]
+
+[[5]]
+Param_TSM: E[Y_{A=Sanitation}]
+
+[[6]]
+Param_TSM: E[Y_{A=WSH}]
+
+[[7]]
+Param_TSM: E[Y_{A=Water}]</code></pre>
+<p>This spec generates a Treatment Specific Mean (TSM) for each level of the
+exposure variable. Note that we must first generate a new targeted likelihood,
+as the old one was targeted to the ATE. However, we can recycle the initial
+likelihood we fit above, saving us a super learner step.</p>
+<div id="delta-method" class="section level3">
+<h3><span class="header-section-number">4.4.1</span> Delta Method</h3>
+<p>We can also define parameters based on Delta Method Transformations of other
+parameters. For instance, we can estimate a ATE using the delta method and two
+of the above TSM parameters:</p>
+<pre class="sourceCode r"><code class="sourceCode r">ate_param &lt;-<span class="st"> </span><span class="kw">define_param</span>(
+  Param_delta, targeted_likelihood,
+  delta_param_ATE,
+  <span class="kw">list</span>(all_tsm_params[[<span class="dv">1</span>]], all_tsm_params[[<span class="dv">4</span>]])
+)
+<span class="kw">print</span>(ate_param)</code></pre>
+<pre><code>Param_delta: E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]</code></pre>
+<p>This can similarly be used to estimate other derived parameters like Relative
+Risks, and Population Attributable Risks</p>
 </div>
-<div id="ref-vdl2018targeted">
-<p>van der Laan, Mark J, and Sherri Rose. 2018. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
+<div id="fit" class="section level3">
+<h3><span class="header-section-number">4.4.2</span> Fit</h3>
+<p>We can now fit a TMLE simultaneously for all TSM parameters, as well as the
+above defined ATE parameter</p>
+<pre class="sourceCode r"><code class="sourceCode r">all_params &lt;-<span class="st"> </span><span class="kw">c</span>(all_tsm_params, ate_param)
+
+tmle_fit_multiparam &lt;-<span class="st"> </span><span class="kw">fit_tmle3</span>(
+  tmle_task, targeted_likelihood, all_params,
+  targeted_likelihood<span class="op">$</span>updater
+)
+
+<span class="kw">print</span>(tmle_fit_multiparam)</code></pre>
+<pre><code>A tmle3_Fit that took 1 step(s)
+   type                                       param     init_est     tmle_est
+1:  TSM                            E[Y_{A=Control}] -0.592369177 -0.621277011
+2:  TSM                        E[Y_{A=Handwashing}] -0.603901224 -0.641952890
+3:  TSM                          E[Y_{A=Nutrition}] -0.599782502 -0.613692687
+4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.590126640 -0.617660839
+5:  TSM                         E[Y_{A=Sanitation}] -0.586288741 -0.592166919
+6:  TSM                                E[Y_{A=WSH}] -0.532231519 -0.437882635
+7:  TSM                              E[Y_{A=Water}] -0.575556813 -0.531385838
+8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.002242537  0.003616172
+           se       lower      upper psi_transformed lower_transformed
+1: 0.02991921 -0.67991759 -0.5626364    -0.621277011       -0.67991759
+2: 0.04178031 -0.72384080 -0.5600650    -0.641952890       -0.72384080
+3: 0.04259637 -0.69718005 -0.5302053    -0.613692687       -0.69718005
+4: 0.04104439 -0.69810636 -0.5372153    -0.617660839       -0.69810636
+5: 0.04248758 -0.67544104 -0.5088928    -0.592166919       -0.67544104
+6: 0.04533987 -0.52674715 -0.3490181    -0.437882635       -0.52674715
+7: 0.03906425 -0.60795036 -0.4548213    -0.531385838       -0.60795036
+8: 0.05069100 -0.09573637  0.1029687     0.003616172       -0.09573637
+   upper_transformed
+1:        -0.5626364
+2:        -0.5600650
+3:        -0.5302053
+4:        -0.5372153
+5:        -0.5088928
+6:        -0.3490181
+7:        -0.4548213
+8:         0.1029687</code></pre>
+</div>
+</div>
+<div id="exercise-1" class="section level2">
+<h2><span class="header-section-number">4.5</span> Exercise</h2>
+<p>We’ll use data from the Collaborative Perinatal Project (CPP), available in the
+<code>sl3</code> package. To simplify this example, we define a binary intervention
+variable, <code>parity01</code> – an indicator of having one or more children before the
+current child and a binary outcome, <code>haz01</code> – an indicator of having an above
+average height for age.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load the data set</span>
+<span class="kw">data</span>(cpp)
+cpp &lt;-<span class="st"> </span>cpp[<span class="op">!</span><span class="kw">is.na</span>(cpp[, <span class="st">&quot;haz&quot;</span>]), ]
+cpp<span class="op">$</span>parity01 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(cpp<span class="op">$</span>parity <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)
+cpp[<span class="kw">is.na</span>(cpp)] &lt;-<span class="st"> </span><span class="dv">0</span>
+cpp<span class="op">$</span>haz01 &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(cpp<span class="op">$</span>haz <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)</code></pre>
+<p>We’re interested in using this simplified data to estimate an Average Treatment
+Effect (ATE):</p>
+<p><span class="math display">\[\Psi(P_0) = E_0(E_0[Y|A=1,W]-E_0[Y|A=0,W])\]</span></p>
+<!--
+The purely statistical (noncausal) parameter can be interpreted as the average
+of the difference in means across the strata for $W$, and only requires the
+positivity assumption, that the conditional treatment assignment probabilities
+are positive for each possible $w:P_0(A=1|W =w)>0$ and $P_0(A=0|W =w)>0$ for
+each possible $w$.
+
+To interpret this parameter as causal, specifically the causal risk difference
+$E_0Y_1-E_0Y_0$, then we would also need to make the randomization assumption
+stating that $A$ is independent of the counterfactuals $(Y_0,Y_1)$ within strata
+of $W$. This assumption might have been included in the original SCM
+$\mathcal{M}^F$, but, if one knows there are unmeasured confounders, then the
+model $\mathcal{M}^{F^{\star}}$ would be more restrictive by enforcing this
+"known to be wrong" randomization assumption. Still, this assumption does not
+change the statistical model $\mathcal{M}$, and as a consequence, it does not
+affect the estimation problem either. Thus, the theorem's that establish
+desirable properties of the TMLE, still hold even when this non-testable
+randomization assumption is violated.
+
+We proceed with implementing a targeted minimum loss-based estimator (TMLE),
+an efficient substitution estimator which is not only asymptotically consistent,
+asymptotically normally distributed, and asymptotically efficient, but also
+tailored to have robust finite sample performance.
+-->
+<ol style="list-style-type: decimal">
+<li>Define the variable roles <span class="math inline">\((W,A,Y)\)</span> by creating a list of these nodes.
+Include the following baseline covariates in <span class="math inline">\(W\)</span>: <code>apgar1</code>, <code>apgar5</code>,
+<code>gagebrth</code>, <code>mage</code>, <code>meducyrs</code>, <code>sexn</code>. Both <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are specified above.</li>
+<li>Implement a <code>tmle3_Spec</code> object that bundles a set of components into a
+<em>specification</em>. We are interested in specifying the ATE, for which we use
+<code>tmle_ATE()</code>.</li>
+<li>Define <code>sl3</code> base learners to estimate <span class="math inline">\(Q = E(Y \mid A,Y)\)</span> and
+<span class="math inline">\(g=P(A \mid W)\)</span>.</li>
+<li>Define metalearners appropriate for data types.</li>
+<li>Define a Super Learner for estimating <span class="math inline">\(Q\)</span> and another for estimating <span class="math inline">\(g\)</span>.</li>
+<li>Create a list of the two Super Learners defined in Step 5 and call this
+object. The list names should be <code>A</code> (defining the Super Learner for
+estimating <span class="math inline">\(g\)</span>) and <code>Y</code> (defining the Super Learner for estimating <span class="math inline">\(Q\)</span>).</li>
+<li>Fit the tmle with the <code>tmle3</code> function. At a minimum, this function will
+requires specification of (1) the <code>tmle3_Spec</code>, which we defined in Step 2;
+<ol start="2" style="list-style-type: decimal">
+<li>the data; (3) the list of nodes, which defined the varible roles in Step
+1; and (4) the list of Super Learners for estimating <span class="math inline">\(g\)</span> and <span class="math inline">\(Q\)</span>, which we
+defined in Step 6. Note: Like before, you will need to make a data copy to
+deal with <code>data.table</code> weirdness (<code>cpp2 &lt;- data.table::copy(cpp)</code>) and use
+<code>cpp2</code> to fit the tmle.</li>
+</ol></li>
+<li>Interpret the <code>tmle3</code> fit both causally and statistically.</li>
+</ol>
+</div>
+<div id="summary" class="section level2">
+<h2><span class="header-section-number">4.6</span> Summary</h2>
+<p><code>tmle3</code> is a general purpose framework for generating TML estimates. The
+easiest way to use it is to use a predefined spec, allowing you to just fill in
+the blanks for the data, variable roles, and <code>sl3</code> learners. However, digging
+under the hood allows users to specify a wide range of TMLEs. In the next
+sections, we’ll see how this framework can be used to estimate advanced
+parameters such as optimal treatments and shift interventions.</p>
+
 </div>
 </div>
             </section>
@@ -607,8 +717,8 @@ Data</a>.</p>
           </div>
         </div>
       </div>
-
-<a href="motivation.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="ensemble-machine-learning.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="optimal-individualized-treatment-regimes.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -638,7 +748,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/tlverse/tlverse-handbook/edit/master/index.Rmd",
+"link": "https://github.com/tlverse/tlverse-handbook/edit/master/05-tmle3.Rmd",
 "text": "Edit"
 },
 "history": {
