@@ -179,13 +179,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="1.5.1" data-path="intro.html"><a href="intro.html#the-causal-model"><i class="fa fa-check"></i><b>1.5.1</b> The Causal Model</a></li>
 <li class="chapter" data-level="1.5.2" data-path="intro.html"><a href="intro.html#identifiability"><i class="fa fa-check"></i><b>1.5.2</b> Identifiability</a></li>
 </ul></li>
+<li class="chapter" data-level="1.6" data-path="intro.html"><a href="intro.html#the-wash-benefits-example-dataset"><i class="fa fa-check"></i><b>1.6</b> The WASH Benefits Example Dataset</a></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="tlverse.html"><a href="tlverse.html"><i class="fa fa-check"></i><b>2</b> Welcome to the <code>tlverse</code></a><ul>
 <li class="chapter" data-level="2.1" data-path="tlverse.html"><a href="tlverse.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="2.2" data-path="tlverse.html"><a href="tlverse.html#what-is-the-tlverse"><i class="fa fa-check"></i><b>2.2</b> What is the <code>tlverse</code>?</a></li>
 <li class="chapter" data-level="2.3" data-path="tlverse.html"><a href="tlverse.html#tlverse-components"><i class="fa fa-check"></i><b>2.3</b> <code>tlverse</code> components</a></li>
 <li class="chapter" data-level="2.4" data-path="tlverse.html"><a href="tlverse.html#installation"><i class="fa fa-check"></i><b>2.4</b> Installation</a></li>
-<li class="chapter" data-level="2.5" data-path="tlverse.html"><a href="tlverse.html#example-data---wash-benefits"><i class="fa fa-check"></i><b>2.5</b> Example Data - WASH Benefits</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="ensemble-machine-learning.html"><a href="ensemble-machine-learning.html"><i class="fa fa-check"></i><b>3</b> Ensemble Machine Learning</a><ul>
 <li class="chapter" data-level="3.1" data-path="ensemble-machine-learning.html"><a href="ensemble-machine-learning.html#learning-objectives-2"><i class="fa fa-check"></i><b>3.1</b> Learning Objectives</a></li>
@@ -296,6 +296,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="6.8.1" data-path="stochastic-treatment-regimes.html"><a href="stochastic-treatment-regimes.html#the-ideas-in-action-1"><i class="fa fa-check"></i><b>6.8.1</b> The Ideas in Action</a></li>
 <li class="chapter" data-level="6.8.2" data-path="stochastic-treatment-regimes.html"><a href="stochastic-treatment-regimes.html#review-of-key-concepts-1"><i class="fa fa-check"></i><b>6.8.2</b> Review of Key Concepts</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="r6.html"><a href="r6.html"><i class="fa fa-check"></i><b>7</b> A Primer on the <code>R6</code> Class System</a><ul>
+<li class="chapter" data-level="7.1" data-path="r6.html"><a href="r6.html#classes-fields-and-methods"><i class="fa fa-check"></i><b>7.1</b> Classes, Fields, and Methods</a></li>
+<li class="chapter" data-level="7.2" data-path="r6.html"><a href="r6.html#object-oriented-programming-python-and-r"><i class="fa fa-check"></i><b>7.2</b> Object Oriented Programming: <code>Python</code> and <code>R</code></a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
@@ -611,14 +615,148 @@ different parameters, there will be potentially different identifiability
 assumptions and the resulting estimands can be functions of different components
 of <span class="math inline">\(P_0\)</span>. We discuss several more complex estimands in later sections of this
 workshop.</p>
-
 </div>
+</div>
+<div id="the-wash-benefits-example-dataset" class="section level2">
+<h2><span class="header-section-number">1.6</span> The WASH Benefits Example Dataset</h2>
+<p>The data come from a study of the effect of water quality, sanitation, hand
+washing, and nutritional interventions on child development in rural Bangladesh
+(WASH Benefits Bangladesh): a cluster-randomised controlled trial
+<span class="citation">(“Temporary,” <a href="#ref-luby2018effects">n.d.</a>)</span>. The study enrolled pregnant women in their first or second
+trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
+Tangail districts of central Bangladesh, with an average of eight women per
+cluster. Groups of eight geographically adjacent clusters were block-randomised,
+using a random number generator, into six intervention groups (all of which
+received weekly visits from a community health promoter for the first 6 months
+and every 2 weeks for the next 18 months) and a double-sized control group (no
+intervention or health promoter visit). The six intervention groups were:</p>
+<ol style="list-style-type: decimal">
+<li>chlorinated drinking water;</li>
+<li>improved sanitation;</li>
+<li>handwashing with soap;</li>
+<li>combined water, sanitation, and hand washing;</li>
+<li>improved nutrition through counseling and provision of lipid-based nutrient
+supplements; and</li>
+<li>combined water, sanitation, handwashing, and nutrition.</li>
+</ol>
+<p>In the workshop, we concentrate on child growth (size for age) as the outcome of
+interest. For reference, this trial was registered with ClinicalTrials.gov as
+NCT01590095.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(here)
+<span class="kw">library</span>(tidyverse)
+
+<span class="co"># read in data</span>
+dat &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;washb_data.csv&quot;</span>))
+dat</code></pre>
+<pre><code># A tibble: 4,695 x 28
+     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
+   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3
+ 2 -1.16 Cont… N05265      9   286 male      25 Prima…      149. Modera…     2
+ 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1
+ 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3
+ 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2
+ 6 -0.51 Cont… N06531      9   304 male      20 Secon…      154. Severe…     0
+ 7 -2.46 Cont… N08002      9   336 fema…     19 Prima…      151. Food S…     2
+ 8 -0.6  Cont… N06528      9   312 fema…     25 No ed…      142. Food S…     2
+ 9 -0.23 Cont… N06528      9   322 male      30 Secon…      153. Food S…     1
+10 -0.14 Cont… N06453      9   376 male      30 No ed…      156. Modera…     2
+# … with 4,685 more rows, and 17 more variables: Ncomp &lt;dbl&gt;, watmin &lt;dbl&gt;,
+#   elec &lt;dbl&gt;, floor &lt;dbl&gt;, walls &lt;dbl&gt;, roof &lt;dbl&gt;, asset_wardrobe &lt;dbl&gt;,
+#   asset_table &lt;dbl&gt;, asset_chair &lt;dbl&gt;, asset_khat &lt;dbl&gt;, asset_chouki &lt;dbl&gt;,
+#   asset_tv &lt;dbl&gt;, asset_refrig &lt;dbl&gt;, asset_bike &lt;dbl&gt;, asset_moto &lt;dbl&gt;,
+#   asset_sewmach &lt;dbl&gt;, asset_mobile &lt;dbl&gt;</code></pre>
+<p>For the purposes of this workshop, we we start by treating the data as
+independent and identically distributed (i.i.d.) random draws from a very large
+target population. We could, with available options, account for the clustering
+of the data (within sampled geographic units), but, for simplification, we avoid
+these details in these workshop presentations, although modifications of our
+methodology for biased samples, repeated measures, etc., are available.</p>
+<p>We have 28 variables measured, of which 1 variable is set to be the outcome of
+interest. This outcome, <span class="math inline">\(Y\)</span>, is the weight-for-height Z-score (<code>whz</code> in <code>dat</code>);
+the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized treatment group (<code>tr</code> in
+<code>dat</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists simply of <em>everything else</em>. This
+results in our observed data structure being <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</p>
+<p>Using the <a href="https://CRAN.R-project.org/package=skimr"><code>skimr</code> package</a>, we can
+quickly summarize the variables measured in the WASH Benefits data set:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(skimr)
+<span class="kw">skim</span>(dat)</code></pre>
+<pre><code>Skim summary statistics
+ n obs: 4695 
+ n variables: 28 
+
+── Variable type:character ─────────────────────────────────────────────────────
+ variable missing complete    n min max empty n_unique
+  fracode       0     4695 4695   2   6     0       20
+  hfiacat       0     4695 4695  11  24     0        4
+   momedu       0     4695 4695  12  15     0        3
+      sex       0     4695 4695   4   6     0        2
+       tr       0     4695 4695   3  15     0        7
+
+── Variable type:numeric ───────────────────────────────────────────────────────
+       variable missing complete    n    mean    sd     p0    p25   p50    p75
+           aged       0     4695 4695 266.32  52.17  42    230    266   303   
+     asset_bike       0     4695 4695   0.32   0.47   0      0      0     1   
+    asset_chair       0     4695 4695   0.73   0.44   0      0      1     1   
+   asset_chouki       0     4695 4695   0.78   0.41   0      1      1     1   
+     asset_khat       0     4695 4695   0.61   0.49   0      0      1     1   
+   asset_mobile       0     4695 4695   0.86   0.35   0      1      1     1   
+     asset_moto       0     4695 4695   0.066  0.25   0      0      0     0   
+   asset_refrig       0     4695 4695   0.079  0.27   0      0      0     0   
+  asset_sewmach       0     4695 4695   0.065  0.25   0      0      0     0   
+    asset_table       0     4695 4695   0.73   0.44   0      0      1     1   
+       asset_tv       0     4695 4695   0.3    0.46   0      0      0     1   
+ asset_wardrobe       0     4695 4695   0.17   0.37   0      0      0     0   
+           elec       0     4695 4695   0.6    0.49   0      0      1     1   
+          floor       0     4695 4695   0.11   0.31   0      0      0     0   
+         momage      18     4677 4695  23.91   5.24  14     20     23    27   
+      momheight      31     4664 4695 150.5    5.23 120.65 147.05 150.6 154.06
+          month       0     4695 4695   6.45   3.33   1      4      6     9   
+          Ncomp       0     4695 4695  11.04   6.35   2      6     10    14   
+          Nlt18       0     4695 4695   1.6    1.25   0      1      1     2   
+           roof       0     4695 4695   0.99   0.12   0      1      1     1   
+          walls       0     4695 4695   0.72   0.45   0      0      1     1   
+         watmin       0     4695 4695   0.95   9.48   0      0      0     1   
+            whz       0     4695 4695  -0.59   1.03  -4.67  -1.28  -0.6   0.08
+   p100     hist
+ 460    ▁▁▂▇▇▅▁▁
+   1    ▇▁▁▁▁▁▁▃
+   1    ▃▁▁▁▁▁▁▇
+   1    ▂▁▁▁▁▁▁▇
+   1    ▅▁▁▁▁▁▁▇
+   1    ▁▁▁▁▁▁▁▇
+   1    ▇▁▁▁▁▁▁▁
+   1    ▇▁▁▁▁▁▁▁
+   1    ▇▁▁▁▁▁▁▁
+   1    ▃▁▁▁▁▁▁▇
+   1    ▇▁▁▁▁▁▁▃
+   1    ▇▁▁▁▁▁▁▂
+   1    ▆▁▁▁▁▁▁▇
+   1    ▇▁▁▁▁▁▁▁
+  60    ▅▇▅▂▁▁▁▁
+ 168    ▁▁▁▂▇▇▂▁
+  12    ▅▃▇▃▂▇▃▅
+  52    ▇▇▃▁▁▁▁▁
+  10    ▇▃▂▁▁▁▁▁
+   1    ▁▁▁▁▁▁▁▇
+   1    ▃▁▁▁▁▁▁▇
+ 600    ▇▁▁▁▁▁▁▁
+   4.97 ▁▁▅▇▃▁▁▁</code></pre>
+<p>A convenient summary of the relevant variables is given just above, complete
+with a small visualization describing the marginal characteristics of each
+covariate. Note that the <em>asset</em> variables reflect socio-economic status of the
+study participants. Notice also the uniform distribution of the treatment groups
+(with twice as many controls); this is, of course, by design.</p>
+
 </div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
 <div id="ref-pearl2009causality">
 <p>Pearl, Judea. 2009a. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
+</div>
+<div id="ref-luby2018effects">
+<p>“Temporary.” n.d.</p>
 </div>
 </div>
             </section>
