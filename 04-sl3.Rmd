@@ -173,7 +173,18 @@ folds $V=10$.
 **2. Make a super learner**
 
 Now that we have defined our machine learning problem with the task, we are
-ready to **"make"** the machine learning algorithms.
+ready to **"make"** the super learner. This requires specification of
+
+* A library of base learning algorithms that we think might be consistent with
+  the true data-generating distribution.
+* A metalearner, to ensemble the base learners.
+
+We might also incorporate
+
+* Feature selection, to pass only a subset of the predictors to the algorithm.
+* Hyperparameter specification, to tune base learners.
+
+We address feature selection and tuning in the next section, "Extensions".
 
 Learners have properties that indicate what features they support. We may use
 `sl3_list_properties()` to get a list of all properties supported by at least
@@ -394,7 +405,7 @@ washb_varimp %>%
 
 Answer the questions below to predict myocardial infarction (`mi`) using the
 available covariate data. Special thanks to David Benkeser at Emory for making
-the `chspred` data (loaded below) accessible.
+the `chspred` data accessible.
 
 ```{r ex-setup}
 # load the data set
@@ -402,7 +413,7 @@ db_data <-
  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
-head(chspred, 3) %>%
+head(chspred) %>%
   kable(digits = 3) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
@@ -420,7 +431,7 @@ head(chspred, 3) %>%
    on the task.
 7. Print your super learner fit by calling `print()` with `$`.
 8. Which learner is the discrete super learner, and what is its cross-validated
-   risk?
+   mean risk?
 9. What is the cross-validated risk of the continuous super learner?
 
 ## Concluding Remarks
@@ -498,11 +509,10 @@ xgb_learner <- Lrnr_xgboost$new()
 
 screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
 glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
-ranger_pipeline <- make_learner(Pipeline, screen_cor, ranger_learner)
 
 stack <- make_learner(
   Stack,
-  glm_pipeline, ranger_pipeline, glm_learner,
+  glm_pipeline, glm_learner,
   lasso_learner, ridge_learner, enet_learner,
   curated_glm_learner, mean_learner, glm_fast_learner,
   ranger_learner, svm_learner, xgb_learner
@@ -515,10 +525,10 @@ sl <- Lrnr_sl$new(
   metalearner = metalearner
 )
 sl_fit <- sl$train(task)
-sl_fit$print() %>%
-  kable(digits = 3) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+sl_fit$print()
+
+CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
+CVsl
 ```
 
 <!--
