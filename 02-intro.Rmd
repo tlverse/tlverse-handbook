@@ -304,3 +304,66 @@ different parameters, there will be potentially different identifiability
 assumptions and the resulting estimands can be functions of different components
 of $P_0$. We discuss several more complex estimands in later sections of this
 workshop.
+
+## The WASH Benefits Example Dataset
+
+The data come from a study of the effect of water quality, sanitation, hand
+washing, and nutritional interventions on child development in rural Bangladesh
+(WASH Benefits Bangladesh): a cluster-randomised controlled trial
+[@luby2018effects]. The study enrolled pregnant women in their first or second
+trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
+Tangail districts of central Bangladesh, with an average of eight women per
+cluster. Groups of eight geographically adjacent clusters were block-randomised,
+using a random number generator, into six intervention groups (all of which
+received weekly visits from a community health promoter for the first 6 months
+and every 2 weeks for the next 18 months) and a double-sized control group (no
+intervention or health promoter visit). The six intervention groups were:
+
+1. chlorinated drinking water;
+2. improved sanitation;
+3. handwashing with soap;
+4. combined water, sanitation, and hand washing;
+5. improved nutrition through counseling and provision of lipid-based nutrient
+   supplements; and
+6. combined water, sanitation, handwashing, and nutrition.
+
+In the workshop, we concentrate on child growth (size for age) as the outcome of
+interest. For reference, this trial was registered with ClinicalTrials.gov as
+NCT01590095.
+
+```{r load_washb_data_intro, message=FALSE, warning=FALSE}
+library(here)
+library(tidyverse)
+
+# read in data
+dat <- read_csv(here("data", "washb_data.csv"))
+dat
+```
+
+For the purposes of this workshop, we we start by treating the data as
+independent and identically distributed (i.i.d.) random draws from a very large
+target population. We could, with available options, account for the clustering
+of the data (within sampled geographic units), but, for simplification, we avoid
+these details in these workshop presentations, although modifications of our
+methodology for biased samples, repeated measures, etc., are available.
+
+We have 28 variables measured, of which 1 variable is set to be the outcome of
+interest. This outcome, $Y$, is the weight-for-height Z-score (`whz` in `dat`);
+the treatment of interest, $A$, is the randomized treatment group (`tr` in
+`dat`); and the adjustment set, $W$, consists simply of *everything else*. This
+results in our observed data structure being $n$ i.i.d. copies of $O_i = (W_i,
+A_i, Y_i)$, for $i = 1, \ldots, n$.
+
+Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
+quickly summarize the variables measured in the WASH Benefits data set:
+
+```{r skim_washb_data, message=FALSE, warning=FALSE}
+library(skimr)
+skim(dat)
+```
+
+A convenient summary of the relevant variables is given just above, complete
+with a small visualization describing the marginal characteristics of each
+covariate. Note that the *asset* variables reflect socio-economic status of the
+study participants. Notice also the uniform distribution of the treatment groups
+(with twice as many controls); this is, of course, by design.
