@@ -294,7 +294,6 @@ Reference`](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
 
 ```{r extra-lrnr}
 lrnr_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
-lrnr_ranger1k <- make_learner(Lrnr_ranger, num.trees = 1000)
 lrnr_gam <- Lrnr_pkg_SuperLearner$new("SL.gam")
 lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
@@ -304,7 +303,7 @@ a new super learner.
 ```{r new-stack}
 new_stack <- make_learner(
   Stack,
-  lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet, lrnr_ranger1k, lrnr_ranger100,
+  lrnr_glm, lrnr_mean, lrnr_glmnet, lrnr_ranger100,
   lrnr_gam, lrnr_bayesglm
 )
 ```
@@ -345,11 +344,11 @@ plot(dt_new, color = FALSE, height = "400px", width = "100%")
 
 Now we can Super Learn with this fancy base learner stack.
 
-```{r sl-fancy, eval=FALSE}
+```{r sl-fancy}
 # run sl and predict on WASH
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
-sl_fancy_fit <- sl_fancy$train(washb_task)
-sl_fancy_fit$print() %>%
+sl_fit_fancy <- sl_fancy$train(washb_task)
+sl_fit_fancy$print() %>%
   kable(digits = 3) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
@@ -363,7 +362,8 @@ performs on unseen data. This requires an "external" layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
 holdout sample that we don’t use to fit the super learner. This external
 cross-validation procedure may also incorporate 10 folds, which is the default
-in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for computational efficiency.
+in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for
+computational efficiency.
 
 ```{r CVsl}
 washb_task_new <- make_sl3_Task(
