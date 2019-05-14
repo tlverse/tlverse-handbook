@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Optimal Individualized Treatment Regimes | The Hitchhiker’s Guide to the tlverse</title>
   <meta name="description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
-  <meta name="generator" content="bookdown 0.10.1 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.10.2 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Optimal Individualized Treatment Regimes | The Hitchhiker’s Guide to the tlverse" />
   <meta property="og:type" content="book" />
@@ -903,10 +903,10 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data,
 
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est        se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5287431 0.4973104 0.0759547 0.3484419 0.6461789
+   type         param  init_est  tmle_est         se     lower  upper
+1:  TSM E[Y_{A=NULL}] 0.5299782 0.5941114 0.07514862 0.4468228 0.7414
    psi_transformed lower_transformed upper_transformed
-1:       0.4973104         0.3484419         0.6461789</code></pre>
+1:       0.5941114         0.4468228            0.7414</code></pre>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -941,10 +941,10 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data,
 
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type             param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=W3,W2,W1}] 0.5296706 0.6033683 0.06366986 0.4785777 0.7281589
+   type          param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W2,W1}] 0.5312984 0.5836167 0.06190754 0.4622801 0.7049532
    psi_transformed lower_transformed upper_transformed
-1:       0.6033683         0.4785777         0.7281589</code></pre>
+1:       0.5836167         0.4622801         0.7049532</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -969,15 +969,15 @@ tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_rever
 fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5472468 0.6599074 0.02130839 0.6181437 0.7016711
+   type         param  init_est  tmle_est         se     lower    upper
+1:  TSM E[Y_{A=NULL}] 0.5417214 0.6560999 0.02141424 0.6141287 0.698071
    psi_transformed lower_transformed upper_transformed
-1:       0.6599074         0.6181437         0.7016711</code></pre>
+1:       0.6560999         0.6141287          0.698071</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># How many individuals got assigned each treatment?</span>
 <span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</code></pre>
 <pre><code>
   2   3 
-512 488 </code></pre>
+514 486 </code></pre>
 </div>
 <div id="q-learning" class="section level3">
 <h3><span class="header-section-number">5.8.3</span> Q-learning</h3>
@@ -1003,7 +1003,7 @@ initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</
 
 <span class="co"># Estimate the parameter:</span>
 <span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</code></pre>
-<pre><code>[1] 0.475909</code></pre>
+<pre><code>[1] 0.48055</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1087,15 +1087,15 @@ vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle
 )
 
 <span class="kw">print</span>(vim_results)</code></pre>
-<pre><code>   type                  param      init_est    tmle_est         se       lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0214279127 -0.12415905 0.05335512 -0.22873317
-2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0001183537  0.04975311 0.03449316 -0.01785224
-         upper psi_transformed lower_transformed upper_transformed  A
-1: -0.01958493       0.8832394         0.7955408         0.9806056 W1
-2:  0.11735847       1.0510116         0.9823062         1.1245225  A
-             W    Z_stat        p_nz p_nz_corrected
-1:  W3,W4,W2,A -2.327031 0.009981796     0.01996359
-2: W3,W4,W2,W1  1.442405 0.074594048     0.07459405</code></pre>
+<pre><code>   type                  param     init_est    tmle_est         se        lower
+1:   RR RR(E[Y_{A=NULL}]/E[Y])  0.003004908  0.07149343 0.03365880  0.005523398
+2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.035777101 -0.07160157 0.04916815 -0.167969374
+        upper psi_transformed lower_transformed upper_transformed  A
+1: 0.13746346       1.0741111         1.0055387          1.147360  A
+2: 0.02476622       0.9309017         0.8453797          1.025075 W1
+             W    Z_stat       p_nz p_nz_corrected
+1: W3,W4,W2,W1  2.124064 0.01683241     0.03366482
+2:  W3,W4,W2,A -1.456259 0.07266047     0.07266047</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1205,9 +1205,9 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5540885 -0.4765474 0.04366318 -0.5621256 -0.3909691
+1:  TSM E[Y_{A=NULL}] -0.5553187 -0.4783546 0.04554782 -0.5676267 -0.3890825
    psi_transformed lower_transformed upper_transformed
-1:      -0.4765474        -0.5621256        -0.3909691</code></pre>
+1:      -0.4783546        -0.5676267        -0.3890825</code></pre>
 <hr />
 </div>
 <div id="exercises" class="section level2">
