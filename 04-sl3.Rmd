@@ -116,6 +116,7 @@ Using the WASH data, we are interested in predicting weight-for-height z-score
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
 ```{r setup, message=FALSE, warning=FALSE}
+library(skimr)
 library(kableExtra)
 library(here)
 library(tidyverse)
@@ -129,8 +130,8 @@ set.seed(7194)
 
 # load data set and take a peek
 washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
-head(washb_data, 3) %>%
-  kable(digits = 3) %>%
+head(washb_data) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 ```
@@ -268,7 +269,7 @@ values, and we can also obtain a summary of the results.
 sl_preds <- sl_fit$predict()
 head(sl_preds)
 sl_fit$print() %>%
-  kable(digits = 3) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 ```
@@ -349,7 +350,7 @@ Now we can Super Learn with this fancy base learner stack.
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
 sl_fit_fancy <- sl_fancy$train(washb_task)
 sl_fit_fancy$print() %>%
-  kable(digits = 3) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 ```
@@ -374,7 +375,7 @@ washb_task_new <- make_sl3_Task(
 )
 CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
 CVsl_fancy %>%
-  kable(digits = 3) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 ```
@@ -393,7 +394,7 @@ the `sl3` variable importance measurements for the `washb` data.
 ```{r varimp}
 washb_varimp <- varimp(sl_fit_fancy, loss_squared_error)
 washb_varimp %>%
-  kable(digits = 3) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 ```
@@ -404,8 +405,8 @@ washb_varimp %>%
 ### Predicting Myocardial Infarction with `sl3`
 
 Answer the questions below to predict myocardial infarction (`mi`) using the
-available covariate data. Special thanks to David Benkeser at Emory for making
-the `chspred` data accessible.
+available covariate data. Thanks to Professor David Benkeser at Emory University
+for making the this Cardiovascular Health Study (CHS) data easily accessible.
 
 ```{r ex-setup}
 # load the data set
@@ -414,9 +415,10 @@ db_data <-
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
 head(chspred) %>%
-  kable(digits = 3) %>%
+  kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
+skim(chspred)
 ```
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
