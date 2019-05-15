@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-05-14" />
+<meta name="date" content="2019-05-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2019-05-14</p>
+<p>Updated: 2019-05-15</p>
 <div id="learning-objectives-4" class="section level2">
 <h2><span class="header-section-number">5.1</span> Learning Objectives</h2>
 <ol style="list-style-type: decimal">
@@ -945,10 +945,10 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data,
 
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type          param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=W2,W1}] 0.5312984 0.5836167 0.06190754 0.4622801 0.7049532
+   type             param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W3,W2,W1}] 0.5314932 0.5902936 0.06805878 0.4569008 0.7236863
    psi_transformed lower_transformed upper_transformed
-1:       0.5836167         0.4622801         0.7049532</code></pre>
+1:       0.5902936         0.4569008         0.7236863</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -973,15 +973,15 @@ tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_rever
 fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower    upper
-1:  TSM E[Y_{A=NULL}] 0.5454777 0.6592763 0.02137932 0.6173736 0.701179
+   type         param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5511892 0.6530785 0.02150952 0.6109206 0.6952364
    psi_transformed lower_transformed upper_transformed
-1:       0.6592763         0.6173736          0.701179</code></pre>
+1:       0.6530785         0.6109206         0.6952364</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># How many individuals got assigned each treatment?</span>
 <span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</code></pre>
 <pre><code>
   2   3 
-512 488 </code></pre>
+509 491 </code></pre>
 </div>
 <div id="q-learning" class="section level3">
 <h3><span class="header-section-number">5.8.3</span> Q-learning</h3>
@@ -1007,7 +1007,7 @@ initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</
 
 <span class="co"># Estimate the parameter:</span>
 <span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</code></pre>
-<pre><code>[1] 0.4726743</code></pre>
+<pre><code>[1] 0.4743143</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1091,15 +1091,15 @@ vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle
 )
 
 <span class="kw">print</span>(vim_results)</code></pre>
-<pre><code>   type                  param      init_est    tmle_est         se       lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0236918096 -0.12570668 0.05211428 -0.22784879
-2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.0007449062  0.05109002 0.03397010 -0.01549016
-         upper psi_transformed lower_transformed upper_transformed  A
-1: -0.02356456       0.8818735         0.7962447         0.9767109 W1
-2:  0.11767020       1.0524176         0.9846292         1.1248731  A
-             W    Z_stat        p_nz p_nz_corrected
-1:  W3,W4,W2,A -2.412135 0.007929705     0.01585941
-2: W3,W4,W2,W1  1.503970 0.066294520     0.06629452</code></pre>
+<pre><code>   type                  param     init_est    tmle_est         se       lower
+1:   RR RR(E[Y_{A=NULL}]/E[Y])  0.002692931  0.10654964 0.03262616  0.04260355
+2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.030771168 -0.06225849 0.04989096 -0.16004297
+       upper psi_transformed lower_transformed upper_transformed  A           W
+1: 0.1704957        1.112433         1.0435241          1.185893  A W3,W4,W2,W1
+2: 0.0355260        0.939640         0.8521072          1.036165 W1  W3,W4,W2,A
+      Z_stat         p_nz p_nz_corrected
+1:  3.265774 0.0005458276    0.001091655
+2: -1.247891 0.1060354629    0.106035463</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1209,9 +1209,9 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5549059 -0.4813228 0.04393523 -0.5674342 -0.3952113
+1:  TSM E[Y_{A=NULL}] -0.5528979 -0.4815228 0.04349875 -0.5667788 -0.3962669
    psi_transformed lower_transformed upper_transformed
-1:      -0.4813228        -0.5674342        -0.3952113</code></pre>
+1:      -0.4815228        -0.5667788        -0.3962669</code></pre>
 <hr />
 </div>
 <div id="exercises" class="section level2">
