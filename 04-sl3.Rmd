@@ -111,7 +111,7 @@ following steps:
 Using the WASH data, we are interested in predicting weight-for-height z-score
 `whz` using the available covariate data. Let's begin!
 
-**0. Load the necessary libraries and data**
+### 0. Load the necessary libraries and data {-}
 
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
@@ -137,7 +137,7 @@ head(washb_data) %>%
   scroll_box(width = "100%", height = "300px")
 ```
 
-**1. Define the machine learning task**
+### 1. Define the machine learning task {-}
 
 To define the machine learning **"task"** (predict weight-for-height z-score
 `whz` using the available covariate data), we need to create an `sl3_Task`
@@ -172,7 +172,7 @@ Also, notice that we did not specify the number of folds, or the loss function
 in the task. The default cross-validation scheme is V-fold, with the number of
 folds $V=10$.
 
-**2. Make a super learner**
+### 2. Make a super learner {-}
 
 Now that we have defined our machine learning problem with the task, we are
 ready to **"make"** the super learner. This requires specification of
@@ -185,8 +185,6 @@ We might also incorporate
 
 * Feature selection, to pass only a subset of the predictors to the algorithm.
 * Hyperparameter specification, to tune base learners.
-
-We address feature selection and tuning in the next section, "Extensions".
 
 Learners have properties that indicate what features they support. We may use
 `sl3_list_properties()` to get a list of all properties supported by at least
@@ -209,8 +207,23 @@ Now that we have an idea of some learners, we can construct them using the
 # choose base learners
 lrnr_glm <- make_learner(Lrnr_glm)
 lrnr_mean <- make_learner(Lrnr_mean)
-lrnr_ranger <- make_learner(Lrnr_ranger)
 lrnr_glmnet <- make_learner(Lrnr_glmnet)
+```
+We can customize learner hyperparameters to incorporate a diversity of different
+settings.
+
+Documentation for the learners and their hyperparameters can be found
+in the [`sl3` Learners
+Reference](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
+
+We can also include learners from the [`SuperLearner` `R`
+package](https://github.com/ecpolley/superlearner).
+
+```{r extra-lrnr}
+lrnr_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
+lrnr_hal_simple <- make_learner(Lrnr_hal9001, degrees = 1, n_folds = 2)
+lrnr_gam <- Lrnr_pkg_SuperLearner$new("SL.gam")
+lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
 Are you interested in creating a new base learning algorithm? If so,
 instructions are provided in [Defining New `sl3`
@@ -225,15 +238,10 @@ combined or compared.
 ```{r stack}
 stack <- make_learner(
   Stack,
-  lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet
+  lrnr_glm, lrnr_mean, lrnr_ranger100, lrnr_glmnet,
+  lrnr_gam, lrnr_bayesglm
 )
-dt_stack <- delayed_learner_train(stack, washb_task)
-plot(dt_stack, color = FALSE, height = "400px", width = "100%")
 ```
-We visualize the stack in the above plot. If you zoom in you should be able to
-see the learner names that we included in our stack of base learning algorithms.
-
-We're almost ready to super learn! Just a couple more necessary specifications.
 
 We will fit a non-negative least squares metalearner using `Lrnr_nnls`. Note
 that any learner can be used as a metalearner. `Lrnr_nnls` is a solid choice
@@ -243,24 +251,50 @@ combining them.
 ```{r metalearner}
 metalearner <- make_learner(Lrnr_nnls)
 ```
-Now that we have made a library/stack of base learners and a metalearner, we
-are ready to make the super learner.
-<!-- Explain more!!!! -->
 
-```{r make-sl}
-sl <- make_learner(Lrnr_sl,
-  learners = stack,
-  metalearner = metalearner
-)
-dt <- delayed_learner_train(sl, washb_task)
-plot(dt, color = FALSE, height = "400px", width = "100%")
+We can optionally select a subset of available covariates and pass only
+those variables to the modeling algorithm.
+
+Let's consider screening covariates based on their correlation with our outcome
+of interest (`cor.test` p-value $\leq 0.1$).
+
+```{r screener}
+screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
+# which covariates are selected on the full data?
+screen_cor$train(washb_task)
+```
+To **"pipe"** only the selected covariates to the modeling algorithm, we need to
+make a `Pipeline`, which is a just set of learners to be fit sequentially, where
+the fit from one learner is used to define the task for the next learner. Note
+the difference between `Pipeline` and `Stack` here- one is necessary in order
+to define a sequential process, whereas the other one establishes parallel
+function of learners.
+
+```{r screener-pipe}
+cor_pipeline <- make_learner(Pipeline, screen_cor, stack)
+```
+
+Now our learners will be preceded by a screening step.
+
+We also consider the original `stack`, just to compare how the feature selection
+methods perform in comparison to the methods without feature selection.
+
+Analogous to what we have seen before, we have to stack the pipeline and
+original `stack` together, so we may use them as base learners in our super
+learner.
+
+```{r screeners-stack}
+fancy_stack <- make_learner(Stack, cor_pipeline, stack)
+# we can visualize the stack
+dt_stack <- delayed_learner_train(fancy_stack, washb_task)
+plot(dt_stack, color = FALSE, height = "400px", width = "100%")
 ```
 In the above plot, we visualize the super learner, which we can see has 10
 realizations of the stack and a separate hold-out (the top branch of the figure)
 that will not be used to fit the super learner.
 <!-- Explain more!!!! -->
 
-**3. Train the super learner on the machine learning task**
+### 3. Train the super learner on the machine learning task {-}
 
 The super learner algorithm fits a metalearner on the validation-set
 predictions in a cross-validated manner, thereby avoiding overfitting. This
@@ -271,16 +305,16 @@ cross-validated risk.
 Now we are ready to **"train"** our super learner on our `sl3_task` object,
 `washb_task`.
 
-```{r slbasic}
+```{r sl-basic}
 sl_fit <- sl$train(washb_task)
 ```
 
-**4. Obtain predicted values**
+### 4. Obtain predicted values {-}
 
 Now that we have fit the super learner, we are ready to obtain our predicted
 values, and we can also obtain a summary of the results.
 
-```{r slbasic-summary}
+```{r sl-basic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
 sl_fit$print()
@@ -293,87 +327,7 @@ selector, or the discrete super learner. The mean risk of the (continuous) super
 learner is calculated using the hold-out set that we visualized in the plot
 above.
 
-## Extensions
-
-In this section, we will introduce a few extensions of the `sl3` framework,
-including
-
-1. Customizing learner hyperparameters;
-2. Feature selection;
-3. Cross-validated super learner;
-4. Variable importance with `sl3`.
-
-### Customize Learner Hyperparameters
-
-We can customize learner hyperparameters to incorporate a diversity of different
-settings. We can also include learners from the [`SuperLearner` `R`
-package](https://github.com/ecpolley/superlearner). Documentation for the
-learners and their hyperparameters can be found in the [`sl3 Learners
-Reference`](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
-
-```{r extra-lrnr}
-lrnr_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
-lrnr_gam <- Lrnr_pkg_SuperLearner$new("SL.gam")
-lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
-```
-Let's create a new stack with these new learners, so we may incorporate them in
-a new super learner.
-
-```{r new-stack}
-new_stack <- make_learner(
-  Stack,
-  lrnr_glm, lrnr_mean, lrnr_glmnet, lrnr_ranger100,
-  lrnr_gam, lrnr_bayesglm
-)
-```
-
-### Screening Covariates
-
-Why stop now? We can also select a subset of available covariates and pass only
-those variables to the modeling algorithm. This screening can be particularly
-important when there are many variables.
-
-Let's see how this works. Consider screening covariates based on their
-correlation with the outcome (`cor.test` p-value $\leq 0.1$).
-
-```{r screeners}
-screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
-```
-Now we need to **"pipe"**  only those selected covariates to the modeling
-algorithm. To accomplish this, we need to make a `Pipeline`, which is a just
-set of learners to be fit sequentially, where the fit from one learner is used
-to define the task for the next learner. Note the difference between `Pipeline`
-and `Stack` here- one is necessary in order to define a sequential process,
-whereas the other one establishes parallel function of learners.
-
-```{r screeners-pipe}
-cor_pipeline <- make_learner(Pipeline, screen_cor, new_stack)
-```
-Now, our learners will be preceded by a screening step. Let's also consider the
-`new_stack`, just to compare how the feature selection methods perform in
-comparison to the methods without feature selection. Analogous to what we have
-seen before, we have to stack the pipeline and `new_stack` together, so we may
-use them as base learners in our super learner.
-
-```{r screeners-stack}
-fancy_stack <- make_learner(Stack, cor_pipeline, new_stack)
-dt_new <- delayed_learner_train(fancy_stack, washb_task)
-plot(dt_new, color = FALSE, height = "400px", width = "100%")
-```
-We visualize the `fancy_stack` above, which lays out these machine learning
-steps with and without the feature selection pipeline.
-
-Now we can Super Learn with this fancy base learner stack.
-
-```{r sl-fancy}
-# run sl and predict on WASH
-sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
-sl_fit_fancy <- sl_fancy$train(washb_task)
-sl_fit_fancy$print()
-```
-<!-- Explain summary!!!! -->
-
-### Cross-validated Super Learner
+## Cross-validated Super Learner
 
 We can cross-validate the super learner to see how well the super learner
 performs on unseen data, and obtain an estimate of the cross-validated risk of
@@ -405,7 +359,7 @@ CVsl_fancy %>%
 ```
 <!-- Explain summary!!!! -->
 
-### Variable Importance Analysis with `sl3`
+## Variable Importance Measures with `sl3`
 
 Variable importance can be interesting and informative. The `sl3` `varimp`
 function returns a table with variables listed in decreasing order of
@@ -424,9 +378,7 @@ washb_varimp %>%
 ```
 <!-- Explain summary!!!! -->
 
-## Exercise
-
-### Predicting Myocardial Infarction with `sl3`
+## Exercise 1 -- Predicting Myocardial Infarction with `sl3` {#sl3ex1}
 
 Answer the questions below to predict myocardial infarction (`mi`) using the
 available covariate data. Thanks to Professor David Benkeser at Emory University
@@ -459,102 +411,7 @@ head(chspred) %>%
    data. Specify `loss_squared_error` as the loss function to evaluate the
    super learner.
 
-## Concluding Remarks
-
-The general ensemble learning approach of super learner can be applied to a
-diversity of estimation and prediction problems that can be defined by a loss
-function. We just discussed conditional mean estimation, and in the appendix we
-delve into prediction of a conditional density, and the optimal individualized
-treatment rule. Plug-in estimators of the estimand are desirable because a
-plug-in estimator respects both the local and global constraints of the
-statistical model. We could just plug-in the estimator returned by Super
-Learner; however, this is problematic because the Super Learner estimators are
-trading off bias and variance in an optimal way and as a result their bias is
-essentially the rate of convergence of these algorithms, which is always slower
-than $1/\sqrt{n}$. Therefore, if we plug-in the estimator returned by super
-learner into the target parameter mapping, we would end up with an
-estimator which has the same bias as what we plugged in, which is greater than
-$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically
-normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
-
-An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$), and
-can be written as an empirical mean in first order of a function of the data,
-the influence curve, plus some negligible remainder term. Once an estimator
-is asymptotically linear with an influence curve it’s normally distributed, so
-the standardized estimator converges to a normal distribution with mean 0 and
-variance is the variance of the influence curve. Thus, it is advantageous to
-construct asymptotically linear estimators since they permit formal statistical
-inference. Among the class of regular asymptotically linear estimators, there is
-an optimal estimator which is an efficient estimator, and that’s the one with
-influence curve equal to the canonical gradient of the path-wise derivative of
-the target parameter. The canonical gradient is the direction of the path
-through the data distribution where the parameter is steepest. An estimator is
-efficient if and only if is asymptotically linear with influence curve equal to
-the canonical gradient. One can calculate the canonical gradient with the
-statistical model and the statistical target parameter. Techniques for
-calculating the canonical gradient entail projecting an initial gradient on the
-tangent space of the model at the particular distribution in the model in which
-you want to calculate the canonical gradient.
-
-Now we know what it takes to construct an efficient estimator. Namely, we need
-to construct an estimator which is asymptotically linear with influence curve
-the canonical gradient. There are three general classes of estimators which
-succeed in constructing asymptotically linear estimators: (1) the one-step
-estimator, but it is not a plug-in estimator; (2) the targeted maximum
-likelihood estimator, which is a super learner targeted towards the target
-parameter and it is a plug-in estimator; and (3) estimating equation based
-estimators, which use the canonical gradient but as an estimating function in
-the target parameter. In the chapters that follow, we focus on the targeted
-maximum likelihood estimator and the targeted minimum loss-based estimator,
-both referred to as TMLE.
-
-## Appendix
-
-### Exercise solution
-
-Here's a potential solution to the exercise above.
-
-```{r ex-key, eval=FALSE}
-chspred_task <- make_sl3_Task(
-  data = chspred,
-  covariates = head(colnames(chspred), -1),
-  outcome = "mi"
-)
-
-glm_learner <- Lrnr_glm$new()
-lasso_learner <- Lrnr_glmnet$new(alpha = 1)
-ridge_learner <- Lrnr_glmnet$new(alpha = 0)
-enet_learner <- Lrnr_glmnet$new(alpha = 0.5)
-curated_glm_learner <- Lrnr_glm_fast$new(formula = "mi ~ smoke + beta + waist")
-mean_learner <- Lrnr_mean$new() # That is one mean learner!
-glm_fast_learner <- Lrnr_glm_fast$new()
-ranger_learner <- Lrnr_ranger$new()
-svm_learner <- Lrnr_svm$new()
-xgb_learner <- Lrnr_xgboost$new()
-
-screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
-glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
-
-stack <- make_learner(
-  Stack,
-  glm_pipeline, glm_learner,
-  lasso_learner, ridge_learner, enet_learner,
-  curated_glm_learner, mean_learner, glm_fast_learner,
-  ranger_learner, svm_learner, xgb_learner
-)
-
-metalearner <- make_learner(Lrnr_nnls)
-
-sl <- Lrnr_sl$new(
-  learners = stack,
-  metalearner = metalearner
-)
-sl_fit <- sl$train(task)
-sl_fit$print()
-
-CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
-CVsl
-```
+## Super Learning of a Conditional Density
 
 <!--
 
@@ -643,8 +500,18 @@ estimator of $\lambda_0(a\mid W)$ for each $a$ (i.e., stratify by $s$ in the
 * For non-categorical $A$, one could include both stratified (by level) as well
 as pooled (across levels) based logistic regression estimators.
 
-### Super learning of an optimal individualized treatment rule
+--->
 
+## Exercise 2 -- Estimating the Propensity Score with `sl3` {#sl3ex2}
+
+<!--
+exercise where we can look at positivity and maybe modify target population,
+address issues related to this
+-->
+
+## Super Learning of an Optimal Individualized Treatment Rule
+
+<!--
 * Data $O=(W,A,Y)$, and nonparametric model \mathcal{M} potentially containing
 assumptions on the conditional probability distribution of $A$ given $W$
 $g_0(A\mid W)$.
@@ -675,3 +542,117 @@ the split $B_n$ of the training sample and the empirical distribution of the
 validation sample is $P_{n,B_n}^1$.
 * Super-learner of optimal rule $\psi_0$: $\hat{\Psi}_{k_n}(P_n)$.
 -->
+
+## Exercise 3 -- Estimating the Blip {#sl3ex3}
+
+## Concluding Remarks
+
+The general ensemble learning approach of super learner can be applied to a
+diversity of estimation and prediction problems that can be defined by a loss
+function. We just discussed conditional mean estimation, and in the appendix we
+delve into prediction of a conditional density, and the optimal individualized
+treatment rule. Plug-in estimators of the estimand are desirable because a
+plug-in estimator respects both the local and global constraints of the
+statistical model. We could just plug-in the estimator returned by Super
+Learner; however, this is problematic because the Super Learner estimators are
+trading off bias and variance in an optimal way and as a result their bias is
+essentially the rate of convergence of these algorithms, which is always slower
+than $1/\sqrt{n}$. Therefore, if we plug-in the estimator returned by super
+learner into the target parameter mapping, we would end up with an
+estimator which has the same bias as what we plugged in, which is greater than
+$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically
+normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
+
+An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$), and
+can be written as an empirical mean in first order of a function of the data,
+the influence curve, plus some negligible remainder term. Once an estimator
+is asymptotically linear with an influence curve it’s normally distributed, so
+the standardized estimator converges to a normal distribution with mean 0 and
+variance is the variance of the influence curve. Thus, it is advantageous to
+construct asymptotically linear estimators since they permit formal statistical
+inference. Among the class of regular asymptotically linear estimators, there is
+an optimal estimator which is an efficient estimator, and that’s the one with
+influence curve equal to the canonical gradient of the path-wise derivative of
+the target parameter. The canonical gradient is the direction of the path
+through the data distribution where the parameter is steepest. An estimator is
+efficient if and only if is asymptotically linear with influence curve equal to
+the canonical gradient. One can calculate the canonical gradient with the
+statistical model and the statistical target parameter. Techniques for
+calculating the canonical gradient entail projecting an initial gradient on the
+tangent space of the model at the particular distribution in the model in which
+you want to calculate the canonical gradient.
+
+Now we know what it takes to construct an efficient estimator. Namely, we need
+to construct an estimator which is asymptotically linear with influence curve
+the canonical gradient. There are three general classes of estimators which
+succeed in constructing asymptotically linear estimators: (1) the one-step
+estimator, but it is not a plug-in estimator; (2) the targeted maximum
+likelihood estimator, which is a super learner targeted towards the target
+parameter and it is a plug-in estimator; and (3) estimating equation based
+estimators, which use the canonical gradient but as an estimating function in
+the target parameter. In the chapters that follow, we focus on the targeted
+maximum likelihood estimator and the targeted minimum loss-based estimator,
+both referred to as TMLE.
+
+## Appendix
+
+### Exercise 1 Solution
+
+Here is a potential solution to (Exercise 1 -- Predicting Myocardial
+Infarction with `sl3`)[@sl3ex1].
+
+```{r ex1-key, eval=FALSE}
+chspred_task <- make_sl3_Task(
+  data = chspred,
+  covariates = head(colnames(chspred), -1),
+  outcome = "mi"
+)
+
+glm_learner <- Lrnr_glm$new()
+lasso_learner <- Lrnr_glmnet$new(alpha = 1)
+ridge_learner <- Lrnr_glmnet$new(alpha = 0)
+enet_learner <- Lrnr_glmnet$new(alpha = 0.5)
+curated_glm_learner <- Lrnr_glm_fast$new(formula = "mi ~ smoke + beta + waist")
+mean_learner <- Lrnr_mean$new() # That is one mean learner!
+glm_fast_learner <- Lrnr_glm_fast$new()
+ranger_learner <- Lrnr_ranger$new()
+svm_learner <- Lrnr_svm$new()
+xgb_learner <- Lrnr_xgboost$new()
+
+screen_cor <- Lrnr_pkg_SuperLearner_screener$new("screen.corP")
+glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
+
+stack <- make_learner(
+  Stack,
+  glm_pipeline, glm_learner,
+  lasso_learner, ridge_learner, enet_learner,
+  curated_glm_learner, mean_learner, glm_fast_learner,
+  ranger_learner, svm_learner, xgb_learner
+)
+
+metalearner <- make_learner(Lrnr_nnls)
+
+sl <- Lrnr_sl$new(
+  learners = stack,
+  metalearner = metalearner
+)
+sl_fit <- sl$train(task)
+sl_fit$print()
+
+CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
+CVsl
+```
+### Exercise 2 Solution
+
+Here's a potential solution to (Exercise 2)[@sl3ex2].
+
+```{r ex2-key, eval=FALSE}
+
+```
+### Exercise 3 Solution
+
+Here's a potential solution to the (Exercise 3)[@sl3ex3].
+
+```{r ex3-key, eval=FALSE}
+
+```
