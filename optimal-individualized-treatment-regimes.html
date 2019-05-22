@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-05-16" />
+<meta name="date" content="2019-05-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2019-05-16</p>
+<p>Updated: 2019-05-22</p>
 <div id="learning-objectives-4" class="section level2">
 <h2><span class="header-section-number">5.1</span> Learning Objectives</h2>
 <ol style="list-style-type: decimal">
@@ -907,10 +907,10 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data,
 
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5411876 0.5669245 0.07820916 0.4136374 0.7202117
+   type         param init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.549778 0.5697708 0.06684516 0.4387567 0.7007849
    psi_transformed lower_transformed upper_transformed
-1:       0.5669245         0.4136374         0.7202117</code></pre>
+1:       0.5697708         0.4387567         0.7007849</code></pre>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -945,10 +945,10 @@ fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data,
 
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type             param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=W3,W2,W1}] 0.5381361 0.6205396 0.07185096 0.4797144 0.7613649
+   type                param  init_est tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W4,W3,W2,W1}] 0.5495868 0.654158 0.05926343 0.5380038 0.7703122
    psi_transformed lower_transformed upper_transformed
-1:       0.6205396         0.4797144         0.7613649</code></pre>
+1:        0.654158         0.5380038         0.7703122</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -973,10 +973,10 @@ tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_rever
 fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)
 fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5454919 0.6508468 0.02167415 0.6083663 0.6933274
+   type         param  init_est  tmle_est        se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5436147 0.6543684 0.0218064 0.6116287 0.6971082
    psi_transformed lower_transformed upper_transformed
-1:       0.6508468         0.6083663         0.6933274</code></pre>
+1:       0.6543684         0.6116287         0.6971082</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># How many individuals got assigned each treatment?</span>
 <span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</code></pre>
 <pre><code>
@@ -1007,7 +1007,7 @@ initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</
 
 <span class="co"># Estimate the parameter:</span>
 <span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</code></pre>
-<pre><code>[1] 0.475732</code></pre>
+<pre><code>[1] 0.4743624</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1091,15 +1091,15 @@ vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle
 )
 
 <span class="kw">print</span>(vim_results)</code></pre>
-<pre><code>   type                  param      init_est    tmle_est         se       lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0276336876 -0.08657812 0.05071317 -0.18597410
-2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0001183537  0.04975311 0.03449316 -0.01785224
-        upper psi_transformed lower_transformed upper_transformed  A
-1: 0.01281786       0.9170639         0.8302951          1.012900 W1
-2: 0.11735847       1.0510116         0.9823062          1.124522  A
-             W    Z_stat       p_nz p_nz_corrected
-1:  W3,W4,W2,A -1.707212 0.04389133     0.07459405
-2: W3,W4,W2,W1  1.442405 0.07459405     0.07459405</code></pre>
+<pre><code>   type                  param     init_est    tmle_est         se
+1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.027990560 -0.09121594 0.05094008
+2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.004701962  0.06621285 0.03371937
+           lower       upper psi_transformed lower_transformed
+1: -0.1910566588 0.008624778       0.9128206         0.8260858
+2:  0.0001240864 0.132301606       1.0684541         1.0001241
+   upper_transformed  A           W    Z_stat      p_nz p_nz_corrected
+1:          1.008662 W1  W3,W4,W2,A -1.790652 0.0366746      0.0366746
+2:          1.141453  A W3,W4,W2,W1  1.963644 0.0247857      0.0366746</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1205,13 +1205,546 @@ tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_rever
 )
 
 <span class="co"># fit the TML estimator</span>
-fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span class="dt">data=</span>washb_data, node_list, learner_list)
-fit</code></pre>
+fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span class="dt">data=</span>washb_data, node_list, learner_list)</code></pre>
+<pre><code>Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing
+
+Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">fit</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5551244 -0.4933554 0.04500845 -0.5815704 -0.4051405
+   type         param init_est   tmle_est         se      lower      upper
+1:  TSM E[Y_{A=NULL}] -0.54539 -0.4620034 0.04470353 -0.5496207 -0.3743861
    psi_transformed lower_transformed upper_transformed
-1:      -0.4933554        -0.5815704        -0.4051405</code></pre>
+1:      -0.4620034        -0.5496207        -0.3743861</code></pre>
 <hr />
 </div>
 <div id="exercises" class="section level2">

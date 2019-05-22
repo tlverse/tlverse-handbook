@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-05-16" />
+<meta name="date" content="2019-05-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -433,15 +433,15 @@ we plan to include reasonable defaults learners.</p>
 can extra results from the summary by indexing into it:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(tmle_fit)</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type                                    param    init_est    tmle_est
-1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002413691 0.005699422
-           se       lower     upper psi_transformed lower_transformed
-1: 0.05063367 -0.09354074 0.1049396     0.005699422       -0.09354074
+   type                                    param   init_est     tmle_est
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.00245573 9.213477e-05
+          se      lower      upper psi_transformed lower_transformed
+1: 0.0506783 -0.0992355 0.09941977    9.213477e-05        -0.0992355
    upper_transformed
-1:         0.1049396</code></pre>
+1:        0.09941977</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">estimates &lt;-<span class="st"> </span>tmle_fit<span class="op">$</span>summary<span class="op">$</span>psi_transformed
 <span class="kw">print</span>(estimates)</code></pre>
-<pre><code>[1] 0.005699422</code></pre>
+<pre><code>[1] 9.213477e-05</code></pre>
 </div>
 </div>
 <div id="tmle3-components" class="section level2">
@@ -491,17 +491,17 @@ the <code>learner_list</code>) above.</p>
 estimates for each observation:</p>
 <pre class="sourceCode r"><code class="sourceCode r">initial_likelihood<span class="op">$</span><span class="kw">get_likelihoods</span>(tmle_task)</code></pre>
 <pre><code>                 W         A          Y
-   1: 0.0002129925 0.2482512 -0.6531069
-   2: 0.0002129925 0.2541445 -0.6280393
-   3: 0.0002129925 0.2579896 -0.6167108
-   4: 0.0002129925 0.2761062 -0.5979172
-   5: 0.0002129925 0.2532464 -0.5454508
+   1: 0.0002129925 0.2484490 -0.6599640
+   2: 0.0002129925 0.2539032 -0.6330316
+   3: 0.0002129925 0.2574617 -0.6208604
+   4: 0.0002129925 0.2742283 -0.6006687
+   5: 0.0002129925 0.2530719 -0.5442994
   ---                                  
-4691: 0.0002129925 0.1338515 -0.4713444
-4692: 0.0002129925 0.1263455 -0.4887982
-4693: 0.0002129925 0.1265552 -0.5671941
-4694: 0.0002129925 0.1685176 -0.7979616
-4695: 0.0002129925 0.1295674 -0.5427513</code></pre>
+4691: 0.0002129925 0.1333685 -0.4646803
+4692: 0.0002129925 0.1264218 -0.4834324
+4693: 0.0002129925 0.1266159 -0.5676601
+4694: 0.0002129925 0.1654514 -0.8155943
+4695: 0.0002129925 0.1294036 -0.5413991</code></pre>
 <!-- TODO: make helper to get learners out of fit objects -->
 </div>
 <div id="targeted-likelihood-updater" class="section level3">
@@ -540,12 +540,12 @@ manually fit a <code>tmle3</code>:</p>
 )
 <span class="kw">print</span>(tmle_fit_manual)</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type                                    param    init_est   tmle_est
-1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002242537 0.00349764
-           se       lower    upper psi_transformed lower_transformed
-1: 0.05070416 -0.09588068 0.102876      0.00349764       -0.09588068
+   type                                    param    init_est    tmle_est
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002409359 0.009404363
+           se       lower   upper psi_transformed lower_transformed
+1: 0.05054973 -0.08967128 0.10848     0.009404363       -0.08967128
    upper_transformed
-1:          0.102876</code></pre>
+1:           0.10848</code></pre>
 <p>The result is equivalent to fitting using the <code>tmle3</code> function as above.</p>
 </div>
 </div>
@@ -611,32 +611,32 @@ tmle_fit_multiparam &lt;-<span class="st"> </span><span class="kw">fit_tmle3</sp
 <span class="kw">print</span>(tmle_fit_multiparam)</code></pre>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type                                       param     init_est     tmle_est
-1:  TSM                            E[Y_{A=Control}] -0.592369177 -0.621277011
-2:  TSM                        E[Y_{A=Handwashing}] -0.603901224 -0.641952890
-3:  TSM                          E[Y_{A=Nutrition}] -0.599782502 -0.613692687
-4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.590126640 -0.617660839
-5:  TSM                         E[Y_{A=Sanitation}] -0.586288741 -0.592166919
-6:  TSM                                E[Y_{A=WSH}] -0.532231519 -0.437882635
-7:  TSM                              E[Y_{A=Water}] -0.575556813 -0.531385838
-8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.002242537  0.003616172
+1:  TSM                            E[Y_{A=Control}] -0.594708000 -0.622365332
+2:  TSM                        E[Y_{A=Handwashing}] -0.607097912 -0.643563288
+3:  TSM                          E[Y_{A=Nutrition}] -0.602672799 -0.615937512
+4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.592298641 -0.612916257
+5:  TSM                         E[Y_{A=Sanitation}] -0.588175243 -0.587858359
+6:  TSM                                E[Y_{A=WSH}] -0.530096725 -0.455992532
+7:  TSM                              E[Y_{A=Water}] -0.576644971 -0.529516567
+8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.002409359  0.009449075
            se       lower      upper psi_transformed lower_transformed
-1: 0.02991921 -0.67991759 -0.5626364    -0.621277011       -0.67991759
-2: 0.04178031 -0.72384080 -0.5600650    -0.641952890       -0.72384080
-3: 0.04259637 -0.69718005 -0.5302053    -0.613692687       -0.69718005
-4: 0.04104439 -0.69810636 -0.5372153    -0.617660839       -0.69810636
-5: 0.04248758 -0.67544104 -0.5088928    -0.592166919       -0.67544104
-6: 0.04533987 -0.52674715 -0.3490181    -0.437882635       -0.52674715
-7: 0.03906425 -0.60795036 -0.4548213    -0.531385838       -0.60795036
-8: 0.05069100 -0.09573637  0.1029687     0.003616172       -0.09573637
+1: 0.02985787 -0.68088568 -0.5638450    -0.622365332       -0.68088568
+2: 0.04220605 -0.72628562 -0.5608410    -0.643563288       -0.72628562
+3: 0.04217160 -0.69859234 -0.5332827    -0.615937512       -0.69859234
+4: 0.04092511 -0.69312800 -0.5327045    -0.612916257       -0.69312800
+5: 0.04261677 -0.67138569 -0.5043310    -0.587858359       -0.67138569
+6: 0.04486383 -0.54392402 -0.3680610    -0.455992532       -0.54392402
+7: 0.03893579 -0.60582931 -0.4532038    -0.529516567       -0.60582931
+8: 0.05053999 -0.08960748  0.1085056     0.009449075       -0.08960748
    upper_transformed
-1:        -0.5626364
-2:        -0.5600650
-3:        -0.5302053
-4:        -0.5372153
-5:        -0.5088928
-6:        -0.3490181
-7:        -0.4548213
-8:         0.1029687</code></pre>
+1:        -0.5638450
+2:        -0.5608410
+3:        -0.5332827
+4:        -0.5327045
+5:        -0.5043310
+6:        -0.3680610
+7:        -0.4532038
+8:         0.1085056</code></pre>
 </div>
 </div>
 <div id="exercise-1" class="section level2">

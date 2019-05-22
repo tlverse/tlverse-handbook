@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-05-16" />
+<meta name="date" content="2019-05-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -327,7 +327,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2019-05-16</p>
+<p>Updated: 2019-05-22</p>
 <div id="learning-objectives-2" class="section level2">
 <h2><span class="header-section-number">3.1</span> Learning Objectives</h2>
 <p>By the end of this chapter you will be able to:</p>
@@ -382,7 +382,7 @@ consists of functions (“learners” in the <code>sl3</code> nomenclature) that
 might be consistent with the true data-generating distribution. The
 ensembling of algorithms with weights (“metalearning” in the <code>sl3</code> nomenclature)
 has been shown to be adaptive and robust, even in small samples
-<span class="citation">(<span class="citeproc-not-found" data-reference-id="polley2010super"><strong>???</strong></span>)</span>. The Super Learner has been proven to be asymptotically as
+<span class="citation">(Polley and Van Der Laan <a href="#ref-polley2010super">2010</a>)</span>. The Super Learner has been proven to be asymptotically as
 accurate as the best possible prediction algorithm in the library
 <span class="citation">(van der Laan and Dudoit <a href="#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="#ref-van2006oracle">2006</a>)</span>.</p>
 <div id="background" class="section level3">
@@ -404,11 +404,11 @@ sample, averaged across the splits of the data.</p>
 algorithms, where the weights are chosen to minimize the cross-validated
 empirical risk of the library. Restricting the weights (“metalearner” in <code>sl3</code>
 nomenclature) to be positive and sum to one (convex combination) has been shown
-to improve upon the discrete Super Learner <span class="citation">(<span class="citeproc-not-found" data-reference-id="polley2010super"><strong>???</strong></span>; Van der Laan, Polley, and Hubbard <a href="#ref-van2007super">2007</a>)</span>.
+to improve upon the discrete Super Learner <span class="citation">(Polley and Van Der Laan <a href="#ref-polley2010super">2010</a>; Van der Laan, Polley, and Hubbard <a href="#ref-van2007super">2007</a>)</span>.
 This notion of weighted combinations was introduced in <span class="citation">Wolpert (<a href="#ref-wolpert1992stacked">1992</a>)</span> for
 neural networks and adapted for regressions in <span class="citation">Breiman (<a href="#ref-breiman1996stacked">1996</a>)</span>.</p>
 <p>For more detail on super learner we refer the reader to <span class="citation">Van der Laan, Polley, and Hubbard (<a href="#ref-van2007super">2007</a>)</span> and
-<span class="citation">(<span class="citeproc-not-found" data-reference-id="polley2010super"><strong>???</strong></span>)</span>. The optimality results for the cross-validation selector
+<span class="citation">Polley and Van Der Laan (<a href="#ref-polley2010super">2010</a>)</span>. The optimality results for the cross-validation selector
 among a family of algorithms were established in <span class="citation">van der Laan and Dudoit (<a href="#ref-vdl2003unified">2003</a>)</span> and extended
 in <span class="citation">Van der Vaart, Dudoit, and Laan (<a href="#ref-van2006oracle">2006</a>)</span>.</p>
 </div>
@@ -444,7 +444,8 @@ following steps:</p>
 <span class="kw">set.seed</span>(<span class="dv">7194</span>)
 
 <span class="co"># load data set and take a peek</span>
-washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;washb_data.csv&quot;</span>), <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)
+washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>,
+                    <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)
 <span class="kw">head</span>(washb_data) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
@@ -1158,6 +1159,9 @@ lrnr_glm &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr
 lrnr_mean &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_mean)
 lrnr_ranger &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_ranger)
 lrnr_glmnet &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_glmnet)</code></pre>
+<p>Are you interested in creating a new base learning algorithm? If so,
+instructions are provided in <a href="https://tlverse.org/sl3/articles/custom_lrnrs.html">Defining New <code>sl3</code>
+Learners</a>.</p>
 <p>In order to assemble the library of learners, we need to <strong>“stack”</strong> them
 together. A <code>Stack</code> is a special learner and it has the same interface as all
 other learners. What makes a stack special is that it combines multiple learners
@@ -1166,7 +1170,13 @@ combined or compared.</p>
 <pre class="sourceCode r"><code class="sourceCode r">stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(
   Stack,
   lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet
-)</code></pre>
+)
+dt_stack &lt;-<span class="st"> </span><span class="kw">delayed_learner_train</span>(stack, washb_task)
+<span class="kw">plot</span>(dt_stack, <span class="dt">color =</span> <span class="ot">FALSE</span>, <span class="dt">height =</span> <span class="st">&quot;400px&quot;</span>, <span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</code></pre>
+<p><div id="htmlwidget-ac63700e2efbcefb9700" style="width:100%;height:400px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ac63700e2efbcefb9700">{"x":{"nodes":{"id":["d7de9702-7cc5-11e9-a76a-42010a140503","d7de7cea-7cc5-11e9-a76a-42010a140503","d7de0daa-7cc5-11e9-a76a-42010a140503","d7de2a9c-7cc5-11e9-a76a-42010a140503","d7de44c8-7cc5-11e9-a76a-42010a140503","d7de5e0e-7cc5-11e9-a76a-42010a140503"],"label":["Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE"],"level":[1,2,3,3,3,3],"sequential":[true,true,false,false,false,false],"state":["waiting","waiting","ready","ready","ready","ready"],"group":["none","none","none","none","none","none"]},"edges":{"from":["d7de0daa-7cc5-11e9-a76a-42010a140503","d7de2a9c-7cc5-11e9-a76a-42010a140503","d7de44c8-7cc5-11e9-a76a-42010a140503","d7de5e0e-7cc5-11e9-a76a-42010a140503","d7de7cea-7cc5-11e9-a76a-42010a140503"],"to":["d7de7cea-7cc5-11e9-a76a-42010a140503","d7de7cea-7cc5-11e9-a76a-42010a140503","d7de7cea-7cc5-11e9-a76a-42010a140503","d7de7cea-7cc5-11e9-a76a-42010a140503","d7de9702-7cc5-11e9-a76a-42010a140503"],"label":["","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"400px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+We visualize the stack in the above plot. If you zoom in you should be able to
+see the learner names that we included in our stack of base learning algorithms.</p>
 <p>We’re almost ready to super learn! Just a couple more necessary specifications.</p>
 <p>We will fit a non-negative least squares metalearner using <code>Lrnr_nnls</code>. Note
 that any learner can be used as a metalearner. <code>Lrnr_nnls</code> is a solid choice
@@ -1174,15 +1184,20 @@ for a metalearner, since it creates a convex combination of the learners when
 combining them.</p>
 <pre class="sourceCode r"><code class="sourceCode r">metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_nnls)</code></pre>
 <p>Now that we have made a library/stack of base learners and a metalearner, we
-are ready to make the super learner.</p>
+are ready to make the super learner.
+<!-- Explain more!!!! --></p>
 <pre class="sourceCode r"><code class="sourceCode r">sl &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_sl,
   <span class="dt">learners =</span> stack,
   <span class="dt">metalearner =</span> metalearner
 )
 dt &lt;-<span class="st"> </span><span class="kw">delayed_learner_train</span>(sl, washb_task)
 <span class="kw">plot</span>(dt, <span class="dt">color =</span> <span class="ot">FALSE</span>, <span class="dt">height =</span> <span class="st">&quot;400px&quot;</span>, <span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</code></pre>
-<div id="htmlwidget-85f2c3d52a459a8b399a" style="width:100%;height:400px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-85f2c3d52a459a8b399a">{"x":{"nodes":{"id":["892f2e4e-7812-11e9-a6b1-42010a140134","892f1468-7812-11e9-a6b1-42010a140134","892ebe3c-7812-11e9-a6b1-42010a140134","892ea492-7812-11e9-a6b1-42010a140134","890e3068-7812-11e9-a6b1-42010a140134","890e14c0-7812-11e9-a6b1-42010a140134","890d9c70-7812-11e9-a6b1-42010a140134","890dbdcc-7812-11e9-a6b1-42010a140134","890ddcda-7812-11e9-a6b1-42010a140134","890df7b0-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","891f9678-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f0d16-7812-11e9-a6b1-42010a140134","891f2bde-7812-11e9-a6b1-42010a140134","891f474a-7812-11e9-a6b1-42010a140134","891f60b8-7812-11e9-a6b1-42010a140134","8920ed5c-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","892066e8-7812-11e9-a6b1-42010a140134","89208588-7812-11e9-a6b1-42010a140134","89209f32-7812-11e9-a6b1-42010a140134","8920b940-7812-11e9-a6b1-42010a140134","89224b3e-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","8921c574-7812-11e9-a6b1-42010a140134","8921e2b6-7812-11e9-a6b1-42010a140134","8921fde6-7812-11e9-a6b1-42010a140134","89221858-7812-11e9-a6b1-42010a140134","8923b9b0-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","89233698-7812-11e9-a6b1-42010a140134","892353ee-7812-11e9-a6b1-42010a140134","89236db6-7812-11e9-a6b1-42010a140134","89238684-7812-11e9-a6b1-42010a140134","8925091e-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","89248638-7812-11e9-a6b1-42010a140134","8924a28a-7812-11e9-a6b1-42010a140134","8924bb9e-7812-11e9-a6b1-42010a140134","8924d520-7812-11e9-a6b1-42010a140134","892652a6-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","8925d06a-7812-11e9-a6b1-42010a140134","8925ec30-7812-11e9-a6b1-42010a140134","892605da-7812-11e9-a6b1-42010a140134","89261e1c-7812-11e9-a6b1-42010a140134","8927a3f4-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","89271f6a-7812-11e9-a6b1-42010a140134","89273be4-7812-11e9-a6b1-42010a140134","89275584-7812-11e9-a6b1-42010a140134","89277014-7812-11e9-a6b1-42010a140134","8928ffba-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","89287a0e-7812-11e9-a6b1-42010a140134","89289714-7812-11e9-a6b1-42010a140134","8928b35c-7812-11e9-a6b1-42010a140134","8928cd6a-7812-11e9-a6b1-42010a140134","892a5e28-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","8929d6ec-7812-11e9-a6b1-42010a140134","8929f60e-7812-11e9-a6b1-42010a140134","892a101c-7812-11e9-a6b1-42010a140134","892a2ad4-7812-11e9-a6b1-42010a140134","892e6da6-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892b427a-7812-11e9-a6b1-42010a140134","892b60ac-7812-11e9-a6b1-42010a140134","892e058c-7812-11e9-a6b1-42010a140134","892e2ca6-7812-11e9-a6b1-42010a140134","892ee06a-7812-11e9-a6b1-42010a140134","892ef91a-7812-11e9-a6b1-42010a140134"],"label":["CV_","bundle","CV_Stack","bundle","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","bundle","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","chain","Lrnr_nnls"],"level":[1,2,5,6,7,8,9,9,9,9,7,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,4,3],"sequential":[true,true,true,true,true,true,false,false,false,false,true,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,false],"state":["waiting","waiting","waiting","waiting","waiting","waiting","ready","ready","ready","ready","waiting","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting"],"group":["none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none"]},"edges":{"from":["890d9c70-7812-11e9-a6b1-42010a140134","890dbdcc-7812-11e9-a6b1-42010a140134","890ddcda-7812-11e9-a6b1-42010a140134","890df7b0-7812-11e9-a6b1-42010a140134","890e14c0-7812-11e9-a6b1-42010a140134","890e3068-7812-11e9-a6b1-42010a140134","891f0d16-7812-11e9-a6b1-42010a140134","891f2bde-7812-11e9-a6b1-42010a140134","891f474a-7812-11e9-a6b1-42010a140134","891f60b8-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f9678-7812-11e9-a6b1-42010a140134","892066e8-7812-11e9-a6b1-42010a140134","89208588-7812-11e9-a6b1-42010a140134","89209f32-7812-11e9-a6b1-42010a140134","8920b940-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","8920ed5c-7812-11e9-a6b1-42010a140134","8921c574-7812-11e9-a6b1-42010a140134","8921e2b6-7812-11e9-a6b1-42010a140134","8921fde6-7812-11e9-a6b1-42010a140134","89221858-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","89224b3e-7812-11e9-a6b1-42010a140134","89233698-7812-11e9-a6b1-42010a140134","892353ee-7812-11e9-a6b1-42010a140134","89236db6-7812-11e9-a6b1-42010a140134","89238684-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","8923b9b0-7812-11e9-a6b1-42010a140134","89248638-7812-11e9-a6b1-42010a140134","8924a28a-7812-11e9-a6b1-42010a140134","8924bb9e-7812-11e9-a6b1-42010a140134","8924d520-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","8925091e-7812-11e9-a6b1-42010a140134","8925d06a-7812-11e9-a6b1-42010a140134","8925ec30-7812-11e9-a6b1-42010a140134","892605da-7812-11e9-a6b1-42010a140134","89261e1c-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","892652a6-7812-11e9-a6b1-42010a140134","89271f6a-7812-11e9-a6b1-42010a140134","89273be4-7812-11e9-a6b1-42010a140134","89275584-7812-11e9-a6b1-42010a140134","89277014-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","8927a3f4-7812-11e9-a6b1-42010a140134","89287a0e-7812-11e9-a6b1-42010a140134","89289714-7812-11e9-a6b1-42010a140134","8928b35c-7812-11e9-a6b1-42010a140134","8928cd6a-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","8928ffba-7812-11e9-a6b1-42010a140134","8929d6ec-7812-11e9-a6b1-42010a140134","8929f60e-7812-11e9-a6b1-42010a140134","892a101c-7812-11e9-a6b1-42010a140134","892a2ad4-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","892a5e28-7812-11e9-a6b1-42010a140134","892b427a-7812-11e9-a6b1-42010a140134","892b60ac-7812-11e9-a6b1-42010a140134","892e058c-7812-11e9-a6b1-42010a140134","892e2ca6-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892e6da6-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","892ea492-7812-11e9-a6b1-42010a140134","892ebe3c-7812-11e9-a6b1-42010a140134","892ebe3c-7812-11e9-a6b1-42010a140134","892ee06a-7812-11e9-a6b1-42010a140134","892ee06a-7812-11e9-a6b1-42010a140134","892ef91a-7812-11e9-a6b1-42010a140134","892f1468-7812-11e9-a6b1-42010a140134"],"to":["890e14c0-7812-11e9-a6b1-42010a140134","890e14c0-7812-11e9-a6b1-42010a140134","890e14c0-7812-11e9-a6b1-42010a140134","890e14c0-7812-11e9-a6b1-42010a140134","890e3068-7812-11e9-a6b1-42010a140134","892ea492-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f79ea-7812-11e9-a6b1-42010a140134","891f9678-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","8920d40c-7812-11e9-a6b1-42010a140134","8920ed5c-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","89223194-7812-11e9-a6b1-42010a140134","89224b3e-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","89239f70-7812-11e9-a6b1-42010a140134","8923b9b0-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","8924edee-7812-11e9-a6b1-42010a140134","8925091e-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","89263708-7812-11e9-a6b1-42010a140134","892652a6-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","89278a72-7812-11e9-a6b1-42010a140134","8927a3f4-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","8928e62e-7812-11e9-a6b1-42010a140134","8928ffba-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","892a442e-7812-11e9-a6b1-42010a140134","892a5e28-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892e52b2-7812-11e9-a6b1-42010a140134","892e6da6-7812-11e9-a6b1-42010a140134","892e8886-7812-11e9-a6b1-42010a140134","892ea492-7812-11e9-a6b1-42010a140134","892ebe3c-7812-11e9-a6b1-42010a140134","892f1468-7812-11e9-a6b1-42010a140134","892ee06a-7812-11e9-a6b1-42010a140134","892f1468-7812-11e9-a6b1-42010a140134","892ef91a-7812-11e9-a6b1-42010a140134","892f1468-7812-11e9-a6b1-42010a140134","892f2e4e-7812-11e9-a6b1-42010a140134"],"label":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"400px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<p><div id="htmlwidget-62a347e481e519ec0e19" style="width:100%;height:400px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-62a347e481e519ec0e19">{"x":{"nodes":{"id":["d80d9a16-7cc5-11e9-a76a-42010a140503","d80d80ee-7cc5-11e9-a76a-42010a140503","d80d2928-7cc5-11e9-a76a-42010a140503","d80d1082-7cc5-11e9-a76a-42010a140503","d7edfc56-7cc5-11e9-a76a-42010a140503","d7ede20c-7cc5-11e9-a76a-42010a140503","d7ed6ea8-7cc5-11e9-a76a-42010a140503","d7ed914e-7cc5-11e9-a76a-42010a140503","d7edacc4-7cc5-11e9-a76a-42010a140503","d7edc95c-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80120ce-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d8009dc0-7cc5-11e9-a76a-42010a140503","d800ba9e-7cc5-11e9-a76a-42010a140503","d800d4ac-7cc5-11e9-a76a-42010a140503","d800edf2-7cc5-11e9-a76a-42010a140503","d80267e0-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d801e824-7cc5-11e9-a76a-42010a140503","d80201c4-7cc5-11e9-a76a-42010a140503","d8021bb4-7cc5-11e9-a76a-42010a140503","d802355e-7cc5-11e9-a76a-42010a140503","d803b3ca-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d8032e50-7cc5-11e9-a76a-42010a140503","d8034a0c-7cc5-11e9-a76a-42010a140503","d803641a-7cc5-11e9-a76a-42010a140503","d8037ea0-7cc5-11e9-a76a-42010a140503","d80518b4-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d80495ba-7cc5-11e9-a76a-42010a140503","d804b00e-7cc5-11e9-a76a-42010a140503","d804c9fe-7cc5-11e9-a76a-42010a140503","d804e434-7cc5-11e9-a76a-42010a140503","d80660c0-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d805dc9a-7cc5-11e9-a76a-42010a140503","d805f6ee-7cc5-11e9-a76a-42010a140503","d80610b6-7cc5-11e9-a76a-42010a140503","d8062e48-7cc5-11e9-a76a-42010a140503","d807a944-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d8072514-7cc5-11e9-a76a-42010a140503","d807404e-7cc5-11e9-a76a-42010a140503","d8075ade-7cc5-11e9-a76a-42010a140503","d807750a-7cc5-11e9-a76a-42010a140503","d808f6e6-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d80874fa-7cc5-11e9-a76a-42010a140503","d8089106-7cc5-11e9-a76a-42010a140503","d808aa88-7cc5-11e9-a76a-42010a140503","d808c428-7cc5-11e9-a76a-42010a140503","d80a421c-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d809c1ac-7cc5-11e9-a76a-42010a140503","d809dd36-7cc5-11e9-a76a-42010a140503","d809f64a-7cc5-11e9-a76a-42010a140503","d80a1012-7cc5-11e9-a76a-42010a140503","d80b89a6-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b0a80-7cc5-11e9-a76a-42010a140503","d80b2510-7cc5-11e9-a76a-42010a140503","d80b3e60-7cc5-11e9-a76a-42010a140503","d80b5742-7cc5-11e9-a76a-42010a140503","d80cd9dc-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80c5822-7cc5-11e9-a76a-42010a140503","d80c73f2-7cc5-11e9-a76a-42010a140503","d80c8d88-7cc5-11e9-a76a-42010a140503","d80ca6f6-7cc5-11e9-a76a-42010a140503","d80d4b74-7cc5-11e9-a76a-42010a140503","d80d6578-7cc5-11e9-a76a-42010a140503"],"label":["CV_","bundle","CV_Stack","bundle","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","bundle","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_ranger_500_TRUE_1","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","chain","Lrnr_nnls"],"level":[1,2,5,6,7,8,9,9,9,9,7,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,8,9,10,10,10,10,4,3],"sequential":[true,true,true,true,true,true,false,false,false,false,true,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,true,false,false,false,false,true,false],"state":["waiting","waiting","waiting","waiting","waiting","waiting","ready","ready","ready","ready","waiting","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting","ready","ready","ready","ready","waiting","waiting"],"group":["none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none"]},"edges":{"from":["d7ed6ea8-7cc5-11e9-a76a-42010a140503","d7ed914e-7cc5-11e9-a76a-42010a140503","d7edacc4-7cc5-11e9-a76a-42010a140503","d7edc95c-7cc5-11e9-a76a-42010a140503","d7ede20c-7cc5-11e9-a76a-42010a140503","d7edfc56-7cc5-11e9-a76a-42010a140503","d8009dc0-7cc5-11e9-a76a-42010a140503","d800ba9e-7cc5-11e9-a76a-42010a140503","d800d4ac-7cc5-11e9-a76a-42010a140503","d800edf2-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d80120ce-7cc5-11e9-a76a-42010a140503","d801e824-7cc5-11e9-a76a-42010a140503","d80201c4-7cc5-11e9-a76a-42010a140503","d8021bb4-7cc5-11e9-a76a-42010a140503","d802355e-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d80267e0-7cc5-11e9-a76a-42010a140503","d8032e50-7cc5-11e9-a76a-42010a140503","d8034a0c-7cc5-11e9-a76a-42010a140503","d803641a-7cc5-11e9-a76a-42010a140503","d8037ea0-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d803b3ca-7cc5-11e9-a76a-42010a140503","d80495ba-7cc5-11e9-a76a-42010a140503","d804b00e-7cc5-11e9-a76a-42010a140503","d804c9fe-7cc5-11e9-a76a-42010a140503","d804e434-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d80518b4-7cc5-11e9-a76a-42010a140503","d805dc9a-7cc5-11e9-a76a-42010a140503","d805f6ee-7cc5-11e9-a76a-42010a140503","d80610b6-7cc5-11e9-a76a-42010a140503","d8062e48-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d80660c0-7cc5-11e9-a76a-42010a140503","d8072514-7cc5-11e9-a76a-42010a140503","d807404e-7cc5-11e9-a76a-42010a140503","d8075ade-7cc5-11e9-a76a-42010a140503","d807750a-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d807a944-7cc5-11e9-a76a-42010a140503","d80874fa-7cc5-11e9-a76a-42010a140503","d8089106-7cc5-11e9-a76a-42010a140503","d808aa88-7cc5-11e9-a76a-42010a140503","d808c428-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d808f6e6-7cc5-11e9-a76a-42010a140503","d809c1ac-7cc5-11e9-a76a-42010a140503","d809dd36-7cc5-11e9-a76a-42010a140503","d809f64a-7cc5-11e9-a76a-42010a140503","d80a1012-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d80a421c-7cc5-11e9-a76a-42010a140503","d80b0a80-7cc5-11e9-a76a-42010a140503","d80b2510-7cc5-11e9-a76a-42010a140503","d80b3e60-7cc5-11e9-a76a-42010a140503","d80b5742-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b89a6-7cc5-11e9-a76a-42010a140503","d80c5822-7cc5-11e9-a76a-42010a140503","d80c73f2-7cc5-11e9-a76a-42010a140503","d80c8d88-7cc5-11e9-a76a-42010a140503","d80ca6f6-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80cd9dc-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80d1082-7cc5-11e9-a76a-42010a140503","d80d2928-7cc5-11e9-a76a-42010a140503","d80d2928-7cc5-11e9-a76a-42010a140503","d80d4b74-7cc5-11e9-a76a-42010a140503","d80d4b74-7cc5-11e9-a76a-42010a140503","d80d6578-7cc5-11e9-a76a-42010a140503","d80d80ee-7cc5-11e9-a76a-42010a140503"],"to":["d7ede20c-7cc5-11e9-a76a-42010a140503","d7ede20c-7cc5-11e9-a76a-42010a140503","d7ede20c-7cc5-11e9-a76a-42010a140503","d7ede20c-7cc5-11e9-a76a-42010a140503","d7edfc56-7cc5-11e9-a76a-42010a140503","d80d1082-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d8010670-7cc5-11e9-a76a-42010a140503","d80120ce-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d8024ddc-7cc5-11e9-a76a-42010a140503","d80267e0-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d8039836-7cc5-11e9-a76a-42010a140503","d803b3ca-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d804fd20-7cc5-11e9-a76a-42010a140503","d80518b4-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d80646c6-7cc5-11e9-a76a-42010a140503","d80660c0-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d8078f40-7cc5-11e9-a76a-42010a140503","d807a944-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d808dcd8-7cc5-11e9-a76a-42010a140503","d808f6e6-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d80a2854-7cc5-11e9-a76a-42010a140503","d80a421c-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b6fde-7cc5-11e9-a76a-42010a140503","d80b89a6-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80cbf42-7cc5-11e9-a76a-42010a140503","d80cd9dc-7cc5-11e9-a76a-42010a140503","d80cf480-7cc5-11e9-a76a-42010a140503","d80d1082-7cc5-11e9-a76a-42010a140503","d80d2928-7cc5-11e9-a76a-42010a140503","d80d80ee-7cc5-11e9-a76a-42010a140503","d80d4b74-7cc5-11e9-a76a-42010a140503","d80d80ee-7cc5-11e9-a76a-42010a140503","d80d6578-7cc5-11e9-a76a-42010a140503","d80d80ee-7cc5-11e9-a76a-42010a140503","d80d9a16-7cc5-11e9-a76a-42010a140503"],"label":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"400px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+In the above plot, we visualize the super learner, which we can see has 10
+realizations of the stack and a separate hold-out (the top branch of the figure)
+that will not be used to fit the super learner.
+<!-- Explain more!!!! --></p>
 <p><strong>3. Train the super learner on the machine learning task</strong></p>
 <p>The super learner algorithm fits a metalearner on the validation-set
 predictions in a cross-validated manner, thereby avoiding overfitting. This
@@ -1197,11 +1212,8 @@ cross-validated risk.</p>
 values, and we can also obtain a summary of the results.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sl_preds &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">predict</span>()
 <span class="kw">head</span>(sl_preds)</code></pre>
-<pre><code>[1] -0.4958625 -0.8686343 -0.7688807 -0.8218820 -0.6542679 -0.6922403</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sl_fit<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;300px&quot;</span>)</code></pre>
+<pre><code>[1] -0.5368755 -0.8950290 -0.7688415 -0.7967040 -0.6466526 -0.6940001</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sl_fit<span class="op">$</span><span class="kw">print</span>()</code></pre>
 <pre><code>[1] &quot;SuperLearner:&quot;
 List of 4
  $ : chr &quot;Lrnr_glm_TRUE&quot;
@@ -1210,170 +1222,30 @@ List of 4
  $ : chr &quot;Lrnr_glmnet_NULL_deviance_10_1_100_TRUE&quot;
 [1] &quot;Lrnr_nnls&quot;
                                      lrnrs   weights
-1:                           Lrnr_glm_TRUE 0.1355206
+1:                           Lrnr_glm_TRUE 0.1285855
 2:                               Lrnr_mean 0.0000000
-3:                  Lrnr_ranger_500_TRUE_1 0.4649288
-4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE 0.4065280
+3:                  Lrnr_ranger_500_TRUE_1 0.4309202
+4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE 0.4483385
 [1] &quot;Cross-validated risk (MSE, squared error loss):&quot;
                                    learner coefficients mean_risk    SE_risk
 1:                           Lrnr_glm_TRUE           NA  1.018612 0.02380402
 2:                               Lrnr_mean           NA  1.065282 0.02502664
-3:                  Lrnr_ranger_500_TRUE_1           NA  1.013569 0.02341056
-4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE           NA  1.012408 0.02358774
-5:                            SuperLearner           NA  1.007274 0.02340217
+3:                  Lrnr_ranger_500_TRUE_1           NA  1.014524 0.02350807
+4: Lrnr_glmnet_NULL_deviance_10_1_100_TRUE           NA  1.011955 0.02359013
+5:                            SuperLearner           NA  1.007488 0.02345082
       fold_SD fold_min_risk fold_max_risk
 1: 0.07799191     0.8956048      1.134940
 2: 0.09191791     0.9264292      1.196647
-3: 0.08588410     0.8710754      1.152072
-4: 0.07943211     0.8826677      1.130114
-5: 0.08217721     0.8717879      1.135156</code></pre>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-learner
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-coefficients
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-mean_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-SE_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_SD
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_min_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_max_risk
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Lrnr_glm_TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0186
-</td>
-<td style="text-align:right;">
-0.0238
-</td>
-<td style="text-align:right;">
-0.0780
-</td>
-<td style="text-align:right;">
-0.8956
-</td>
-<td style="text-align:right;">
-1.1349
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_mean
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0653
-</td>
-<td style="text-align:right;">
-0.0250
-</td>
-<td style="text-align:right;">
-0.0919
-</td>
-<td style="text-align:right;">
-0.9264
-</td>
-<td style="text-align:right;">
-1.1966
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_ranger_500_TRUE_1
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0136
-</td>
-<td style="text-align:right;">
-0.0234
-</td>
-<td style="text-align:right;">
-0.0859
-</td>
-<td style="text-align:right;">
-0.8711
-</td>
-<td style="text-align:right;">
-1.1521
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_glmnet_NULL_deviance_10_1_100_TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0124
-</td>
-<td style="text-align:right;">
-0.0236
-</td>
-<td style="text-align:right;">
-0.0794
-</td>
-<td style="text-align:right;">
-0.8827
-</td>
-<td style="text-align:right;">
-1.1301
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-SuperLearner
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0073
-</td>
-<td style="text-align:right;">
-0.0234
-</td>
-<td style="text-align:right;">
-0.0822
-</td>
-<td style="text-align:right;">
-0.8718
-</td>
-<td style="text-align:right;">
-1.1352
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Explain summary!!!! -->
+3: 0.08326536     0.8754950      1.147253
+4: 0.07916677     0.8831420      1.130114
+5: 0.08090489     0.8735205      1.132423</code></pre>
+<p>We can see that the super learner (row 5 of the printed super learner fit) had
+a mean risk of 1.007274 and this ensemble weighted <code>ranger</code> and <code>glmnet</code>
+learners highest, and did not weight <code>mean</code>. We can also see that the <code>glmnet</code>
+had the lowest cross-validated mean risk and it is thus the cross-validated
+selector, or the discrete super learner. The mean risk of the (continuous) super
+learner is calculated using the hold-out set that we visualized in the plot
+above.</p>
 </div>
 </div>
 <div id="extensions" class="section level2">
@@ -1381,9 +1253,9 @@ NA
 <p>In this section, we will introduce a few extensions of the <code>sl3</code> framework,
 including</p>
 <ol style="list-style-type: decimal">
-<li>Customizing learner hyperparameters</li>
-<li>Feature selection</li>
-<li>Cross-validated super learner</li>
+<li>Customizing learner hyperparameters;</li>
+<li>Feature selection;</li>
+<li>Cross-validated super learner;</li>
 <li>Variable importance with <code>sl3</code>.</li>
 </ol>
 <div id="customize-learner-hyperparameters" class="section level3">
@@ -1426,8 +1298,10 @@ use them as base learners in our super learner.</p>
 <pre class="sourceCode r"><code class="sourceCode r">fancy_stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, cor_pipeline, new_stack)
 dt_new &lt;-<span class="st"> </span><span class="kw">delayed_learner_train</span>(fancy_stack, washb_task)
 <span class="kw">plot</span>(dt_new, <span class="dt">color =</span> <span class="ot">FALSE</span>, <span class="dt">height =</span> <span class="st">&quot;400px&quot;</span>, <span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>)</code></pre>
-<div id="htmlwidget-2819ba302c9dc0e32b84" style="width:100%;height:400px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2819ba302c9dc0e32b84">{"x":{"nodes":{"id":["afe85484-7812-11e9-a6b1-42010a140134","afe83bb6-7812-11e9-a6b1-42010a140134","afe741de-7812-11e9-a6b1-42010a140134","afe72866-7812-11e9-a6b1-42010a140134","afe5f464-7812-11e9-a6b1-42010a140134","afe6f300-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe62d08-7812-11e9-a6b1-42010a140134","afe647ca-7812-11e9-a6b1-42010a140134","afe6689a-7812-11e9-a6b1-42010a140134","afe683f2-7812-11e9-a6b1-42010a140134","afe69f40-7812-11e9-a6b1-42010a140134","afe6b9b2-7812-11e9-a6b1-42010a140134","afe81db6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe76664-7812-11e9-a6b1-42010a140134","afe780b8-7812-11e9-a6b1-42010a140134","afe79d3c-7812-11e9-a6b1-42010a140134","afe7b75e-7812-11e9-a6b1-42010a140134","afe7d068-7812-11e9-a6b1-42010a140134","afe7e9b8-7812-11e9-a6b1-42010a140134"],"label":["Stack","bundle","Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP->Stack)","bundle","Lrnr_pkg_SuperLearner_screener_screen.corP","Stack","chain","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_100_TRUE_1","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_100_TRUE_1","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm"],"level":[1,2,3,4,9,5,8,6,7,7,7,7,7,7,3,4,5,5,5,5,5,5],"sequential":[true,true,true,true,false,true,true,true,false,false,false,false,false,false,true,true,false,false,false,false,false,false],"state":["waiting","waiting","waiting","waiting","ready","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","ready","ready","ready","ready","ready","ready"],"group":["none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none"]},"edges":{"from":["afe5f464-7812-11e9-a6b1-42010a140134","afe5f464-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe62d08-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe647ca-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe6689a-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe683f2-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe69f40-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe6b9b2-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe6f300-7812-11e9-a6b1-42010a140134","afe72866-7812-11e9-a6b1-42010a140134","afe741de-7812-11e9-a6b1-42010a140134","afe76664-7812-11e9-a6b1-42010a140134","afe780b8-7812-11e9-a6b1-42010a140134","afe79d3c-7812-11e9-a6b1-42010a140134","afe7b75e-7812-11e9-a6b1-42010a140134","afe7d068-7812-11e9-a6b1-42010a140134","afe7e9b8-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe81db6-7812-11e9-a6b1-42010a140134","afe83bb6-7812-11e9-a6b1-42010a140134"],"to":["afe72866-7812-11e9-a6b1-42010a140134","afe6102a-7812-11e9-a6b1-42010a140134","afe6f300-7812-11e9-a6b1-42010a140134","afe62d08-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe647ca-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe6689a-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe683f2-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe69f40-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe6b9b2-7812-11e9-a6b1-42010a140134","afe6d3ca-7812-11e9-a6b1-42010a140134","afe6f300-7812-11e9-a6b1-42010a140134","afe72866-7812-11e9-a6b1-42010a140134","afe741de-7812-11e9-a6b1-42010a140134","afe83bb6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe802d6-7812-11e9-a6b1-42010a140134","afe81db6-7812-11e9-a6b1-42010a140134","afe83bb6-7812-11e9-a6b1-42010a140134","afe85484-7812-11e9-a6b1-42010a140134"],"label":["","","","","","","","","","","","","","","","","","","","","","","","","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"400px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<p><div id="htmlwidget-b7884d7ea93ff934b1bc" style="width:100%;height:400px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b7884d7ea93ff934b1bc">{"x":{"nodes":{"id":["fda56be6-7cc5-11e9-a76a-42010a140503","fda55552-7cc5-11e9-a76a-42010a140503","fda47e66-7cc5-11e9-a76a-42010a140503","fda46750-7cc5-11e9-a76a-42010a140503","fda35a72-7cc5-11e9-a76a-42010a140503","fda435d2-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda38baa-7cc5-11e9-a76a-42010a140503","fda3a568-7cc5-11e9-a76a-42010a140503","fda3be7c-7cc5-11e9-a76a-42010a140503","fda3d6fa-7cc5-11e9-a76a-42010a140503","fda3ee92-7cc5-11e9-a76a-42010a140503","fda40698-7cc5-11e9-a76a-42010a140503","fda53dec-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda49a5e-7cc5-11e9-a76a-42010a140503","fda4b0ca-7cc5-11e9-a76a-42010a140503","fda4c7f4-7cc5-11e9-a76a-42010a140503","fda4e1bc-7cc5-11e9-a76a-42010a140503","fda4f8c8-7cc5-11e9-a76a-42010a140503","fda50ffc-7cc5-11e9-a76a-42010a140503"],"label":["Stack","bundle","Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP->Stack)","bundle","Lrnr_pkg_SuperLearner_screener_screen.corP","Stack","chain","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_100_TRUE_1","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm","Stack","bundle","Lrnr_glm_TRUE","Lrnr_mean","Lrnr_glmnet_NULL_deviance_10_1_100_TRUE","Lrnr_ranger_100_TRUE_1","Lrnr_pkg_SuperLearner_SL.gam","Lrnr_pkg_SuperLearner_SL.bayesglm"],"level":[1,2,3,4,9,5,8,6,7,7,7,7,7,7,3,4,5,5,5,5,5,5],"sequential":[true,true,true,true,false,true,true,true,false,false,false,false,false,false,true,true,false,false,false,false,false,false],"state":["waiting","waiting","waiting","waiting","ready","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","waiting","ready","ready","ready","ready","ready","ready"],"group":["none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none","none"]},"edges":{"from":["fda35a72-7cc5-11e9-a76a-42010a140503","fda35a72-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda38baa-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda3a568-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda3be7c-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda3d6fa-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda3ee92-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda40698-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda435d2-7cc5-11e9-a76a-42010a140503","fda46750-7cc5-11e9-a76a-42010a140503","fda47e66-7cc5-11e9-a76a-42010a140503","fda49a5e-7cc5-11e9-a76a-42010a140503","fda4b0ca-7cc5-11e9-a76a-42010a140503","fda4c7f4-7cc5-11e9-a76a-42010a140503","fda4e1bc-7cc5-11e9-a76a-42010a140503","fda4f8c8-7cc5-11e9-a76a-42010a140503","fda50ffc-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda53dec-7cc5-11e9-a76a-42010a140503","fda55552-7cc5-11e9-a76a-42010a140503"],"to":["fda46750-7cc5-11e9-a76a-42010a140503","fda37278-7cc5-11e9-a76a-42010a140503","fda435d2-7cc5-11e9-a76a-42010a140503","fda38baa-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda3a568-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda3be7c-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda3d6fa-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda3ee92-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda40698-7cc5-11e9-a76a-42010a140503","fda41e30-7cc5-11e9-a76a-42010a140503","fda435d2-7cc5-11e9-a76a-42010a140503","fda46750-7cc5-11e9-a76a-42010a140503","fda47e66-7cc5-11e9-a76a-42010a140503","fda55552-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda525aa-7cc5-11e9-a76a-42010a140503","fda53dec-7cc5-11e9-a76a-42010a140503","fda55552-7cc5-11e9-a76a-42010a140503","fda56be6-7cc5-11e9-a76a-42010a140503"],"label":["","","","","","","","","","","","","","","","","","","","","","","","","","","",""]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":"to"},"layout":{"hierarchical":{"enabled":true,"levelSeparation":500,"nodeSpacing":200,"direction":"RL"}},"groups":{"useDefaultGroups":true,"none":{"color":{"border":"black","background":"white"}}}},"groups":["none"],"width":"100%","height":"400px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+We visualize the <code>fancy_stack</code> above, which lays out these machine learning
+steps with and without the feature selection pipeline.</p>
 <p>Now we can Super Learn with this fancy base learner stack.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># run sl and predict on WASH</span>
 sl_fancy &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(<span class="dt">learners =</span> fancy_stack, <span class="dt">metalearner =</span> metalearner)
@@ -1564,10 +1438,7 @@ failed. It will be removed from the stack</code></pre>
 <pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
 Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
 (arm) failed. It will be removed from the stack</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">sl_fit_fancy<span class="op">$</span><span class="kw">print</span>() <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;300px&quot;</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">sl_fit_fancy<span class="op">$</span><span class="kw">print</span>()</code></pre>
 <pre><code>[1] &quot;SuperLearner:&quot;
 List of 2
  $ : chr &quot;Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)&quot;
@@ -1583,14 +1454,14 @@ List of 2
 7:                                                       Stack_Lrnr_glmnet_NULL_deviance_10_1_100_TRUE
 8:                                                                        Stack_Lrnr_ranger_100_TRUE_1
       weights
-1: 0.25939710
+1: 0.24644187
 2: 0.00000000
 3: 0.00000000
-4: 0.06071803
+4: 0.07699231
 5: 0.00000000
 6: 0.00000000
-7: 0.31259392
-8: 0.37286699
+7: 0.31646568
+8: 0.36343548
 [1] &quot;Cross-validated risk (MSE, squared error loss):&quot;
                                                                                                learner
 1:                           Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)_Lrnr_glm_TRUE
@@ -1605,13 +1476,342 @@ List of 2
    coefficients mean_risk    SE_risk    fold_SD fold_min_risk fold_max_risk
 1:           NA  1.015128 0.02363317 0.07629401     0.8927540      1.131594
 2:           NA  1.065282 0.02502664 0.09191791     0.9264292      1.196647
-3:           NA  1.013153 0.02360799 0.07934294     0.8822292      1.130815
-4:           NA  1.025182 0.02370444 0.08020967     0.8781967      1.156251
+3:           NA  1.012927 0.02360375 0.07911227     0.8822785      1.130862
+4:           NA  1.025240 0.02376524 0.08140390     0.8767263      1.152076
 5:           NA  1.018612 0.02380402 0.07799191     0.8956048      1.134940
 6:           NA  1.065282 0.02502664 0.09191791     0.9264292      1.196647
-7:           NA  1.012689 0.02360943 0.07915405     0.8837649      1.130114
-8:           NA  1.016841 0.02346007 0.08405372     0.8783798      1.156930
-9:           NA  1.006827 0.02340379 0.08027527     0.8729317      1.133879</code></pre>
+7:           NA  1.012687 0.02360698 0.07922521     0.8826677      1.130114
+8:           NA  1.016986 0.02349148 0.08744171     0.8629798      1.153669
+9:           NA  1.006888 0.02341730 0.08121137     0.8683093      1.132070</code></pre>
+<!-- Explain summary!!!! -->
+</div>
+<div id="cross-validated-super-learner" class="section level3">
+<h3><span class="header-section-number">3.4.3</span> Cross-validated Super Learner</h3>
+<p>We can cross-validate the super learner to see how well the super learner
+performs on unseen data, and obtain an estimate of the cross-validated risk of
+the super learner.</p>
+<p>This estimation procedure requires an “external” layer of cross-validation,
+also called nested cross-validation, which involves setting aside a separate
+holdout sample that we don’t use to fit the super learner. This
+external cross validation procedure may also incorporate 10 folds, which is the
+default in <code>sl3</code>. However, we will incorporate 2 outer/external folds of
+cross-validation for computational efficiency.</p>
+<p>We also need to specify a loss function to evaluate super learner.
+Documentation for the available loss functions can be found in the <a href="https://tlverse.org/sl3/reference/loss_functions.html"><code>sl3</code> Loss
+Function Reference</a>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">washb_task_new &lt;-<span class="st"> </span><span class="kw">make_sl3_Task</span>(
+  <span class="dt">data =</span> washb_data,
+  <span class="dt">covariates =</span> covars,
+  <span class="dt">outcome =</span> outcome,
+  <span class="dt">folds =</span> <span class="kw">make_folds</span>(washb_data, <span class="dt">fold_fun =</span> folds_vfold, <span class="dt">V =</span> <span class="dv">2</span>)
+)</code></pre>
+<pre><code>Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
+Found. Imputing covariates using sl3_process_missing</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">CVsl_fancy &lt;-<span class="st"> </span><span class="kw">CV_lrnr_sl</span>(sl_fit_fancy, washb_task_new, loss_squared_error)</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.gam failed with message: loading required package (gam)
+failed. It will be removed from the stack</code></pre>
+<pre><code>Warning in private$.train(subsetted_task, trained_sublearners):
+Lrnr_pkg_SuperLearner_SL.bayesglm failed with message: loading required package
+(arm) failed. It will be removed from the stack</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">CVsl_fancy <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
+<span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
+<span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;300px&quot;</span>)</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -1648,19 +1848,19 @@ Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)_Lrnr_glm_TRUE
 NA
 </td>
 <td style="text-align:right;">
-1.0151
+1.0277
 </td>
 <td style="text-align:right;">
-0.0236
+0.0238
 </td>
 <td style="text-align:right;">
-0.0763
+0.0082
 </td>
 <td style="text-align:right;">
-0.8928
+1.0219
 </td>
 <td style="text-align:right;">
-1.1316
+1.0335
 </td>
 </tr>
 <tr>
@@ -1671,19 +1871,19 @@ Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)_Lrnr_mean
 NA
 </td>
 <td style="text-align:right;">
-1.0653
+1.0652
 </td>
 <td style="text-align:right;">
 0.0250
 </td>
 <td style="text-align:right;">
-0.0919
+0.0305
 </td>
 <td style="text-align:right;">
-0.9264
+1.0436
 </td>
 <td style="text-align:right;">
-1.1966
+1.0868
 </td>
 </tr>
 <tr>
@@ -1694,19 +1894,19 @@ Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)_Lrnr_glmnet_NULL_
 NA
 </td>
 <td style="text-align:right;">
-1.0132
+1.0166
 </td>
 <td style="text-align:right;">
-0.0236
+0.0237
 </td>
 <td style="text-align:right;">
-0.0793
+0.0166
 </td>
 <td style="text-align:right;">
-0.8822
+1.0049
 </td>
 <td style="text-align:right;">
-1.1308
+1.0283
 </td>
 </tr>
 <tr>
@@ -1717,19 +1917,19 @@ Pipeline(Lrnr_pkg_SuperLearner_screener_screen.corP-&gt;Stack)_Lrnr_ranger_100_T
 NA
 </td>
 <td style="text-align:right;">
-1.0252
+1.0329
 </td>
 <td style="text-align:right;">
-0.0237
+0.0239
 </td>
 <td style="text-align:right;">
-0.0802
+0.0113
 </td>
 <td style="text-align:right;">
-0.8782
+1.0249
 </td>
 <td style="text-align:right;">
-1.1563
+1.0409
 </td>
 </tr>
 <tr>
@@ -1740,19 +1940,19 @@ Stack_Lrnr_glm_TRUE
 NA
 </td>
 <td style="text-align:right;">
-1.0186
+1.0303
 </td>
 <td style="text-align:right;">
 0.0238
 </td>
 <td style="text-align:right;">
-0.0780
+0.0068
 </td>
 <td style="text-align:right;">
-0.8956
+1.0255
 </td>
 <td style="text-align:right;">
-1.1349
+1.0351
 </td>
 </tr>
 <tr>
@@ -1763,19 +1963,19 @@ Stack_Lrnr_mean
 NA
 </td>
 <td style="text-align:right;">
-1.0653
+1.0652
 </td>
 <td style="text-align:right;">
 0.0250
 </td>
 <td style="text-align:right;">
-0.0919
+0.0305
 </td>
 <td style="text-align:right;">
-0.9264
+1.0436
 </td>
 <td style="text-align:right;">
-1.1966
+1.0868
 </td>
 </tr>
 <tr>
@@ -1786,19 +1986,19 @@ Stack_Lrnr_glmnet_NULL_deviance_10_1_100_TRUE
 NA
 </td>
 <td style="text-align:right;">
-1.0127
+1.0168
 </td>
 <td style="text-align:right;">
-0.0236
+0.0237
 </td>
 <td style="text-align:right;">
-0.0792
+0.0177
 </td>
 <td style="text-align:right;">
-0.8838
+1.0042
 </td>
 <td style="text-align:right;">
-1.1301
+1.0293
 </td>
 </tr>
 <tr>
@@ -1809,19 +2009,19 @@ Stack_Lrnr_ranger_100_TRUE_1
 NA
 </td>
 <td style="text-align:right;">
-1.0168
+1.0191
 </td>
 <td style="text-align:right;">
-0.0235
+0.0237
 </td>
 <td style="text-align:right;">
-0.0841
+0.0160
 </td>
 <td style="text-align:right;">
-0.8784
+1.0078
 </td>
 <td style="text-align:right;">
-1.1569
+1.0304
 </td>
 </tr>
 <tr>
@@ -1832,189 +2032,19 @@ SuperLearner
 NA
 </td>
 <td style="text-align:right;">
-1.0068
-</td>
-<td style="text-align:right;">
-0.0234
-</td>
-<td style="text-align:right;">
-0.0803
-</td>
-<td style="text-align:right;">
-0.8729
-</td>
-<td style="text-align:right;">
-1.1339
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- Explain summary!!!! -->
-</div>
-<div id="cross-validated-super-learner" class="section level3">
-<h3><span class="header-section-number">3.4.3</span> Cross-validated Super Learner</h3>
-<p>We can cross-validate the super learner to see how well the super learner
-performs on unseen data. This requires an “external” layer of cross-validation,
-also called nested cross-validation, which involves setting aside a separate
-holdout sample that we don’t use to fit the super learner. This external
-cross-validation procedure may also incorporate 10 folds, which is the default
-in <code>sl3</code>. However, we will incorporate 2 outer folds of cross-validation, for
-computational efficiency.</p>
-<pre class="sourceCode r"><code class="sourceCode r">washb_task_new &lt;-<span class="st"> </span><span class="kw">make_sl3_Task</span>(
-  <span class="dt">data =</span> washb_data,
-  <span class="dt">covariates =</span> covars,
-  <span class="dt">outcome =</span> outcome,
-  <span class="dt">folds =</span> <span class="kw">make_folds</span>(washb_data, <span class="dt">fold_fun =</span> folds_vfold, <span class="dt">V =</span> <span class="dv">2</span>)
-)</code></pre>
-<pre><code>Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
-Found. Imputing covariates using sl3_process_missing</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">CVsl_fancy &lt;-<span class="st"> </span><span class="kw">CV_lrnr_sl</span>(sl_fit, washb_task_new, loss_squared_error)
-CVsl_fancy <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
-<span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
-<span class="st">  </span><span class="kw">scroll_box</span>(<span class="dt">width =</span> <span class="st">&quot;100%&quot;</span>, <span class="dt">height =</span> <span class="st">&quot;300px&quot;</span>)</code></pre>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
-<table class="table" style="margin-left: auto; margin-right: auto;">
-<thead>
-<tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-learner
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-coefficients
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-mean_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-SE_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_SD
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_min_risk
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
-fold_max_risk
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">
-Lrnr_glm_TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0374
-</td>
-<td style="text-align:right;">
-0.0293
-</td>
-<td style="text-align:right;">
-0.0300
-</td>
-<td style="text-align:right;">
-1.0162
-</td>
-<td style="text-align:right;">
-1.0586
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_mean
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0657
-</td>
-<td style="text-align:right;">
-0.0250
-</td>
-<td style="text-align:right;">
-0.0002
-</td>
-<td style="text-align:right;">
-1.0655
-</td>
-<td style="text-align:right;">
-1.0659
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_ranger_500_TRUE_1
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0121
-</td>
-<td style="text-align:right;">
-0.0234
-</td>
-<td style="text-align:right;">
-0.0026
-</td>
-<td style="text-align:right;">
-1.0103
-</td>
-<td style="text-align:right;">
-1.0140
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Lrnr_glmnet_NULL_deviance_10_1_100_TRUE
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0203
-</td>
-<td style="text-align:right;">
-0.0248
-</td>
-<td style="text-align:right;">
-0.0108
-</td>
-<td style="text-align:right;">
-1.0127
-</td>
-<td style="text-align:right;">
-1.0280
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-SuperLearner
-</td>
-<td style="text-align:right;">
-NA
-</td>
-<td style="text-align:right;">
-1.0076
+1.0113
 </td>
 <td style="text-align:right;">
 0.0235
 </td>
 <td style="text-align:right;">
-0.0033
+0.0150
 </td>
 <td style="text-align:right;">
-1.0052
+1.0007
 </td>
 <td style="text-align:right;">
-1.0099
+1.0218
 </td>
 </tr>
 </tbody>
@@ -2054,15 +2084,7 @@ risk_diff
 aged
 </td>
 <td style="text-align:right;">
-0.0425
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tr
-</td>
-<td style="text-align:right;">
-0.0092
+0.0337
 </td>
 </tr>
 <tr>
@@ -2070,7 +2092,7 @@ tr
 momedu
 </td>
 <td style="text-align:right;">
-0.0091
+0.0111
 </td>
 </tr>
 <tr>
@@ -2078,15 +2100,31 @@ momedu
 asset_refrig
 </td>
 <td style="text-align:right;">
-0.0089
+0.0058
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-asset_chair
+momheight
 </td>
 <td style="text-align:right;">
-0.0049
+0.0044
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+elec
+</td>
+<td style="text-align:right;">
+0.0041
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tr
+</td>
+<td style="text-align:right;">
+0.0038
 </td>
 </tr>
 <tr>
@@ -2094,12 +2132,28 @@ asset_chair
 month
 </td>
 <td style="text-align:right;">
-0.0033
+0.0032
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Nlt18
+asset_chair
+</td>
+<td style="text-align:right;">
+0.0030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+floor
+</td>
+<td style="text-align:right;">
+0.0026
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_table
 </td>
 <td style="text-align:right;">
 0.0025
@@ -2107,15 +2161,15 @@ Nlt18
 </tr>
 <tr>
 <td style="text-align:left;">
-momage
+Nlt18
 </td>
 <td style="text-align:right;">
-0.0022
+0.0023
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-momheight
+asset_chouki
 </td>
 <td style="text-align:right;">
 0.0021
@@ -2126,39 +2180,15 @@ momheight
 fracode
 </td>
 <td style="text-align:right;">
-0.0020
+0.0021
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-walls
+momage
 </td>
 <td style="text-align:right;">
-0.0019
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_moto
-</td>
-<td style="text-align:right;">
-0.0017
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hfiacat
-</td>
-<td style="text-align:right;">
-0.0016
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-floor
-</td>
-<td style="text-align:right;">
-0.0015
+0.0014
 </td>
 </tr>
 <tr>
@@ -2166,44 +2196,20 @@ floor
 asset_mobile
 </td>
 <td style="text-align:right;">
-0.0013
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_chouki
-</td>
-<td style="text-align:right;">
-0.0012
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_wardrobe
-</td>
-<td style="text-align:right;">
-0.0011
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_sewmach
-</td>
-<td style="text-align:right;">
 0.0007
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-elec
+sex
 </td>
 <td style="text-align:right;">
-0.0004
+0.0006
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-asset_table
+hfiacat
 </td>
 <td style="text-align:right;">
 0.0003
@@ -2211,7 +2217,15 @@ asset_table
 </tr>
 <tr>
 <td style="text-align:left;">
-sex
+asset_moto
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_bike
 </td>
 <td style="text-align:right;">
 0.0000
@@ -2227,6 +2241,30 @@ delta_momage
 </tr>
 <tr>
 <td style="text-align:left;">
+watmin
+</td>
+<td style="text-align:right;">
+0.0000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+walls
+</td>
+<td style="text-align:right;">
+-0.0002
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_wardrobe
+</td>
+<td style="text-align:right;">
+-0.0002
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 roof
 </td>
 <td style="text-align:right;">
@@ -2235,15 +2273,7 @@ roof
 </tr>
 <tr>
 <td style="text-align:left;">
-asset_khat
-</td>
-<td style="text-align:right;">
--0.0002
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Ncomp
+asset_sewmach
 </td>
 <td style="text-align:right;">
 -0.0004
@@ -2259,10 +2289,18 @@ delta_momheight
 </tr>
 <tr>
 <td style="text-align:left;">
-asset_bike
+asset_khat
 </td>
 <td style="text-align:right;">
--0.0004
+-0.0009
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ncomp
+</td>
+<td style="text-align:right;">
+-0.0010
 </td>
 </tr>
 <tr>
@@ -2270,15 +2308,7 @@ asset_bike
 asset_tv
 </td>
 <td style="text-align:right;">
--0.0008
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-watmin
-</td>
-<td style="text-align:right;">
--0.0009
+-0.0013
 </td>
 </tr>
 </tbody>
@@ -2297,13 +2327,8 @@ for making the this Cardiovascular Health Study (CHS) data easily accessible.</p
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># load the data set</span>
 db_data &lt;-
 <span class="st"> </span><span class="kw">url</span>(<span class="st">&quot;https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv&quot;</span>)
-chspred &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> db_data, <span class="dt">col_names =</span> <span class="ot">TRUE</span>)</code></pre>
-<pre><code>Parsed with column specification:
-cols(
-  .default = col_double()
-)</code></pre>
-<pre><code>See spec(...) for full column specifications.</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># take a quick peek</span>
+chspred &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> db_data, <span class="dt">col_names =</span> <span class="ot">TRUE</span>)
+<span class="co"># take a quick peek</span>
 <span class="kw">head</span>(chspred) <span class="op">%&gt;%</span>
 <span class="st">  </span><span class="kw">kable</span>(<span class="dt">digits =</span> <span class="dv">4</span>) <span class="op">%&gt;%</span>
 <span class="st">  </span>kableExtra<span class="op">:::</span><span class="kw">kable_styling</span>(<span class="dt">fixed_thead =</span> T) <span class="op">%&gt;%</span>
@@ -2918,85 +2943,21 @@ mi
 </tbody>
 </table>
 </div>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">skim</span>(chspred)</code></pre>
-<pre><code>Skim summary statistics
- n obs: 4590 
- n variables: 28 
-
-── Variable type:numeric ───────────────────────────────────────────────────────
-  variable missing complete    n    mean    sd      p0     p25     p50    p75
-       ace       0     4590 4590   0.12   0.32    0      0       0       0   
-       age       0     4590 4590  74.81   6.29   55.07  70.46   74.29   78.61
-     alcoh       0     4590 4590   2.53   5.5     0      0       0       2.39
-   aspirin       0     4590 4590   0.37   0.48    0      0       0       1   
-      beta       0     4590 4590   0.12   0.33    0      0       0       0   
-       bmi       0     4590 4590  26.79   6.55    7.94  22.36   26.4    30.81
-    cysgfr       0     4590 4590  72.49  25.11  -32.71  55.98   72.02   89.05
-        dm       0     4590 4590   0.26   0.44    0      0       0       1   
-    estrgn       0     4590 4590   0.081  0.27    0      0       0       0   
-   fetuina       0     4590 4590   0.47   0.13   -0.12   0.39    0.47    0.56
-      gend       0     4590 4590   0.42   0.49    0      0       0       1   
-       glu       0     4590 4590 108.37  48.42  -33.76  77.76  103.17  132.38
-       hdl       0     4590 4590  52.97  19.14   -5     39.85   51.91   65.15
-    health       0     4590 4590   0.79   0.41    0      1       1       1   
-      hsed       0     4590 4590   0.45   0.5     0      0       0       1   
-       ins       0     4590 4590  11.91  46    -149.49 -16.86   10.49   37.95
-       ldl       0     4590 4590 119.9   53.16  -86.31  84.34  119.08  154.48
-    logcre       0     4590 4590   0.028  0.4    -1.28  -0.25    0.018   0.29
-    logcrp       0     4590 4590   1      1.35   -2.93   0.034   0.96    1.91
- logcystat       0     4590 4590   0.083  0.36   -1.1   -0.16    0.069   0.31
-   logkcal       0     4590 4590   6.11   2.54    0      5.37    6.69    7.74
-   logtrig       0     4590 4590   4.85   0.63    2.82   4.42    4.82    5.26
-        mi       0     4590 4590   0.031  0.17    0      0       0       0   
-      race       0     4590 4590   0.17   0.37    0      0       0       0   
-     smoke       0     4590 4590   0.1    0.3     0      0       0       0   
-     sysbp       0     4590 4590 136.55  27.39   39.55 117.46  135.03  154.22
-     waist       0     4590 4590  97.46  16.57   35.46  86.01   97     108.3 
-       whr       0     4590 4590   0.95   0.13    0.43   0.86    0.95    1.03
-   p100     hist
-   1    ▇▁▁▁▁▁▁▁
-  99.85 ▁▂▆▇▅▂▁▁
-  50.84 ▇▁▁▁▁▁▁▁
-   1    ▇▁▁▁▁▁▁▅
-   1    ▇▁▁▁▁▁▁▁
-  59.44 ▁▃▇▆▂▁▁▁
- 194.25 ▁▁▃▇▆▁▁▁
-   1    ▇▁▁▁▁▁▁▃
-   1    ▇▁▁▁▁▁▁▁
-   0.96 ▁▁▁▆▇▃▁▁
-   1    ▇▁▁▁▁▁▁▆
- 452.4  ▁▅▇▂▁▁▁▁
- 135.85 ▁▂▇▇▅▁▁▁
-   1    ▂▁▁▁▁▁▁▇
-   1    ▇▁▁▁▁▁▁▆
- 457.35 ▁▆▇▁▁▁▁▁
- 412.54 ▁▁▆▇▃▁▁▁
-   2.18 ▁▂▇▇▂▁▁▁
-   5.71 ▁▂▆▇▆▃▁▁
-   1.86 ▁▂▇▇▃▁▁▁
-  12.75 ▂▁▂▅▇▃▁▁
-   7.71 ▁▂▆▇▅▁▁▁
-   1    ▇▁▁▁▁▁▁▁
-   1    ▇▁▁▁▁▁▁▂
-   1    ▇▁▁▁▁▁▁▁
- 262.7  ▁▁▆▇▅▁▁▁
- 176.92 ▁▁▅▇▅▁▁▁
-   1.74 ▁▁▆▇▂▁▁▁</code></pre>
 <ol style="list-style-type: decimal">
 <li>Create an <code>sl3</code> task, setting myocardial infarction <code>mi</code> as the outcome and
 using all available covariate data.</li>
-<li>Make a library of 10 base learning algorithms. Customize hyperparameters for
-at least two of your learners. Feel free to use learners from <code>sl3</code> or
-<code>SuperLearner</code>.</li>
-<li>Incorporate feature selection.</li>
-<li>Choose an appropriate learner to fit the metalearning step.</li>
-<li>Justify your selection of metalearner and base learners.</li>
+<li>Make a library of seven relatively fast base learning algorithms (i.e., do
+not consider BART or HAL). Customize hyperparameters for one of your
+learners. Feel free to use learners from <code>sl3</code> or <code>SuperLearner</code>. You may
+use the same base learning library that is presented above.</li>
+<li>Incorporate feature selection with the <code>SuperLearner</code> screener <code>screen.corP</code>.</li>
+<li>Fit the metalearning step with non-negative least squares, <code>Lrnr_nnls</code>.</li>
 <li>With the metalearner and base learners, make the super learner and train it
 on the task.</li>
 <li>Print your super learner fit by calling <code>print()</code> with <code>$</code>.</li>
-<li>Which learner is the discrete super learner, and what is its cross-validated
-mean risk?</li>
-<li>What is the cross-validated risk of the continuous super learner?</li>
+<li>Cross-validate your super learner fit to see how well it performs on unseen
+data. Specify <code>loss_squared_error</code> as the loss function to evaluate the
+super learner.</li>
 </ol>
 </div>
 </div>
@@ -3218,6 +3179,9 @@ validation sample is $P_{n,B_n}^1$.
 <div id="refs" class="references">
 <div id="ref-breiman1996stacked">
 <p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64.</p>
+</div>
+<div id="ref-polley2010super">
+<p>Polley, Eric C, and Mark J Van Der Laan. 2010. “Super Learner in Prediction.” bepress.</p>
 </div>
 <div id="ref-vdl2003unified">
 <p>van der Laan, Mark J, and Sandrine Dudoit. 2003. “Unified Cross-Validation Methodology for Selection Among Estimators and a General Cross-Validated Adaptive Epsilon-Net Estimator: Finite Sample Oracle Inequalities and Examples.” bepress.</p>
