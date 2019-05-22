@@ -129,7 +129,8 @@ library(knitr)
 set.seed(7194)
 
 # load data set and take a peek
-washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
+washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
+                    stringsAsFactors = TRUE)
 head(washb_data) %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
@@ -211,6 +212,10 @@ lrnr_mean <- make_learner(Lrnr_mean)
 lrnr_ranger <- make_learner(Lrnr_ranger)
 lrnr_glmnet <- make_learner(Lrnr_glmnet)
 ```
+Are you interested in creating a new base learning algorithm? If so,
+instructions are provided in [Defining New `sl3`
+Learners](https://tlverse.org/sl3/articles/custom_lrnrs.html).
+
 In order to assemble the library of learners, we need to **"stack"** them
 together. A `Stack` is a special learner and it has the same interface as all
 other learners. What makes a stack special is that it combines multiple learners
@@ -222,7 +227,12 @@ stack <- make_learner(
   Stack,
   lrnr_glm, lrnr_mean, lrnr_ranger, lrnr_glmnet
 )
+dt_stack <- delayed_learner_train(stack, washb_task)
+plot(dt_stack, color = FALSE, height = "400px", width = "100%")
 ```
+We visualize the stack in the above plot. If you zoom in you should be able to
+see the learner names that we included in our stack of base learning algorithms.
+
 We're almost ready to super learn! Just a couple more necessary specifications.
 
 We will fit a non-negative least squares metalearner using `Lrnr_nnls`. Note
@@ -235,6 +245,7 @@ metalearner <- make_learner(Lrnr_nnls)
 ```
 Now that we have made a library/stack of base learners and a metalearner, we
 are ready to make the super learner.
+<!-- Explain more!!!! -->
 
 ```{r make-sl}
 sl <- make_learner(Lrnr_sl,
@@ -244,6 +255,10 @@ sl <- make_learner(Lrnr_sl,
 dt <- delayed_learner_train(sl, washb_task)
 plot(dt, color = FALSE, height = "400px", width = "100%")
 ```
+In the above plot, we visualize the super learner, which we can see has 10
+realizations of the stack and a separate hold-out (the top branch of the figure)
+that will not be used to fit the super learner.
+<!-- Explain more!!!! -->
 
 **3. Train the super learner on the machine learning task**
 
@@ -268,21 +283,24 @@ values, and we can also obtain a summary of the results.
 ```{r slbasic-summary}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-sl_fit$print() %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+sl_fit$print()
 ```
-<!-- Explain summary!!!! -->
+We can see that the super learner (row 5 of the printed super learner fit) had
+a mean risk of 1.007274 and this ensemble weighted `ranger` and `glmnet`
+learners highest, and did not weight `mean`. We can also see that the `glmnet`
+had the lowest cross-validated mean risk and it is thus the cross-validated
+selector, or the discrete super learner. The mean risk of the (continuous) super
+learner is calculated using the hold-out set that we visualized in the plot
+above.
 
 ## Extensions
 
 In this section, we will introduce a few extensions of the `sl3` framework,
 including
 
-1. Customizing learner hyperparameters
-2. Feature selection
-3. Cross-validated super learner
+1. Customizing learner hyperparameters;
+2. Feature selection;
+3. Cross-validated super learner;
 4. Variable importance with `sl3`.
 
 ### Customize Learner Hyperparameters
@@ -342,6 +360,8 @@ fancy_stack <- make_learner(Stack, cor_pipeline, new_stack)
 dt_new <- delayed_learner_train(fancy_stack, washb_task)
 plot(dt_new, color = FALSE, height = "400px", width = "100%")
 ```
+We visualize the `fancy_stack` above, which lays out these machine learning
+steps with and without the feature selection pipeline.
 
 Now we can Super Learn with this fancy base learner stack.
 
@@ -349,22 +369,26 @@ Now we can Super Learn with this fancy base learner stack.
 # run sl and predict on WASH
 sl_fancy <- Lrnr_sl$new(learners = fancy_stack, metalearner = metalearner)
 sl_fit_fancy <- sl_fancy$train(washb_task)
-sl_fit_fancy$print() %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+sl_fit_fancy$print()
 ```
 <!-- Explain summary!!!! -->
 
 ### Cross-validated Super Learner
 
 We can cross-validate the super learner to see how well the super learner
-performs on unseen data. This requires an "external" layer of cross-validation,
+performs on unseen data, and obtain an estimate of the cross-validated risk of
+the super learner.
+
+This estimation procedure requires an "external" layer of cross-validation,
 also called nested cross-validation, which involves setting aside a separate
-holdout sample that we don’t use to fit the super learner. This external
-cross-validation procedure may also incorporate 10 folds, which is the default
-in `sl3`. However, we will incorporate 2 outer folds of cross-validation, for
-computational efficiency.
+holdout sample that we don’t use to fit the super learner. This
+external cross validation procedure may also incorporate 10 folds, which is the
+default in `sl3`. However, we will incorporate 2 outer/external folds of
+cross-validation for computational efficiency.
+
+We also need to specify a loss function to evaluate super learner.
+Documentation for the available loss functions can be found in the [`sl3` Loss
+Function Reference](https://tlverse.org/sl3/reference/loss_functions.html).
 
 ```{r CVsl}
 washb_task_new <- make_sl3_Task(
@@ -373,7 +397,7 @@ washb_task_new <- make_sl3_Task(
   outcome = outcome,
   folds = make_folds(washb_data, fold_fun = folds_vfold, V = 2)
 )
-CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
+CVsl_fancy <- CV_lrnr_sl(sl_fit_fancy, washb_task_new, loss_squared_error)
 CVsl_fancy %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
@@ -408,7 +432,7 @@ Answer the questions below to predict myocardial infarction (`mi`) using the
 available covariate data. Thanks to Professor David Benkeser at Emory University
 for making the this Cardiovascular Health Study (CHS) data easily accessible.
 
-```{r ex-setup}
+```{r ex-setup, warning=FALSE, message=FALSE}
 # load the data set
 db_data <-
  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
@@ -418,23 +442,22 @@ head(chspred) %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
-skim(chspred)
 ```
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
    using all available covariate data.
-2. Make a library of 10 base learning algorithms. Customize hyperparameters for
-   at least two of your learners. Feel free to use learners from `sl3` or
-   `SuperLearner`.
-3. Incorporate feature selection.
-4. Choose an appropriate learner to fit the metalearning step.
-5. Justify your selection of metalearner and base learners.
-6. With the metalearner and base learners, make the super learner and train it
+2. Make a library of seven relatively fast base learning algorithms (i.e., do
+   not consider BART or HAL). Customize hyperparameters for one of your
+   learners. Feel free to use learners from `sl3` or `SuperLearner`. You may
+   use the same base learning library that is presented above.
+3. Incorporate feature selection with the `SuperLearner` screener `screen.corP`.
+4. Fit the metalearning step with non-negative least squares, `Lrnr_nnls`.
+5. With the metalearner and base learners, make the super learner and train it
    on the task.
-7. Print your super learner fit by calling `print()` with `$`.
-8. Which learner is the discrete super learner, and what is its cross-validated
-   mean risk?
-9. What is the cross-validated risk of the continuous super learner?
+6. Print your super learner fit by calling `print()` with `$`.
+7. Cross-validate your super learner fit to see how well it performs on unseen
+   data. Specify `loss_squared_error` as the loss function to evaluate the
+   super learner.
 
 ## Concluding Remarks
 
