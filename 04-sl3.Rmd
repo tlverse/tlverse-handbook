@@ -75,19 +75,28 @@ the true value of the parameter $\psi_0$. For example, the conditional mean
 minimizes the risk of the squared error loss. Thus, it is a valid loss function
 when estimating the conditional mean.
 
-The *discrete super learner*, or cross-validated selector, is the algorithm in
-the library that minimizes the cross-validated empirical risk. The
+The *discrete super learner*, or *cross-validation selector*, is the algorithm
+in the library that minimizes the cross-validated empirical risk. The
 cross-validated empirical risk of an algorithm is defined as the empirical mean
 over a validation sample of the loss of the algorithm fitted on the training
 sample, averaged across the splits of the data.
 
 The *continuous/ensemble super learner* is a weighted average of the library of
 algorithms, where the weights are chosen to minimize the cross-validated
-empirical risk of the library. Restricting the weights ("metalearner" in `sl3`
-nomenclature) to be positive and sum to one (convex combination) has been shown
-to improve upon the discrete Super Learner [@polley2010super; @van2007super].
-This notion of weighted combinations was introduced in @wolpert1992stacked for
-neural networks and adapted for regressions in @breiman1996stacked.
+empirical risk of the library. Restricting the weights to be positive and sum to
+one (i.e., a convex combination) has been shown to improve upon the discrete
+super learner [@polley2010super; @van2007super]. This notion of weighted
+combinations was introduced in @wolpert1992stacked for neural networks and
+adapted for regressions in @breiman1996stacked.
+
+<!--
+The *oracle results* prove that, if the number of algorithms in the library are
+polynomial in sample size, then the cross-validation selector (i.e., discrete
+super learner) (1) is equivalent with the oracle selector asymptotically (based
+on sample of size of training samples), or (2) achieves the parametric rate (log
+$n/n$) for convergence with respect to the loss-based dissimilarity (risk)
+between a candidate estimate $\psi$ and the true parameter value $\psi_0$.
+-->
 
 For more detail on super learner we refer the reader to @van2007super and
 @polley2010super. The optimality results for the cross-validation selector
@@ -116,15 +125,12 @@ Using the WASH data, we are interested in predicting weight-for-height z-score
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
 ```{r setup, message=FALSE, warning=FALSE}
-library(skimr)
-library(kableExtra)
-library(here)
-library(tidyverse)
-library(data.table)
-library(sl3)
-library(SuperLearner)
-library(origami)
 library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(origami)
+library(SuperLearner)
+library(sl3)
 
 set.seed(7194)
 
@@ -156,9 +162,6 @@ washb_task <- make_sl3_Task(
   covariates = covars,
   outcome = outcome
 )
-
-# examine it
-washb_task
 ```
 This warning is important. The task just imputed missing covariates for us.
 Specifically, for each covariate column with missing values, `sl3` uses the
@@ -171,6 +174,12 @@ informative.
 Also, notice that we did not specify the number of folds, or the loss function
 in the task. The default cross-validation scheme is V-fold, with the number of
 folds $V=10$.
+
+Let's visualize our `washb_task`.
+
+```{r task-examine}
+washb_task
+```
 
 ### 2. Make a super learner {-}
 
@@ -225,7 +234,7 @@ lrnr_hal_simple <- make_learner(Lrnr_hal9001, degrees = 1, n_folds = 2)
 lrnr_gam <- Lrnr_pkg_SuperLearner$new("SL.gam")
 lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
-Are you interested in creating a new base learning algorithm? If so,
+*Are you interested in creating a new base learning algorithm?* If so,
 instructions are provided in [Defining New `sl3`
 Learners](https://tlverse.org/sl3/articles/custom_lrnrs.html).
 
@@ -246,12 +255,11 @@ stack <- make_learner(
 We will fit a non-negative least squares metalearner using `Lrnr_nnls`. Note
 that any learner can be used as a metalearner. `Lrnr_nnls` is a solid choice
 for a metalearner, since it creates a convex combination of the learners when
-combining them.
+combining them. To
 
 ```{r metalearner}
 metalearner <- make_learner(Lrnr_nnls)
 ```
-
 We can optionally select a subset of available covariates and pass only
 those variables to the modeling algorithm.
 
@@ -294,6 +302,20 @@ realizations of the stack and a separate hold-out (the top branch of the figure)
 that will not be used to fit the super learner.
 <!-- Explain more!!!! -->
 
+We have made a library/stack of base learners and a metalearner, so we
+are ready to make the super learner. The super learner algorithm fits a
+metalearner on the validation-set predictions.
+
+```{r make-sl}
+sl <- make_learner(Lrnr_sl,
+  learners = fancy_stack,
+  metalearner = metalearner
+)
+# we can visualize the super learner
+dt_sl <- delayed_learner_train(sl, washb_task)
+plot(dt_sl, color = FALSE, height = "400px", width = "100%")
+```
+
 ### 3. Train the super learner on the machine learning task {-}
 
 The super learner algorithm fits a metalearner on the validation-set
@@ -305,18 +327,27 @@ cross-validated risk.
 Now we are ready to **"train"** our super learner on our `sl3_task` object,
 `washb_task`.
 
-```{r sl-basic}
+```{r sl}
 sl_fit <- sl$train(washb_task)
 ```
 
 ### 4. Obtain predicted values {-}
 
 Now that we have fit the super learner, we are ready to obtain our predicted
-values, and we can also obtain a summary of the results.
+values for each subject.
 
-```{r sl-basic-summary}
+```{r sl-predictions}
 sl_preds <- sl_fit$predict()
 head(sl_preds)
+```
+
+<!--
+plot observed vs predicted
+-->
+
+We can also obtain a summary of the results.
+
+```{r, sl-summary}
 sl_fit$print()
 ```
 We can see that the super learner (row 5 of the printed super learner fit) had
@@ -351,7 +382,7 @@ washb_task_new <- make_sl3_Task(
   outcome = outcome,
   folds = make_folds(washb_data, fold_fun = folds_vfold, V = 2)
 )
-CVsl_fancy <- CV_lrnr_sl(sl_fit_fancy, washb_task_new, loss_squared_error)
+CVsl_fancy <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
 CVsl_fancy %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
@@ -370,7 +401,7 @@ difference, the more important the variable is in the prediction. Let's explore
 the `sl3` variable importance measurements for the `washb` data.
 
 ```{r varimp}
-washb_varimp <- varimp(sl_fit_fancy, loss_squared_error)
+washb_varimp <- varimp(sl_fit, loss_squared_error)
 washb_varimp %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
