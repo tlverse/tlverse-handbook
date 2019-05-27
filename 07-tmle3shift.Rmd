@@ -655,7 +655,8 @@ investigate the data from the WASH Benefits trial. To start, let's load the
 data, convert all columns to be of class `numeric`, and take a quick look at it
 
 ```{r load_washb_data_shift, message=FALSE, warning=FALSE, cache=FALSE}
-washb_data <- fread(here("data", "washb_data.csv"), stringsAsFactors = TRUE)
+washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
+                    stringsAsFactors = TRUE)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
 ```
@@ -705,12 +706,18 @@ lasso [@diaz2011super; @benkeser2016hal; @coyle2018hal9001;
 ```{r sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE}
 # learners used for conditional density regression (i.e., propensity score)
 lrn_rfcde <- Lrnr_rfcde$new(
-  n_trees = 500, node_size = 3,
+  n_trees = 250, node_size = 5,
   n_basis = 20, output_type = "observed"
 )
 
+# we need to turn on cross-validation for the RFCDE learner
+lrn_cv_rfcde <- Lrnr_cv$new(
+  learner = lrn_rfcde,
+  full_fit = TRUE
+)
+
 # modify learner list, using existing SL for Q fit
-learner_list <- list(Y = sl_lrn, A = lrn_rfcde)
+learner_list <- list(Y = sl_lrn, A = lrn_cv_rfcde)
 ```
 
 Having made the above preparations, we're now ready to estimate the
