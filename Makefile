@@ -1,7 +1,5 @@
-TITLE=handbook
-
 .PHONY: all
-all: book
+all: style book code
 
 book:
 	sh ./_build.sh
