@@ -350,15 +350,16 @@ plot observed vs predicted
 We can also obtain a summary of the results.
 
 ```{r, sl-summary}
-sl_fit$print()
+sl_fit_summary <- sl_fit$print()
 ```
-We can see that the super learner (row 5 of the printed super learner fit) had
-a mean risk of 1.007274 and this ensemble weighted `ranger` and `glmnet`
-learners highest, and did not weight `mean`. We can also see that the `glmnet`
-had the lowest cross-validated mean risk and it is thus the cross-validated
-selector, or the discrete super learner. The mean risk of the (continuous) super
-learner is calculated using the hold-out set that we visualized in the plot
-above.
+From the table of the printed super learner fit, we note that the super learner
+had a mean risk of `r sl_fit_summary$mean_risk[length(sl_fit_summary$learner)]`
+and that this ensemble weighted the `ranger` and `glmnet` learners highest while
+not weighting the `mean` learner highly. We can also see that the `glmnet`
+learner had the lowest cross-validated mean risk, thus making it the
+cross-validated selector (or the _discrete_ super learner). The mean risk of the
+(continuous) super learner is calculated using the hold-out set that we
+visualized in the plot above.
 
 ## Cross-validated Super Learner
 
