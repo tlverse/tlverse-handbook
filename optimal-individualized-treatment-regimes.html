@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-10-04" />
+<meta name="date" content="2019-10-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,7 +51,7 @@
 
 
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="libs/htmlwidgets-1.5/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
 <link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
 <script src="libs/vis-4.20.1/vis.min.js"></script>
 <script src="libs/visNetwork-binding-2.0.8/visNetwork.js"></script>
@@ -334,7 +334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2019-10-04</p>
+<p>Updated: 2019-10-24</p>
 <div id="learning-objectives-4" class="section level2">
 <h2><span class="header-section-number">5.1</span> Learning Objectives</h2>
 <ol style="list-style-type: decimal">
@@ -883,15 +883,16 @@ problems. In order to see which learners can be used to estimate <span class="ma
 <code>sl3</code>, we run the following:</p>
 <div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="co"># See which learners support multi-class classification:</span></a>
 <a class="sourceLine" id="cb79-2" data-line-number="2"><span class="kw">sl3_list_learners</span>(<span class="kw">c</span>(<span class="st">&quot;categorical&quot;</span>))</a></code></pre></div>
-<pre><code> [1] &quot;Lrnr_bartMachine&quot;          &quot;Lrnr_dbarts&quot;              
- [3] &quot;Lrnr_glmnet&quot;               &quot;Lrnr_grf&quot;                 
- [5] &quot;Lrnr_h2o_glm&quot;              &quot;Lrnr_h2o_grid&quot;            
- [7] &quot;Lrnr_independent_binomial&quot; &quot;Lrnr_mean&quot;                
- [9] &quot;Lrnr_multivariate&quot;         &quot;Lrnr_optim&quot;               
-[11] &quot;Lrnr_polspline&quot;            &quot;Lrnr_randomForest&quot;        
-[13] &quot;Lrnr_ranger&quot;               &quot;Lrnr_rpart&quot;               
-[15] &quot;Lrnr_solnp&quot;                &quot;Lrnr_svm&quot;                 
-[17] &quot;Lrnr_xgboost&quot;             </code></pre>
+<pre><code> [1] &quot;Lrnr_bartMachine&quot;          &quot;Lrnr_caret&quot;               
+ [3] &quot;Lrnr_dbarts&quot;               &quot;Lrnr_gam&quot;                 
+ [5] &quot;Lrnr_glmnet&quot;               &quot;Lrnr_grf&quot;                 
+ [7] &quot;Lrnr_h2o_glm&quot;              &quot;Lrnr_h2o_grid&quot;            
+ [9] &quot;Lrnr_independent_binomial&quot; &quot;Lrnr_mean&quot;                
+[11] &quot;Lrnr_multivariate&quot;         &quot;Lrnr_optim&quot;               
+[13] &quot;Lrnr_polspline&quot;            &quot;Lrnr_pooled_hazards&quot;      
+[15] &quot;Lrnr_randomForest&quot;         &quot;Lrnr_ranger&quot;              
+[17] &quot;Lrnr_rpart&quot;                &quot;Lrnr_solnp&quot;               
+[19] &quot;Lrnr_svm&quot;                  &quot;Lrnr_xgboost&quot;             </code></pre>
 <p>Note that since the corresponding blip will be vector valued, we will have a
 column for each additional level of treatment. As such, we need to create
 multivariate learners with the helper function <code>create_mv_learners</code> that takes a
@@ -915,9 +916,9 @@ ensemble learners into a list object below:</p>
 <a class="sourceLine" id="cb83-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5402133 0.5906901 0.07217604 0.4492276 0.7321525
+1:  TSM E[Y_{A=NULL}] 0.5420875 0.5859819 0.06733543 0.4540068 0.7179569
    psi_transformed lower_transformed upper_transformed
-1:       0.5906901         0.4492276         0.7321525</code></pre>
+1:       0.5859819         0.4540068         0.7179569</code></pre>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -952,10 +953,10 @@ parameter to <code>FALSE</code>:</p>
 <a class="sourceLine" id="cb86-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb86-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type       param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=W1}] 0.5502096 0.6057064 0.06227979 0.4836402 0.7277725
+   type             param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W3,W2,W1}] 0.5402937 0.6084284 0.06730421 0.4765145 0.7403422
    psi_transformed lower_transformed upper_transformed
-1:       0.6057064         0.4836402         0.7277725</code></pre>
+1:       0.6084284         0.4765145         0.7403422</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -980,15 +981,15 @@ the outcome in question while being supported by the data.</p>
 <a class="sourceLine" id="cb89-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
 <a class="sourceLine" id="cb89-3" data-line-number="3">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est        se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5497554 0.6477085 0.0216683 0.6052394 0.6901776
+   type         param  init_est tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5494507 0.660998 0.02154446 0.6187716 0.7032244
    psi_transformed lower_transformed upper_transformed
-1:       0.6477085         0.6052394         0.6901776</code></pre>
+1:        0.660998         0.6187716         0.7032244</code></pre>
 <div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="co"># How many individuals got assigned each treatment?</span></a>
 <a class="sourceLine" id="cb91-2" data-line-number="2"><span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</a></code></pre></div>
 <pre><code>
   2   3 
-508 492 </code></pre>
+506 494 </code></pre>
 </div>
 <div id="q-learning" class="section level3">
 <h3><span class="header-section-number">5.8.3</span> Q-learning</h3>
@@ -1014,7 +1015,7 @@ we want to use Q-learning instead of TMLE.</p>
 <a class="sourceLine" id="cb93-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb93-11" data-line-number="11"><span class="co"># Estimate the parameter:</span></a>
 <a class="sourceLine" id="cb93-12" data-line-number="12"><span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</a></code></pre></div>
-<pre><code>[1] 0.4727584</code></pre>
+<pre><code>[1] 0.4742176</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1099,14 +1100,14 @@ effect).</p>
 <a class="sourceLine" id="cb97-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb97-6" data-line-number="6"><span class="kw">print</span>(vim_results)</a></code></pre></div>
 <pre><code>   type                  param     init_est    tmle_est         se       lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y])  0.002624721  0.09476254 0.03326914  0.02955623
-2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.024602490 -0.08793174 0.05066883 -0.18724082
+1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.024103346 -0.06133882 0.05005778 -0.15945026
+2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.003156779  0.03387236 0.03458136 -0.03390587
         upper psi_transformed lower_transformed upper_transformed  A
-1: 0.15996884       1.0993978          1.029997          1.173474  A
-2: 0.01137734       0.9158234          0.829244          1.011442 W1
-             W    Z_stat        p_nz p_nz_corrected
-1: W3,W4,W2,W1  2.848362 0.002197246    0.004394492
-2:  W3,W4,W2,A -1.735421 0.041333142    0.041333142</code></pre>
+1: 0.03677261       0.9405045         0.8526124          1.037457 W1
+2: 0.10165059       1.0344526         0.9666625          1.106997  A
+             W     Z_stat      p_nz p_nz_corrected
+1:  W3,W4,W2,A -1.2253605 0.1102197      0.1636671
+2: W3,W4,W2,W1  0.9794976 0.1636671      0.1636671</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1750,9 +1751,9 @@ Found. Imputing covariates using sl3_process_missing.</code></pre>
 <div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5490705 -0.4946668 0.04434932 -0.5815899 -0.4077438
+1:  TSM E[Y_{A=NULL}] -0.5492381 -0.4597446 0.04515031 -0.5482376 -0.3712516
    psi_transformed lower_transformed upper_transformed
-1:      -0.4946668        -0.5815899        -0.4077438</code></pre>
+1:      -0.4597446        -0.5482376        -0.3712516</code></pre>
 <hr />
 </div>
 <div id="exercises" class="section level2">
