@@ -57,7 +57,7 @@ true probability measure $P_0$, allowing us to learn from our data. For
 example, we can define the empirical probability measure of a set, $A$, to be
 the proportion of observations which end up in $A$. That is,
 \begin{equation*}
-  P_n(A) = \frac{1}{n}\sum_{i=1}^{n}I(O_i \in A)
+  P_n(A) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(O_i \in A)
 \end{equation*}
 
 In order to start learning something, we need to ask *"What do we know about the
@@ -110,7 +110,7 @@ For a simple example, consider a data set which contains observations of a
 survival time on every subject, for which our question of interest is "What's
 the probability that someone lives longer than five years?" We have,
 \begin{equation*}
-  \Psi(P_0) = P_0(O > 5)
+  \Psi(P_0) = \mathbb{P}(O > 5)
 \end{equation*}
 
 This answer to this question is the **estimand, $\Psi(P_0)$**, which is the
@@ -161,13 +161,19 @@ increases. For large enough $n$ we have,
 \end{equation*}
 permitting statistical inference. Now, we can proceed to quantify the
 uncertainty of our chosen estimator by construction of hypothesis tests and
-confidence intervals. For example, we may construct a 95% confidence interval
-for our estimand, $\Psi(P_0)$:
+confidence intervals. For example, we may construct a confidence interval at
+level $(1 - \alpha)$ for our estimand, $\Psi(P_0)$:
 \begin{equation*}
-  \hat{\Psi}(P_n) \pm 1.96 \left(\frac{\sigma}{\sqrt{n}}\right)
+  \hat{\Psi}(P_n) \pm z_{1 - \frac{\alpha}{2}}
+    \left(\frac{\sigma}{\sqrt{n}}\right),
 \end{equation*}
+where $z_{1 - \frac{\alpha}{2}}$ is the $(1 - \frac{\alpha}{2})^\text{th}$
+quantile of the standard normal distribution. Often, we will be interested in
+constructing 95% confidence intervals, corresponding to mass $\alpha = 0.05$ in
+either tail of the limit distribution; thus, we will typically take
+$z_{1 - \frac{\alpha}{2}} \approx 1.96$.
 
-_Note:_ we typically have to estimate the standard error,
+_Note:_ we will typically have to estimate the standard error,
 $\frac{\sigma}{\sqrt{n}}$.
 
 A 95\% confidence interval means that if we were to take 100 different samples
@@ -281,8 +287,8 @@ summarized as follows
    other versions of treatment";
 4. It is also necessary that all observed units, across strata defined by $W$,
    have a bounded (non-deterministic) probability of receiving treatment --
-   that is, $0 < P_0(A = a \mid W) < 1$ for all $a$ and $W$). This assumption is
-   referred to as _positivity_.
+   that is, $0 < \mathbb{P}(A = a \mid W) < 1$ for all $a$ and $W$). This assumption
+   is referred to as _positivity_ or _overlap_.
 
 _Remark_: Together, (2) and (3), the assumptions of no interference and
 consistency, respectively, are jointly referred to as the *stable unit
@@ -329,16 +335,22 @@ intervention or health promoter visit). The six intervention groups were:
 6. combined water, sanitation, handwashing, and nutrition.
 
 In the workshop, we concentrate on child growth (size for age) as the outcome of
-interest. For reference, this trial was registered with ClinicalTrials.gov as
-NCT01590095.
+interest. For reference, this trial was registered with
+[ClinicalTrials.gov](https://clinicaltrials.gov) as NCT01590095.
 
 ```{r load_washb_data_intro, message=FALSE, warning=FALSE}
-library(here)
 library(tidyverse)
+library(data.table)
+library(knitr)
+library(kableExtra)
 
 # read in data
-dat <- read_csv(here("data", "washb_data.csv"))
-dat
+dat <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
+             stringsAsFactors = TRUE)
+head(dat) %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
 ```
 
 For the purposes of this workshop, we we start by treating the data as
