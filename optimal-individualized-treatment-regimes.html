@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chapter 5 Optimal Individualized Treatment Regimes | The Hitchhiker’s Guide to the tlverse</title>
   <meta name="description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
-  <meta name="generator" content="bookdown 0.14.1 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.16.1 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Chapter 5 Optimal Individualized Treatment Regimes | The Hitchhiker’s Guide to the tlverse" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2019-10-24" />
+<meta name="date" content="2019-11-25" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -334,7 +334,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2019-10-24</p>
+<p>Updated: 2019-11-25</p>
 <div id="learning-objectives-4" class="section level2">
 <h2><span class="header-section-number">5.1</span> Learning Objectives</h2>
 <ol style="list-style-type: decimal">
@@ -674,13 +674,13 @@ final outcome.</p>
 <p>Finally, we demonstrate how to evaluate the mean outcome under the optimal
 individualized treatment using <code>tmle3mopptx</code>. To start, let’s load the packages
 we’ll use and set a seed:</p>
-<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1"><span class="kw">library</span>(here)</a>
-<a class="sourceLine" id="cb68-2" data-line-number="2"><span class="kw">library</span>(data.table)</a>
-<a class="sourceLine" id="cb68-3" data-line-number="3"><span class="kw">library</span>(sl3)</a>
-<a class="sourceLine" id="cb68-4" data-line-number="4"><span class="kw">library</span>(tmle3)</a>
-<a class="sourceLine" id="cb68-5" data-line-number="5"><span class="kw">library</span>(tmle3mopttx)</a>
-<a class="sourceLine" id="cb68-6" data-line-number="6"><span class="kw">library</span>(devtools)</a>
-<a class="sourceLine" id="cb68-7" data-line-number="7"><span class="kw">set.seed</span>(<span class="dv">111</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1"><span class="kw">library</span>(here)</a>
+<a class="sourceLine" id="cb64-2" data-line-number="2"><span class="kw">library</span>(data.table)</a>
+<a class="sourceLine" id="cb64-3" data-line-number="3"><span class="kw">library</span>(sl3)</a>
+<a class="sourceLine" id="cb64-4" data-line-number="4"><span class="kw">library</span>(tmle3)</a>
+<a class="sourceLine" id="cb64-5" data-line-number="5"><span class="kw">library</span>(tmle3mopttx)</a>
+<a class="sourceLine" id="cb64-6" data-line-number="6"><span class="kw">library</span>(devtools)</a>
+<a class="sourceLine" id="cb64-7" data-line-number="7"><span class="kw">set.seed</span>(<span class="dv">111</span>)</a></code></pre></div>
 <div id="simulated-data" class="section level3">
 <h3><span class="header-section-number">5.6.1</span> Simulated Data</h3>
 <p>First, we load the simulated data. We will start with the more general setup
@@ -693,7 +693,7 @@ our data generating distribution is of the following form:
   P(Y=1|A,W) &amp;= 0.5\text{logit}^{-1}[-5I(A=1)(W_1-0.5)+5I(A=0)(W_1-0.5)] +
      0.5\text{logit}^{-1}(W_2W_3)
 \end{align*}\]</span></p>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;data_bin&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;data_bin&quot;</span>)</a></code></pre></div>
 <p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. Note that the
 mean under the true optimal rule is <span class="math inline">\(\psi=0.578\)</span> for this data generating
 distribution.</p>
@@ -702,13 +702,13 @@ distribution.</p>
 relationships between the nodes in the <em>directed acyclic graph</em> (DAG) via
 <em>nonparametric structural equation models</em> (NPSEMs), reflected in the node list
 that we set up:</p>
-<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1"><span class="co"># organize data and nodes for tmle3</span></a>
-<a class="sourceLine" id="cb70-2" data-line-number="2">data &lt;-<span class="st"> </span>data_bin</a>
-<a class="sourceLine" id="cb70-3" data-line-number="3">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb70-4" data-line-number="4">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>),</a>
-<a class="sourceLine" id="cb70-5" data-line-number="5">  <span class="dt">A =</span> <span class="st">&quot;A&quot;</span>,</a>
-<a class="sourceLine" id="cb70-6" data-line-number="6">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
-<a class="sourceLine" id="cb70-7" data-line-number="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1"><span class="co"># organize data and nodes for tmle3</span></a>
+<a class="sourceLine" id="cb66-2" data-line-number="2">data &lt;-<span class="st"> </span>data_bin</a>
+<a class="sourceLine" id="cb66-3" data-line-number="3">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb66-4" data-line-number="4">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>),</a>
+<a class="sourceLine" id="cb66-5" data-line-number="5">  <span class="dt">A =</span> <span class="st">&quot;A&quot;</span>,</a>
+<a class="sourceLine" id="cb66-6" data-line-number="6">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
+<a class="sourceLine" id="cb66-7" data-line-number="7">)</a></code></pre></div>
 <p>We now have an observed data structure (<code>data</code>) and a specification of the role
 that each variable in the data set plays as the nodes in a DAG.</p>
 </div>
@@ -720,38 +720,38 @@ package</a>. Using the framework provided by the <a href="https://tlverse.org/sl
 package</a>, the nuisance parameters of the TML estimator
 may be fit with ensemble learning, using the cross-validation framework of the
 Super Learner algorithm of <span class="citation">van der Laan, Polley, and Hubbard (<a href="#ref-vdl2007super">2007</a>)</span>.</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1"><span class="co"># Define sl3 library and metalearners:</span></a>
-<a class="sourceLine" id="cb71-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb71-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb71-4" data-line-number="4">lrn_xgboost_<span class="dv">500</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">500</span>)</a>
-<a class="sourceLine" id="cb71-5" data-line-number="5">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb71-6" data-line-number="6">lrn_glm &lt;-<span class="st"> </span>Lrnr_glm_fast<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb71-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb71-8" data-line-number="8">## Define the Q learner:</a>
-<a class="sourceLine" id="cb71-9" data-line-number="9">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb71-10" data-line-number="10">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb71-11" data-line-number="11">                  lrn_xgboost_<span class="dv">500</span>, lrn_mean, lrn_glm),</a>
-<a class="sourceLine" id="cb71-12" data-line-number="12">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb71-13" data-line-number="13">)</a>
-<a class="sourceLine" id="cb71-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb71-15" data-line-number="15">## Define the g learner:</a>
-<a class="sourceLine" id="cb71-16" data-line-number="16">g_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb71-17" data-line-number="17">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_glm),</a>
-<a class="sourceLine" id="cb71-18" data-line-number="18">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb71-19" data-line-number="19">)</a>
-<a class="sourceLine" id="cb71-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb71-21" data-line-number="21">## Define the B learner:</a>
-<a class="sourceLine" id="cb71-22" data-line-number="22">b_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb71-23" data-line-number="23">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb71-24" data-line-number="24">                  lrn_xgboost_<span class="dv">500</span>,lrn_mean, lrn_glm),</a>
-<a class="sourceLine" id="cb71-25" data-line-number="25">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb71-26" data-line-number="26">)</a></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" data-line-number="1"><span class="co"># Define sl3 library and metalearners:</span></a>
+<a class="sourceLine" id="cb67-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb67-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb67-4" data-line-number="4">lrn_xgboost_<span class="dv">500</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb67-5" data-line-number="5">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb67-6" data-line-number="6">lrn_glm &lt;-<span class="st"> </span>Lrnr_glm_fast<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb67-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb67-8" data-line-number="8">## Define the Q learner:</a>
+<a class="sourceLine" id="cb67-9" data-line-number="9">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb67-10" data-line-number="10">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb67-11" data-line-number="11">                  lrn_xgboost_<span class="dv">500</span>, lrn_mean, lrn_glm),</a>
+<a class="sourceLine" id="cb67-12" data-line-number="12">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb67-13" data-line-number="13">)</a>
+<a class="sourceLine" id="cb67-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb67-15" data-line-number="15">## Define the g learner:</a>
+<a class="sourceLine" id="cb67-16" data-line-number="16">g_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb67-17" data-line-number="17">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_glm),</a>
+<a class="sourceLine" id="cb67-18" data-line-number="18">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb67-19" data-line-number="19">)</a>
+<a class="sourceLine" id="cb67-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb67-21" data-line-number="21">## Define the B learner:</a>
+<a class="sourceLine" id="cb67-22" data-line-number="22">b_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb67-23" data-line-number="23">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>,</a>
+<a class="sourceLine" id="cb67-24" data-line-number="24">                  lrn_xgboost_<span class="dv">500</span>,lrn_mean, lrn_glm),</a>
+<a class="sourceLine" id="cb67-25" data-line-number="25">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb67-26" data-line-number="26">)</a></code></pre></div>
 <p>As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression (Q), propensity score
 (g), and the blip function (B). We make the above explicit with respect to
 standard notation by bundling the ensemble learners into a list object below:</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1"><span class="co"># specify outcome and treatment regressions and create learner list</span></a>
-<a class="sourceLine" id="cb72-2" data-line-number="2">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1"><span class="co"># specify outcome and treatment regressions and create learner list</span></a>
+<a class="sourceLine" id="cb68-2" data-line-number="2">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
 <p>The <code>learner_list</code> object above specifies the role that each of the ensemble
 learners we’ve generated is to play in computing initial estimators. Recall that
 we need initial estimators of relevant parts of the likelihood in order to
@@ -772,12 +772,12 @@ of pseudo-blip we will use in this estimation problem, the list of learners used
 to estimate the blip function, whether we want to maximize or minimize the final
 outcome, and few other more advanced features including searching for a less
 complex rule and realistic interventions.</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb73-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
-<a class="sourceLine" id="cb73-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip1&quot;</span>,</a>
-<a class="sourceLine" id="cb73-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
-<a class="sourceLine" id="cb73-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>, <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb73-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb69-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb69-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
+<a class="sourceLine" id="cb69-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip1&quot;</span>,</a>
+<a class="sourceLine" id="cb69-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
+<a class="sourceLine" id="cb69-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>, <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb69-6" data-line-number="6">)</a></code></pre></div>
 <p>As seen above, the <code>tmle3_mopttx_blip_revere</code> specification object
 (like all <code>tmle3_Spec</code> objects) does <em>not</em> store the data for our
 specific analysis of interest. Later,
@@ -802,9 +802,9 @@ optimal individualized interventions via the <code>realistic</code> specificatio
 <code>TRUE</code>, only treatments supported by the data will be considered, therefore
 alleviating concerns regarding practical positivity issues. We explore all the
 important extensions of <code>tmle3mopttx</code> in later sections.</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb74-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
-<a class="sourceLine" id="cb74-3" data-line-number="3">fit</a></code></pre></div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb70-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb70-3" data-line-number="3">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param  init_est  tmle_est         se     lower     upper
 1:  TSM E[Y_{A=NULL}] 0.4289592 0.5701264 0.02749039 0.5162462 0.6240065
@@ -832,48 +832,48 @@ of the following form:
     3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
 \end{align*}\]</span></p>
 <p>We can just load the data available as part of the package as follows:</p>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb76-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;data_cat_realistic&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb72-1" data-line-number="1"><span class="kw">data</span>(<span class="st">&quot;data_cat_realistic&quot;</span>)</a></code></pre></div>
 <p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. Note that the
 mean under the true optimal rule is <span class="math inline">\(\psi=0.658\)</span>, which is the quantity we aim
 to estimate.</p>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="co"># organize data and nodes for tmle3</span></a>
-<a class="sourceLine" id="cb77-2" data-line-number="2">data &lt;-<span class="st"> </span>data_cat_realistic</a>
-<a class="sourceLine" id="cb77-3" data-line-number="3">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb77-4" data-line-number="4">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>),</a>
-<a class="sourceLine" id="cb77-5" data-line-number="5">  <span class="dt">A =</span> <span class="st">&quot;A&quot;</span>,</a>
-<a class="sourceLine" id="cb77-6" data-line-number="6">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
-<a class="sourceLine" id="cb77-7" data-line-number="7">)</a></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1"><span class="co"># organize data and nodes for tmle3</span></a>
+<a class="sourceLine" id="cb73-2" data-line-number="2">data &lt;-<span class="st"> </span>data_cat_realistic</a>
+<a class="sourceLine" id="cb73-3" data-line-number="3">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb73-4" data-line-number="4">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>),</a>
+<a class="sourceLine" id="cb73-5" data-line-number="5">  <span class="dt">A =</span> <span class="st">&quot;A&quot;</span>,</a>
+<a class="sourceLine" id="cb73-6" data-line-number="6">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
+<a class="sourceLine" id="cb73-7" data-line-number="7">)</a></code></pre></div>
 </div>
 <div id="constructing-optimal-stacked-regressions-with-sl3-1" class="section level3">
 <h3><span class="header-section-number">5.7.2</span> Constructing Optimal Stacked Regressions with <code>sl3</code></h3>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" data-line-number="1"><span class="co"># Initialize few of the learners:</span></a>
-<a class="sourceLine" id="cb78-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb78-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb78-4" data-line-number="4">lrn_xgboost_<span class="dv">500</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">500</span>)</a>
-<a class="sourceLine" id="cb78-5" data-line-number="5">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb78-6" data-line-number="6">lrn_glm &lt;-<span class="st"> </span>Lrnr_glm_fast<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb78-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb78-8" data-line-number="8">## Define the Q learner, which is just a regular learner:</a>
-<a class="sourceLine" id="cb78-9" data-line-number="9">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb78-10" data-line-number="10">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean,</a>
-<a class="sourceLine" id="cb78-11" data-line-number="11">                  lrn_glm),</a>
-<a class="sourceLine" id="cb78-12" data-line-number="12">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb78-13" data-line-number="13">)</a>
-<a class="sourceLine" id="cb78-14" data-line-number="14"></a>
-<a class="sourceLine" id="cb78-15" data-line-number="15"><span class="co"># Define the g learner, which is a multinomial learner:</span></a>
-<a class="sourceLine" id="cb78-16" data-line-number="16"><span class="co">#specify the appropriate loss of the multinomial learner:</span></a>
-<a class="sourceLine" id="cb78-17" data-line-number="17">mn_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_solnp,</a>
-<a class="sourceLine" id="cb78-18" data-line-number="18">                               <span class="dt">loss_function =</span> loss_loglik_multinomial,</a>
-<a class="sourceLine" id="cb78-19" data-line-number="19">                               <span class="dt">learner_function =</span></a>
-<a class="sourceLine" id="cb78-20" data-line-number="20">                                 metalearner_linear_multinomial)</a>
-<a class="sourceLine" id="cb78-21" data-line-number="21">g_learner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_sl,</a>
-<a class="sourceLine" id="cb78-22" data-line-number="22">                          <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean),</a>
-<a class="sourceLine" id="cb78-23" data-line-number="23">                          mn_metalearner)</a>
-<a class="sourceLine" id="cb78-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb78-25" data-line-number="25"><span class="co"># Define the Blip learner, which is a multivariate learner:</span></a>
-<a class="sourceLine" id="cb78-26" data-line-number="26">learners &lt;-<span class="st"> </span><span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean,</a>
-<a class="sourceLine" id="cb78-27" data-line-number="27">                 lrn_glm)</a>
-<a class="sourceLine" id="cb78-28" data-line-number="28">b_learner &lt;-<span class="st"> </span><span class="kw">create_mv_learners</span>(<span class="dt">learners =</span> learners)</a></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb74-1" data-line-number="1"><span class="co"># Initialize few of the learners:</span></a>
+<a class="sourceLine" id="cb74-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb74-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb74-4" data-line-number="4">lrn_xgboost_<span class="dv">500</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">500</span>)</a>
+<a class="sourceLine" id="cb74-5" data-line-number="5">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb74-6" data-line-number="6">lrn_glm &lt;-<span class="st"> </span>Lrnr_glm_fast<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb74-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb74-8" data-line-number="8">## Define the Q learner, which is just a regular learner:</a>
+<a class="sourceLine" id="cb74-9" data-line-number="9">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb74-10" data-line-number="10">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean,</a>
+<a class="sourceLine" id="cb74-11" data-line-number="11">                  lrn_glm),</a>
+<a class="sourceLine" id="cb74-12" data-line-number="12">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb74-13" data-line-number="13">)</a>
+<a class="sourceLine" id="cb74-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb74-15" data-line-number="15"><span class="co"># Define the g learner, which is a multinomial learner:</span></a>
+<a class="sourceLine" id="cb74-16" data-line-number="16"><span class="co">#specify the appropriate loss of the multinomial learner:</span></a>
+<a class="sourceLine" id="cb74-17" data-line-number="17">mn_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_solnp,</a>
+<a class="sourceLine" id="cb74-18" data-line-number="18">                               <span class="dt">loss_function =</span> loss_loglik_multinomial,</a>
+<a class="sourceLine" id="cb74-19" data-line-number="19">                               <span class="dt">learner_function =</span></a>
+<a class="sourceLine" id="cb74-20" data-line-number="20">                                 metalearner_linear_multinomial)</a>
+<a class="sourceLine" id="cb74-21" data-line-number="21">g_learner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_sl,</a>
+<a class="sourceLine" id="cb74-22" data-line-number="22">                          <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean),</a>
+<a class="sourceLine" id="cb74-23" data-line-number="23">                          mn_metalearner)</a>
+<a class="sourceLine" id="cb74-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb74-25" data-line-number="25"><span class="co"># Define the Blip learner, which is a multivariate learner:</span></a>
+<a class="sourceLine" id="cb74-26" data-line-number="26">learners &lt;-<span class="st"> </span><span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_xgboost_<span class="dv">500</span>, lrn_mean,</a>
+<a class="sourceLine" id="cb74-27" data-line-number="27">                 lrn_glm)</a>
+<a class="sourceLine" id="cb74-28" data-line-number="28">b_learner &lt;-<span class="st"> </span><span class="kw">create_mv_learners</span>(<span class="dt">learners =</span> learners)</a></code></pre></div>
 <p>As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression, propensity score, and
 the blip function. Note that we need to estimate <span class="math inline">\(g_0(A|W)\)</span> for a categorical
@@ -881,8 +881,8 @@ the blip function. Note that we need to estimate <span class="math inline">\(g_0
 the <code>sl3</code> package with learners that can address multi-class classification
 problems. In order to see which learners can be used to estimate <span class="math inline">\(g_0(A|W)\)</span> in
 <code>sl3</code>, we run the following:</p>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="co"># See which learners support multi-class classification:</span></a>
-<a class="sourceLine" id="cb79-2" data-line-number="2"><span class="kw">sl3_list_learners</span>(<span class="kw">c</span>(<span class="st">&quot;categorical&quot;</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1"><span class="co"># See which learners support multi-class classification:</span></a>
+<a class="sourceLine" id="cb75-2" data-line-number="2"><span class="kw">sl3_list_learners</span>(<span class="kw">c</span>(<span class="st">&quot;categorical&quot;</span>))</a></code></pre></div>
 <pre><code> [1] &quot;Lrnr_bartMachine&quot;          &quot;Lrnr_caret&quot;               
  [3] &quot;Lrnr_dbarts&quot;               &quot;Lrnr_gam&quot;                 
  [5] &quot;Lrnr_glmnet&quot;               &quot;Lrnr_grf&quot;                 
@@ -899,26 +899,26 @@ multivariate learners with the helper function <code>create_mv_learners</code> t
 list of initialized learners as input.</p>
 <p>We make the above explicit with respect to standard notation by bundling the
 ensemble learners into a list object below:</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="co"># specify outcome and treatment regressions and create learner list</span></a>
-<a class="sourceLine" id="cb81-2" data-line-number="2">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1"><span class="co"># specify outcome and treatment regressions and create learner list</span></a>
+<a class="sourceLine" id="cb77-2" data-line-number="2">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
 </div>
 <div id="targeted-estimation-of-the-mean-under-the-optimal-individualized-interventions-effects-1" class="section level3">
 <h3><span class="header-section-number">5.7.3</span> Targeted Estimation of the Mean under the Optimal Individualized Interventions Effects</h3>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb82-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
-<a class="sourceLine" id="cb82-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
-<a class="sourceLine" id="cb82-4" data-line-number="4">  <span class="dt">learners =</span> learner_list, <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb82-5" data-line-number="5">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb82-6" data-line-number="6">)</a></code></pre></div>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb83-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
-<a class="sourceLine" id="cb83-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb83-4" data-line-number="4">fit</a></code></pre></div>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb78-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb78-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
+<a class="sourceLine" id="cb78-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
+<a class="sourceLine" id="cb78-4" data-line-number="4">  <span class="dt">learners =</span> learner_list, <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb78-5" data-line-number="5">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb78-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb79-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb79-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb79-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5420875 0.5859819 0.06733543 0.4540068 0.7179569
+   type         param  init_est tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5332377 0.562125 0.07062999 0.4236928 0.7005572
    psi_transformed lower_transformed upper_transformed
-1:       0.5859819         0.4540068         0.7179569</code></pre>
+1:        0.562125         0.4236928         0.7005572</code></pre>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -942,21 +942,21 @@ potentially provide more realistic rules- as such, we allow for statistical
 inference for the counterfactual mean outcome under the sub-optimal rule.
 Within the <code>tmle3mopttx</code> paradigm, we just need to change the <code>complex</code>
 parameter to <code>FALSE</code>:</p>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb85-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
-<a class="sourceLine" id="cb85-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W1&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
-<a class="sourceLine" id="cb85-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
-<a class="sourceLine" id="cb85-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">FALSE</span>, <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb85-6" data-line-number="6">)</a></code></pre></div>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb86-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
-<a class="sourceLine" id="cb86-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb86-4" data-line-number="4">fit</a></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb81-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
+<a class="sourceLine" id="cb81-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W1&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
+<a class="sourceLine" id="cb81-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
+<a class="sourceLine" id="cb81-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">FALSE</span>, <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb81-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb82-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb82-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb82-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb82-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type             param  init_est  tmle_est         se     lower     upper
-1:  TSM E[Y_{A=W3,W2,W1}] 0.5402937 0.6084284 0.06730421 0.4765145 0.7403422
+   type          param  init_est tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W2,W1}] 0.5489749 0.538051 0.06570852 0.4092646 0.6668373
    psi_transformed lower_transformed upper_transformed
-1:       0.6084284         0.4765145         0.7403422</code></pre>
+1:        0.538051         0.4092646         0.6668373</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -971,25 +971,25 @@ due to global or practical positivity constrains, such treatment can never be
 implemented in real life (or is highly unlikely). As such, specifying
 <code>realistic</code> to <code>TRUE</code>, we consider possibly suboptimal treatments that optimize
 the outcome in question while being supported by the data.</p>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb88-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
-<a class="sourceLine" id="cb88-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W1&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
-<a class="sourceLine" id="cb88-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
-<a class="sourceLine" id="cb88-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>, <span class="dt">realistic =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb88-6" data-line-number="6">)</a></code></pre></div>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb89-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
-<a class="sourceLine" id="cb89-3" data-line-number="3">fit</a></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb84-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
+<a class="sourceLine" id="cb84-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W2&quot;</span>, <span class="st">&quot;W1&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
+<a class="sourceLine" id="cb84-4" data-line-number="4">  <span class="dt">learners =</span> learner_list,</a>
+<a class="sourceLine" id="cb84-5" data-line-number="5">  <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>, <span class="dt">realistic =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb84-6" data-line-number="6">)</a></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb85-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb85-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb85-3" data-line-number="3">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est tmle_est         se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5494507 0.660998 0.02154446 0.6187716 0.7032244
+   type         param  init_est  tmle_est        se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5440912 0.6506952 0.0214975 0.6085609 0.6928295
    psi_transformed lower_transformed upper_transformed
-1:        0.660998         0.6187716         0.7032244</code></pre>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="co"># How many individuals got assigned each treatment?</span></a>
-<a class="sourceLine" id="cb91-2" data-line-number="2"><span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</a></code></pre></div>
+1:       0.6506952         0.6085609         0.6928295</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1"><span class="co"># How many individuals got assigned each treatment?</span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</a></code></pre></div>
 <pre><code>
   2   3 
-506 494 </code></pre>
+516 484 </code></pre>
 </div>
 <div id="q-learning" class="section level3">
 <h3><span class="header-section-number">5.8.3</span> Q-learning</h3>
@@ -1003,19 +1003,19 @@ first need to initialize a specification for the TMLE of our parameter of
 interest. As opposed to the previous section however, we will now use
 <code>tmle3_mopttx_Q</code> instead of <code>tmle3_mopttx_blip_revere</code> in order to indicate that
 we want to use Q-learning instead of TMLE.</p>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb93-2" data-line-number="2">tmle_spec_Q &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_Q</span>(<span class="dt">maximize =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb93-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb93-4" data-line-number="4"><span class="co"># Define data:</span></a>
-<a class="sourceLine" id="cb93-5" data-line-number="5">tmle_task &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_tmle_task</span>(data, node_list)</a>
-<a class="sourceLine" id="cb93-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb93-7" data-line-number="7"><span class="co"># Define likelihood:</span></a>
-<a class="sourceLine" id="cb93-8" data-line-number="8">initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_initial_likelihood</span>(tmle_task,</a>
-<a class="sourceLine" id="cb93-9" data-line-number="9">                                                          learner_list)</a>
-<a class="sourceLine" id="cb93-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb93-11" data-line-number="11"><span class="co"># Estimate the parameter:</span></a>
-<a class="sourceLine" id="cb93-12" data-line-number="12"><span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</a></code></pre></div>
-<pre><code>[1] 0.4742176</code></pre>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb89-2" data-line-number="2">tmle_spec_Q &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_Q</span>(<span class="dt">maximize =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb89-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb89-4" data-line-number="4"><span class="co"># Define data:</span></a>
+<a class="sourceLine" id="cb89-5" data-line-number="5">tmle_task &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_tmle_task</span>(data, node_list)</a>
+<a class="sourceLine" id="cb89-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb89-7" data-line-number="7"><span class="co"># Define likelihood:</span></a>
+<a class="sourceLine" id="cb89-8" data-line-number="8">initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_initial_likelihood</span>(tmle_task,</a>
+<a class="sourceLine" id="cb89-9" data-line-number="9">                                                          learner_list)</a>
+<a class="sourceLine" id="cb89-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb89-11" data-line-number="11"><span class="co"># Estimate the parameter:</span></a>
+<a class="sourceLine" id="cb89-12" data-line-number="12"><span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</a></code></pre></div>
+<pre><code>[1] 0.4775732</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1037,15 +1037,15 @@ individualized treatment.</p>
 covariates to be categorical variables. For illustration purpose, we bin
 baseline covariates corresponding to the data-generating distribution described
 in section 5.7.1:</p>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1"><span class="co"># bin baseline covariates to 3 categories:</span></a>
-<a class="sourceLine" id="cb95-2" data-line-number="2">data<span class="op">$</span>W1 &lt;-<span class="st"> </span><span class="kw">ifelse</span>(data<span class="op">$</span>W1 <span class="op">&lt;</span><span class="st"> </span><span class="kw">quantile</span>(data<span class="op">$</span>W1)[<span class="dv">2</span>], <span class="dv">1</span>,</a>
-<a class="sourceLine" id="cb95-3" data-line-number="3">                  <span class="kw">ifelse</span>(data<span class="op">$</span>W1 <span class="op">&lt;</span><span class="st"> </span><span class="kw">quantile</span>(data<span class="op">$</span>W1)[<span class="dv">3</span>], <span class="dv">2</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb95-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb95-5" data-line-number="5">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb95-6" data-line-number="6">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W2&quot;</span>),</a>
-<a class="sourceLine" id="cb95-7" data-line-number="7">  <span class="dt">A =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;A&quot;</span>),</a>
-<a class="sourceLine" id="cb95-8" data-line-number="8">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
-<a class="sourceLine" id="cb95-9" data-line-number="9">)</a></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="co"># bin baseline covariates to 3 categories:</span></a>
+<a class="sourceLine" id="cb91-2" data-line-number="2">data<span class="op">$</span>W1 &lt;-<span class="st"> </span><span class="kw">ifelse</span>(data<span class="op">$</span>W1 <span class="op">&lt;</span><span class="st"> </span><span class="kw">quantile</span>(data<span class="op">$</span>W1)[<span class="dv">2</span>], <span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb91-3" data-line-number="3">                  <span class="kw">ifelse</span>(data<span class="op">$</span>W1 <span class="op">&lt;</span><span class="st"> </span><span class="kw">quantile</span>(data<span class="op">$</span>W1)[<span class="dv">3</span>], <span class="dv">2</span>, <span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb91-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb91-5" data-line-number="5">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb91-6" data-line-number="6">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">&quot;W3&quot;</span>, <span class="st">&quot;W4&quot;</span>, <span class="st">&quot;W2&quot;</span>),</a>
+<a class="sourceLine" id="cb91-7" data-line-number="7">  <span class="dt">A =</span> <span class="kw">c</span>(<span class="st">&quot;W1&quot;</span>, <span class="st">&quot;A&quot;</span>),</a>
+<a class="sourceLine" id="cb91-8" data-line-number="8">  <span class="dt">Y =</span> <span class="st">&quot;Y&quot;</span></a>
+<a class="sourceLine" id="cb91-9" data-line-number="9">)</a></code></pre></div>
 <p>Note that our node list now includes <span class="math inline">\(W_1\)</span> as treatments as well! Don’t worry,
 we will still properly adjust for all baseline covariates.</p>
 </div>
@@ -1082,32 +1082,32 @@ need to specify whether the final comparison of the mean under the optimal
 individualized rule and the mean under the observed outcome should be on the
 multiplicative scale (risk ratio) or linear (similar to average treatment
 effect).</p>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb96-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_vim</span>(</a>
-<a class="sourceLine" id="cb96-3" data-line-number="3">  <span class="dt">V=</span><span class="kw">c</span>(<span class="st">&quot;W2&quot;</span>),</a>
-<a class="sourceLine" id="cb96-4" data-line-number="4">  <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
-<a class="sourceLine" id="cb96-5" data-line-number="5">  <span class="dt">learners =</span> learner_list,</a>
-<a class="sourceLine" id="cb96-6" data-line-number="6">  <span class="dt">contrast =</span> <span class="st">&quot;multiplicative&quot;</span>,</a>
-<a class="sourceLine" id="cb96-7" data-line-number="7">  <span class="dt">maximize =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb96-8" data-line-number="8">  <span class="dt">method =</span> <span class="st">&quot;SL&quot;</span>,</a>
-<a class="sourceLine" id="cb96-9" data-line-number="9">  <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb96-10" data-line-number="10">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb96-11" data-line-number="11">)</a></code></pre></div>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb97-2" data-line-number="2">vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle_spec, data, node_list, learner_list,</a>
-<a class="sourceLine" id="cb97-3" data-line-number="3">  <span class="dt">adjust_for_other_A =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb97-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb97-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb97-6" data-line-number="6"><span class="kw">print</span>(vim_results)</a></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_vim</span>(</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3">  <span class="dt">V=</span><span class="kw">c</span>(<span class="st">&quot;W2&quot;</span>),</a>
+<a class="sourceLine" id="cb92-4" data-line-number="4">  <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
+<a class="sourceLine" id="cb92-5" data-line-number="5">  <span class="dt">learners =</span> learner_list,</a>
+<a class="sourceLine" id="cb92-6" data-line-number="6">  <span class="dt">contrast =</span> <span class="st">&quot;multiplicative&quot;</span>,</a>
+<a class="sourceLine" id="cb92-7" data-line-number="7">  <span class="dt">maximize =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb92-8" data-line-number="8">  <span class="dt">method =</span> <span class="st">&quot;SL&quot;</span>,</a>
+<a class="sourceLine" id="cb92-9" data-line-number="9">  <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb92-10" data-line-number="10">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb92-11" data-line-number="11">)</a></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb93-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb93-2" data-line-number="2">vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle_spec, data, node_list, learner_list,</a>
+<a class="sourceLine" id="cb93-3" data-line-number="3">  <span class="dt">adjust_for_other_A =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb93-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb93-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb93-6" data-line-number="6"><span class="kw">print</span>(vim_results)</a></code></pre></div>
 <pre><code>   type                  param     init_est    tmle_est         se       lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.024103346 -0.06133882 0.05005778 -0.15945026
-2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.003156779  0.03387236 0.03458136 -0.03390587
+1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.024296189 -0.04907220 0.04910905 -0.14532418
+2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.004204862  0.04323369 0.03496765 -0.02530165
         upper psi_transformed lower_transformed upper_transformed  A
-1: 0.03677261       0.9405045         0.8526124          1.037457 W1
-2: 0.10165059       1.0344526         0.9666625          1.106997  A
+1: 0.04717977       0.9521124         0.8647419          1.048310 W1
+2: 0.11176903       1.0441819         0.9750158          1.118255  A
              W     Z_stat      p_nz p_nz_corrected
-1:  W3,W4,W2,A -1.2253605 0.1102197      0.1636671
-2: W3,W4,W2,W1  0.9794976 0.1636671      0.1636671</code></pre>
+1:  W3,W4,W2,A -0.9992497 0.1588369      0.1588369
+2: W3,W4,W2,W1  1.2363909 0.1081566      0.1588369</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1134,10 +1134,10 @@ supplements</p></li>
 ITR for the main intervention in WASH Benefits data.</p>
 <p>To start, let’s load the data, convert all columns to be of class <code>numeric</code>,
 and take a quick look at it:</p>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1">washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb99-2" data-line-number="2">                    <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb99-3" data-line-number="3">washb_data &lt;-<span class="st"> </span>washb_data[<span class="op">!</span><span class="kw">is.na</span>(momage), <span class="kw">lapply</span>(.SD, as.numeric)]</a>
-<a class="sourceLine" id="cb99-4" data-line-number="4"><span class="kw">head</span>(washb_data, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1">washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb95-2" data-line-number="2">                    <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb95-3" data-line-number="3">washb_data &lt;-<span class="st"> </span>washb_data[<span class="op">!</span><span class="kw">is.na</span>(momage), <span class="kw">lapply</span>(.SD, as.numeric)]</a>
+<a class="sourceLine" id="cb95-4" data-line-number="4"><span class="kw">head</span>(washb_data, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>     whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
@@ -1158,63 +1158,63 @@ and take a quick look at it:</p>
 interest is the weight-for-height Z-score which we seek to maximize, whereas our
 treatment is the six intervention groups aimed at improving living conditions.
 All the other collected baseline covariates correspond to <span class="math inline">\(W\)</span>.</p>
-<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">W =</span> <span class="kw">names</span>(washb_data)[<span class="op">!</span>(<span class="kw">names</span>(washb_data) <span class="op">%in%</span></a>
-<a class="sourceLine" id="cb101-2" data-line-number="2"><span class="st">                                          </span><span class="kw">c</span>(<span class="st">&quot;whz&quot;</span>, <span class="st">&quot;tr&quot;</span>))],</a>
-<a class="sourceLine" id="cb101-3" data-line-number="3">                  <span class="dt">A =</span> <span class="st">&quot;tr&quot;</span>, <span class="dt">Y =</span> <span class="st">&quot;whz&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">W =</span> <span class="kw">names</span>(washb_data)[<span class="op">!</span>(<span class="kw">names</span>(washb_data) <span class="op">%in%</span></a>
+<a class="sourceLine" id="cb97-2" data-line-number="2"><span class="st">                                          </span><span class="kw">c</span>(<span class="st">&quot;whz&quot;</span>, <span class="st">&quot;tr&quot;</span>))],</a>
+<a class="sourceLine" id="cb97-3" data-line-number="3">                  <span class="dt">A =</span> <span class="st">&quot;tr&quot;</span>, <span class="dt">Y =</span> <span class="st">&quot;whz&quot;</span>)</a></code></pre></div>
 <p>We pick few potential effect modifiers, including mother’s education, current
 living conditions (floor), and possession of material items including the
 refrigerator. We concentrate of these covariates as they might be indicative of
 the socio-economic status of individuals involved in the trial.</p>
-<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>momedu)</a></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb98-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>momedu)</a></code></pre></div>
 <pre><code>
    1    2    3 
  733 1441 2503 </code></pre>
-<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>floor)</a></code></pre></div>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>floor)</a></code></pre></div>
 <pre><code>
    0    1 
 4177  500 </code></pre>
-<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>asset_refrig)</a></code></pre></div>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="kw">table</span>(washb_data<span class="op">$</span>asset_refrig)</a></code></pre></div>
 <pre><code>
    0    1 
 4305  372 </code></pre>
-<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" data-line-number="1"><span class="kw">summary</span>(washb_data<span class="op">$</span>whz)</a></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="kw">summary</span>(washb_data<span class="op">$</span>whz)</a></code></pre></div>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 -4.6700 -1.2800 -0.6000 -0.5859  0.0800  4.9700 </code></pre>
-<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1"><span class="co"># Initialize few of the learners:</span></a>
-<a class="sourceLine" id="cb110-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb110-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
-<a class="sourceLine" id="cb110-4" data-line-number="4">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb110-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb110-6" data-line-number="6">## Define the Q learner, which is just a regular learner:</a>
-<a class="sourceLine" id="cb110-7" data-line-number="7">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb110-8" data-line-number="8">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_mean),</a>
-<a class="sourceLine" id="cb110-9" data-line-number="9">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
-<a class="sourceLine" id="cb110-10" data-line-number="10">)</a>
-<a class="sourceLine" id="cb110-11" data-line-number="11"></a>
-<a class="sourceLine" id="cb110-12" data-line-number="12"><span class="co"># Define the g learner, which is a multinomial learner:</span></a>
-<a class="sourceLine" id="cb110-13" data-line-number="13"><span class="co">#specify the appropriate loss of the multinomial learner:</span></a>
-<a class="sourceLine" id="cb110-14" data-line-number="14">mn_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_solnp,</a>
-<a class="sourceLine" id="cb110-15" data-line-number="15">                               <span class="dt">loss_function =</span> loss_loglik_multinomial,</a>
-<a class="sourceLine" id="cb110-16" data-line-number="16">                               <span class="dt">learner_function =</span></a>
-<a class="sourceLine" id="cb110-17" data-line-number="17">                                 metalearner_linear_multinomial)</a>
-<a class="sourceLine" id="cb110-18" data-line-number="18">g_learner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_sl,</a>
-<a class="sourceLine" id="cb110-19" data-line-number="19">                          <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_mean),</a>
-<a class="sourceLine" id="cb110-20" data-line-number="20">                          mn_metalearner)</a>
-<a class="sourceLine" id="cb110-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb110-22" data-line-number="22"><span class="co"># Define the Blip learner, which is a multivariate learner:</span></a>
-<a class="sourceLine" id="cb110-23" data-line-number="23">learners &lt;-<span class="st"> </span><span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_mean)</a>
-<a class="sourceLine" id="cb110-24" data-line-number="24">b_learner &lt;-<span class="st"> </span><span class="kw">create_mv_learners</span>(<span class="dt">learners =</span> learners)</a>
-<a class="sourceLine" id="cb110-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb110-26" data-line-number="26">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
-<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb111-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
-<a class="sourceLine" id="cb111-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;momedu&quot;</span>, <span class="st">&quot;floor&quot;</span>, <span class="st">&quot;asset_refrig&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
-<a class="sourceLine" id="cb111-4" data-line-number="4">  <span class="dt">learners =</span> learner_list, <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb111-5" data-line-number="5">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb111-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb111-7" data-line-number="7"></a>
-<a class="sourceLine" id="cb111-8" data-line-number="8"><span class="co"># fit the TML estimator</span></a>
-<a class="sourceLine" id="cb111-9" data-line-number="9">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span class="dt">data=</span>washb_data, node_list, learner_list)</a></code></pre></div>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1"><span class="co"># Initialize few of the learners:</span></a>
+<a class="sourceLine" id="cb106-2" data-line-number="2">lrn_xgboost_<span class="dv">50</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb106-3" data-line-number="3">lrn_xgboost_<span class="dv">100</span> &lt;-<span class="st"> </span>Lrnr_xgboost<span class="op">$</span><span class="kw">new</span>(<span class="dt">nrounds =</span> <span class="dv">100</span>)</a>
+<a class="sourceLine" id="cb106-4" data-line-number="4">lrn_mean &lt;-<span class="st"> </span>Lrnr_mean<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb106-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb106-6" data-line-number="6">## Define the Q learner, which is just a regular learner:</a>
+<a class="sourceLine" id="cb106-7" data-line-number="7">Q_learner &lt;-<span class="st"> </span>Lrnr_sl<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb106-8" data-line-number="8">  <span class="dt">learners =</span> <span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_mean),</a>
+<a class="sourceLine" id="cb106-9" data-line-number="9">  <span class="dt">metalearner =</span> Lrnr_nnls<span class="op">$</span><span class="kw">new</span>()</a>
+<a class="sourceLine" id="cb106-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb106-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb106-12" data-line-number="12"><span class="co"># Define the g learner, which is a multinomial learner:</span></a>
+<a class="sourceLine" id="cb106-13" data-line-number="13"><span class="co">#specify the appropriate loss of the multinomial learner:</span></a>
+<a class="sourceLine" id="cb106-14" data-line-number="14">mn_metalearner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_solnp,</a>
+<a class="sourceLine" id="cb106-15" data-line-number="15">                               <span class="dt">loss_function =</span> loss_loglik_multinomial,</a>
+<a class="sourceLine" id="cb106-16" data-line-number="16">                               <span class="dt">learner_function =</span></a>
+<a class="sourceLine" id="cb106-17" data-line-number="17">                                 metalearner_linear_multinomial)</a>
+<a class="sourceLine" id="cb106-18" data-line-number="18">g_learner &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Lrnr_sl,</a>
+<a class="sourceLine" id="cb106-19" data-line-number="19">                          <span class="kw">list</span>(lrn_xgboost_<span class="dv">100</span>, lrn_mean),</a>
+<a class="sourceLine" id="cb106-20" data-line-number="20">                          mn_metalearner)</a>
+<a class="sourceLine" id="cb106-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb106-22" data-line-number="22"><span class="co"># Define the Blip learner, which is a multivariate learner:</span></a>
+<a class="sourceLine" id="cb106-23" data-line-number="23">learners &lt;-<span class="st"> </span><span class="kw">list</span>(lrn_xgboost_<span class="dv">50</span>, lrn_xgboost_<span class="dv">100</span>, lrn_mean)</a>
+<a class="sourceLine" id="cb106-24" data-line-number="24">b_learner &lt;-<span class="st"> </span><span class="kw">create_mv_learners</span>(<span class="dt">learners =</span> learners)</a>
+<a class="sourceLine" id="cb106-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb106-26" data-line-number="26">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> Q_learner, <span class="dt">A =</span> g_learner, <span class="dt">B =</span> b_learner)</a></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb107-2" data-line-number="2">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_blip_revere</span>(</a>
+<a class="sourceLine" id="cb107-3" data-line-number="3">  <span class="dt">V =</span> <span class="kw">c</span>(<span class="st">&quot;momedu&quot;</span>, <span class="st">&quot;floor&quot;</span>, <span class="st">&quot;asset_refrig&quot;</span>), <span class="dt">type =</span> <span class="st">&quot;blip2&quot;</span>,</a>
+<a class="sourceLine" id="cb107-4" data-line-number="4">  <span class="dt">learners =</span> learner_list, <span class="dt">maximize =</span> <span class="ot">TRUE</span>, <span class="dt">complex =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb107-5" data-line-number="5">  <span class="dt">realistic =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb107-6" data-line-number="6">)</a>
+<a class="sourceLine" id="cb107-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb107-8" data-line-number="8"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb107-9" data-line-number="9">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, <span class="dt">data=</span>washb_data, node_list, learner_list)</a></code></pre></div>
 <pre><code>Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
 Found. Imputing covariates using sl3_process_missing.
 
@@ -1748,12 +1748,12 @@ Found. Imputing covariates using sl3_process_missing.
 
 Warning in .subset2(public_bind_env, &quot;initialize&quot;)(...): Missing Covariate Data
 Found. Imputing covariates using sl3_process_missing.</code></pre>
-<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">fit</a></code></pre></div>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
    type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5492381 -0.4597446 0.04515031 -0.5482376 -0.3712516
+1:  TSM E[Y_{A=NULL}] -0.5534813 -0.5041582 0.04376034 -0.5899269 -0.4183895
    psi_transformed lower_transformed upper_transformed
-1:      -0.4597446        -0.5482376        -0.3712516</code></pre>
+1:      -0.5041582        -0.5899269        -0.4183895</code></pre>
 <hr />
 </div>
 <div id="exercises" class="section level2">
@@ -1883,12 +1883,11 @@ gitbook.start({
 "github": true,
 "facebook": false,
 "twitter": true,
-"google": false,
 "linkedin": false,
 "weibo": false,
 "instapaper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
@@ -1900,6 +1899,10 @@ gitbook.start({
 "text": "Edit"
 },
 "history": {
+"link": null,
+"text": null
+},
+"view": {
 "link": null,
 "text": null
 },
