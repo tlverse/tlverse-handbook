@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>References | The Hitchhiker’s Guide to the tlverse</title>
+  <title>Chapter 3 Datasets | The Hitchhiker’s Guide to the tlverse</title>
   <meta name="description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   <meta name="generator" content="bookdown 0.17.2 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="References | The Hitchhiker’s Guide to the tlverse" />
+  <meta property="og:title" content="Chapter 3 Datasets | The Hitchhiker’s Guide to the tlverse" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://tlverse.org/tlverse-handbook/" />
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="tlverse/tlverse-handbook" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="References | The Hitchhiker’s Guide to the tlverse" />
+  <meta name="twitter:title" content="Chapter 3 Datasets | The Hitchhiker’s Guide to the tlverse" />
   
   <meta name="twitter:description" content="An open-source and fully-reproducible electronic handbook for applying the targeted learning methodology in practice using the tlverse software ecosystem." />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   <link rel="shortcut icon" href="img/logos/favicons/favicon.png" type="image/x-icon" />
-<link rel="prev" href="r6.html"/>
-
+<link rel="prev" href="tlverse.html"/>
+<link rel="next" href="ensemble-machine-learning.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -333,163 +333,1211 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
+<div id="data" class="section level1">
+<h1><span class="header-section-number">Chapter 3</span> Datasets</h1>
+<div id="wash" class="section level2">
+<h2><span class="header-section-number">3.1</span> WASH Benefits Example Dataset</h2>
+<p>The data come from a study of the effect of water quality, sanitation, hand
+washing, and nutritional interventions on child development in rural Bangladesh
+(WASH Benefits Bangladesh): a cluster randomized controlled trial
+<span class="citation">(“Temporary,” <a href="#ref-luby2018effects">n.d.</a>)</span>. The study enrolled pregnant women in their first or second
+trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
+Tangail districts of central Bangladesh, with an average of eight women per
+cluster. Groups of eight geographically adjacent clusters were block randomized,
+using a random number generator, into six intervention groups (all of which
+received weekly visits from a community health promoter for the first 6 months
+and every 2 weeks for the next 18 months) and a double-sized control group (no
+intervention or health promoter visit). The six intervention groups were:</p>
+<ol style="list-style-type: decimal">
+<li>chlorinated drinking water;</li>
+<li>improved sanitation;</li>
+<li>hand-washing with soap;</li>
+<li>combined water, sanitation, and hand washing;</li>
+<li>improved nutrition through counseling and provision of lipid-based nutrient
+supplements; and</li>
+<li>combined water, sanitation, handwashing, and nutrition.</li>
+</ol>
+<p>In the handbook, we concentrate on child growth (size for age) as the outcome of
+interest. For reference, this trial was registered with ClinicalTrials.gov as
+NCT01590095.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># read in data</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">dat &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">dat</a></code></pre></div>
+<pre><code># A tibble: 4,695 x 28
+     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
+   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
+ 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3
+ 2 -1.16 Cont… N05265      9   286 male      25 Prima…      149. Modera…     2
+ 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1
+ 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3
+ 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2
+ 6 -0.51 Cont… N06531      9   304 male      20 Secon…      154. Severe…     0
+ 7 -2.46 Cont… N08002      9   336 fema…     19 Prima…      151. Food S…     2
+ 8 -0.6  Cont… N06528      9   312 fema…     25 No ed…      142. Food S…     2
+ 9 -0.23 Cont… N06528      9   322 male      30 Secon…      153. Food S…     1
+10 -0.14 Cont… N06453      9   376 male      30 No ed…      156. Modera…     2
+# … with 4,685 more rows, and 17 more variables: Ncomp &lt;dbl&gt;, watmin &lt;dbl&gt;,
+#   elec &lt;dbl&gt;, floor &lt;dbl&gt;, walls &lt;dbl&gt;, roof &lt;dbl&gt;, asset_wardrobe &lt;dbl&gt;,
+#   asset_table &lt;dbl&gt;, asset_chair &lt;dbl&gt;, asset_khat &lt;dbl&gt;, asset_chouki &lt;dbl&gt;,
+#   asset_tv &lt;dbl&gt;, asset_refrig &lt;dbl&gt;, asset_bike &lt;dbl&gt;, asset_moto &lt;dbl&gt;,
+#   asset_sewmach &lt;dbl&gt;, asset_mobile &lt;dbl&gt;</code></pre>
+<p>For the purposes of this handbook, we start by treating the data as
+independent and identically distributed (i.i.d.) random draws from a very large
+target population. We could, with available options, account for the clustering
+of the data (within sampled geographic units), but, for simplification, we
+avoid these details in the handbook, although modifications of our methodology
+for biased samples, repeated measures, etc., are available.</p>
+<p>We have 28 variables measured, of which 1 variable is set to be the outcome of
+interest. This outcome, <span class="math inline">\(Y\)</span>, is the weight-for-height Z-score (<code>whz</code> in <code>dat</code>);
+the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized treatment group (<code>tr</code> in
+<code>dat</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists simply of <em>everything else</em>. This
+results in our observed data structure being <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</p>
+<p>Using the <a href="https://CRAN.R-project.org/package=skimr"><code>skimr</code> package</a>, we can
+quickly summarize the variables measured in the WASH Benefits data set:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">library</span>(skimr)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="kw">skim</span>(dat)</a></code></pre></div>
+<table>
+<caption>(#tab:skim_washb_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">dat</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">4695</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">28</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">5</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">23</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tr</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">fracode</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">20</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">sex</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">momedu</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">12</td>
+<td align="right">15</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">hfiacat</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">11</td>
+<td align="right">24</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">whz</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">-0.59</td>
+<td align="right">1.03</td>
+<td align="right">-4.67</td>
+<td align="right">-1.28</td>
+<td align="right">-0.6</td>
+<td align="right">0.08</td>
+<td align="right">4.97</td>
+<td align="left">▁▆▇▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">month</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">6.45</td>
+<td align="right">3.33</td>
+<td align="right">1.00</td>
+<td align="right">4.00</td>
+<td align="right">6.0</td>
+<td align="right">9.00</td>
+<td align="right">12.00</td>
+<td align="left">▇▇▅▇▇</td>
+</tr>
+<tr class="odd">
+<td align="left">aged</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">266.32</td>
+<td align="right">52.17</td>
+<td align="right">42.00</td>
+<td align="right">230.00</td>
+<td align="right">266.0</td>
+<td align="right">303.00</td>
+<td align="right">460.00</td>
+<td align="left">▁▂▇▅▁</td>
+</tr>
+<tr class="even">
+<td align="left">momage</td>
+<td align="right">18</td>
+<td align="right">1.00</td>
+<td align="right">23.91</td>
+<td align="right">5.24</td>
+<td align="right">14.00</td>
+<td align="right">20.00</td>
+<td align="right">23.0</td>
+<td align="right">27.00</td>
+<td align="right">60.00</td>
+<td align="left">▇▇▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">momheight</td>
+<td align="right">31</td>
+<td align="right">0.99</td>
+<td align="right">150.50</td>
+<td align="right">5.23</td>
+<td align="right">120.65</td>
+<td align="right">147.05</td>
+<td align="right">150.6</td>
+<td align="right">154.06</td>
+<td align="right">168.00</td>
+<td align="left">▁▁▆▇▁</td>
+</tr>
+<tr class="even">
+<td align="left">Nlt18</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1.60</td>
+<td align="right">1.25</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">2.00</td>
+<td align="right">10.00</td>
+<td align="left">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Ncomp</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">11.04</td>
+<td align="right">6.35</td>
+<td align="right">2.00</td>
+<td align="right">6.00</td>
+<td align="right">10.0</td>
+<td align="right">14.00</td>
+<td align="right">52.00</td>
+<td align="left">▇▃▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">watmin</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.95</td>
+<td align="right">9.48</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1.00</td>
+<td align="right">600.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">elec</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.60</td>
+<td align="right">0.49</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▆▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td align="left">floor</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.11</td>
+<td align="right">0.31</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">walls</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.72</td>
+<td align="right">0.45</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▃▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td align="left">roof</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.99</td>
+<td align="right">0.12</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▁▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_wardrobe</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.17</td>
+<td align="right">0.37</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▂</td>
+</tr>
+<tr class="even">
+<td align="left">asset_table</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.73</td>
+<td align="right">0.44</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▃▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_chair</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.73</td>
+<td align="right">0.44</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▃▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td align="left">asset_khat</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.61</td>
+<td align="right">0.49</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▅▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_chouki</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.78</td>
+<td align="right">0.41</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▂▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td align="left">asset_tv</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.30</td>
+<td align="right">0.46</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▃</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_refrig</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.08</td>
+<td align="right">0.27</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">asset_bike</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.32</td>
+<td align="right">0.47</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▃</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_moto</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.07</td>
+<td align="right">0.25</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">asset_sewmach</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.06</td>
+<td align="right">0.25</td>
+<td align="right">0.00</td>
+<td align="right">0.00</td>
+<td align="right">0.0</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">asset_mobile</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">0.86</td>
+<td align="right">0.35</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">1.0</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="left">▁▁▁▁▇</td>
+</tr>
+<tr class="even">
+<td align="left">A convenient summ</td>
+<td align="right">ary of the r</td>
+<td align="right">elevant variable</td>
+<td align="right">s is give</td>
+<td align="right">n just a</td>
+<td align="right">bove, com</td>
+<td align="right">plete</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">with a small visu</td>
+<td align="right">alization de</td>
+<td align="right">scribing the mar</td>
+<td align="right">ginal cha</td>
+<td align="right">racteris</td>
+<td align="right">tics of e</td>
+<td align="right">ach</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">covariate. Note t</td>
+<td align="right">hat the *ass</td>
+<td align="right">et* variables re</td>
+<td align="right">flect soc</td>
+<td align="right">io-econo</td>
+<td align="right">mic statu</td>
+<td align="right">s of the</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">study participant</td>
+<td align="right">s. Notice al</td>
+<td align="right">so the uniform d</td>
+<td align="right">istributi</td>
+<td align="right">on of th</td>
+<td align="right">e treatme</td>
+<td align="right">nt groups</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">(with twice as ma</td>
+<td align="right">ny controls)</td>
+<td align="right">; this is, of co</td>
+<td align="right">urse, by</td>
+<td align="right">design.</td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="right"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ist" class="section level2">
+<h2><span class="header-section-number">3.2</span> International Stroke Trial Example Dataset</h2>
+<p>The International Stroke Trial database contains individual patient data
+from the International Stroke Trial (IST), a multi-national randomized trial
+conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed
+to assess whether early administration of aspirin, heparin, both aspirin and
+heparin, or neither influenced the clinical course of acute ischaemic stroke
+<span class="citation">(Sandercock et al. <a href="#ref-sandercock1997international">1997</a>)</span>. The IST dataset includes data on 19,435 patients
+with acute stroke, with 99% complete follow-up. De-identified data are
+available for download at <a href="https://datashare.is.ed.ac.uk/handle/10283/128" class="uri">https://datashare.is.ed.ac.uk/handle/10283/128</a>.
+This study is described in more detail in <span class="citation">Sandercock, Niewada, and Członkowska (<a href="#ref-sandercock2011international">2011</a>)</span>. The
+example data for this handbook considers a sample of 5,000 patients and the
+binary outcome of recurrent ischemic stroke within 14 days after randomization.
+Also in this example data, we ensure that we have subjects with a
+missing outcome.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co"># read in data</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3">ist &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">ist</a></code></pre></div>
+<pre><code># A tibble: 5,000 x 26
+   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP
+    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
+ 1     46 F      F        85 N      N       N     N       Y      N       150
+ 2     33 F      M        71 Y      Y       Y     Y       N      Y       180
+ 3      6 D      M        88 N      Y       N     N       N      N       140
+ 4      8 F      F        68 Y      N       Y     Y       N      N       118
+ 5     13 F      M        60 N      N       Y     N       N      N       140
+ 6     16 F      F        71 Y      N       Y     N       N      N       160
+ 7      6 F      M        71 Y      N       N     N       N      Y       130
+ 8     15 F      M        84 N      N       Y     N       Y      N       160
+ 9      9 D      F        81 N      N       N     N       N      Y       138
+10     20 F      F        70 Y      N       N     N       N      N       170
+# … with 4,990 more rows, and 15 more variables: RDEF1 &lt;chr&gt;, RDEF2 &lt;chr&gt;,
+#   RDEF3 &lt;chr&gt;, RDEF4 &lt;chr&gt;, RDEF5 &lt;chr&gt;, RDEF6 &lt;chr&gt;, RDEF7 &lt;chr&gt;,
+#   RDEF8 &lt;chr&gt;, STYPE &lt;chr&gt;, RXHEP &lt;chr&gt;, REGION &lt;chr&gt;,
+#   MISSING_RATRIAL_RASP3 &lt;dbl&gt;, MISSING_RHEP24 &lt;dbl&gt;, RXASP &lt;dbl&gt;,
+#   DRSISC &lt;dbl&gt;</code></pre>
+<p>We have 26 variables measured, and the outcome of interest, <span class="math inline">\(Y\)</span>, indicates
+recurrent ischemic stroke within 14 days after randomization (<code>DRSISC</code> in
+<code>ist</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized aspirin vs. no aspirin
+treatment allocation (<code>RXASP</code> in <code>ist</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists
+of all other variable measured at baseline. In this data, our outcome is
+occasionally missing, but we do not need to create a variable indicating this
+missingness (such as <span class="math inline">\(\Delta\)</span>) for analyses in the <code>tlverse</code>, since it is
+automatically detected when <code>NA</code> are present in the outcome. We can denote our
+observed data structure as <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, \Delta_i, \Delta Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>, where <span class="math inline">\(\Delta\)</span> denotes the indicator that
+the outcome is missing.</p>
+<p>Like before, we can summarize the variables measured in the IST sample data
+set with <code>skimr</code>:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">skim</span>(ist)</a></code></pre></div>
+<table>
+<caption>(#tab:skim_ist_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">ist</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">5000</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">26</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">19</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">7</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">RCONSC</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">SEX</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RSLEEP</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RATRIAL</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RCT</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RVISINF</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RHEP24</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RASP3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RDEF1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RDEF2</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RDEF3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RDEF4</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RDEF5</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RDEF6</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">RDEF7</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RDEF8</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">STYPE</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">RXHEP</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">REGION</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">10</td>
+<td align="right">26</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">RDELAY</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">20.14</td>
+<td align="right">12.43</td>
+<td align="right">1</td>
+<td align="right">9</td>
+<td align="right">19</td>
+<td align="right">29</td>
+<td align="right">48</td>
+<td align="left">▇▆▆▃▂</td>
+</tr>
+<tr class="even">
+<td align="left">AGE</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">71.93</td>
+<td align="right">11.65</td>
+<td align="right">16</td>
+<td align="right">65</td>
+<td align="right">74</td>
+<td align="right">81</td>
+<td align="right">99</td>
+<td align="left">▁▁▃▇▂</td>
+</tr>
+<tr class="odd">
+<td align="left">RSBP</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">160.62</td>
+<td align="right">27.84</td>
+<td align="right">71</td>
+<td align="right">140</td>
+<td align="right">160</td>
+<td align="right">180</td>
+<td align="right">290</td>
+<td align="left">▁▇▇▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">MISSING_RATRIAL_RASP3</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.05</td>
+<td align="right">0.22</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">MISSING_RHEP24</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.02</td>
+<td align="right">0.13</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">RXASP</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.50</td>
+<td align="right">0.50</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">DRSISC</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">0.02</td>
+<td align="right">0.15</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="vet" class="section level2">
+<h2><span class="header-section-number">3.3</span> Veterans’ Administration Lung Cancer Trial Dataset</h2>
+<p>This data corresponds to a study conducted by the US Veterans Administration.
+Male patients with advanced inoperable lung cancer were given either the
+standard therapy or a test chemotherapy. The primary goal of the study was to
+assess if the test chemotherapy improved survival. This data set has been
+published in <span class="citation">Kalbfleisch and Prentice (<a href="#ref-kalbfleisch2011statistical">2011</a>)</span> and it is available in the <code>MASS</code> and
+<code>survival</code> <code>R</code> packages. Time to death was recorded for 128 patients, and 9
+patients left the study before death. Various covariates were also documented
+for each patient.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co"># read in data</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">vet &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/veteran.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">vet</a></code></pre></div>
+<pre><code># A tibble: 137 x 9
+      X1   trt celltype  time status karno diagtime   age prior
+   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1     1     1 squamous    72      1    60        7    69     0
+ 2     2     1 squamous   411      1    70        5    64    10
+ 3     3     1 squamous   228      1    60        3    38     0
+ 4     4     1 squamous   126      1    60        9    63    10
+ 5     5     1 squamous   118      1    70       11    65    10
+ 6     6     1 squamous    10      1    20        5    49     0
+ 7     7     1 squamous    82      1    40       10    69    10
+ 8     8     1 squamous   110      1    80       29    68     0
+ 9     9     1 squamous   314      1    50       18    43     0
+10    10     1 squamous   100      0    70        6    70     0
+# … with 127 more rows</code></pre>
+<p>A snapshot of the data set in shown below:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">skim</span>(vet)</a></code></pre></div>
+<table>
+<caption>(#tab:skim_vet_data)Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">vet</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">137</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">9</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">8</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">celltype</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">X1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">69.00</td>
+<td align="right">39.69</td>
+<td align="right">1</td>
+<td align="right">35</td>
+<td align="right">69</td>
+<td align="right">103</td>
+<td align="right">137</td>
+<td align="left">▇▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">trt</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1.50</td>
+<td align="right">0.50</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="left">▇▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">time</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">121.63</td>
+<td align="right">157.82</td>
+<td align="right">1</td>
+<td align="right">25</td>
+<td align="right">80</td>
+<td align="right">144</td>
+<td align="right">999</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">status</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.93</td>
+<td align="right">0.25</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="left">▁▁▁▁▇</td>
+</tr>
+<tr class="odd">
+<td align="left">karno</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">58.57</td>
+<td align="right">20.04</td>
+<td align="right">10</td>
+<td align="right">40</td>
+<td align="right">60</td>
+<td align="right">75</td>
+<td align="right">99</td>
+<td align="left">▁▅▇▇▂</td>
+</tr>
+<tr class="even">
+<td align="left">diagtime</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">8.77</td>
+<td align="right">10.61</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">5</td>
+<td align="right">11</td>
+<td align="right">87</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">age</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">58.31</td>
+<td align="right">10.54</td>
+<td align="right">34</td>
+<td align="right">51</td>
+<td align="right">62</td>
+<td align="right">66</td>
+<td align="right">81</td>
+<td align="left">▃▂▅▇▁</td>
+</tr>
+<tr class="even">
+<td align="left">prior</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">2.92</td>
+<td align="right">4.56</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">10</td>
+<td align="left">▇▁▁▁▃</td>
+</tr>
+</tbody>
+</table>
 
+</div>
+</div>
+<h3>References</h3>
 <div id="refs" class="references">
-<div>
-<p>Baker, Monya. 2016. “Is There a Reproducibility Crisis? A Nature Survey Lifts the Lid on How Researchers View the Crisis Rocking Science and What They Think Will Help.” <em>Nature</em> 533 (7604). Nature Publishing Group: 452–55.</p>
-</div>
-<div>
-<p>Benkeser, David, and Mark J van der Laan. 2016. “The Highly Adaptive Lasso Estimator.” In <em>2016 IEEE International Conference on Data Science and Advanced Analytics (DSAA)</em>. IEEE. <a href="https://doi.org/10.1109/dsaa.2016.93" class="uri">https://doi.org/10.1109/dsaa.2016.93</a>.</p>
-</div>
-<div>
-<p>Breiman, Leo. 1996. “Stacked Regressions.” <em>Machine Learning</em> 24 (1). Springer: 49–64.</p>
-</div>
-<div>
-<p>Buckheit, Jonathan B, and David L Donoho. 1995. “Wavelab and Reproducible Research.” In <em>Wavelets and Statistics</em>, 55–81. Springer.</p>
-</div>
-<div>
-<p>Chakraborty, Bibhas, and Erica EM Moodie. 2013. <em>Statistical Methods for Dynamic Treatment Regimes: Reinforcement Learning, Causal Inference, and Personalized Medicine (Statistics for Biology and Health)</em>. Springer.</p>
-</div>
-<div>
-<p>Coyle, Jeremy R, and Nima S Hejazi. 2018. “hal9001: The Scalable Highly Adaptive LASSO.” <a href="https://github.com/tlverse/hal9001" class="uri">https://github.com/tlverse/hal9001</a>.</p>
-</div>
-<div>
-<p>Díaz, Iván, and Mark J van der Laan. 2011. “Super Learner Based Conditional Density Estimation with Application to Marginal Structural Models.” <em>The International Journal of Biostatistics</em> 7 (1). De Gruyter: 1–20.</p>
-</div>
-<div>
-<p>———. 2012. “Population Intervention Causal Effects Based on Stochastic Interventions.” <em>Biometrics</em> 68 (2). Wiley Online Library: 541–49.</p>
-</div>
-<div>
-<p>———. 2018. “Stochastic Treatment Regimes.” In <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>, 167–80. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>Haneuse, Sebastian, and Andrea Rotnitzky. 2013. “Estimation of the Effect of Interventions That Modify the Received Treatment.” <em>Statistics in Medicine</em> 32 (30). Wiley Online Library: 5260–77.</p>
-</div>
-<div>
-<p>Hejazi, Nima S, David C Benkeser, and Mark J van der Laan. 2019. <em>Haldensify: Nonparametric Conditional Density Estimation with the Highly Adaptive Lasso in R</em>. <a href="https://github.com/nhejazi/haldensify" class="uri">https://github.com/nhejazi/haldensify</a>.</p>
-</div>
-<div>
-<p>Hejazi, Nima S, Mark J van der Laan, Holly E Janes, Peter B Gilbert, and David C Benkeser. n.d. “Generally Efficient Nonparametric Inference Under Two-Phase Sampling, with Applications to Stochastic Interventions.”</p>
-</div>
-<div>
-<p>“How Scientists Fool Themselves – and How They Can Stop.” 2015. <em>Nature</em> 526 (7572). Springer Nature.</p>
-</div>
-<div>
+<div id="ref-kalbfleisch2011statistical">
 <p>Kalbfleisch, John D, and Ross L Prentice. 2011. <em>The Statistical Analysis of Failure Time Data</em>. Vol. 360. John Wiley &amp; Sons.</p>
 </div>
-<div>
-<p>“Let’s Think About Cognitive Bias.” 2015. <em>Nature</em> 526 (7572). Springer Nature.</p>
-</div>
-<div>
-<p>Luedtke, A., and M. J van der Laan. 2016. “Super-Learning of an Optimal Dynamic Treatment Rule.” <em>International Journal of Biostatistics</em> 12 (1): 305–32.</p>
-</div>
-<div>
-<p>Munafò, Marcus R, Brian A Nosek, Dorothy VM Bishop, Katherine S Button, Christopher D Chambers, Nathalie Percie Du Sert, Uri Simonsohn, Eric-Jan Wagenmakers, Jennifer J Ware, and John PA Ioannidis. 2017. “A Manifesto for Reproducible Science.” <em>Nature Human Behaviour</em> 1 (1). Nature Publishing Group: 0021.</p>
-</div>
-<div>
-<p>Murphy, Susan A. 2003. “Optimal Dynamic Treatment Regimes.” <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 65 (2). Wiley Online Library: 331–55.</p>
-</div>
-<div>
-<p>Nosek, Brian A, Charles R Ebersole, Alexander C DeHaven, and David T Mellor. 2018. “The Preregistration Revolution.” <em>Proceedings of the National Academy of Sciences</em> 115 (11). National Acad Sciences: 2600–2606.</p>
-</div>
-<div>
-<p>“On the Application of Probability Theory to Agricultural Experiments. Essay on Principles. Section 9.” 1990. <em>Statistical Science</em> 5 (4). Institute of Mathematical Statistics: 465–72. <a href="http://www.jstor.org/stable/2245382" class="uri">http://www.jstor.org/stable/2245382</a>.</p>
-</div>
-<div>
-<p>Pearl, Judea. 2009a. <em>Causality: Models, Reasoning, and Inference</em>. Cambridge University Press.</p>
-</div>
-<div>
-<p>———. 2009b. <em>Causality: Models, Reasoning and Inference</em>. 2nd ed. New York, NY, USA: Cambridge University Press.</p>
-</div>
-<div>
-<p>Peng, Roger. 2015. “The Reproducibility Crisis in Science: A Statistical Counterattack.” <em>Significance</em> 12 (3). Wiley Online Library: 30–32.</p>
-</div>
-<div>
-<p>Polley, Eric C, and Mark J van der Laan. 2010. “Super Learner in Prediction.” bepress.</p>
-</div>
-<div>
-<p>Pospisil, Taylor, and Ann B Lee. 2018. “RFCDE: Random Forests for Conditional Density Estimation.” <em>arXiv Preprint arXiv:1804.05753</em>.</p>
-</div>
-<div>
-<p>Pullenayegum, Eleanor M, Robert W Platt, Melanie Barwick, Brian M Feldman, Martin Offringa, and Lehana Thabane. 2016. “Knowledge Translation in Biostatistics: A Survey of Current Practices, Preferences, and Barriers to the Dissemination and Uptake of New Statistical Methods.” <em>Statistics in Medicine</em> 35 (6). Wiley Online Library: 805–18.</p>
-</div>
-<div>
-<p>Robins, James. 1986. “A New Approach to Causal Inference in Mortality Studies with a Sustained Exposure Period—Application to Control of the Healthy Worker Survivor Effect.” <em>Mathematical Modelling</em> 7 (9): 1393–1512. <a href="https://doi.org/https://doi.org/10.1016/0270-0255(86)90088-6" class="uri">https://doi.org/https://doi.org/10.1016/0270-0255(86)90088-6</a>.</p>
-</div>
-<div>
-<p>Robins, James M. 2004. “Optimal Structural Nested Models for Optimal Sequential Decisions.” In <em>Proceedings of the Second Seattle Symposium in Biostatistics: Analysis of Correlated Data</em>, edited by D. Y. Lin and P. J. Heagerty, 189–326. New York, NY: Springer New York. <a href="https://doi.org/10.1007/978-1-4419-9076-1_11" class="uri">https://doi.org/10.1007/978-1-4419-9076-1_11</a>.</p>
-</div>
-<div>
-<p>Robins, James, and Andrea Rotnitzky. 2014. “Discussion of ‘Dynamic Treatment Regimes: Technical Challenges and Applications’.” <em>Electron. J. Statist.</em> 8 (1). The Institute of Mathematical Statistics; the Bernoulli Society: 1273–89. <a href="https://doi.org/10.1214/14-EJS908" class="uri">https://doi.org/10.1214/14-EJS908</a>.</p>
-</div>
-<div>
-<p>Rubin, Donald B. 1978. “Bayesian Inference for Causal Effects: The Role of Randomization.” <em>The Annals of Statistics</em>. JSTOR, 34–58.</p>
-</div>
-<div>
-<p>———. 1980. “Randomization Analysis of Experimental Data: The Fisher Randomization Test Comment.” <em>Journal of the American Statistical Association</em> 75 (371). JSTOR: 591–93.</p>
-</div>
-<div>
+<div id="ref-sandercock1997international">
 <p>Sandercock, P, R Collins, C Counsell, B Farrell, R Peto, J Slattery, and C Warlow. 1997. “For the International Stroke Trial Collaborative Group. The International Stroke Trial (Ist): A Randomized Trial of Aspirin, Subcutaneous Heparin, Both, or Neither Among 19,435 Patients with Acute Ischemic Stroke.” <em>Lancet</em> 349 (9065): 1569–81.</p>
 </div>
-<div>
+<div id="ref-sandercock2011international">
 <p>Sandercock, Peter AG, Maciej Niewada, and Anna Członkowska. 2011. “The International Stroke Trial Database.” <em>Trials</em> 12 (1). BioMed Central: 101.</p>
 </div>
-<div>
-<p>Stark, Philip B, and Andrea Saltelli. 2018. “Cargo-Cult Statistics and Scientific Crisis.” <em>Significance</em> 15 (4). Wiley Online Library: 40–43.</p>
-</div>
-<div>
-<p>Stromberg, Arnold, and others. 2004. “Why Write Statistical Software? The Case of Robust Statistical Methods.”</p>
-</div>
-<div>
-<p>Sutton, Richard S, Andrew G Barto, and others. 1998. <em>Introduction to Reinforcement Learning</em>. Vol. 135. MIT press Cambridge.</p>
-</div>
-<div>
-<p>Szucs, Denes, and John Ioannidis. 2017. “When Null Hypothesis Significance Testing Is Unsuitable for Research: A Reassessment.” <em>Frontiers in Human Neuroscience</em> 11. Frontiers: 390.</p>
-</div>
-<div>
+<div id="ref-luby2018effects">
 <p>“Temporary.” n.d.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Sandrine Dudoit. 2003. “Unified Cross-Validation Methodology for Selection Among Estimators and a General Cross-Validated Adaptive Epsilon-Net Estimator: Finite Sample Oracle Inequalities and Examples.” bepress.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, Eric C Polley, and Alan E Hubbard. 2007. “Super Learner.” <em>Statistical Applications in Genetics and Molecular Biology</em> 6 (1).</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Sherri Rose. 2011. <em>Targeted Learning: Causal Inference for Observational and Experimental Data</em>. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>———. 2018. <em>Targeted Learning in Data Science: Causal Inference for Complex Longitudinal Studies</em>. Springer Science &amp; Business Media.</p>
-</div>
-<div>
-<p>van der Laan, Mark J, and Richard JCM Starmans. 2014. “Entering the Era of Data Science: Targeted Learning and the Integration of Statistics and Computational Data Analysis.” <em>Advances in Statistics</em> 2014. Hindawi.</p>
-</div>
-<div>
-<p>van der Laan, M. J, and A. Luedtke. 2015. “Targeted Learning of the Mean Outcome Under an Optimal Dynamic Treatment Rule.” <em>Journal of Causal Inference</em> 3 (1): 61–95.</p>
-</div>
-<div>
-<p>van der Vaart, Aad W, Sandrine Dudoit, and Mark J van der Laan. 2006. “Oracle Inequalities for Multi-Fold Cross Validation.” <em>Statistics &amp; Decisions</em> 24 (3). Oldenbourg Wissenschaftsverlag: 351–71.</p>
-</div>
-<div>
-<p>Wickham, Hadley. 2014. <em>Advanced R</em>. Chapman; Hall/CRC.</p>
-</div>
-<div>
-<p>Wolpert, David H. 1992. “Stacked Generalization.” <em>Neural Networks</em> 5 (2). Elsevier: 241–59.</p>
-</div>
-<div>
-<p>Young, Jessica G, Miguel A Hernán, and James M Robins. 2014. “Identification, Estimation and Approximation of Risk Under Interventions That Depend on the Natural Value of Treatment Using Observational Data.” <em>Epidemiologic Methods</em> 3 (1). De Gruyter: 1–19.</p>
-</div>
-<div>
-<p>Zhang, Baqun, Anastasios A Tsiatis, Marie Davidian, Min Zhang, and Eric Laber. 2016. “Estimating Optimal Treatment Regimes from a Classification Perspective.” <em>Stat</em> 5 (1): 278–78. <a href="https://doi.org/10.1002/sta4.124" class="uri">https://doi.org/10.1002/sta4.124</a>.</p>
-</div>
-<div>
-<p>Zhao, Yingqi, Donglin Zeng, A John Rush, and Michael R Kosorok. 2012. “Estimating Individualized Treatment Rules Using Outcome Weighted Learning.” <em>Journal of the American Statistical Association</em> 107 (499). Taylor &amp; Francis: 1106–18. <a href="https://doi.org/10.1080/01621459.2012.695674" class="uri">https://doi.org/10.1080/01621459.2012.695674</a>.</p>
-</div>
-<div>
-<p>Zheng, W., and M. J van der Laan. 2010. “Asymptotic Theory for Cross-validated Targeted Maximum Likelihood Estimation.” <em>U.C. Berkeley Division of Biostatistics Working Paper Series.</em></p>
-</div>
 </div>
 </div>
             </section>
@@ -497,8 +1545,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="r6.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="tlverse.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="ensemble-machine-learning.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -529,7 +1577,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/tlverse/tlverse-handbook/edit/master/99-references.Rmd",
+"link": "https://github.com/tlverse/tlverse-handbook/edit/master/04-data.Rmd",
 "text": "Edit"
 },
 "history": {
