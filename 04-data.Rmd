@@ -1,0 +1,126 @@
+# Datasets {#data}
+
+## WASH Benefits Example Dataset {#wash}
+
+The data come from a study of the effect of water quality, sanitation, hand
+washing, and nutritional interventions on child development in rural Bangladesh
+(WASH Benefits Bangladesh): a cluster randomized controlled trial
+[@luby2018effects]. The study enrolled pregnant women in their first or second
+trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
+Tangail districts of central Bangladesh, with an average of eight women per
+cluster. Groups of eight geographically adjacent clusters were block randomized,
+using a random number generator, into six intervention groups (all of which
+received weekly visits from a community health promoter for the first 6 months
+and every 2 weeks for the next 18 months) and a double-sized control group (no
+intervention or health promoter visit). The six intervention groups were:
+
+1. chlorinated drinking water;
+2. improved sanitation;
+3. hand-washing with soap;
+4. combined water, sanitation, and hand washing;
+5. improved nutrition through counseling and provision of lipid-based nutrient
+   supplements; and
+6. combined water, sanitation, handwashing, and nutrition.
+
+In the handbook, we concentrate on child growth (size for age) as the outcome of
+interest. For reference, this trial was registered with ClinicalTrials.gov as
+NCT01590095.
+
+```{r load_washb_data_intro, message=FALSE, warning=FALSE}
+library(tidyverse)
+# read in data
+dat <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv")
+dat
+```
+For the purposes of this handbook, we start by treating the data as 
+independent and identically distributed (i.i.d.) random draws from a very large 
+target population. We could, with available options, account for the clustering
+of the data (within sampled geographic units), but, for simplification, we 
+avoid these details in the handbook, although modifications of our methodology 
+for biased samples, repeated measures, etc., are available.
+
+We have 28 variables measured, of which 1 variable is set to be the outcome of
+interest. This outcome, $Y$, is the weight-for-height Z-score (`whz` in `dat`);
+the treatment of interest, $A$, is the randomized treatment group (`tr` in
+`dat`); and the adjustment set, $W$, consists simply of *everything else*. This
+results in our observed data structure being $n$ i.i.d. copies of $O_i = (W_i,
+A_i, Y_i)$, for $i = 1, \ldots, n$.
+
+Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can 
+quickly summarize the variables measured in the WASH Benefits data set:
+
+```{r skim_washb_data, message=FALSE, warning=FALSE}
+library(skimr)
+skim(dat)
+```
+A convenient summary of the relevant variables is given just above, complete 
+with a small visualization describing the marginal characteristics of each 
+covariate. Note that the *asset* variables reflect socio-economic status of the 
+study participants. Notice also the uniform distribution of the treatment groups 
+(with twice as many controls); this is, of course, by design. 
+
+## International Stroke Trial Example Dataset {#ist}
+
+The International Stroke Trial database contains individual patient data
+from the International Stroke Trial (IST), a multi-national randomized trial 
+conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed 
+to assess whether early administration of aspirin, heparin, both aspirin and 
+heparin, or neither influenced the clinical course of acute ischaemic stroke 
+[@sandercock1997international]. The IST dataset includes data on 19,435 patients 
+with acute stroke, with 99\% complete follow-up. De-identified data are 
+available for download at https://datashare.is.ed.ac.uk/handle/10283/128. 
+This study is described in more detail in @sandercock2011international. The 
+example data for this handbook considers a sample of 5,000 patients and the 
+binary outcome of recurrent ischemic stroke within 14 days after randomization. 
+Also in this example data, we ensure that we have subjects with a 
+missing outcome. 
+
+```{r load_ist_data_intro, message=FALSE, warning=FALSE}
+library(tidyverse)
+# read in data
+ist <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv")
+ist
+```
+
+We have 26 variables measured, and the outcome of interest, $Y$, indicates 
+recurrent ischemic stroke within 14 days after randomization (`DRSISC` in 
+`ist`); the treatment of interest, $A$, is the randomized aspirin vs. no aspirin 
+treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists 
+of all other variable measured at baseline. In this data, our outcome is 
+occasionally missing, but we do not need to create a variable indicating this 
+missingness (such as $\Delta$) for analyses in the `tlverse`, since it is 
+automatically detected when `NA` are present in the outcome. We can denote our 
+observed data structure as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i, 
+\Delta Y_i)$, for $i = 1, \ldots, n$, where $\Delta$ denotes the indicator that 
+the outcome is missing.  
+
+Like before, we can summarize the variables measured in the IST sample data 
+set with `skimr`:
+
+```{r skim_ist_data, message=FALSE, warning=FALSE}
+skim(ist)
+```
+
+## Veterans’ Administration Lung Cancer Trial Dataset {#vet}
+
+This data corresponds to a study conducted by the US Veterans Administration. 
+Male patients with advanced inoperable lung cancer were given either the 
+standard therapy or a test chemotherapy. The primary goal of the study was to 
+assess if the test chemotherapy improved survival. This data set has been 
+published in @kalbfleisch2011statistical and it is available in the `MASS` and 
+`survival` `R` packages. Time to death was recorded for 128 patients, and 9 
+patients left the study before death. Various covariates were also documented 
+for each patient. 
+
+```{r load_vet_data_intro, message=FALSE, warning=FALSE}
+library(tidyverse)
+# read in data
+vet <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/veteran.csv")
+vet
+```
+
+A snapshot of the data set in shown below:
+
+```{r skim_vet_data, message=FALSE, warning=FALSE}
+skim(vet)
+```
