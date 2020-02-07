@@ -98,11 +98,11 @@ Now, on to Step 3: *``What are we trying to learn from the data?"*
 
 The statistical target parameter, $\Psi$, is defined as a mapping from the
 statistical model, $\mathcal{M}$, to the parameter space (i.e., a real number)
-$\mathcal{R}$. That is, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$. The target
-parameter may be seen as a representation of the
+$\mathcal{R}$. That is, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$. The estimand 
+may be seen as a representation of the
 quantity that we wish to learn from the data, the answer to a well-specified
-(often causal) question of interest. In contrast to purely statistical target
-parameters, causal target parameters require _identification from the observed
+(often causal) question of interest. In contrast to purely statistical 
+estimands, causal estimands require _identification from the observed
 data_, based on causal models that include several untestable assumptions,
 described in more detail in the section on [causal target parameters](#causal).
 
@@ -205,15 +205,33 @@ inference (i.e., confidence intervals and hypothesis tests).
 
 ## Causal Target Parameters {#causal}
 
+In many cases, we are interested in questions that ask questions regarding the 
+effect of an intervention on a future outcome of interest. These questions can 
+be represented as causal estimands and 
+
 ### The Causal Model
 
-The next step in the roadmap is to use a causal framework to formalize the
-experiment and thereby define the parameter of interest. Causal graphs are one
-useful tool to express what we know about the causal relations among variables
-that are relevant to the question under study [@pearl2009causality]. While
-directed acyclic graphs (DAGs) provide a convenient means by which to visualize
-causal relations between variables, the same causal relations among variables
-can be represented via a set of structural equations:
+After formalizing the data and the statistical model, we can define a causal 
+model to express causal parameters of interest. Directed acyclic graphs (DAGs) 
+are one useful tool to express what we know about the causal relations among 
+variables. Ignoring exogenous $U$ terms (explained below), we assume the 
+following ordering of the variables in the observed data $O$.
+
+```{r, echo=FALSE, eval=TRUE, fig.align="center"}
+library(visNetwork)
+nodes <- data.frame(id = c("W", "A", "Y"))
+nodes$label <- nodes$id
+edges <- data.frame(from = c("W", "W", "A"), to = c("A", "Y", "Y"))
+network <- visNetwork(nodes, edges, height = "300px", width = "200px") %>%
+  visEdges(arrows = list(to = TRUE)) %>%
+  visLayout(randomSeed = 25)
+network
+```
+
+While directed acyclic graphs (DAGs) like above provide a convenient means by 
+which to visualize causal relations between variables, the same causal 
+relations among variables can be represented via a set of structural equations, 
+which define the non-parametric structural equation model (NPSEM):
 \begin{align*}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
@@ -223,8 +241,9 @@ where $U_W$, $U_A$, and $U_Y$ represent the unmeasured exogenous background
 characteristics that influence the value of each variable. In the NPSEM, $f_W$,
 $f_A$ and $f_Y$ denote that each variable (for $W$, $A$ and $Y$, respectively)
 is a function of its parents and unmeasured background characteristics, but note
-that there is no imposition of any particular functional constraints. For this
-reason, they are called non-parametric structural equation models (NPSEMs). The
+that there is no imposition of any particular functional constraints(e.g.,
+linear, logit-linear, only one interaction, etc.). For this reason, they are 
+called non-parametric structural equation models (NPSEMs). The
 DAG and set of nonparametric structural equations represent exactly the same
 information and so may be used interchangeably.
 
@@ -263,6 +282,11 @@ parameter that is often called the "average treatment effect" (ATE), denoted
 \end{equation}
 where $\mathbb{E}_X$ is the mean under the theoretical (unobserved) full data
 $X = (W, Y(1), Y(0))$.
+
+Note, we can define much more complicated interventions on NPSEM's, such as
+interventions based upon rules (themselves based upon covariates), stochastic
+rules, etc. and each results in a different targeted parameter and entails
+different identifiability assumptions discussed below.
 
 ### Identifiability
 
@@ -311,3 +335,64 @@ different parameters, there will be potentially different identifiability
 assumptions and the resulting estimands can be functions of different components
 of $P_0$. We discuss several more complex estimands in later sections of this
 handbook.
+
+## The WASH Benefits Example Dataset
+
+The data come from a study of the effect of water quality, sanitation, hand
+washing, and nutritional interventions on child development in rural Bangladesh
+(WASH Benefits Bangladesh): a cluster-randomised controlled trial
+[@luby2018effects]. The study enrolled pregnant women in their first or second
+trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
+Tangail districts of central Bangladesh, with an average of eight women per
+cluster. Groups of eight geographically adjacent clusters were block-randomised,
+using a random number generator, into six intervention groups (all of which
+received weekly visits from a community health promoter for the first 6 months
+and every 2 weeks for the next 18 months) and a double-sized control group (no
+intervention or health promoter visit). The six intervention groups were:
+
+1. chlorinated drinking water;
+2. improved sanitation;
+3. hand-washing with soap;
+4. combined water, sanitation, and hand washing;
+5. improved nutrition through counseling and provision of lipid-based nutrient
+   supplements; and
+6. combined water, sanitation, handwashing, and nutrition.
+
+In the workshop, we concentrate on child growth (size for age) as the outcome of
+interest. For reference, this trial was registered with ClinicalTrials.gov as
+NCT01590095.
+
+```{r load_washb_data_intro, message=FALSE, warning=FALSE}
+library(tidyverse)
+
+# read in data
+dat <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv")
+dat
+```
+
+For the purposes of this workshop, we we start by treating the data as independent
+and identically distributed (i.i.d.) random draws from a very large target
+population. We could, with available options, account for the clustering of the
+data (within sampled geographic units), but, for simplification, we avoid these
+details in these workshop presentations, although modifications of our
+methodology for biased samples, repeated measures, etc., are available.
+
+We have 28 variables measured, of which 1 variable is set to be the outcome of
+interest. This outcome, $Y$, is the weight-for-height Z-score (`whz` in `dat`);
+the treatment of interest, $A$, is the randomized treatment group (`tr` in
+`dat`); and the adjustment set, $W$, consists simply of *everything else*. This
+results in our observed data structure being $n$ i.i.d. copies of $O_i = (W_i,
+A_i, Y_i)$, for $i = 1, \ldots, n$.
+
+Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
+quickly summarize the variables measured in the WASH Benefits data set:
+
+```{r skim_washb_data, message=FALSE, warning=FALSE}
+library(skimr)
+skim(dat)
+```
+A convenient summary of the relevant variables is given just above, complete
+with a small visualization describing the marginal characteristics of each
+covariate. Note that the *asset* variables reflect socio-economic status of the
+study participants. Notice also the uniform distribution of the treatment groups
+(with twice as many controls); this is, of course, by design.
