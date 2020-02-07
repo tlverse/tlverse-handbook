@@ -687,17 +687,17 @@ tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
 ```
 
-Iter: 1 fn: 696.4803     Pars:  0.88097 0.11903
-Iter: 2 fn: 696.4803     Pars:  0.88097 0.11903
+Iter: 1 fn: 696.6325     Pars:  0.88285 0.11715
+Iter: 2 fn: 696.6325     Pars:  0.88285 0.11715
 solnp-->
 <p>Completed in 2 iterations
 ```</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">tmle_fit</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">tmle_fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est        se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.7692472 0.7702502 0.0188754 0.7332551 0.8072453
+   type         param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.7692472 0.7702532 0.01889711 0.7332155 0.8072909
    psi_transformed lower_transformed upper_transformed
-1:       0.7702502         0.7332551         0.8072453</code></pre>
+1:       0.7702532         0.7332155         0.8072909</code></pre>
 <p>The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently displays the
 results from computing our TML estimator.</p>
 <div id="statistical-inference-for-targeted-maximum-likelihood-estimates" class="section level3">
@@ -800,14 +800,14 @@ interest (called a <code>tmle3_Spec</code> in the <code>tlverse</code> nomenclat
 when initializing the <code>tmle3_Spec</code> object to communicate that we’re interested
 in assessing the mean counterfactual outcome over a grid of shifts -1, 0, 1 on the scale of the treatment <span class="math inline">\(A\)</span> (note that the numerical
 choice of shift is an arbitrarily chosen set of values for this example).</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="co"># what&#39;s the grid of shifts we wish to consider?</span></a>
-<a class="sourceLine" id="cb48-2" data-line-number="2">delta_grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb48-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb48-4" data-line-number="4"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb48-5" data-line-number="5">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_delta</span>(</a>
-<a class="sourceLine" id="cb48-6" data-line-number="6">  <span class="dt">shift_grid =</span> delta_grid,</a>
-<a class="sourceLine" id="cb48-7" data-line-number="7">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb48-8" data-line-number="8">)</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="co"># what&#39;s the grid of shifts we wish to consider?</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">delta_grid &lt;-<span class="st"> </span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb47-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb47-4" data-line-number="4"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb47-5" data-line-number="5">tmle_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_delta</span>(</a>
+<a class="sourceLine" id="cb47-6" data-line-number="6">  <span class="dt">shift_grid =</span> delta_grid,</a>
+<a class="sourceLine" id="cb47-7" data-line-number="7">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb47-8" data-line-number="8">)</a></code></pre></div>
 <p>As seen above, the <code>tmle_vimshift</code> specification object (like all <code>tmle3_Spec</code>
 objects) does <em>not</em> store the data for our specific analysis of interest. Later,
 we’ll see that passing a data object directly to the <code>tmle3</code> wrapper function,
@@ -822,25 +822,25 @@ machinery exposed by the <a href="https://tmle3.tlverse.org/"><code>tmle3</code>
 <p>One may invoke the <code>tmle3</code> wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a></code></pre></div>
 <pre><code>
-Iter: 1 fn: 690.9909     Pars:  0.90893 0.09107
-Iter: 2 fn: 690.9909     Pars:  0.90893 0.09107
+Iter: 1 fn: 687.5117     Pars:  0.92367 0.07633
+Iter: 2 fn: 687.5117     Pars:  0.92367 0.07633
 solnp--&gt; Completed in 2 iterations</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1">tmle_fit</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">tmle_fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-         type          param  init_est   tmle_est          se      lower
-1:        TSM  E[Y_{A=NULL}] 0.6148701 0.61637717 0.021236365 0.57475466
-2:        TSM  E[Y_{A=NULL}] 0.7145265 0.71600000 0.020186704 0.67643479
-3:        TSM  E[Y_{A=NULL}] 0.8132281 0.81233728 0.016279227 0.78043058
-4: MSM_linear MSM(intercept) 0.7142082 0.71490482 0.018561974 0.67852402
-5: MSM_linear     MSM(slope) 0.0991790 0.09798006 0.005725206 0.08675886
+         type          param   init_est  tmle_est          se      lower
+1:        TSM  E[Y_{A=NULL}] 0.61618517 0.6119072 0.021225553 0.57030585
+2:        TSM  E[Y_{A=NULL}] 0.71555149 0.7160000 0.020186704 0.67643479
+3:        TSM  E[Y_{A=NULL}] 0.81227287 0.8154102 0.016156118 0.78374484
+4: MSM_linear MSM(intercept) 0.71466984 0.7144391 0.018521293 0.67813807
+5: MSM_linear     MSM(slope) 0.09804385 0.1017515 0.005711439 0.09055733
        upper psi_transformed lower_transformed upper_transformed
-1: 0.6579997      0.61637717        0.57475466         0.6579997
-2: 0.7555652      0.71600000        0.67643479         0.7555652
-3: 0.8442440      0.81233728        0.78043058         0.8442440
-4: 0.7512856      0.71490482        0.67852402         0.7512856
-5: 0.1092013      0.09798006        0.08675886         0.1092013</code></pre>
+1: 0.6535085       0.6119072        0.57030585         0.6535085
+2: 0.7555652       0.7160000        0.67643479         0.7555652
+3: 0.8470757       0.8154102        0.78374484         0.8470757
+4: 0.7507402       0.7144391        0.67813807         0.7507402
+5: 0.1129458       0.1017515        0.09055733         0.1129458</code></pre>
 <p><em>Remark</em>: The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently
 displays the results from computing our TML estimator.</p>
 </div>
@@ -901,13 +901,13 @@ from a working MSM is rather straightforward. To wit, the limiting distribution
 for <span class="math inline">\(m_{\beta}(\delta)\)</span> may be expressed <span class="math display">\[\sqrt{n}(\beta_n - \beta_0) \to N(0,
 \Sigma),\]</span> where <span class="math inline">\(\Sigma\)</span> is the empirical covariance matrix of
 <span class="math inline">\(\text{EIF}_{\beta}(O)\)</span>.</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1">tmle_fit<span class="op">$</span>summary[<span class="dv">4</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
-<pre><code>         type          param  init_est   tmle_est          se      lower
-1: MSM_linear MSM(intercept) 0.7142082 0.71490482 0.018561974 0.67852402
-2: MSM_linear     MSM(slope) 0.0991790 0.09798006 0.005725206 0.08675886
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb52-1" data-line-number="1">tmle_fit<span class="op">$</span>summary[<span class="dv">4</span><span class="op">:</span><span class="dv">5</span>, ]</a></code></pre></div>
+<pre><code>         type          param   init_est  tmle_est          se      lower
+1: MSM_linear MSM(intercept) 0.71466984 0.7144391 0.018521293 0.67813807
+2: MSM_linear     MSM(slope) 0.09804385 0.1017515 0.005711439 0.09055733
        upper psi_transformed lower_transformed upper_transformed
-1: 0.7512856      0.71490482        0.67852402         0.7512856
-2: 0.1092013      0.09798006        0.08675886         0.1092013</code></pre>
+1: 0.7507402       0.7144391        0.67813807         0.7507402
+2: 0.1129458       0.1017515        0.09055733         0.1129458</code></pre>
 <div id="directly-targeting-the-msm-parameter-beta" class="section level4">
 <h4><span class="header-section-number">7.1.4.1</span> Directly Targeting the MSM Parameter <span class="math inline">\(\beta\)</span></h4>
 <p>Note that in the above, a working MSM is fit to the individual TML estimates of
@@ -927,26 +927,26 @@ H_2(g),\]</span> for all <span class="math inline">\(\delta\)</span>, where <spa
 parameters of the working marginal structural model, we may use the
 <code>tmle_vimshift_msm</code> Spec (instead of the <code>tmle_vimshift_delta</code> Spec that
 appears above):</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
-<a class="sourceLine" id="cb55-2" data-line-number="2">tmle_msm_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_msm</span>(</a>
-<a class="sourceLine" id="cb55-3" data-line-number="3">  <span class="dt">shift_grid =</span> delta_grid,</a>
-<a class="sourceLine" id="cb55-4" data-line-number="4">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb55-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb55-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb55-7" data-line-number="7"><span class="co"># fit the TML estimator and examine the results</span></a>
-<a class="sourceLine" id="cb55-8" data-line-number="8">tmle_msm_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_msm_spec, data, node_list, learner_list)</a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">tmle_msm_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_msm</span>(</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3">  <span class="dt">shift_grid =</span> delta_grid,</a>
+<a class="sourceLine" id="cb54-4" data-line-number="4">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb54-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb54-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb54-7" data-line-number="7"><span class="co"># fit the TML estimator and examine the results</span></a>
+<a class="sourceLine" id="cb54-8" data-line-number="8">tmle_msm_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_msm_spec, data, node_list, learner_list)</a></code></pre></div>
 <pre><code>
-Iter: 1 fn: 687.7121     Pars:  0.90904 0.09096
-Iter: 2 fn: 687.7121     Pars:  0.90905 0.09095
+Iter: 1 fn: 687.0517     Pars:  0.92077 0.07923
+Iter: 2 fn: 687.0517     Pars:  0.92077 0.07923
 solnp--&gt; Completed in 2 iterations</code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">tmle_msm_fit</a></code></pre></div>
-<pre><code>A tmle3_Fit that took 100 step(s)
-         type          param   init_est   tmle_est          se      lower
-1: MSM_linear MSM(intercept) 0.71423749 0.71442296 0.018590940 0.67798538
-2: MSM_linear     MSM(slope) 0.09801693 0.09752323 0.005711383 0.08632913
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">tmle_msm_fit</a></code></pre></div>
+<pre><code>A tmle3_Fit that took 1 step(s)
+         type          param   init_est   tmle_est          se     lower
+1: MSM_linear MSM(intercept) 0.71488408 0.71451664 0.018568600 0.6781229
+2: MSM_linear     MSM(slope) 0.09764547 0.09781419 0.005805307 0.0864360
        upper psi_transformed lower_transformed upper_transformed
-1: 0.7508605      0.71442296        0.67798538         0.7508605
-2: 0.1087173      0.09752323        0.08632913         0.1087173</code></pre>
+1: 0.7509104      0.71451664         0.6781229         0.7509104
+2: 0.1091924      0.09781419         0.0864360         0.1091924</code></pre>
 </div>
 </div>
 <div id="example-with-the-wash-benefits-data" class="section level3">
@@ -954,10 +954,10 @@ solnp--&gt; Completed in 2 iterations</code></pre>
 <p>To complete our walk through, let’s turn to using stochastic interventions to
 investigate the data from the WASH Benefits trial. To start, let’s load the
 data, convert all columns to be of class <code>numeric</code>, and take a quick look at it</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>,</a>
-<a class="sourceLine" id="cb59-2" data-line-number="2">                    <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb59-3" data-line-number="3">washb_data &lt;-<span class="st"> </span>washb_data[<span class="op">!</span><span class="kw">is.na</span>(momage), <span class="kw">lapply</span>(.SD, as.numeric)]</a>
-<a class="sourceLine" id="cb59-4" data-line-number="4"><span class="kw">head</span>(washb_data, <span class="dv">3</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv&quot;</span>,</a>
+<a class="sourceLine" id="cb58-2" data-line-number="2">                    <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb58-3" data-line-number="3">washb_data &lt;-<span class="st"> </span>washb_data[<span class="op">!</span><span class="kw">is.na</span>(momage), <span class="kw">lapply</span>(.SD, as.numeric)]</a>
+<a class="sourceLine" id="cb58-4" data-line-number="4"><span class="kw">head</span>(washb_data, <span class="dv">3</span>)</a></code></pre></div>
 <pre><code>     whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
@@ -978,11 +978,11 @@ data, convert all columns to be of class <code>numeric</code>, and take a quick 
 we’ll consider the outcome to be the weight-for-height Z-score (as in previous
 chapters), the intervention of interest to be the mother’s age at time of
 child’s birth, and take all other covariates to be potential confounders.</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb61-2" data-line-number="2">  <span class="dt">W =</span> <span class="kw">names</span>(washb_data)[<span class="op">!</span>(<span class="kw">names</span>(washb_data) <span class="op">%in%</span></a>
-<a class="sourceLine" id="cb61-3" data-line-number="3"><span class="st">    </span><span class="kw">c</span>(<span class="st">&quot;whz&quot;</span>, <span class="st">&quot;momage&quot;</span>))],</a>
-<a class="sourceLine" id="cb61-4" data-line-number="4">  <span class="dt">A =</span> <span class="st">&quot;momage&quot;</span>, <span class="dt">Y =</span> <span class="st">&quot;whz&quot;</span></a>
-<a class="sourceLine" id="cb61-5" data-line-number="5">)</a></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb60-2" data-line-number="2">  <span class="dt">W =</span> <span class="kw">names</span>(washb_data)[<span class="op">!</span>(<span class="kw">names</span>(washb_data) <span class="op">%in%</span></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3"><span class="st">    </span><span class="kw">c</span>(<span class="st">&quot;whz&quot;</span>, <span class="st">&quot;momage&quot;</span>))],</a>
+<a class="sourceLine" id="cb60-4" data-line-number="4">  <span class="dt">A =</span> <span class="st">&quot;momage&quot;</span>, <span class="dt">Y =</span> <span class="st">&quot;whz&quot;</span></a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">)</a></code></pre></div>
 <p>Were we to consider the counterfactual weight-for-height Z-score under shifts in
 the age of the mother at child’s birth, how would we interpret estimates of our
 parameter? To simplify our interpretation, consider a shift of just a year in
@@ -995,36 +995,36 @@ grid of stochastic interventions to evaluate the weight-for-height Z-score under
 a shift in the mother’s age down by two years (<span class="math inline">\(\delta = -2\)</span>) or up by two years
 (<span class="math inline">\(\delta = 2\)</span>). To do this, we simply initialize a <code>Spec</code> <code>tmle_vimshift_delta</code>
 just as we did in a previous example:</p>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="co"># initialize a tmle specification for the variable importance parameter</span></a>
-<a class="sourceLine" id="cb62-2" data-line-number="2">washb_vim_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_delta</span>(</a>
-<a class="sourceLine" id="cb62-3" data-line-number="3">  <span class="dt">shift_grid =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>),</a>
-<a class="sourceLine" id="cb62-4" data-line-number="4">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
-<a class="sourceLine" id="cb62-5" data-line-number="5">)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co"># initialize a tmle specification for the variable importance parameter</span></a>
+<a class="sourceLine" id="cb61-2" data-line-number="2">washb_vim_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_delta</span>(</a>
+<a class="sourceLine" id="cb61-3" data-line-number="3">  <span class="dt">shift_grid =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">2</span>, <span class="dv">2</span>),</a>
+<a class="sourceLine" id="cb61-4" data-line-number="4">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb61-5" data-line-number="5">)</a></code></pre></div>
 <p>Prior to running our analysis, we’ll modify the <code>learner_list</code> object we had
 created such that the density estimation procedure we rely on will be only the
 random forest conditional density estimation procedure of <span class="citation">Pospisil and Lee (<a href="#ref-pospisil2018rfcde">2018</a>)</span>, as
 the nonparametric conditional density approach based on the highly adaptive
 lasso <span class="citation">(Díaz and van der Laan <a href="#ref-diaz2011super">2011</a>; Benkeser and van der Laan <a href="#ref-benkeser2016hal">2016</a>; Coyle and Hejazi <a href="#ref-coyle2018hal9001">2018</a>; Hejazi, Benkeser, and van der Laan <a href="#ref-hejazi2019haldensify">2019</a>)</span> is currently unable to accommodate large datasets.</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1"><span class="co"># learners used for conditional density regression (i.e., propensity score)</span></a>
-<a class="sourceLine" id="cb63-2" data-line-number="2">lrn_rfcde &lt;-<span class="st"> </span>Lrnr_rfcde<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb63-3" data-line-number="3">  <span class="dt">n_trees =</span> <span class="dv">250</span>, <span class="dt">node_size =</span> <span class="dv">5</span>,</a>
-<a class="sourceLine" id="cb63-4" data-line-number="4">  <span class="dt">n_basis =</span> <span class="dv">20</span>, <span class="dt">output_type =</span> <span class="st">&quot;observed&quot;</span></a>
-<a class="sourceLine" id="cb63-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb63-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb63-7" data-line-number="7"><span class="co"># we need to turn on cross-validation for the RFCDE learner</span></a>
-<a class="sourceLine" id="cb63-8" data-line-number="8">lrn_cv_rfcde &lt;-<span class="st"> </span>Lrnr_cv<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb63-9" data-line-number="9">  <span class="dt">learner =</span> lrn_rfcde,</a>
-<a class="sourceLine" id="cb63-10" data-line-number="10">  <span class="dt">full_fit =</span> <span class="ot">TRUE</span></a>
-<a class="sourceLine" id="cb63-11" data-line-number="11">)</a>
-<a class="sourceLine" id="cb63-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb63-13" data-line-number="13"><span class="co"># modify learner list, using existing SL for Q fit</span></a>
-<a class="sourceLine" id="cb63-14" data-line-number="14">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> sl_lrn, <span class="dt">A =</span> lrn_cv_rfcde)</a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="co"># learners used for conditional density regression (i.e., propensity score)</span></a>
+<a class="sourceLine" id="cb62-2" data-line-number="2">lrn_rfcde &lt;-<span class="st"> </span>Lrnr_rfcde<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb62-3" data-line-number="3">  <span class="dt">n_trees =</span> <span class="dv">250</span>, <span class="dt">node_size =</span> <span class="dv">5</span>,</a>
+<a class="sourceLine" id="cb62-4" data-line-number="4">  <span class="dt">n_basis =</span> <span class="dv">20</span>, <span class="dt">output_type =</span> <span class="st">&quot;observed&quot;</span></a>
+<a class="sourceLine" id="cb62-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb62-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb62-7" data-line-number="7"><span class="co"># we need to turn on cross-validation for the RFCDE learner</span></a>
+<a class="sourceLine" id="cb62-8" data-line-number="8">lrn_cv_rfcde &lt;-<span class="st"> </span>Lrnr_cv<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb62-9" data-line-number="9">  <span class="dt">learner =</span> lrn_rfcde,</a>
+<a class="sourceLine" id="cb62-10" data-line-number="10">  <span class="dt">full_fit =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb62-11" data-line-number="11">)</a>
+<a class="sourceLine" id="cb62-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb62-13" data-line-number="13"><span class="co"># modify learner list, using existing SL for Q fit</span></a>
+<a class="sourceLine" id="cb62-14" data-line-number="14">learner_list &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Y =</span> sl_lrn, <span class="dt">A =</span> lrn_cv_rfcde)</a></code></pre></div>
 <p>Having made the above preparations, we’re now ready to estimate the
 counterfactual mean of the weight-for-height Z-score under a small grid of
 shifts in the mother’s age at child’s birth. Just as before, we do this through
 a simple call to our <code>tmle3</code> wrapper function:</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" data-line-number="1">washb_tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(washb_vim_spec, washb_data, node_list, learner_list)</a>
-<a class="sourceLine" id="cb64-2" data-line-number="2">washb_tmle_fit</a></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb63-1" data-line-number="1">washb_tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(washb_vim_spec, washb_data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb63-2" data-line-number="2">washb_tmle_fit</a></code></pre></div>
 <hr />
 </div>
 </div>
