@@ -359,7 +359,7 @@ lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 
 Here is a fun trick to create customized learners over a grid of parameters.
 
-```{r extra-lrnr-mindblown, eval = FALSE}
+```{r extra-lrnr-mindblown-svm, eval = FALSE}
 # I like to crock pot my super learners
 grid_params <- list(cost = c(0.01, 0.1, 1, 10, 100, 1000),
                     gamma = c(0.001, 0.01, 0.1, 1),
@@ -369,7 +369,8 @@ grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
 params_default <- list(nthread = getOption("sl.cores.learners", 1))
 svm_learners <- apply(grid, MARGIN = 1, function(params_tune) {
   do.call(Lrnr_svm$new, c(params_default, as.list(params_tune)))})
-
+```
+```{r extra-lrnr-mindblown-xgboost}
 grid_params <- list(max_depth = c(2, 4, 6, 8),
                     eta = c(0.001, 0.01, 0.1, 0.2, 0.3),
                     nrounds = c(20, 50))
@@ -405,7 +406,7 @@ combined or compared.
 ```{r stack}
 stack <- make_learner(
   Stack,
-  lrnr_glm, lrnr_mean, lrnr_ridge, lrnr_lasso, xgb_learners[[1]]
+  lrnr_glm, lrnr_mean, lrnr_ridge, lrnr_lasso, xgb_learners[[10]]
 )
 ```
 
