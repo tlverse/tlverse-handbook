@@ -616,16 +616,9 @@ washb_varimp %>%
 ```
 <!-- Explain summary!!!! -->
 
-### International Stroke Trial Example {-}
+## Exercises
 
-Using the IST data, we are interested in predicting recurrent stroke `DRSISC` 
-using the available covariate data.
-
-MORE COMING SOON. STAY TUNED :)
-
-## Exercise
-
-### Predicting Myocardial Infarction with `sl3` {#sl3ex}
+### Predicting Myocardial Infarction with `sl3` {#sl3ex1}
 
 Follow the steps below to predict myocardial infarction (`mi`) using the
 available covariate data. We thank Prof. David Benkeser at Emory University for
@@ -650,13 +643,47 @@ head(chspred) %>%
    learners. Feel free to use learners from `sl3` or `SuperLearner`. You may
    use the same base learning library that is presented above.
 3. Incorporate feature selection with the `SuperLearner` screener `screen.corP`.
-4. Fit the metalearning step with non-negative least squares, `Lrnr_nnls`.
+4. Fit the metalearning step with the default metalearner.
 5. With the metalearner and base learners, make the Super Learner and train it
    on the task.
 6. Print your Super Learner fit by calling `print()` with `$`.
 7. Cross-validate your Super Learner fit to see how well it performs on unseen
    data. Specify `loss_squared_error` as the loss function to evaluate the
    Super Learner.
+
+### Predicting Recurrent Ischemic Stroke in an RCT with `sl3` {#sl3ex2}
+
+For this exercise, we will work with a random sample of 5,000 patients who
+participated in the International Stroke Trial (IST). This data is described in 
+[Chapter 3.2 of the `tlverse` 
+handbook](https://tlverse.org/tlverse-handbook/data.html#ist).
+
+1. Train a Super Learner to predict recurrent stroke `DRSISC` with the available 
+   covariate data (the 25 other variables). Of course, you can consider feature 
+   selection in the machine learning algorithms. In this data, the outcome is 
+   occasionally missing, so be sure to specify `drop_missing_outcome = TRUE` 
+   when defining the task.
+2. Use the SL-based predictions to calculate the area under the ROC curve (AUC).
+3. Calculate the cross-validated AUC with cross-validated SL-based predictions. 
+   If you would like to decrease the number of outer cross-validation folds, 
+   then specify the task as described below for 5 outer folds. 
+
+```{r ex-setup2, warning=FALSE, message=FALSE}
+ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+
+# number 3 help
+ist_task_CVsl <- make_sl3_Task(
+  data = ist_data,
+  outcome = "DRSISC",
+  covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
+  drop_missing_outcome = TRUE,
+  folds = make_folds(
+    n = sum(!is.na(ist_data$DRSISC)), 
+    fold_fun = folds_vfold,
+    V = 5
+    )
+  )
+```
 
 <!--
 ## Super Learning of a Conditional Density
@@ -831,6 +858,7 @@ rule.
 * In the chapters that follow, we focus on the targeted maximum likelihood
   estimator and the targeted minimum loss-based estimator, both referred to as
   TMLE.
+
 <!--
 We could just plug-in the estimator returned by Super
 Learner; however, this is problematic because the Super Learner estimators are
