@@ -15,7 +15,7 @@ Based on the [`tmle3` `R` package](https://github.com/tlverse/tmle3).
 The first step in the estimation procedure is an initial estimate of the
 data-generating distribution, or the relevant part of this distribution that is
 needed to evaluate the target parameter. For this initial estimation, we use the
-super learner [@vdl2007super], as described in the previous section. 
+super learner [@vdl2007super], as described in the previous section.
 
 With the initial estimate of relevant parts of the data-generating distribution
 necessary to evaluate the target parameter, we are ready to construct the TMLE!
@@ -39,19 +39,20 @@ above):
 - $\Psi(P_0) = \Psi(Q_0) = \mathbb{E}_0 \big[\mathbb{E}_0[Y \mid A = 1, W] -
   \mathbb{E}_0[Y \mid A = 0, W]\big]$, where $Q_0$ represents both the
   distribution of $Y \mid A,W$ and distribution of $W$.
-- Let $\bar{Q}_0(A,W) \equiv \mathbb{E}_0(Y \mid A,W)$ and $Q_{0,W}(w) = P_0 (W=w)$, then
-\[
-\Psi(Q_0) = \sum_w \{ \bar{Q}_0(1,w)-\bar{Q}_0(0,w)\} Q_{0,W}(w)
-\]
+- Let $\bar{Q}_0(A,W) \equiv \mathbb{E}_0(Y \mid A,W)$ and $Q_{0,W}(w) = P_0
+  (W=w)$, then
+  \[
+  \Psi(Q_0) = \sum_w \{ \bar{Q}_0(1,w)-\bar{Q}_0(0,w)\} Q_{0,W}(w)
+  \]
 - The **Substitution Estimator** plugs in the empirical distribution (weight
   $1/n$ for each observation) for $Q_{0,W}(W_i)$, and some estimate of the
   regression of $Y$ on $(A,W)$  (say SL fit):
- \[
- \Psi(Q_n) = \frac{1}{n} \sum_{i=1}^n  \{ \bar{Q}_n(1,W_i)-\bar{Q}_n(0,W_i)\}
- \]
+   \[
+   \Psi(Q_n) = \frac{1}{n} \sum_{i=1}^n  \{ \bar{Q}_n(1,W_i)-\bar{Q}_n(0,W_i)\}
+   \]
  - Thus, it becomes the average of the differences in predictions from the fit
-   keeping the observed $W$, but first replacing $A=1$ and then the same but all
-   $A=0$.
+   keeping the observed $W$, but first replacing $A=1$ and then the same but
+   all $A=0$.
 
 ### TMLE
 
@@ -98,8 +99,8 @@ $f(\bar{Q}^{\star}_n(A,W)) = f(\bar{Q}_n(A,W)) + \epsilon_n \cdot h_n(A,W)$,
 where $f(\cdot)$ is the appropriate link function (e.g., logit), $\epsilon_n$
 is an estimated coefficient and $h_n(A,W)$ is a "clever covariate".
 
-- In this case, $h_n(A,W) = \frac{A}{g_n(W)}-\frac{1-A}{1-g_n(W)}$, with
-  $g_n(W) = \mathbb{P}(A=1 \mid W)$ being the estimated (also by SL) propensity score,
+- In this case, $h_n(A,W) = \frac{A}{g_n(W)}-\frac{1-A}{1-g_n(W)}$, with $g_n(W)
+  = \mathbb{P}(A=1 \mid W)$ being the estimated (also by SL) propensity score,
   so the estimator depends both on initial SL fit of the outcome regression
   ($\bar{Q}_0$) and an SL fit of the propensity score ($g_n$).
 - There are further robust augmentations that are used in `tlverse`, such as an
@@ -112,28 +113,29 @@ is an estimated coefficient and $h_n(A,W)$ is a "clever covariate".
 - The estimators we discuss are **asymptotically linear**, meaning that the
   difference in the estimate $\Psi(P_n)$ and the true parameter ($\Psi(P_0)$)
   can be represented in first order by a i.i.d. sum:
-\begin{equation}\label{eqn:IC}
-  \Psi(P_n) - \Psi(P_0) = \frac{1}{n} \sum_{i=1}^n IC(O_i; \nu) + o_p(1/\sqrt{n})
-\end{equation}
-
-where $IC(O_i; \nu)$ (the influence curve or function) is a function of the data
-and possibly other nuisance parameters $\nu$. Importantly, such estimators have
-mean-zero Gaussian limiting distributions; thus, in the univariate case, one has
-that
-\begin{equation}\label{eqn:limit_dist}
-  \sqrt{n}(\Psi(P_n) - \Psi(P_0)) \xrightarrow[]{D}N(0,\mathbb{V}IC(O_i;\nu)),
-\end{equation}
-so that inference for the estimator of interest may be obtained in terms of the
-influence function. For this simple case, a 95\% confidence interval may be
-derived as:
-\begin{equation}\label{eqn:CI}
-  \Psi(P^{\star}_n) \pm z_{1 - \frac{\alpha}{2}} \sqrt{\frac{\hat{\sigma}^2}{n}},
-\end{equation}
-where $SE=\sqrt{\frac{\hat{\sigma}^2}{n}}$ and $\hat{\sigma}^2$ is the sample
-variance of the estimated IC's: $IC(O; \hat{\nu})$. One can use the functional
-delta method to derive the influence curve if a parameter of interest may be
-written as a function of other asymptotically linear estimators.
-
+  \begin{equation}\label{eqn:IC}
+    \Psi(P_n) - \Psi(P_0) = \frac{1}{n} \sum_{i=1}^n IC(O_i; \nu) +
+    o_p(1/\sqrt{n})
+  \end{equation}
+  where $IC(O_i; \nu)$ (the influence curve or function) is a function of the
+  data and possibly other nuisance parameters $\nu$. Importantly, such
+  estimators have mean-zero Gaussian limiting distributions; thus, in the
+  univariate case, one has that
+  \begin{equation}\label{eqn:limit_dist}
+    \sqrt{n}(\Psi(P_n) - \Psi(P_0)) \xrightarrow[]{D}N(0,\mathbb{V}
+    IC(O_i; \nu)),
+  \end{equation}
+  so that inference for the estimator of interest may be obtained in terms of
+  the influence function. For this simple case, a 95\% confidence interval may
+  be derived as:
+  \begin{equation}\label{eqn:CI}
+    \Psi(P^{\star}_n) \pm z_{1 - \frac{\alpha}{2}}
+    \sqrt{\frac{\hat{\sigma}^2}{n}},
+  \end{equation}
+  where $SE=\sqrt{\frac{\hat{\sigma}^2}{n}}$ and $\hat{\sigma}^2$ is the sample
+  variance of the estimated IC's: $IC(O; \hat{\nu})$. One can use the functional
+  delta method to derive the influence curve if a parameter of interest may be
+  written as a function of other asymptotically linear estimators.
 - Thus, we can derive robust inference for parameters that are estimated by
   fitting complex, machine learning algorithms and these methods are
   computationally quick (do not rely on re-sampling based methods like the
@@ -145,9 +147,8 @@ We'll illustrate the most basic use of TMLE using the WASH Benefits data
 introduced earlier and estimating an Average Treatment Effect (ATE).
 
 As a reminder, the ATE is identified with the following statistical parameter
-(under assumptions): $ATE = \mathbb{E}_0(Y(1)-Y(0)) =
-\mathbb{E}_0 \left(\mathbb{E}_0[Y \mid A=1,W] - \mathbb{E}_0[Y \mid A=0,W]
-\right),$
+(under assumptions): $ATE = \mathbb{E}_0(Y(1)-Y(0)) = \mathbb{E}_0
+\left(\mathbb{E}_0[Y \mid A=1,W] - \mathbb{E}_0[Y \mid A=0,W] \right),$
 
 ### Load the Data
 
@@ -195,8 +196,8 @@ Currently, missingness in `tmle3` is handled in a fairly simple way:
   imputed, and additional covariates indicating imputation are generated
 * Observations missing either treatment or outcome variables are excluded.
 
-We implemented IPCW-TMLE to more efficiently handle missingness in the outcome 
-variable, and we plan to implement an IPCW-TMLE to handle missingness in the 
+We implemented IPCW-TMLE to more efficiently handle missingness in the outcome
+variable, and we plan to implement an IPCW-TMLE to handle missingness in the
 treatment variable as well.
 
 These steps are implemented in the `process_missing` function in `tmle3`:
@@ -500,38 +501,38 @@ metalearner <- make_learner(Lrnr_solnp,
 ### Estimation of Strata-Specific ATEs with `tmle3` {#sl3ex2}
 
 For this exercise, we will work with a random sample of 5,000 patients who
-participated in the International Stroke Trial (IST). This data is described in 
-the [Chapter 3.2 of the `tlverse` 
+participated in the International Stroke Trial (IST). This data is described in
+the [Chapter 3.2 of the `tlverse`
 handbook](https://tlverse.org/tlverse-handbook/data.html#ist). We included the
-data below and a summarized description that is relevant for this exercise. 
+data below and a summarized description that is relevant for this exercise.
 
-The outcome, $Y$, indicates recurrent ischemic stroke within 14 days after 
-randomization (`DRSISC`); the treatment of interest, $A$, is the randomized 
-aspirin vs. no aspirin treatment allocation (`RXASP` in  `ist`); and the 
-adjustment set, $W$, consists simply of other variables measured at baseline. In 
-this data, the outcome is occasionally missing, but there is no need to create a 
-variable indicating this missingness (such as $\Delta$) for analyses in the 
-`tlverse`, since the missingness is automatically detected when `NA` are present 
-in the outcome. Covariates with missing values (`RATRIAL`, `RASP3` and `RHEP24`) 
-have already been imputed. Additional covariates were created 
+The outcome, $Y$, indicates recurrent ischemic stroke within 14 days after
+randomization (`DRSISC`); the treatment of interest, $A$, is the randomized
+aspirin vs. no aspirin treatment allocation (`RXASP` in  `ist`); and the
+adjustment set, $W$, consists simply of other variables measured at baseline. In
+this data, the outcome is occasionally missing, but there is no need to create a
+variable indicating this missingness (such as $\Delta$) for analyses in the
+`tlverse`, since the missingness is automatically detected when `NA` are present
+in the outcome. Covariates with missing values (`RATRIAL`, `RASP3` and `RHEP24`)
+have already been imputed. Additional covariates were created
 (`MISSING_RATRIAL_RASP3` and `MISSING_RHEP24`), which indicate whether or not
-the covariate was imputed. The missingness was identical for `RATRIAL` and 
-`RASP3`, which is why only one covariate indicating imputation for these two 
-covariates was created. 
+the covariate was imputed. The missingness was identical for `RATRIAL` and
+`RASP3`, which is why only one covariate indicating imputation for these two
+covariates was created.
 
-1. Estimate the average effect of randomized asprin treatment (`RXASP` = 1) on 
-   recurrent ischemic stroke. Even though the missingness mechanism on $Y$, 
-   $\Delta$, does not need to be specified in the node list, it does still need 
+1. Estimate the average effect of randomized asprin treatment (`RXASP` = 1) on
+   recurrent ischemic stroke. Even though the missingness mechanism on $Y$,
+   $\Delta$, does not need to be specified in the node list, it does still need
    to be accounted for in the TMLE. In other words, for this estimation problem,
-   $\Delta$ is a relevant factor of the likelihood in addition to $Q$, $g$. 
-   Thus, when defining the list of `sl3` learners for each likelihood factor, be 
-   sure to include a list of learners for estimation of $\Delta$, say `sl_Delta`, 
-   and specify something like 
+   $\Delta$ is a relevant factor of the likelihood in addition to $Q$, $g$.
+   Thus, when defining the list of `sl3` learners for each likelihood factor, be
+   sure to include a list of learners for estimation of $\Delta$, say
+   `sl_Delta`, and specify something like
    `learner_list <- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)`.
-2. Recall that this RCT was conducted internationally. Suposse there is concern 
+2. Recall that this RCT was conducted internationally. Suposse there is concern
    that the dose of asprin may have varied across geographical regions, and an
-   average across all geographical regions may not be warranted. Calculate the 
-   strata specific ATEs according to geographical region (`REGION`). 
+   average across all geographical regions may not be warranted. Calculate the
+   strata specific ATEs according to geographical region (`REGION`).
 
 ```{r tmle3-ex2}
 ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv"))

@@ -31,7 +31,7 @@ Following the roadmap is a process of five stages.
 4. The estimator $\hat{\Psi}$ and estimate $\hat{\Psi}(P_n)$.
 5. A measure of uncertainty for the estimate $\hat{\Psi}(P_n)$.
 
-### (1) Data as a random variable with a probability distribution, $O \sim P_0$ {-}
+### (1) Data: A random variable with a probability distribution, $O \sim P_0$ {-}
 
 The data set we're confronted with is the result of an experiment and we can
 view the data as a random variable, $O$, because if we repeat the experiment
@@ -98,13 +98,13 @@ Now, on to Step 3: *``What are we trying to learn from the data?"*
 
 The statistical target parameter, $\Psi$, is defined as a mapping from the
 statistical model, $\mathcal{M}$, to the parameter space (i.e., a real number)
-$\mathcal{R}$. That is, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$. The estimand 
-may be seen as a representation of the
-quantity that we wish to learn from the data, the answer to a well-specified
-(often causal) question of interest. In contrast to purely statistical 
-estimands, causal estimands require _identification from the observed
-data_, based on causal models that include several untestable assumptions,
-described in more detail in the section on [causal target parameters](#causal).
+$\mathcal{R}$. That is, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$. The estimand
+may be seen as a representation of the quantity that we wish to learn from the
+data, the answer to a well-specified (often causal) question of interest. In
+contrast to purely statistical estimands, causal estimands require
+_identification from the observed data_, based on causal models that include
+several untestable assumptions, described in more detail in the section on
+[causal target parameters](#causal).
 
 For a simple example, consider a data set which contains observations of a
 survival time on every subject, for which our question of interest is "What's
@@ -205,19 +205,19 @@ inference (i.e., confidence intervals and hypothesis tests).
 
 ## Causal Target Parameters {#causal}
 
-In many cases, we are interested in questions that ask questions regarding the 
-effect of an intervention on a future outcome of interest. These questions can 
-be represented as causal estimands and 
+In many cases, we are interested in questions that ask questions regarding the
+effect of an intervention on a future outcome of interest. These questions can
+be represented as causal estimands and
 
 ### The Causal Model
 
-After formalizing the data and the statistical model, we can define a causal 
-model to express causal parameters of interest. Directed acyclic graphs (DAGs) 
-are one useful tool to express what we know about the causal relations among 
-variables. Ignoring exogenous $U$ terms (explained below), we assume the 
+After formalizing the data and the statistical model, we can define a causal
+model to express causal parameters of interest. Directed acyclic graphs (DAGs)
+are one useful tool to express what we know about the causal relations among
+variables. Ignoring exogenous $U$ terms (explained below), we assume the
 following ordering of the variables in the observed data $O$.
 
-```{r, echo=FALSE, eval=TRUE, fig.align="center"}
+```{r, echo=FALSE, eval=TRUE}
 library(visNetwork)
 nodes <- data.frame(id = c("W", "A", "Y"))
 nodes$label <- nodes$id
@@ -228,10 +228,10 @@ network <- visNetwork(nodes, edges, height = "300px", width = "200px") %>%
 network
 ```
 
-While directed acyclic graphs (DAGs) like above provide a convenient means by 
-which to visualize causal relations between variables, the same causal 
-relations among variables can be represented via a set of structural equations, 
-which define the non-parametric structural equation model (NPSEM):
+While directed acyclic graphs (DAGs) like above provide a convenient means by
+which to visualize causal relations between variables, the same causal relations
+among variables can be represented via a set of structural equations, which
+define the non-parametric structural equation model (NPSEM):
 \begin{align*}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
@@ -242,10 +242,10 @@ characteristics that influence the value of each variable. In the NPSEM, $f_W$,
 $f_A$ and $f_Y$ denote that each variable (for $W$, $A$ and $Y$, respectively)
 is a function of its parents and unmeasured background characteristics, but note
 that there is no imposition of any particular functional constraints(e.g.,
-linear, logit-linear, only one interaction, etc.). For this reason, they are 
-called non-parametric structural equation models (NPSEMs). The
-DAG and set of nonparametric structural equations represent exactly the same
-information and so may be used interchangeably.
+linear, logit-linear, only one interaction, etc.). For this reason, they are
+called non-parametric structural equation models (NPSEMs). The DAG and set of
+nonparametric structural equations represent exactly the same information and so
+may be used interchangeably.
 
 The first hypothetical experiment we will consider is assigning exposure to the
 whole population and observing the outcome, and then assigning no exposure to
