@@ -24,7 +24,7 @@
 <meta name="author" content="Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard, Mark van der Laan" />
 
 
-<meta name="date" content="2020-02-14" />
+<meta name="date" content="2020-02-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -186,7 +186,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="2.1" data-path="tlverse.html"><a href="tlverse.html#learning-objectives-1"><i class="fa fa-check"></i><b>2.1</b> Learning Objectives</a></li>
 <li class="chapter" data-level="2.2" data-path="tlverse.html"><a href="tlverse.html#what-is-the-tlverse"><i class="fa fa-check"></i><b>2.2</b> What is the <code>tlverse</code>?</a></li>
 <li class="chapter" data-level="2.3" data-path="tlverse.html"><a href="tlverse.html#tlverse-components"><i class="fa fa-check"></i><b>2.3</b> <code>tlverse</code> components</a></li>
-<li class="chapter" data-level="2.4" data-path="tlverse.html"><a href="tlverse.html#installation"><i class="fa fa-check"></i><b>2.4</b> Installation</a></li>
+<li class="chapter" data-level="2.4" data-path="tlverse.html"><a href="tlverse.html#installtlverse"><i class="fa fa-check"></i><b>2.4</b> Installation</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="data.html"><a href="data.html"><i class="fa fa-check"></i><b>3</b> Datasets</a><ul>
 <li class="chapter" data-level="3.1" data-path="data.html"><a href="data.html#wash"><i class="fa fa-check"></i><b>3.1</b> WASH Benefits Example Dataset</a></li>
@@ -342,7 +342,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2020-02-14</p>
+<p>Updated: 2020-02-20</p>
 <div id="learning-objectives-4" class="section level2">
 <h2><span class="header-section-number">6.1</span> Learning Objectives</h2>
 <ol style="list-style-type: decimal">
@@ -925,10 +925,10 @@ ensemble learners into a list object below:</p>
 <a class="sourceLine" id="cb93-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb93-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est        se     lower     upper
-1:  TSM E[Y_{A=NULL}] 0.5371861 0.5808064 0.0657056 0.4520258 0.7095871
+   type         param  init_est tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5479662 0.593283 0.07096828 0.4541878 0.7323783
    psi_transformed lower_transformed upper_transformed
-1:       0.5808064         0.4520258         0.7095871</code></pre>
+1:        0.593283         0.4541878         0.7323783</code></pre>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -963,10 +963,10 @@ parameter to <code>FALSE</code>:</p>
 <a class="sourceLine" id="cb96-3" data-line-number="3"></a>
 <a class="sourceLine" id="cb96-4" data-line-number="4">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type             param  init_est  tmle_est        se     lower    upper
-1:  TSM E[Y_{A=W3,W2,W1}] 0.5488692 0.5720189 0.0652997 0.4440339 0.700004
+   type                param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=W4,W3,W2,W1}] 0.5484869 0.6151272 0.06756569 0.4827009 0.7475535
    psi_transformed lower_transformed upper_transformed
-1:       0.5720189         0.4440339          0.700004</code></pre>
+1:       0.6151272         0.4827009         0.7475535</code></pre>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -991,15 +991,15 @@ the outcome in question while being supported by the data.</p>
 <a class="sourceLine" id="cb99-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
 <a class="sourceLine" id="cb99-3" data-line-number="3">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param  init_est  tmle_est         se     lower    upper
-1:  TSM E[Y_{A=NULL}] 0.5497601 0.6665288 0.02128828 0.6248045 0.708253
+   type         param  init_est  tmle_est         se     lower     upper
+1:  TSM E[Y_{A=NULL}] 0.5488548 0.6515345 0.02154534 0.6093064 0.6937626
    psi_transformed lower_transformed upper_transformed
-1:       0.6665288         0.6248045          0.708253</code></pre>
+1:       0.6515345         0.6093064         0.6937626</code></pre>
 <div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="co"># How many individuals got assigned each treatment?</span></a>
 <a class="sourceLine" id="cb101-2" data-line-number="2"><span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</a></code></pre></div>
 <pre><code>
   2   3 
-510 490 </code></pre>
+507 493 </code></pre>
 </div>
 <div id="q-learning" class="section level3">
 <h3><span class="header-section-number">6.8.3</span> Q-learning</h3>
@@ -1025,7 +1025,7 @@ we want to use Q-learning instead of TMLE.</p>
 <a class="sourceLine" id="cb103-10" data-line-number="10"></a>
 <a class="sourceLine" id="cb103-11" data-line-number="11"><span class="co"># Estimate the parameter:</span></a>
 <a class="sourceLine" id="cb103-12" data-line-number="12"><span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</a></code></pre></div>
-<pre><code>[1] 0.4793367</code></pre>
+<pre><code>[1] 0.4776147</code></pre>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -1110,14 +1110,14 @@ effect).</p>
 <a class="sourceLine" id="cb107-5" data-line-number="5"></a>
 <a class="sourceLine" id="cb107-6" data-line-number="6"><span class="kw">print</span>(vim_results)</a></code></pre></div>
 <pre><code>   type                  param     init_est    tmle_est         se
-1:   RR RR(E[Y_{A=NULL}]/E[Y])  0.005729142  0.06755962 0.03397807
-2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.023786018 -0.06643231 0.04976504
+1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.001723761  0.06669851 0.03395072
+2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.020139358 -0.06796977 0.05092071
            lower      upper psi_transformed lower_transformed upper_transformed
-1:  0.0009638325 0.13415541       1.0698940         1.0009643          1.143571
-2: -0.1639700017 0.03110537       0.9357262         0.8487675          1.031594
+1:  0.0001563162 0.13324070       1.0689731         1.0001563          1.142525
+2: -0.1677725217 0.03183298       0.9342887         0.8455462          1.032345
     A           W    Z_stat       p_nz p_nz_corrected
-1:  A W3,W4,W2,W1  1.988330 0.02338759     0.04677517
-2: W1  W3,W4,W2,A -1.334919 0.09095138     0.09095138</code></pre>
+1:  A W3,W4,W2,W1  1.964568 0.02473212     0.04946424
+2: W1  W3,W4,W2,A -1.334816 0.09096829     0.09096829</code></pre>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1760,10 +1760,10 @@ Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
 Missing covariate data detected: imputing covariates.</code></pre>
 <div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1">fit</a></code></pre></div>
 <pre><code>A tmle3_Fit that took 1 step(s)
-   type         param   init_est   tmle_est         se      lower      upper
-1:  TSM E[Y_{A=NULL}] -0.5502259 -0.4694133 0.04411224 -0.5558716 -0.3829549
+   type         param  init_est   tmle_est         se      lower      upper
+1:  TSM E[Y_{A=NULL}] -0.546092 -0.4730929 0.04504542 -0.5613803 -0.3848055
    psi_transformed lower_transformed upper_transformed
-1:      -0.4694133        -0.5558716        -0.3829549</code></pre>
+1:      -0.4730929        -0.5613803        -0.3848055</code></pre>
 <hr />
 </div>
 <div id="exercises-2" class="section level2">
