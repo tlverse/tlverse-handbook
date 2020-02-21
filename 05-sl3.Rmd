@@ -233,14 +233,14 @@ the package (e.g. `devtools::install_github(tlverse/sl3@devel)`), re-start your
 `R` session, and then re-load the `sl3` package. 
 
 ```{r setup, message=FALSE, warning=FALSE}
-library(here)
 library(data.table)
-library(knitr)
-library(kableExtra)
 library(tidyverse)
 library(origami)
 library(SuperLearner)
 library(sl3)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
 
 set.seed(7194) 
 # my lucky seed! or is it 9174? or 4917? many lucky seeds, thanks lysdexia!
@@ -447,7 +447,7 @@ learner.
 fancy_stack <- make_learner(Stack, screen_rf_pipeline, stack)
 # we can visualize the stack
 dt_stack <- delayed_learner_train(fancy_stack, washb_task)
-plot(dt_stack, color = FALSE, height = "400px", width = "100%")
+plot(dt_stack, color = FALSE, height = "400px", width = "90%")
 ```
 
 We will use the [default 
@@ -488,7 +488,7 @@ represent the 10 cross-validation folds and there is a separate hold-out
 
 ```{r make-sl-plot, message=FALSE, warning=FALSE}
 dt_sl <- delayed_learner_train(sl, washb_task)
-plot(dt_sl, color = FALSE, height = "400px", width = "100%")
+plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 ```
 
 ### 3. Train the Super Learner on the machine learning task {-}
@@ -571,7 +571,7 @@ washb_task_new <- make_sl3_Task(
   data = washb_data,
   covariates = covars,
   outcome = outcome,
-  folds = make_folds(washb_data, fold_fun = folds_vfold, V = 2)
+  folds = origami::make_folds(washb_data, fold_fun = folds_vfold, V = 2)
 )
 CVsl <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
 CVsl %>%
@@ -613,6 +613,14 @@ washb_varimp %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
+
+# plot variable importance
+washb_varimp %>%
+  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
+  ggplot(aes(x = risk_diff, y = name)) +
+  geom_dotplot(binaxis = "y") +
+  labs(x = "Risk Difference", y = "Covariate", 
+       title = "sl3 Variable Importance for WASH Benefits Example Data")
 ```
 <!-- Explain summary!!!! -->
 
@@ -642,7 +650,7 @@ head(chspred) %>%
    not consider BART or HAL). Customize hyperparameters for one of your
    learners. Feel free to use learners from `sl3` or `SuperLearner`. You may
    use the same base learning library that is presented above.
-3. Incorporate feature selection with the `SuperLearner` screener `screen.corP`.
+3. Incorporate feature selection with the screener `screen.corP`.
 4. Fit the metalearning step with the default metalearner.
 5. With the metalearner and base learners, make the Super Learner and train it
    on the task.
@@ -650,6 +658,8 @@ head(chspred) %>%
 7. Cross-validate your Super Learner fit to see how well it performs on unseen
    data. Specify `loss_squared_error` as the loss function to evaluate the
    Super Learner.
+8. Use the `varimp()` function to identify the most important predictor of     
+   myocardial infarction. 
 
 ### Predicting Recurrent Ischemic Stroke in an RCT with `sl3` {#sl3ex2}
 
@@ -664,9 +674,9 @@ handbook](https://tlverse.org/tlverse-handbook/data.html#ist).
    occasionally missing, so be sure to specify `drop_missing_outcome = TRUE` 
    when defining the task.
 2. Use the SL-based predictions to calculate the area under the ROC curve (AUC).
-3. Calculate the cross-validated AUC with cross-validated SL-based predictions. 
-   If you would like to decrease the number of outer cross-validation folds, 
-   then specify the task as described below for 5 outer folds. 
+3. Calculate the cross-validated AUC to evaluate the performance of the 
+   Super Learner on unseen data. 
+4. Which covariates are most predictive of 14-day recurrent stroke?
 
 ```{r ex-setup2, warning=FALSE, message=FALSE}
 ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
@@ -677,7 +687,7 @@ ist_task_CVsl <- make_sl3_Task(
   outcome = "DRSISC",
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE,
-  folds = make_folds(
+  folds = origami::make_folds(
     n = sum(!is.na(ist_data$DRSISC)), 
     fold_fun = folds_vfold,
     V = 5
@@ -905,28 +915,41 @@ both referred to as TMLE.
 
 ### Exercise 1 Solution
 
-Here is a potential solution to the (`sl3` Exercise -- Predicting Myocardial
-Infarction with `sl3`)[@sl3ex].
+Here is a potential solution to the (`sl3` Exercise 1 -- Predicting Myocardial
+Infarction with `sl3`)[@sl3ex1].
 
 ```{r ex-key, eval=FALSE, message=FALSE, warning=FALSE}
+library(sl3)
+library(origami)
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+
+db_data <-
+ url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+chspred <- read_csv(file = db_data, col_names = TRUE)
+
 # make task
 chspred_task <- make_sl3_Task(
   data = chspred,
   covariates = head(colnames(chspred), -1),
   outcome = "mi"
-)
+  )
 
 # make learners
 glm_learner <- Lrnr_glm$new()
 lasso_learner <- Lrnr_glmnet$new(alpha = 1)
 ridge_learner <- Lrnr_glmnet$new(alpha = 0)
 enet_learner <- Lrnr_glmnet$new(alpha = 0.5)
-curated_glm_learner <- Lrnr_glm_fast$new(formula = "mi ~ smoke + beta + waist")
+# curated_glm_learner uses formula = "mi ~ smoke + beta + waist"
+curated_glm_learner <- Lrnr_glm_fast$new(covariates = c("smoke, beta, waist"))
 mean_learner <- Lrnr_mean$new() # That is one mean learner!
 glm_fast_learner <- Lrnr_glm_fast$new()
 ranger_learner <- Lrnr_ranger$new()
 svm_learner <- Lrnr_svm$new()
 xgb_learner <- Lrnr_xgboost$new()
+
+# screening
 screen_cor <- make_learner(Lrnr_screener_corP)
 glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
 
@@ -937,30 +960,106 @@ stack <- make_learner(
   lasso_learner, ridge_learner, enet_learner,
   curated_glm_learner, mean_learner, glm_fast_learner,
   ranger_learner, svm_learner, xgb_learner
-)
+  )
 
-# choose metalearner
-metalearner <- make_learner(Lrnr_nnls)
-
+# make and train super learner
 sl <- Lrnr_sl$new(
-  learners = stack,
-  metalearner = metalearner
-)
+  learners = stack
+  )
 sl_fit <- sl$train(chspred_task)
 sl_fit$print()
 
 CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
 CVsl
+
+importance <- varimp(sl_fit, loss_squared_error)
+importance %>%
+  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
+  ggplot(aes(x = risk_diff, y = name)) +
+  geom_dotplot(binaxis = "y") +
+  labs(x = "Risk Difference", y = "Covariate", 
+       title = "sl3 Variable Importance for Myocardian Infarction Prediction")
+  
+```
+
+### Exercise 2 Solution
+
+Here is a potential solution to the (`sl3` Exercise 2 -- Predicting Recurrent Ischemic Stroke in an RCT with `sl3`)[@sl3ex2].
+
+```{r ex2-key, eval=FALSE}
+library(sl3)
+library(origami)
+library(data.table)
+library(tidyverse)
+library(ROCR) # for AUC calculation
+library(ggplot2)
+
+ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+
+# stack
+ist_task <- make_sl3_Task(
+  data = ist_data,
+  outcome = "DRSISC",
+  covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
+  drop_missing_outcome = TRUE
+  )
+
+# learner library
+lrnr_glm <- Lrnr_glm$new()
+lrnr_lasso <- Lrnr_glmnet$new(alpha = 1)
+lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
+lrnr_enet <- Lrnr_glmnet$new(alpha = 0.5)
+lrnr_mean <- Lrnr_mean$new() 
+lrnr_ranger <- Lrnr_ranger$new()
+lrnr_svm <- Lrnr_svm$new()
+# xgboost grid
+grid_params <- list(max_depth = c(2, 5, 8),
+                    eta = c(0.01, 0.15, 0.3))
+grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
+params_default <- list(nthread = getOption("sl.cores.learners", 1))
+xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
+  do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))})
+learners <- unlist(list(xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso, 
+                        lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm), 
+                   recursive = TRUE)
+
+# super learner
+sl <- Lrnr_sl$new(learners)
+sl_fit <- sl$train(ist_task)
+
+# AUC
+preds <- sl_fit$predict()
+obs <- c(na.omit(ist_data$DRSISC))
+AUC <- performance(prediction(sl_preds, obs), measure = "auc")@y.values[[1]]
+plot(performance(prediction(sl_preds, obs), "tpr", "fpr"))
+
+# CVsl
+ist_task_CVsl <- make_sl3_Task(
+  data = ist_data,
+  outcome = "DRSISC",
+  covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
+  drop_missing_outcome = TRUE,
+  folds = origami::make_folds(
+    n = sum(!is.na(ist_data$DRSISC)), 
+    fold_fun = folds_vfold,
+    V = 5
+    )
+  )
+CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
+CVsl
+
+# sl3 variable importance plot
+importance <- varimp(sl_fit, loss_loglik_binomial)
+
+importance %>%
+  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
+  ggplot(aes(x = risk_diff, y = name)) +
+  geom_dotplot(binaxis = "y") +
+  labs(x = "Risk Difference", y = "Covariate", 
+       title = "sl3 Variable Importance for Predicting Recurrent Ischemic Stroke")
 ```
 
 <!--
-### Exercise 2 Solution
-
-Here's a potential solution to (Exercise 2)[@sl3ex2].
-
-```{r ex2-key, eval=FALSE}
-
-```
 ### Exercise 3 Solution
 
 Here's a potential solution to the (Exercise 3)[@sl3ex3].
