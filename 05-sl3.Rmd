@@ -242,12 +242,13 @@ library(ggplot2)
 library(knitr)
 library(kableExtra)
 
-set.seed(7194) 
+set.seed(7194)
 # my lucky seed! or is it 9174? or 4917? many lucky seeds, thanks lysdexia!
 
 # load data set and take a peek
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
+  stringsAsFactors = TRUE
+)
 head(washb_data) %>%
   kable(digits = 4) %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
@@ -359,23 +360,29 @@ Here is a fun trick to create customized learners over a grid of parameters.
 
 ```{r extra-lrnr-mindblown-svm, eval = FALSE}
 # I like to crock pot my super learners
-grid_params <- list(cost = c(0.01, 0.1, 1, 10, 100, 1000),
-                    gamma = c(0.001, 0.01, 0.1, 1),
-                    kernel = c("polynomial", "radial", "sigmoid"),
-                    degree = c(1, 2, 3))
+grid_params <- list(
+  cost = c(0.01, 0.1, 1, 10, 100, 1000),
+  gamma = c(0.001, 0.01, 0.1, 1),
+  kernel = c("polynomial", "radial", "sigmoid"),
+  degree = c(1, 2, 3)
+)
 grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
 params_default <- list(nthread = getOption("sl.cores.learners", 1))
 svm_learners <- apply(grid, MARGIN = 1, function(params_tune) {
-  do.call(Lrnr_svm$new, c(params_default, as.list(params_tune)))})
+  do.call(Lrnr_svm$new, c(params_default, as.list(params_tune)))
+})
 ```
 ```{r extra-lrnr-mindblown-xgboost}
-grid_params <- list(max_depth = c(2, 4, 6, 8),
-                    eta = c(0.001, 0.01, 0.1, 0.2, 0.3),
-                    nrounds = c(20, 50))
+grid_params <- list(
+  max_depth = c(2, 4, 6, 8),
+  eta = c(0.001, 0.01, 0.1, 0.2, 0.3),
+  nrounds = c(20, 50)
+)
 grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
 params_default <- list(nthread = getOption("sl.cores.learners", 1))
 xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
-  do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))})
+  do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))
+})
 ```
 
 Did you see `Lrnr_caret` when we called `sl3_list_learners(c("binomial"))`? 
@@ -386,11 +393,13 @@ metric to used to select the optimal model is `RMSE` for continuous outcomes
 and `Accuracy` for categorical and binomial outcomes.
 
 ```{r carotene, eval = FALSE}
-# I have no idea how to tune a neural net (or BART machine..) 
+# I have no idea how to tune a neural net (or BART machine..)
 lrnr_caret_nnet <- make_learner(Lrnr_caret, algorithm = "nnet")
-lrnr_caret_bartMachine <- make_learner(Lrnr_caret, algorithm = "bartMachine", 
-                                       method = "boot", metric = "Accuracy",
-                                       tuneLength = 10)
+lrnr_caret_bartMachine <- make_learner(Lrnr_caret,
+  algorithm = "bartMachine",
+  method = "boot", metric = "Accuracy",
+  tuneLength = 10
+)
 ```
 
 In order to assemble the library of learners, we need to **"stack"** them
@@ -523,15 +532,19 @@ main terms linear regression.
 
 ```{r, plot-predvobs-woohoo}
 
-df_plot <- data.frame(Observed = washb_data$whz, 
-                      Predicted = sl_preds,
-                      count = c(1:nrow(washb_data)))
-                      
-df_plot_melted <- melt(df_plot, 
-                       id.vars = "count", 
-                       measure.vars = c("Observed", "Predicted"))
+df_plot <- data.frame(
+  Observed = washb_data$whz,
+  Predicted = sl_preds,
+  count = c(1:nrow(washb_data))
+)
 
-ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point() 
+df_plot_melted <- melt(df_plot,
+  id.vars = "count",
+  measure.vars = c("Observed", "Predicted")
+)
+
+ggplot(df_plot_melted, aes(value, count, color = variable)) +
+  geom_point()
 ```
 -->
 We can also obtain a summary of the results.
@@ -574,12 +587,14 @@ washb_task_new <- make_sl3_Task(
   folds = origami::make_folds(washb_data, fold_fun = folds_vfold, V = 2)
 )
 CVsl <- CV_lrnr_sl(sl_fit, washb_task_new, loss_squared_error)
-CVsl %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+
+# NOTE: kable doesn't work with PDF formatting
+# CVsl %>%
+#  kable(digits = 4) %>%
+#  kableExtra:::kable_styling(fixed_thead = T) %>%
+#  scroll_box(width = "100%", height = "300px")
 ```
-<!-- Explain summary!!!! -->
+<!-- TODO: Explain summary!!!! -->
 
 ## Variable Importance Measures with `sl3`
 
@@ -609,10 +624,12 @@ Let's explore the `sl3` variable importance measurements for the `washb` data.
 
 ```{r varimp}
 washb_varimp <- varimp(sl_fit, loss_squared_error)
-washb_varimp %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+
+# NOTE: kable doesn't work with PDF formatting
+# washb_varimp %>%
+#  kable(digits = 4) %>%
+#  kableExtra:::kable_styling(fixed_thead = T) %>%
+#  scroll_box(width = "100%", height = "300px")
 ```
 
 ```{r varimp-plot, warning = FALSE, message = FALSE}
@@ -621,8 +638,10 @@ washb_varimp %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
-       title = "sl3 Variable Importance for WASH Benefits Example Data")
+  labs(
+    x = "Risk Difference", y = "Covariate",
+    title = "sl3 Variable Importance for WASH Benefits Example Data"
+  )
 ```
 <!-- Explain summary!!!! -->
 
@@ -637,13 +656,15 @@ making the this Cardiovascular Health Study (CHS) data accessible.
 ```{r ex-setup, warning=FALSE, message=FALSE}
 # load the data set
 db_data <-
- url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
+
+# NOTE: kable doesn't work with PDF formatting
 # take a quick peek
-head(chspred) %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
+# head(chspred) %>%
+#  kable(digits = 4) %>%
+#  kableExtra:::kable_styling(fixed_thead = T) %>%
+#  scroll_box(width = "100%", height = "300px")
 ```
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
@@ -691,11 +712,11 @@ ist_task_CVsl <- make_sl3_Task(
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE,
   folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)), 
+    n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
-    )
   )
+)
 ```
 
 <!--
@@ -704,12 +725,11 @@ ist_task_CVsl <- make_sl3_Task(
 ### Super learning of a conditional density
 
 Suppose we want to construct a Super Learner of the conditional probability
-distribution $g_0(a\mid W)=P_0(A=a\mid W)$, where $a\in {\cal A}$.
-Let's denote the values of $a$ with $\{0,1,\ldots,K\}$. A valid loss function
-for the conditional density is
-\[
-L(g)(O)=-\log g(A\mid W).\]
-That is, $g_0=\arg\min_g P_0L(g)$, i.e., $g_0$ is the minimizer of the
+$g_0(a\mid W)=P_0(A=a\mid W)$, where $a\in {\cal A}$. Let's denote the values of
+$a$ with $\{0, 1, \ldots, K\}$. A valid loss function for the conditional
+density is
+$L(g)(O) = -\log g(A\mid W).$
+That is, $g_0 = \arg\min_g P_0L(g)$, i.e., $g_0$ is the minimizer of the
 expectation of the log-likelihood loss.
 
 **Candidate estimators**
@@ -787,7 +807,7 @@ estimator of $\lambda_0(a\mid W)$ for each $a$ (i.e., stratify by $s$ in the
 as pooled (across levels) based logistic regression estimators.
 
 
-## Exercise 2 -- Estimating the Propensity Score with `sl3` {#sl3ex2}
+## Exercise 2 -- Estimating the Propensity Score with `sl3` {#sl3ex3}
 
 exercise where we can look at positivity and maybe modify target population,
 address issues related to this
@@ -824,7 +844,7 @@ the split $B_n$ of the training sample and the empirical distribution of the
 validation sample is $P_{n,B_n}^1$.
 * Super-learner of optimal rule $\psi_0$: $\hat{\Psi}_{k_n}(P_n)$.
 
-## Exercise 3 -- Estimating the Blip {#sl3ex3}
+## Exercise 3 -- Estimating the Blip {#sl3ex4}
 
 -->
 
@@ -918,7 +938,8 @@ both referred to as TMLE.
 
 ### Exercise 1 Solution
 
-Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial Infarction with `sl3`](#sl3ex1).
+Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
+Infarction with `sl3`](#sl3ex1).
 
 ```{r ex-key, eval=FALSE, message=FALSE, warning=FALSE}
 library(sl3)
@@ -928,7 +949,7 @@ library(tidyverse)
 library(ggplot2)
 
 db_data <-
- url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
 
 # make task
@@ -936,7 +957,7 @@ chspred_task <- make_sl3_Task(
   data = chspred,
   covariates = head(colnames(chspred), -1),
   outcome = "mi"
-  )
+)
 
 # make learners
 glm_learner <- Lrnr_glm$new()
@@ -962,12 +983,12 @@ stack <- make_learner(
   lasso_learner, ridge_learner, enet_learner,
   curated_glm_learner, mean_learner, glm_fast_learner,
   ranger_learner, svm_learner, xgb_learner
-  )
+)
 
 # make and train super learner
 sl <- Lrnr_sl$new(
   learners = stack
-  )
+)
 sl_fit <- sl$train(chspred_task)
 sl_fit$print()
 
@@ -979,14 +1000,16 @@ importance %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
-       title = "sl3 Variable Importance for Myocardian Infarction Prediction")
-  
+  labs(
+    x = "Risk Difference", y = "Covariate",
+    title = "sl3 Variable Importance for Myocardian Infarction Prediction"
+  )
 ```
 
 ### Exercise 2 Solution
 
-Here is a potential solution to the [`sl3` Exercise 2 -- Predicting Recurrent Ischemic Stroke in an RCT with `sl3`](#sl3ex2).
+Here is a potential solution to the [`sl3` Exercise 2 -- Predicting Recurrent
+Ischemic Stroke in an RCT with `sl3`](#sl3ex2).
 
 ```{r ex2-key, eval=FALSE}
 library(sl3)
@@ -1004,26 +1027,32 @@ ist_task <- make_sl3_Task(
   outcome = "DRSISC",
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE
-  )
+)
 
 # learner library
 lrnr_glm <- Lrnr_glm$new()
 lrnr_lasso <- Lrnr_glmnet$new(alpha = 1)
 lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
 lrnr_enet <- Lrnr_glmnet$new(alpha = 0.5)
-lrnr_mean <- Lrnr_mean$new() 
+lrnr_mean <- Lrnr_mean$new()
 lrnr_ranger <- Lrnr_ranger$new()
 lrnr_svm <- Lrnr_svm$new()
 # xgboost grid
-grid_params <- list(max_depth = c(2, 5, 8),
-                    eta = c(0.01, 0.15, 0.3))
+grid_params <- list(
+  max_depth = c(2, 5, 8),
+  eta = c(0.01, 0.15, 0.3)
+)
 grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
 params_default <- list(nthread = getOption("sl.cores.learners", 1))
 xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
-  do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))})
-learners <- unlist(list(xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso, 
-                        lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm), 
-                   recursive = TRUE)
+  do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))
+})
+learners <- unlist(list(
+  xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso,
+  lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm
+),
+recursive = TRUE
+)
 
 # super learner
 sl <- Lrnr_sl$new(learners)
@@ -1042,11 +1071,11 @@ ist_task_CVsl <- make_sl3_Task(
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE,
   folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)), 
+    n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
-    )
   )
+)
 CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 CVsl
 
@@ -1057,8 +1086,10 @@ importance %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
-       title = "sl3 Variable Importance for Predicting Recurrent Ischemic Stroke")
+  labs(
+    x = "Risk Difference", y = "Covariate",
+    title = "sl3 Variable Importance for Predicting Recurrent Ischemic Stroke"
+  )
 ```
 
 <!--

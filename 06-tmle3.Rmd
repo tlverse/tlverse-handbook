@@ -161,7 +161,8 @@ library(tidyverse)
 library(tmle3)
 library(sl3)
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
+  stringsAsFactors = TRUE
+)
 ```
 
 ### Define the variable roles
@@ -241,12 +242,18 @@ lrnr_xgboost <- make_learner(Lrnr_xgboost)
 
 # define metalearners appropriate to data types
 ls_metalearner <- make_learner(Lrnr_nnls)
-mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial,
-                               loss_loglik_multinomial)
-sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
-                    metalearner = ls_metalearner)
-sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
-                    metalearner = mn_metalearner)
+mn_metalearner <- make_learner(
+  Lrnr_solnp, metalearner_linear_multinomial,
+  loss_loglik_multinomial
+)
+sl_Y <- Lrnr_sl$new(
+  learners = list(lrnr_mean, lrnr_xgboost),
+  metalearner = ls_metalearner
+)
+sl_A <- Lrnr_sl$new(
+  learners = list(lrnr_mean, lrnr_xgboost),
+  metalearner = mn_metalearner
+)
 learner_list <- list(A = sl_A, Y = sl_Y)
 ```
 
