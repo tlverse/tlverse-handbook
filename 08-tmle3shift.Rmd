@@ -250,7 +250,7 @@ give a recipe:
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-```{r, fig.cap="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention", echo=FALSE, eval=TRUE, out.width='60%'}
+```{r, eval=FALSE, fig.cap="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention", echo=FALSE, eval=TRUE, out.width='60%'}
 knitr::include_graphics(path = "img/gif/shift_animation.gif")
 ```
 
@@ -303,9 +303,10 @@ sl3_list_learners("density")
 To proceed, we'll select two of the above learners, `Lrnr_haldensify` for using
 the highly adaptive lasso for conditional density estimation, based on an
 algorithm given by @diaz2011super and implemented in @hejazi2019haldensify, and
-`Lrnr_rfcde`, an approach for using random forests for conditional density
-estimation [@pospisil2018rfcde]. A Super Learner may be constructed by pooling
-estimates from each of these modified conditional density regression techniques.
+`Lrnr_density_semiparametric`, a semiparametric approach that assumes a normal
+distribution and estimates moments (either the mean or the mean and variance) of
+that distribution using arbitrary learning algorithms. A Super Learner may be
+constructed by pooling estimates from each of these approaches.
 
 ```{r sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
 # learners used for conditional density regression (i.e., propensity score)
@@ -313,12 +314,15 @@ lrn_haldensify <- Lrnr_haldensify$new(
   n_bins = 5, grid_type = "equal_mass",
   lambda_seq = exp(seq(-1, -13, length = 500))
 )
-lrn_rfcde <- Lrnr_rfcde$new(
-  n_trees = 1000, node_size = 5,
-  n_basis = 31, output_type = "observed"
+lrn_hse_hal <- Lrnr_density_semiparametric$new(
+  mean_learner = Lrnr_hal9001$new()
+)
+lrn_mvd_hal <- Lrnr_density_semiparametric$new(
+  mean_learner = Lrnr_hal9001$new(),
+  var_learner = Lrnr_hal9001$new()
 )
 sl_lrn_dens <- Lrnr_sl$new(
-  learners = list(lrn_haldensify, lrn_rfcde),
+  learners = list(lrn_haldensify, lrn_hse_hal, lrn_mvd_hal),
   metalearner = Lrnr_solnp_density$new()
 )
 ```
@@ -699,26 +703,26 @@ washb_vim_spec <- tmle_vimshift_delta(
 
 Prior to running our analysis, we'll modify the `learner_list` object we had
 created such that the density estimation procedure we rely on will be only the
-random forest conditional density estimation procedure of @pospisil2018rfcde, as
-the nonparametric conditional density approach based on the highly adaptive
-lasso [@diaz2011super; @benkeser2016hal; @coyle2018hal9001;
-@hejazi2019haldensify] is currently unable to accommodate large datasets.
+one of the semiparametric conditional density estimation procedures, as the
+nonparametric conditional density approach based on the highly adaptive lasso
+[@diaz2011super; @benkeser2016hal; @coyle2018hal9001; @hejazi2019haldensify] is
+currently unable to accommodate large datasets.
 
 ```{r sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE}
 # learners used for conditional density regression (i.e., propensity score)
-lrn_rfcde <- Lrnr_rfcde$new(
-  n_trees = 250, node_size = 5,
-  n_basis = 20, output_type = "observed"
+lrn_mvd_hal <- Lrnr_density_semiparametric$new(
+  mean_learner = Lrnr_hal9001$new(),
+  var_learner = Lrnr_hal9001$new()
 )
 
 # we need to turn on cross-validation for the RFCDE learner
-lrn_cv_rfcde <- Lrnr_cv$new(
-  learner = lrn_rfcde,
+lrn_cv_mvd_hal <- Lrnr_cv$new(
+  learner = lrn_mvd_hal,
   full_fit = TRUE
 )
 
 # modify learner list, using existing SL for Q fit
-learner_list <- list(Y = sl_lrn, A = lrn_cv_rfcde)
+learner_list <- list(Y = sl_lrn, A = lrn_cv_mvd_hal)
 ```
 
 Having made the above preparations, we're now ready to estimate the

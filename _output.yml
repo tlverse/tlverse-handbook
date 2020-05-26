@@ -2,24 +2,32 @@ bookdown::gitbook:
   css: [css/style.css, css/toc.css, css/center.css]
   config:
     toc:
+      collapse: none
       before: |
         <li><a href="./">The Hitchhiker's Guide to the tlverse</a></li>
       after: |
         <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
-    edit:
-      link: https://github.com/tlverse/tlverse-handbook/edit/master/%s
+    edit: https://github.com/tlverse/tlverse-handbook/edit/master/%s
     sharing:
-      github: yes
-      facebook: no
-  includes:
-    in_header: _includes/analytics.html
-    #[_includes/analytics.html, _includes/logo.html]
-bookdown::html_chapters:
-  css: [css/style.css, css/toc.css]
+      github: true
+      facebook: false
 bookdown::pdf_book:
   includes:
-    in_header: preamble.tex
+    in_header: latex/preamble.tex
+    before_body: latex/before_body.tex
+    after_body: latex/after_body.tex
+  keep_tex: yes
+  #dev: "cairo_pdf"
   latex_engine: xelatex
   citation_package: natbib
-  keep_tex: yes
-bookdown::epub_book: default
+  template: null
+  pandoc_args: --top-level-division=chapter
+  toc_depth: 3
+  toc_unnumbered: false
+  toc_appendix: true
+  quote_footer: ["\\VA{", "}{}"]
+  highlight_bw: true
+bookdown::html_chapters:
+  css: [css/style.css, css/toc.css]
+bookdown::epub_book:
+  stylesheet: css/style.css
