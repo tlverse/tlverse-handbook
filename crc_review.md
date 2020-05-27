@@ -16,12 +16,12 @@
 
 2. Names, titles, affiliations, and email addresses for all authors/editors
 
-  * Mark van der Laan, UC Berkeley, laan@berkeley.edu
-  * Alan Hubbard, UC Berkeley, hubbard@berkeley.edu
-  * Jeremy Coyle, jeremy.coyle@gmail.com
-  * Nima Hejazi, UC Berkeley, nhejazi@berkeley.edu
-  * Ivana Malenica, UC Berkeley, imalenica@berkeley.edu
-  * Rachael Phillips, UC Berkeley, rachaelvphillips@berkeley.edu
+      * Mark van der Laan, UC Berkeley, laan@berkeley.edu
+      * Alan Hubbard, UC Berkeley, hubbard@berkeley.edu
+      * Jeremy Coyle, jeremy.coyle@gmail.com
+      * Nima Hejazi, UC Berkeley, nhejazi@berkeley.edu
+      * Ivana Malenica, UC Berkeley, imalenica@berkeley.edu
+      * Rachael Phillips, UC Berkeley, rachaelvphillips@berkeley.edu
 
 
 ## CONTENTS
@@ -29,19 +29,19 @@
 3. Please include a complete table of contents including chapter and section
     headings.
 
-  1. [Why we need a statistical
-    revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
-  2. The Roadmap and introductory case study: the WASH Beneifits data
-  3. Introduction to the [`tlverse` software ecosystem](https://tlverse.org)
-  4. Cross-validation with the [`origami`](https://github.com/origami) package
-  5. Ensemble machine learning with the [`sl3`](https://github.com/tlverse/sl3)
-     package
-  6. Targeted learning for causal inference with the
-    [`tmle3`](https://github.com/tlverse/tmle3) package
-  7. Optimal treatments regimes and the
-    [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx) package
-  8. Stochastic treatment regimes and the
-    [`tmle3shift`](https://github.com/tlverse/tmle3shift) package
+    - [Why we need a statistical
+      revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
+    - The Roadmap and introductory case study: the WASH Beneifits data
+    - Introduction to the [`tlverse` software ecosystem](https://tlverse.org)
+    - Cross-validation with the [`origami`](https://github.com/origami) package
+    - Ensemble machine learning with the [`sl3`](https://github.com/tlverse/sl3)
+       package
+    - Targeted learning for causal inference with the
+      [`tmle3`](https://github.com/tlverse/tmle3) package
+    - Optimal treatments regimes and the
+      [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx) package
+    - Stochastic treatment regimes and the
+      [`tmle3shift`](https://github.com/tlverse/tmle3shift) package
 
 
 ## SUBJECT/AUDIENCE
@@ -79,10 +79,10 @@
 
 6. What related books are available and what advantages will your book have?
 
-  * 2011, Targeted Learning: Causal Inference for Observational and
-      Experimental Data (Mark van der Laan and Sherri Rose)
-  * 2018, Targeted Learning in Data Science: Causal Inference for Complex
-      Longitudinal Studies (Mark van der Laan and Sherri Rose)
+    * 2011, Targeted Learning: Causal Inference for Observational and
+        Experimental Data (Mark van der Laan and Sherri Rose)
+    * 2018, Targeted Learning in Data Science: Causal Inference for Complex
+        Longitudinal Studies (Mark van der Laan and Sherri Rose)
 
   The focus of this work is __not__ on providing in-depth technical descriptions
   or in communicating recent developments in state-of-the-art statistical
@@ -108,15 +108,15 @@
     increase the price so black and white should be used unless color is
     essential.
 
-  * Approximate page count: [TO FILL IN]
-  * Color figures are *not* essential to our book.
+    * Approximate page count: [TO FILL IN]
+    * Color figures are *not* essential to our book.
 
 8. When would you hope to be able to submit the final draft of the book to us?
     Will you use Latex, bookdown, or Word? We will supply a style file for
     LaTeX authors and request an unformatted file from Word authors.
 
-  * A final draft of the book should be available by 01 September 2020.
-  * Our book has been prepared using bookdown.
+    * A final draft of the book should be available by 01 September 2020.
+    * Our book has been prepared using bookdown.
 
 
 ## REVIEWS
@@ -144,8 +144,8 @@
       topic may use to search Amazon or the web. Do not repeat words in the
       title as these will already be found.
 
-  * Causal inference, machine learning, applied statistics, statistical
-      computing, statistical software (reproducible research?), biostatistics
+    * Causal inference, machine learning, applied statistics, statistical
+        computing, statistical software (reproducible research?), biostatistics
 
 13. Please select the three most important markets for your book. Other
       categories are available including education, psychology, and economics
