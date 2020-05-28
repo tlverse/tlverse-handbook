@@ -11,7 +11,7 @@
 
 1. Provisional title of your book.
 
-   * The Hitchhiker's Guide to the tlverse: A Targeted Learning Practioner's
+   * The Hitchhiker's Guide to the tlverse: A Targeted Learning Practitioner's
       Handbook
 
 2. Names, titles, affiliations, and email addresses for all authors/editors
@@ -31,7 +31,7 @@
 
     - [Why we need a statistical
       revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
-    - The Roadmap and introductory case study: the WASH Beneifits data
+    - The Roadmap and introductory case study: the WASH Benefits data
     - Introduction to the [`tlverse` software ecosystem](https://tlverse.org)
     - Cross-validation with the [`origami`](https://github.com/origami) package
     - Ensemble machine learning with the [`sl3`](https://github.com/tlverse/sl3)
@@ -184,7 +184,7 @@
 > CMS15-Computer Science & Engineering-Machine Learning and Pattern Recognition
 > CMS18-Computer Science & Engineering-High Performance Computing
 
-*Envirommental Science*
+*Environmental Science*
 > ENV11A-Environmental Science-Environmental & Ecological Risk Assessment
 > ENV12A-Environmental Science-Environmental  Modeling & Systems Analysis
 > ENV13A-Environmental Science-Ecology
