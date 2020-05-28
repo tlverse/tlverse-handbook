@@ -148,7 +148,8 @@
       title as these will already be found.
 
     * Causal inference, machine learning, applied statistics, statistical
-        computing, statistical software (reproducible research?), biostatistics
+        computing, statistical software (reproducible research?), biostatistics,
+        data science, predictive analytics
 
 13. Please select the three most important markets for your book. Other
       categories are available including education, psychology, and economics
