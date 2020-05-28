@@ -115,7 +115,7 @@
     Will you use Latex, bookdown, or Word? We will supply a style file for
     LaTeX authors and request an unformatted file from Word authors.
 
-    * A final draft of the book should be available by 01 September 2020.
+    * A final draft of the book should be available by 01 January 2021.
     * Our book has been prepared using bookdown.
 
 
@@ -125,7 +125,10 @@
      qualified to give an opinion on your proposed book.
 
   [TO FILL IN]
-
+  Ideas for the type of person we'd like to have as a reviewer:
+  1. writer of TMLE software (e.g. Eric Polley, Susan Gruber)
+  2. writer of well-documented / easy-to-use R software 
+  3. applied statistician or data scientist who has worked with TMLE/SL
 
 ## MARKETING
 
