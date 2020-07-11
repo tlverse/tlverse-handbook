@@ -1,4 +1,98 @@
 # One-Step TMLE for Time-to-Event Outcomes
 
 ## Learning Objectives
+1. Use tmle3 to estimate counterfactual marginal survival functions
+
+## Introduction
+
+The first step in the estimation procedure is an initial estimate of the conditional survival function of failure, conditional survival function of censoring and the propensity scores. For this initial estimation, we use the super learner [@vdl2007super], as described in previous sections.
+
+With the initial estimate of relevant parts of the data-generating distribution necessary to evaluate the target parameter, we are ready to construct the one-step TMLE.
+
+## Example
+
+We'll go through an example to illustrate how to estimate the treatment specific survival curve using tmle3.
+
+### Load the Data
+
+```{r}
+# devtools::load_all("../tmle3")
+library(tmle3)
+library(sl3)
+```
+
+```{r}
+vet_data <- read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/veteran.csv")
+vet_data$trt <- vet_data$trt - 1
+# make fewer times for illustration
+vet_data$time <- ceiling(vet_data$time / 20) 
+k_grid <- 1:max(vet_data$time)
+head(vet_data)
+```
+
+The variables in vet_data are * trt: treatment type (0 = standard, 1 = test), * celltype: histological type of the tumor, * time: time to death or censoring in days, * status: censoring status, * karno: Karnofsky performance score that describes overall patient status at the beginning of the study (100 = good), * diagtime: months from diagnosis to randomization, * age: age of patient in years, and * prior: prior therapy (0 = no, 10 = yes).
+
+### Specify right-censored survival data arguments
+
+First, we use function tmle_survival to create a tmle_spec specific for the survival data estimation. To estimate the conditional survival function, we need to estimate the conditional hazard of the failure event, and then transform it into the conditional survival function. The definition of the conditional hazard is
+
+\[\lambda_{N}(t|A, W)=P(N(t)=1|N(t-1)=0, A_c(t-1)=0, A, W)\]
+
+where $N(t)=I(\widetilde{T}\le t, \Delta = 1), A_c(t)=I(\widetilde{T}\le t, \Delta = 0)$. We will transform the original data into the required long format by calling transform_data function of the survival_spec. You will need to speficy W (covariates), A (treatment/intervention), T_tilde (time-to-event vector), Delta (censoring indicator vector), and row ids for the nodelist. 
+
+```{r}
+var_types <- list(T_tilde = Variable_Type$new("continuous"), t = Variable_Type$new("continuous"), Delta = Variable_Type$new("binomial"))
+survival_spec <- tmle_survival(treatment_level = 1, control_level = 0, 
+                                 target_times = intersect(1:10, k_grid),
+                                 variable_types = var_types)
+node_list <- list(W = c("celltype", "karno", "diagtime", "age", "prior"), A = "trt", T_tilde = "time", Delta = "status", id ="X")
+
+long_data_tuple <- survival_spec$transform_data(vet_data, node_list)
+df_long <- long_data_tuple$long_data
+long_node_list <- long_data_tuple$long_node_list
+```
+
+### Obtain initial estimates
+
+We define the learners and tmle_task as described in chapter 5.
+
+```{r}
+lrnr_mean <- make_learner(Lrnr_mean)
+lrnr_glm <- make_learner(Lrnr_glm)
+lrnr_gam <- make_learner(Lrnr_gam)
+sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_glm, lrnr_gam))
+learner_list <- list(A = sl_A, N = sl_A, A_c = sl_A)
+```
+
+```{r}
+tmle_task <- survival_spec$make_tmle_task(df_long, long_node_list)
+initial_likelihood <- survival_spec$make_initial_likelihood(tmle_task, learner_list)
+```
+
+### Perform TMLE adjustment of the initial conditional survival estimate
+
+For the updater, we create a tmle3_Update_survival object. By setting the fit_method to l2, it would execute the one-step TMLE using a logistic ridge regression.
+
+```{r}
+up <- tmle3_Update_survival$new(
+    maxit = 3e1, 
+    cvtmle = TRUE,
+    convergence_type = "scaled_var",
+    delta_epsilon = 1e-2,
+    fit_method = "l2",
+    use_best = TRUE,
+    verbose=FALSE
+  )
+
+targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood, updater = up)
+tmle_params <- survival_spec$make_params(tmle_task, targeted_likelihood)
+tmle_fit_manual <- fit_tmle3(
+  tmle_task, targeted_likelihood, tmle_params,
+  targeted_likelihood$updater
+)
+```
+
+```{r}
+print(tmle_fit_manual)
+```
 
