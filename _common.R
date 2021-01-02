@@ -25,3 +25,6 @@ options(dplyr.print_min = 6, dplyr.print_max = 6)
 knitr::write_bib(c(
   .packages(), "bookdown", "knitr", "rmarkdown"
 ), "packages.bib")
+
+# same seed across chapters
+set.seed(34729)

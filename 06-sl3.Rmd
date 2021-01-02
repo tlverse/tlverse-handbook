@@ -168,29 +168,29 @@ knitr::include_graphics("img/misc/vs.pdf")
     + re-fitting the learners on the original data set, and
     + use the weights above to get the SL fit.
 
-This entire procedure can be itself cross-validated to get a consistent 
-estimate of the future performance of the Super Learner, and we implement this 
-procedure later in this chapter. 
+This entire procedure can be itself cross-validated to get a consistent
+estimate of the future performance of the Super Learner, and we implement this
+procedure later in this chapter.
 
 ```{r cv_fig2, echo = FALSE}
 knitr::include_graphics("img/misc/SLKaiserNew.pdf")
-``` 
+```
 
 ### Super Learner for Prediction
 
-Say we observe a learning data set $X_i=(Y_i,W_i)$, for $i=1, ..., n$, where 
-$Y_i$ is the outcome of interest, $W_i$ is a $p$-dimensional set of 
+Say we observe a learning data set $X_i=(Y_i,W_i)$, for $i=1, ..., n$, where
+$Y_i$ is the outcome of interest, $W_i$ is a $p$-dimensional set of
 covariates, and our objective is to estimate the function $\psi_0(W) = E(Y|W)$.
 This function can be expressed as the minimizer of the expected loss:
-$\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]$. Here, the loss function is 
+$\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]$. Here, the loss function is
 represented as $L$ (e.g., squared error loss, $L: (Y-\psi(W))^2)$).
-  
+
 For prediction, one can use the cross-validated risk to empirically determine
-the relative performance of the Super Learner . When we 
-have tested different algorithms on actual data and looked at the performance 
-(e.g., MSE of prediction), never does one algorithm always win. Below, we show 
-the results of such a study, comparing the fits of several different learners, 
-including the SL algorithms.
+the relative performance of the Super Learner. When we have tested different
+algorithms on actual data and looked at the performance (e.g., MSE of
+prediction), never does one algorithm always win. Below, we show the results of
+such a study, comparing the fits of several different learners, including the SL
+algorithms.
 
 ```{r cv_fig3, echo = FALSE}
 knitr::include_graphics("img/misc/ericSL.pdf")
@@ -200,13 +200,13 @@ For more detail on Super Learner we refer the reader to @vdl2007super and
 @polley2010super. The optimality results for the cross-validation selector
 among a family of algorithms were established in @vdl2003unified and extended
 in @van2006oracle.
-  
+
 ## `sl3` "Microwave Dinner" Implementation
 
 We begin by illustrating the core functionality of the super learner algorithm
-as implemented in `sl3`. For those who are interested in the internals 
-of `sl3`, see this [`sl3` introductory 
-tutorial](https://tlverse.org/sl3/articles/intro_sl3.html). 
+as implemented in `sl3`. For those who are interested in the internals of `sl3`,
+see this [`sl3` introductory
+tutorial](https://tlverse.org/sl3/articles/intro_sl3.html).
 
 The `sl3` implementation consists of the following steps:
 
@@ -219,18 +219,18 @@ The `sl3` implementation consists of the following steps:
 ### WASH Benefits Study Example
 
 Using the WASH data, we are interested in predicting weight-for-height z-score
-`whz` using the available covariate data. More information on this dataset, and 
-all other data that we will work with in this handbook, is contained in 
-[Chapter 3]{#data}. Let's begin!
+`whz` using the available covariate data. More information on this dataset, and
+all other data that we will work with in this handbook, is contained in [Chapter
+3]{#data}. Let's begin!
 
 ### 0. Load the necessary libraries and data {-}
 
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
-If you would like to use newer `sl3` functionality that is available in the 
-devel branch of the `sl3` GitHub repository, you need to install that version of 
-the package (e.g. `devtools::install_github(tlverse/sl3@devel)`), re-start your 
-`R` session, and then re-load the `sl3` package. 
+If you would like to use newer `sl3` functionality that is available in the
+devel branch of the `sl3` GitHub repository, you need to install that version of
+the package (e.g. `devtools::install_github(tlverse/sl3@devel)`), re-start your
+`R` session, and then re-load the `sl3` package.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(data.table)
@@ -241,9 +241,6 @@ library(sl3)
 library(ggplot2)
 library(knitr)
 library(kableExtra)
-
-set.seed(7194) 
-# my lucky seed! or is it 9174? or 4917? many lucky seeds, thanks lysdexia!
 
 # load data set and take a peek
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
@@ -256,18 +253,18 @@ head(washb_data) %>%
 
 ### 1. Define the machine learning task {-}
 
-To define the machine learning **"task"** (predict weight-for-height z-score `whz`
-using the available covariate data), we need to create an `sl3_Task` object. 
+To define the machine learning **"task"** (predict weight-for-height z-score
+`whz` using the available covariate data), we need to create an `sl3_Task`
+object.
 
-The `sl3_Task` keeps track of the roles the variables play in the
-machine learning problem, the data, and any metadata (e.g., observational-level
-weights, id, offset). 
+The `sl3_Task` keeps track of the roles the variables play in the machine
+learning problem, the data, and any metadata (e.g., observational-level weights,
+IDs, offset).
 
-Also, if we had missing outcomes, we would need to set 
-`drop_missing_outcome = TRUE` when we create the task. In the next analysis, 
-with the [IST stroke trial data](#ist), we do have a missing outcome. In the 
-following chapter, we estimate the missingness mechanism and account for it in 
-the TMLE. 
+Also, if we had missing outcomes, we would need to set `drop_missing_outcome =
+TRUE` when we create the task. In the next analysis, with the [IST stroke trial
+data](#ist), we do have a missing outcome. In the following chapter, we estimate
+the missingness mechanism and account for it in the TMLE.
 
 ```{r task}
 # specify the outcome and covariates
@@ -283,11 +280,11 @@ washb_task <- make_sl3_Task(
 ```
 *This warning is important.* The task just imputed missing covariates for us.
 Specifically, for each covariate column with missing values, `sl3` uses the
-median to impute missing continuous covariates, and the mode to impute binary 
-and categorical covariates. 
+median to impute missing continuous covariates, and the mode to impute binary
+and categorical covariates.
 
-Also, for each covariate column with missing values, `sl3` adds an additional 
-column indicating whether or not the value was imputed, which is particularly 
+Also, for each covariate column with missing values, `sl3` adds an additional
+column indicating whether or not the value was imputed, which is particularly
 handy when the missingness in the data might be informative.
 
 Also, notice that we did not specify the number of folds, or the loss function
