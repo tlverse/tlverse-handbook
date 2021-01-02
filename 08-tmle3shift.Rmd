@@ -303,22 +303,28 @@ sl3_list_learners("density")
 To proceed, we'll select two of the above learners, `Lrnr_haldensify` for using
 the highly adaptive lasso for conditional density estimation, based on an
 algorithm given by @diaz2011super and implemented in @hejazi2019haldensify, and
-`Lrnr_rfcde`, an approach for using random forests for conditional density
-estimation [@pospisil2018rfcde]. A Super Learner may be constructed by pooling
-estimates from each of these modified conditional density regression techniques.
+semiparametric location-scale conditional density estimators implemented in the
+[`sl3` package](https://github.com/tlverse/sl3). A Super Learner may be
+constructed by pooling estimates from each of these modified conditional density
+regression techniques.
 
 ```{r sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
 # learners used for conditional density regression (i.e., propensity score)
 lrn_haldensify <- Lrnr_haldensify$new(
   n_bins = 5, grid_type = "equal_mass",
-  lambda_seq = exp(seq(-1, -13, length = 500))
+  lambda_seq = exp(seq(-1, -10, length = 500))
 )
-lrn_rfcde <- Lrnr_rfcde$new(
-  n_trees = 1000, node_size = 5,
-  n_basis = 31, output_type = "observed"
+# semiparametric density estimator based on homoscedastic errors (HOSE)
+lrn_hose <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = fglm_learner
+)
+# semiparametric density estimator based on heteroscedastic errors (HESE)
+lrn_hese <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = xgb_learner,
+  var_learner = fglm_learner
 )
 sl_lrn_dens <- Lrnr_sl$new(
-  learners = list(lrn_haldensify, lrn_rfcde),
+  learners = list(lrn_haldensify, lrn_hose, lrn_hese),
   metalearner = Lrnr_solnp_density$new()
 )
 ```
@@ -698,26 +704,20 @@ washb_vim_spec <- tmle_vimshift_delta(
 
 Prior to running our analysis, we'll modify the `learner_list` object we had
 created such that the density estimation procedure we rely on will be only the
-random forest conditional density estimation procedure of @pospisil2018rfcde, as
-the nonparametric conditional density approach based on the highly adaptive
-lasso [@diaz2011super; @benkeser2016hal; @coyle2018hal9001;
-@hejazi2019haldensify] is currently unable to accommodate large datasets.
+location-scale conditional density estimation procedure, as the nonparametric
+conditional density approach based on the highly adaptive lasso [@diaz2011super;
+@benkeser2016hal; @coyle2018hal9001; @hejazi2019haldensify] is currently unable
+to accommodate larger datasets.
 
 ```{r sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE}
-# learners used for conditional density regression (i.e., propensity score)
-lrn_rfcde <- Lrnr_rfcde$new(
-  n_trees = 250, node_size = 5,
-  n_basis = 20, output_type = "observed"
-)
-
-# we need to turn on cross-validation for the RFCDE learner
-lrn_cv_rfcde <- Lrnr_cv$new(
-  learner = lrn_rfcde,
+# we need to turn on cross-validation for the HOSE learner
+lrn_cv_hose <- Lrnr_cv$new(
+  learner = lrn_hose,
   full_fit = TRUE
 )
 
 # modify learner list, using existing SL for Q fit
-learner_list <- list(Y = sl_lrn, A = lrn_cv_rfcde)
+learner_list <- list(Y = sl_lrn, A = lrn_cv_hose)
 ```
 
 Having made the above preparations, we're now ready to estimate the

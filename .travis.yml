@@ -1,13 +1,23 @@
+branches:
+  only:
+  - master
+
+env:
+  global:
+    - RGL_USE_NULL=TRUE
+
 language: r
 sudo: required
 cache: packages
 warnings_are_errors: true
 
+addons:
+  apt:
+    packages:
+      - libgit2-dev
+
 r:
   - release
-
-before_install:
-  - Rscript -e 'update.packages(ask = FALSE)'
 
 r_packages:
   - devtools
@@ -17,9 +27,6 @@ r_packages:
 r_github_packages:
   - rstudio/bookdown
   - r-lib/sessioninfo
-  - osofr/simcausal
-  - osofr/condensier
-  - tpospisi/RFCDE/r
   - tlverse/hal9001@master
   - tlverse/delayed@master
   - tlverse/origami@master
@@ -36,3 +43,8 @@ before_script:
 script:
   - ./_build.sh
   - test $TRAVIS_BRANCH = "master" && ./_deploy.sh
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
