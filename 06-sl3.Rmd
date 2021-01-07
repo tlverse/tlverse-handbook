@@ -393,10 +393,10 @@ lrnr_caret_bartMachine <- make_learner(Lrnr_caret, algorithm = "bartMachine",
 In order to assemble the library of learners, we need to **"stack"** them
 together.
 
-A `Stack` is a special learner and it has the same interface as all
-other learners. What makes a stack special is that it combines multiple learners
-by training them simultaneously, so that their predictions can be either
-combined or compared.
+A `Stack` is a special learner and it has the same interface as all other
+learners. What makes a stack special is that it combines multiple learners by
+training them simultaneously, so that their predictions can be either combined
+or compared.
 
 ```{r stack}
 stack <- make_learner(
@@ -449,8 +449,9 @@ plot(dt_stack, color = FALSE, height = "400px", width = "90%")
 
 We will use the [default
 metalearner](https://github.com/tlverse/sl3/blob/master/R/default_metalearner.R),
-which uses [`Lrnr_solnp()`](https://github.com/tlverse/sl3/blob/master/R/Lrnr_solnp.R)
-to provide fitting procedures for a pairing of [loss
+which uses
+[`Lrnr_solnp()`](https://github.com/tlverse/sl3/blob/master/R/Lrnr_solnp.R) to
+provide fitting procedures for a pairing of [loss
 function](https://github.com/tlverse/sl3/blob/master/R/loss_functions.R) and
 [metalearner
 function](https://github.com/tlverse/sl3/blob/master/R/metalearners.R). This
@@ -518,19 +519,20 @@ include the cross-validated predictions from most popular learner on the block,
 main terms linear regression.
 
 
-```{r, plot-predvobs-woohoo}
+```{r, plot-predvobs-woohoo, eval=FALSE}
 
-df_plot <- data.frame(Observed = washb_data$whz, 
+df_plot <- data.frame(Observed = washb_data$whz,
                       Predicted = sl_preds,
                       count = c(1:nrow(washb_data)))
 
-df_plot_melted <- melt(df_plot, 
-                       id.vars = "count", 
+df_plot_melted <- melt(df_plot,
+                       id.vars = "count",
                        measure.vars = c("Observed", "Predicted"))
 
-ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point() 
+ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 ```
 -->
+
 We can also obtain a summary of the results.
 
 ```{r, sl-summary}
@@ -679,7 +681,8 @@ handbook](https://tlverse.org/tlverse-handbook/data.html#ist).
    according to `sl3` variable importance measures?
 
 ```{r ex-setup2, warning=FALSE, message=FALSE}
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+ist_data <- paste0("https://raw.githubusercontent.com/tlverse/",
+                   "tlverse-handbook/master/data/ist_sample.csv") %>% fread()
 
 # number 3 help
 ist_task_CVsl <- make_sl3_Task(
@@ -870,34 +873,35 @@ rule.
   TMLE.
 
 <!--
-We could just plug-in the estimator returned by Super
-Learner; however, this is problematic because the Super Learner estimators are
-trading off bias and variance in an optimal way and as a result their bias is
-essentially the rate of convergence of these algorithms, which is always slower
-than $1/\sqrt{n}$. Therefore, if we plug-in the estimator returned by super
-learner into the target parameter mapping, we would end up with an
-estimator which has the same bias as what we plugged in, which is greater than
-$1/\sqrt{n}$. Thus, we end up with an estimator which is not asymptotically
-normal, since it does not converge to the estimand at $1/\sqrt{n}$ rate.
+We could just plug-in the estimator returned by Super Learner; however, this is
+problematic because the Super Learner estimators are trading off bias and
+variance in an optimal way and as a result their bias is essentially the rate
+of convergence of these algorithms, which is always slower than $1/\sqrt{n}$.
+Therefore, if we plug-in the estimator returned by super learner into the
+target parameter mapping, we would end up with an estimator which has the same
+bias as what we plugged in, which is greater than $1/\sqrt{n}$. Thus, we end up
+with an estimator which is not asymptotically normal, since it does not
+converge to the estimand at $1/\sqrt{n}$ rate.
 
-An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$), and
-can be written as an empirical mean in first order of a function of the data,
-the influence curve, plus some negligible remainder term. Once an estimator
-is asymptotically linear with an influence curve it’s normally distributed, so
-the standardized estimator converges to a normal distribution with mean 0 and
-variance is the variance of the influence curve. Thus, it is advantageous to
-construct asymptotically linear estimators since they permit formal statistical
-inference. Among the class of regular asymptotically linear estimators, there is
-an optimal estimator which is an efficient estimator, and that’s the one with
-influence curve equal to the canonical gradient of the path-wise derivative of
-the target parameter. The canonical gradient is the direction of the path
-through the data distribution where the parameter is steepest. An estimator is
-efficient if and only if is asymptotically linear with influence curve equal to
-the canonical gradient. One can calculate the canonical gradient with the
-statistical model and the statistical target parameter. Techniques for
-calculating the canonical gradient entail projecting an initial gradient on the
-tangent space of the model at the particular distribution in the model in which
-you want to calculate the canonical gradient.
+An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$),
+and can be written as an empirical mean in first order of a function of the
+data, the influence curve, plus some negligible remainder term. Once an
+estimator is asymptotically linear with an influence curve it’s normally
+distributed, so the standardized estimator converges to a normal distribution
+with mean 0 and variance is the variance of the influence curve. Thus, it is
+advantageous to construct asymptotically linear estimators since they permit
+formal statistical inference. Among the class of regular asymptotically linear
+estimators, there is an optimal estimator which is an efficient estimator, and
+that’s the one with influence curve equal to the canonical gradient of the
+path-wise derivative of the target parameter. The canonical gradient is the
+direction of the path through the data distribution where the parameter is
+steepest. An estimator is efficient if and only if is asymptotically linear
+with influence curve equal to the canonical gradient. One can calculate the
+canonical gradient with the statistical model and the statistical target
+parameter.  Techniques for calculating the canonical gradient entail projecting
+an initial gradient on the tangent space of the model at the particular
+distribution in the model in which you want to calculate the canonical
+gradient.
 
 Now we know what it takes to construct an efficient estimator. Namely, we need
 to construct an estimator which is asymptotically linear with influence curve
@@ -915,7 +919,8 @@ both referred to as TMLE.
 
 ### Exercise 1 Solution
 
-Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial Infarction with `sl3`](#sl3ex1).
+Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
+Infarction with `sl3`](#sl3ex1).
 
 ```{r ex-key, eval=FALSE, message=FALSE, warning=FALSE}
 library(sl3)
@@ -978,12 +983,13 @@ importance %>%
   geom_dotplot(binaxis = "y") +
   labs(x = "Risk Difference", y = "Covariate", 
        title = "sl3 Variable Importance for Myocardian Infarction Prediction")
-  
+
 ```
 
 ### Exercise 2 Solution
 
-Here is a potential solution to the [`sl3` Exercise 2 -- Predicting Recurrent Ischemic Stroke in an RCT with `sl3`](#sl3ex2).
+Here is a potential solution to [`sl3` Exercise 2 -- Predicting Recurrent
+Ischemic Stroke in an RCT with `sl3`](#sl3ex2).
 
 ```{r ex2-key, eval=FALSE}
 library(sl3)
@@ -993,7 +999,8 @@ library(tidyverse)
 library(ROCR) # for AUC calculation
 library(ggplot2)
 
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+ist_data <- paste0("https://raw.githubusercontent.com/tlverse/",
+                   "tlverse-handbook/master/data/ist_sample.csv") %>% fread()
 
 # stack
 ist_task <- make_sl3_Task(
@@ -1018,8 +1025,8 @@ grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
 params_default <- list(nthread = getOption("sl.cores.learners", 1))
 xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
   do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))})
-learners <- unlist(list(xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso, 
-                        lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm), 
+learners <- unlist(list(xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso,
+                        lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm),
                    recursive = TRUE)
 
 # super learner
@@ -1055,7 +1062,7 @@ importance %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
   labs(x = "Risk Difference", y = "Covariate", 
-       title = "sl3 Variable Importance for Predicting Recurrent Ischemic Stroke")
+       title = "Variable Importance for Predicting Recurrent Ischemic Stroke")
 ```
 
 <!--
@@ -1064,6 +1071,6 @@ importance %>%
 Here's a potential solution to the (Exercise 3)[@sl3ex3].
 
 ```{r ex3-key, eval=FALSE}
-
+# TODO
 ```
 -->
