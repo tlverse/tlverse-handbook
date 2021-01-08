@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 9 A Primer on the R6 Class System | Targeted Learning with R</title>
+<title>Chapter 8 Causal Mediation Analysis | Targeted Learning with R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
@@ -43,8 +43,8 @@
 <li><a class="" href="sl3.html"><span class="header-section-number">5</span> Super (Machine) Learning</a></li>
 <li><a class="" href="tmle3.html"><span class="header-section-number">6</span> The TMLE Framework</a></li>
 <li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">7</span> Optimal Individualized Treatment Regimes</a></li>
-<li><a class="" href="causal-mediation-analysis.html"><span class="header-section-number">8</span> Causal Mediation Analysis</a></li>
-<li><a class="active" href="r6.html"><span class="header-section-number">9</span> A Primer on the R6 Class System</a></li>
+<li><a class="active" href="causal-mediation-analysis.html"><span class="header-section-number">8</span> Causal Mediation Analysis</a></li>
+<li><a class="" href="r6.html"><span class="header-section-number">9</span> A Primer on the R6 Class System</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -53,77 +53,81 @@
         </div>
       </nav>
 </div>
-  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="r6" class="section level1">
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="causal-mediation-analysis" class="section level1">
 <h1>
-<span class="header-section-number">9</span> A Primer on the <code>R6</code> Class System<a class="anchor" aria-label="anchor" href="#r6"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8</span> Causal Mediation Analysis<a class="anchor" aria-label="anchor" href="#causal-mediation-analysis"><i class="fas fa-link"></i></a>
 </h1>
-<p>A central goal of the Targeted Learning statistical paradigm is to estimate
-scientifically relevant parameters in realistic (usually nonparametric) models.</p>
-<p>The <code>tlverse</code> is designed using basic OOP principles and the <code>R6</code> OOP framework.
-While we’ve tried to make it easy to use the <code>tlverse</code> packages without worrying
-much about OOP, it is helpful to have some intuition about how the <code>tlverse</code> is
-structured. Here, we briefly outline some key concepts from OOP. Readers
-familiar with OOP basics are invited to skip this section.</p>
-<div id="classes-fields-and-methods" class="section level2">
+<p>Based on the <a href="https://github.com/tlverse/tmle3mediate"><code>tmle3mediate</code> <code>R</code>
+package</a> by <em>Nima Hejazi, James
+Duncan, and David McCoy</em>.</p>
+<p>Updated: 2021-01-08</p>
+<div id="learning-objectives-6" class="section level2">
 <h2>
-<span class="header-section-number">9.1</span> Classes, Fields, and Methods<a class="anchor" aria-label="anchor" href="#classes-fields-and-methods"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-6"><i class="fas fa-link"></i></a>
 </h2>
-<p>The key concept of OOP is that of an object, a collection of data and functions
-that corresponds to some conceptual unit. Objects have two main types of
-elements:</p>
-<ol style="list-style-type: decimal">
-<li>
-<em>fields</em>, which can be thought of as nouns, are information about an object,
-and</li>
-<li>
-<em>methods</em>, which can be thought of as verbs, are actions an object can
-perform.</li>
-</ol>
-<p>Objects are members of classes, which define what those specific fields and
-methods are. Classes can inherit elements from other classes (sometimes called
-base classes) – accordingly, classes that are similar, but not exactly the
-same, can share some parts of their definitions.</p>
-<p>Many different implementations of OOP exist, with variations in how these
-concepts are implemented and used. R has several different implementations,
-including <code>S3</code>, <code>S4</code>, reference classes, and <code>R6</code>. The <code>tlverse</code> uses the <code>R6</code>
-implementation. In <code>R6</code>, methods and fields of a class object are accessed using
-the <code><a href="https://rdrr.io/r/base/Extract.html">$</a></code> operator. For a more thorough introduction to <code>R</code>’s various OOP systems,
-see <a href="http://adv-r.had.co.nz/OO-essentials.html" class="uri">http://adv-r.had.co.nz/OO-essentials.html</a>, from Hadley Wickham’s <em>Advanced
-R</em> <span class="citation">(Wickham <a href="references.html#ref-wickham2014advanced">2014</a>)</span>.</p>
 </div>
-<div id="object-oriented-programming-python-and-r" class="section level2">
+<div id="introduction-to-mediation-analysis" class="section level2">
 <h2>
-<span class="header-section-number">9.2</span> Object Oriented Programming: <code>Python</code> and <code>R</code><a class="anchor" aria-label="anchor" href="#object-oriented-programming-python-and-r"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.2</span> Introduction to Mediation Analysis<a class="anchor" aria-label="anchor" href="#introduction-to-mediation-analysis"><i class="fas fa-link"></i></a>
 </h2>
-<p>OO concepts (classes with inherentence) were baked into Python from the first
-published version (version 0.9 in 1991). In contrast, <code>R</code> gets its OO “approach”
-from its predecessor, <code>S</code>, first released in 1976. For the first 15 years, <code>S</code>
-had no support for classes, then, suddenly, <code>S</code> got two OO frameworks bolted on
-in rapid succession: informal classes with <code>S3</code> in 1991, and formal classes with
-<code>S4</code> in 1998. This process continues, with new OO frameworks being periodically
-released, to try to improve the lackluster OO support in <code>R</code>, with reference
-classes (<code>R5</code>, 2010) and <code>R6</code> (2014). Of these, <code>R6</code> behaves most like Python
-classes (and also most like OOP focused languages like C++ and Java), including
-having method definitions be part of class definitions, and allowing objects to
-be modified by reference.</p>
+<hr>
+</div>
+<div id="data-structure-and-notation-2" class="section level2">
+<h2>
+<span class="header-section-number">8.3</span> Data Structure and Notation<a class="anchor" aria-label="anchor" href="#data-structure-and-notation-2"><i class="fas fa-link"></i></a>
+</h2>
+<p><span class="math inline">\(O = (W, A, Z, Y)\)</span></p>
+</div>
+<div id="exercises-4" class="section level2">
+<h2>
+<span class="header-section-number">8.4</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-4"><i class="fas fa-link"></i></a>
+</h2>
+<div id="review-of-key-concepts-2" class="section level3">
+<h3>
+<span class="header-section-number">8.4.1</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-2"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="the-ideas-in-action-2" class="section level3">
+<h3>
+<span class="header-section-number">8.4.2</span> The Ideas in Action<a class="anchor" aria-label="anchor" href="#the-ideas-in-action-2"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="advanced-topics-2" class="section level3">
+<h3>
+<span class="header-section-number">8.4.3</span> Advanced Topics<a class="anchor" aria-label="anchor" href="#advanced-topics-2"><i class="fas fa-link"></i></a>
+</h3>
+<!--
+## Appendix
+
+### Exercise solutions
+-->
 
 </div>
 </div>
+</div>
   <div class="chapter-nav">
-<div class="prev"><a href="causal-mediation-analysis.html"><span class="header-section-number">8</span> Causal Mediation Analysis</a></div>
-<div class="next"><a href="references.html">References</a></div>
+<div class="prev"><a href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">7</span> Optimal Individualized Treatment Regimes</a></div>
+<div class="next"><a href="r6.html"><span class="header-section-number">9</span> A Primer on the R6 Class System</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#r6"><span class="header-section-number">9</span> A Primer on the R6 Class System</a></li>
-<li><a class="nav-link" href="#classes-fields-and-methods"><span class="header-section-number">9.1</span> Classes, Fields, and Methods</a></li>
-<li><a class="nav-link" href="#object-oriented-programming-python-and-r"><span class="header-section-number">9.2</span> Object Oriented Programming: Python and R</a></li>
+<li><a class="nav-link" href="#causal-mediation-analysis"><span class="header-section-number">8</span> Causal Mediation Analysis</a></li>
+<li><a class="nav-link" href="#learning-objectives-6"><span class="header-section-number">8.1</span> Learning Objectives</a></li>
+<li><a class="nav-link" href="#introduction-to-mediation-analysis"><span class="header-section-number">8.2</span> Introduction to Mediation Analysis</a></li>
+<li><a class="nav-link" href="#data-structure-and-notation-2"><span class="header-section-number">8.3</span> Data Structure and Notation</a></li>
+<li>
+<a class="nav-link" href="#exercises-4"><span class="header-section-number">8.4</span> Exercises</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#review-of-key-concepts-2"><span class="header-section-number">8.4.1</span> Review of Key Concepts</a></li>
+<li><a class="nav-link" href="#the-ideas-in-action-2"><span class="header-section-number">8.4.2</span> The Ideas in Action</a></li>
+<li><a class="nav-link" href="#advanced-topics-2"><span class="header-section-number">8.4.3</span> Advanced Topics</a></li>
+</ul>
+</li>
 </ul>
 
       <div class="book-extra">
         <ul class="list-unstyled">
-<li><a id="book-source" href="https://github.com/tlverse/tlverse-handbook/blob/master/98-r6_primer.Rmd">View source <i class="fab fa-github"></i></a></li>
-          <li><a id="book-edit" href="https://github.com/tlverse/tlverse-handbook/edit/master/98-r6_primer.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+<li><a id="book-source" href="https://github.com/tlverse/tlverse-handbook/blob/master/10-tmle3mediate.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tlverse/tlverse-handbook/edit/master/10-tmle3mediate.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
         </ul>
 </div>
     </nav>
