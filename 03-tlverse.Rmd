@@ -1,6 +1,6 @@
 # Welcome to the `tlverse` {#tlverse}
 
-## Learning Objectives
+## Learning Objectives {-}
 
 1. Understand the `tlverse` ecosystem conceptually
 2. Identify the core components of the `tlverse`
@@ -8,7 +8,7 @@
 4. Understand the Targeted Learning roadmap
 5. Learn about the WASH Benefits example data
 
-## What is the `tlverse`?
+## What is the `tlverse`? {-}
 
 The `tlverse` is a new framework for doing Targeted Learning in R, inspired by
 the [`tidyverse` ecosystem](https://tidyverse.org) of R packages.
@@ -24,7 +24,7 @@ So, the [`tlverse`](https://tlverse.org) is
 * an opinionated collection of R packages for Targeted Learning
 * sharing an underlying philosophy, grammar, and set of data structures
 
-## `tlverse` components
+## Anatomy of the `tlverse` {-}
 
 These are the main packages that represent the **core** of the `tlverse`:
 

@@ -7,7 +7,8 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 
 Updated: `r Sys.Date()`
 
-## Learning Objectives
+## Learning Objectives {-}
+
 By the end of this chapter you will be able to:
 
 1. Select a loss function that is appropriate for the functional parameter to be
@@ -25,7 +26,7 @@ By the end of this chapter you will be able to:
 8. Rationalize the need to remove bias from the Super Learner to make an optimal
    bias–variance tradeoff for the parameter of interest.
 
-## Motivation
+## Motivation {-}
 
 - A common task in statistical data analysis is estimator selection (e.g., for
   prediction).
@@ -40,12 +41,12 @@ By the end of this chapter you will be able to:
 - It works by using cross-validation in a manner which guarantees that the
   resulting fit will be as good as possible, given the learners provided.
 
-## Introduction
+## Introduction {-}
 
-In [Chapter 1](#intro), we introduced the Roadmap for Targeted Learning as a
-general template to translate real-world data applications into formal
-statistical estimation problems. The first steps of this roadmap define the
-*statistical estimation problem*, which establish
+In [Chapter 1](#intro), we introduced the [_Roadmap for Targeted
+Learning_](#roadmap) as a general template to translate real-world data
+applications into formal statistical estimation problems. The first steps of
+this roadmap define the *statistical estimation problem*, which establish
 
 1. Data as a realization of a random variable, or equivalently, an outcome of a
    particular experiment.
@@ -87,7 +88,7 @@ samples [@polley2010super]. The Super Learner is proven to be asymptotically as
 accurate as the best possible prediction algorithm in the library
 [@vdl2003unified; @van2006oracle].
 
-### Background
+### Background {-}
 
 A *loss function* $L$ is defined as a function of the observed data and a
 candidate parameter value $\psi$, which has unknown true value $\psi_0$,
@@ -124,12 +125,12 @@ which is guaranteed in `sl3`.
 The *oracle results* prove that, if the number of algorithms in the library are
 polynomial in sample size, then the cross-validation selector (i.e., discrete
 Super Learner) (1) is equivalent with the oracle selector asymptotically (based
-on sample of size of training samples), or (2) achieves the parametric rate (log
-$n/n$) for convergence with respect to the loss-based dissimilarity (risk)
+on sample of size of training samples), or (2) achieves the parametric rate
+(log $n/n$) for convergence with respect to the loss-based dissimilarity (risk)
 between a candidate estimate $\psi$ and the true parameter value $\psi_0$.
 -->
 
-#### General Overview of the Algorithm
+#### General Overview of the Algorithm {-}
 
 **What is cross-validation and how does it work?**
 
@@ -176,7 +177,7 @@ procedure later in this chapter.
 knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 ```
 
-### Super Learner for Prediction
+### Super Learner for Prediction {-}
 
 Say we observe a learning data set $X_i=(Y_i,W_i)$, for $i=1, ..., n$, where
 $Y_i$ is the outcome of interest, $W_i$ is a $p$-dimensional set of
@@ -201,7 +202,7 @@ For more detail on Super Learner we refer the reader to @vdl2007super and
 among a family of algorithms were established in @vdl2003unified and extended
 in @van2006oracle.
 
-## `sl3` "Microwave Dinner" Implementation
+## `sl3` "Microwave Dinner" Implementation {-}
 
 We begin by illustrating the core functionality of the super learner algorithm
 as implemented in `sl3`. For those who are interested in the internals of `sl3`,
@@ -216,7 +217,7 @@ The `sl3` implementation consists of the following steps:
 3. Train the super learner on the machine learning task
 4. Obtain predicted values
 
-### WASH Benefits Study Example
+### WASH Benefits Study Example {-}
 
 Using the WASH data, we are interested in predicting weight-for-height z-score
 `whz` using the available covariate data. More information on this dataset, and
@@ -253,9 +254,8 @@ head(washb_data) %>%
 
 ### 1. Define the machine learning task {-}
 
-To define the machine learning **"task"** (predict weight-for-height z-score
-`whz` using the available covariate data), we need to create an `sl3_Task`
-object.
+To define the machine learning **"task"** (predict weight-for-height z-score `whz`
+using the available covariate data), we need to create an `sl3_Task` object.
 
 The `sl3_Task` keeps track of the roles the variables play in the machine
 learning problem, the data, and any metadata (e.g., observational-level weights,
@@ -548,7 +548,7 @@ risk, thus making it the cross-validated selector (or the _discrete_ Super
 Learner). The mean risk of the Super Learner is calculated using the hold-out
 set that we visualized in the `dt_sl` plot.
 
-## Cross-validated Super Learner
+## Cross-validated Super Learner {-}
 
 We can cross-validate the Super Learner to see how well the Super Learner
 performs on unseen data, and obtain an estimate of the cross-validated risk of
@@ -580,7 +580,7 @@ CVsl %>%
 ```
 <!-- Explain summary!!!! -->
 
-## Variable Importance Measures with `sl3`
+## Variable Importance Measures with `sl3` {-}
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, we like it, and so do
@@ -625,7 +625,7 @@ washb_varimp %>%
 ```
 <!-- Explain summary!!!! -->
 
-## Exercises
+## Exercises {#sl3-exercises}
 
 ### Predicting Myocardial Infarction with `sl3` {#sl3ex1}
 
@@ -915,9 +915,10 @@ the target parameter. In the chapters that follow, we focus on the targeted
 maximum likelihood estimator and the targeted minimum loss-based estimator,
 both referred to as TMLE.
 -->
-## Appendix
 
-### Exercise 1 Solution
+## Appendix {-}
+
+### Exercise 1 Solution {sl3ex1-sol}
 
 Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
 Infarction with `sl3`](#sl3ex1).
@@ -986,7 +987,7 @@ importance %>%
 
 ```
 
-### Exercise 2 Solution
+### Exercise 2 Solution {sl3ex2-sol}
 
 Here is a potential solution to [`sl3` Exercise 2 -- Predicting Recurrent
 Ischemic Stroke in an RCT with `sl3`](#sl3ex2).
@@ -1066,9 +1067,9 @@ importance %>%
 ```
 
 <!--
-### Exercise 3 Solution
+### Exercise 3 Solution {sl3ex3-sol}
 
-Here's a potential solution to the (Exercise 3)[@sl3ex3].
+Here's a potential solution to the (Exercise 3)[#sl3ex3].
 
 ```{r ex3-key, eval=FALSE}
 # TODO

@@ -9,13 +9,11 @@ if (knitr:::is_latex_output()) {
 options(digits = 7, bookdown.clean_book = TRUE, knitr.kable.NA = "NA")
 
 knitr::opts_chunk$set(
-  tidy = FALSE,
-  out.width = "\textwidth",
-  fig.align = "center",
   comment = "#>",
   collapse = TRUE,
-  out.width = "70%",
-  fig.align = "center"
+  tidy = FALSE,
+  fig.align = "center",
+  out.width = "\\textwidth"
 )
 
 options(dplyr.print_min = 6, dplyr.print_max = 6)
