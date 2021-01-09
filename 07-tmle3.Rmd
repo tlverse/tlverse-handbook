@@ -155,9 +155,8 @@ As a reminder, the ATE is identified with the following statistical parameter
 We'll use the same WASH Benefits data as the earlier chapters:
 
 ```{r tmle3-load-data}
-library(here)
 library(data.table)
-library(tidyverse)
+library(dplyr)
 library(tmle3)
 library(sl3)
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
@@ -166,11 +165,11 @@ washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/mast
 
 ### Define the variable roles
 
-We'll use the common W (covariates), A (treatment/intervention), Y (outcome) data
-structure. `tmle3` needs to know what variables in the dataset correspond to
-each of these roles. We use a list of character vectors to tell it. We call this
-a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph (DAG),
-a way of displaying causal relationships between variables.
+We'll use the common $W$ (covariates), $A$ (treatment/intervention), $Y$ (outcome)
+data structure. `tmle3` needs to know what variables in the dataset correspond
+to each of these roles. We use a list of character vectors to tell it. We call
+this a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph
+(DAG), a way of displaying causal relationships between variables.
 
 ```{r tmle3-node-list}
 node_list <- list(
@@ -433,10 +432,13 @@ age.
 ```{r tmle-exercise-data, message=FALSE, warning=FALSE}
 # load the data set
 data(cpp)
-cpp <- cpp[!is.na(cpp[, "haz"]), ]
-cpp$parity01 <- as.numeric(cpp$parity > 0)
-cpp[is.na(cpp)] <- 0
-cpp$haz01 <- as.numeric(cpp$haz > 0)
+cpp <- cpp %>%
+  as_tibble() %>%
+  dplyr::filter(!is.na(haz)) %>%
+  mutate(
+    parity01 = as.numeric(parity > 0),
+    haz01 = as.numeric(haz > 0)
+  )
 ```
 <!--
 We're interested in using this simplified data to estimate an Average Treatment
@@ -502,13 +504,12 @@ metalearner <- make_learner(Lrnr_solnp,
 
 For this exercise, we will work with a random sample of 5,000 patients who
 participated in the International Stroke Trial (IST). This data is described in
-the [Chapter 3.2 of the `tlverse`
-handbook](https://tlverse.org/tlverse-handbook/data.html#ist). We included the
-data below and a summarized description that is relevant for this exercise.
+the [Chapter 3.2 of the `tlverse` handbook](#ist). We included the data below
+and a summarized description that is relevant for this exercise.
 
 The outcome, $Y$, indicates recurrent ischemic stroke within 14 days after
 randomization (`DRSISC`); the treatment of interest, $A$, is the randomized
-aspirin vs. no aspirin treatment allocation (`RXASP` in  `ist`); and the
+aspirin vs. no aspirin treatment allocation (`RXASP` in `ist`); and the
 adjustment set, $W$, consists simply of other variables measured at baseline. In
 this data, the outcome is occasionally missing, but there is no need to create a
 variable indicating this missingness (such as $\Delta$) for analyses in the
@@ -535,7 +536,7 @@ covariates was created.
    strata specific ATEs according to geographical region (`REGION`).
 
 ```{r tmle3-ex2}
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv"))
+ist_data <- fread("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv")
 ```
 
 ## Summary

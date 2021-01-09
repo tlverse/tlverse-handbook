@@ -3,9 +3,8 @@ knitr::include_graphics("img/misc/TMLEimage.pdf")
 
 
 ## ----tmle3-load-data----------------------------------------------------------
-library(here)
 library(data.table)
-library(tidyverse)
+library(dplyr)
 library(tmle3)
 library(sl3)
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
@@ -142,10 +141,13 @@ print(tmle_fit_multiparam)
 ## ----tmle-exercise-data, message=FALSE, warning=FALSE-------------------------
 # load the data set
 data(cpp)
-cpp <- cpp[!is.na(cpp[, "haz"]), ]
-cpp$parity01 <- as.numeric(cpp$parity > 0)
-cpp[is.na(cpp)] <- 0
-cpp$haz01 <- as.numeric(cpp$haz > 0)
+cpp <- cpp %>%
+  as_tibble() %>%
+  dplyr::filter(!is.na(haz)) %>%
+  mutate(
+    parity01 = as.numeric(parity > 0),
+    haz01 = as.numeric(haz > 0)
+  )
 
 
 ## ---- metalrnr-exercise-------------------------------------------------------
@@ -156,5 +158,5 @@ metalearner <- make_learner(Lrnr_solnp,
 
 
 ## ----tmle3-ex2----------------------------------------------------------------
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv"))
+ist_data <- fread("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv")
 

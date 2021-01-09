@@ -12,11 +12,12 @@ knitr::include_graphics("img/misc/ericSL.pdf")
 
 ## ----setup, message=FALSE, warning=FALSE--------------------------------------
 library(data.table)
-library(tidyverse)
-library(origami)
-library(SuperLearner)
-library(sl3)
+library(dplyr)
+library(readr)
 library(ggplot2)
+library(SuperLearner)
+library(origami)
+library(sl3)
 library(knitr)
 library(kableExtra)
 
@@ -24,7 +25,7 @@ library(kableExtra)
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
                     stringsAsFactors = TRUE)
 head(washb_data) %>%
-  kable(digits = 4) %>%
+  kable() %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
   scroll_box(width = "100%", height = "300px")
 
@@ -146,17 +147,17 @@ sl_preds <- sl_fit$predict()
 head(sl_preds)
 
 
-## ---- plot-predvobs-woohoo----------------------------------------------------
-
-df_plot <- data.frame(Observed = washb_data$whz, 
-                      Predicted = sl_preds,
-                      count = c(1:nrow(washb_data)))
-                      
-df_plot_melted <- melt(df_plot, 
-                       id.vars = "count", 
-                       measure.vars = c("Observed", "Predicted"))
-
-ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point() 
+## ---- plot-predvobs-woohoo, eval=FALSE----------------------------------------
+## 
+## df_plot <- data.frame(Observed = washb_data$whz,
+##                       Predicted = sl_preds,
+##                       count = c(1:nrow(washb_data)))
+## 
+## df_plot_melted <- melt(df_plot,
+##                        id.vars = "count",
+##                        measure.vars = c("Observed", "Predicted"))
+## 
+## ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 
 
 ## ---- sl-summary--------------------------------------------------------------
@@ -208,7 +209,8 @@ head(chspred) %>%
 
 
 ## ----ex-setup2, warning=FALSE, message=FALSE----------------------------------
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+ist_data <- paste0("https://raw.githubusercontent.com/tlverse/",
+                   "tlverse-handbook/master/data/ist_sample.csv") %>% fread()
 
 # number 3 help
 ist_task_CVsl <- make_sl3_Task(
@@ -217,7 +219,7 @@ ist_task_CVsl <- make_sl3_Task(
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE,
   folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)), 
+    n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
     )
@@ -225,12 +227,6 @@ ist_task_CVsl <- make_sl3_Task(
 
 
 ## ----ex-key, eval=FALSE, message=FALSE, warning=FALSE-------------------------
-## library(sl3)
-## library(origami)
-## library(data.table)
-## library(tidyverse)
-## library(ggplot2)
-## 
 ## db_data <-
 ##  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 ## chspred <- read_csv(file = db_data, col_names = TRUE)
@@ -289,14 +285,10 @@ ist_task_CVsl <- make_sl3_Task(
 
 
 ## ----ex2-key, eval=FALSE------------------------------------------------------
-## library(sl3)
-## library(origami)
-## library(data.table)
-## library(tidyverse)
 ## library(ROCR) # for AUC calculation
-## library(ggplot2)
 ## 
-## ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv"))
+## ist_data <- paste0("https://raw.githubusercontent.com/tlverse/",
+##                    "tlverse-handbook/master/data/ist_sample.csv") %>% fread()
 ## 
 ## # stack
 ## ist_task <- make_sl3_Task(
@@ -358,9 +350,9 @@ ist_task_CVsl <- make_sl3_Task(
 ##   ggplot(aes(x = risk_diff, y = name)) +
 ##   geom_dotplot(binaxis = "y") +
 ##   labs(x = "Risk Difference", y = "Covariate",
-##        title = "sl3 Variable Importance for Predicting Recurrent Ischemic Stroke")
+##        title = "Variable Importance for Predicting Recurrent Ischemic Stroke")
 
 
 ## ----ex3-key, eval=FALSE------------------------------------------------------
-## 
+## # TODO
 

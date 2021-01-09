@@ -3,12 +3,10 @@ knitr::include_graphics(path = "img/image/DynamicA_Illustration.png")
 
 
 ## ----setup-mopttx, message=FALSE, warning=FALSE-------------------------------
-library(here)
 library(data.table)
 library(sl3)
 library(tmle3)
 library(tmle3mopttx)
-library(devtools)
 
 
 ## ----load sim_bin_data--------------------------------------------------------

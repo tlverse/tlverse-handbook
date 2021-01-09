@@ -3,21 +3,23 @@ knitr::include_graphics(path = "img/gif/shift_animation.gif")
 
 
 ## ----setup-shift, message=FALSE, warning=FALSE--------------------------------
-library(here)
-library(tidyverse)
 library(data.table)
+library(haldensify)
 library(sl3)
 library(tmle3)
 library(tmle3shift)
 
 
 ## ----sl3_lrnrs-Qfit-shift, message=FALSE, warning=FALSE-----------------------
-# learners used for conditional expectation regression
-lrn_mean <- Lrnr_mean$new()
-lrn_fglm <- Lrnr_glm_fast$new()
-lrn_xgb <- Lrnr_xgboost$new(nrounds = 200)
-sl_lrn <- Lrnr_sl$new(
-  learners = list(lrn_mean, lrn_fglm, lrn_xgb),
+# learners used for conditional mean of the outcome
+mean_lrnr <- Lrnr_mean$new()
+fglm_lrnr <- Lrnr_glm_fast$new()
+rf_lrnr <- Lrnr_ranger$new()
+hal_lrnr <- Lrnr_hal9001$new()
+
+# SL for the outcome regression
+sl_reg_lrnr <- Lrnr_sl$new(
+  learners = list(mean_lrnr, fglm_lrnr, rf_lrnr, hal_lrnr),
   metalearner = Lrnr_nnls$new()
 )
 
@@ -27,28 +29,30 @@ sl3_list_learners("density")
 
 
 ## ----sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE-----------------------
-# learners used for conditional density regression (i.e., propensity score)
-lrn_haldensify <- Lrnr_haldensify$new(
+# learners used for conditional densities (i.e., generalized propensity score)
+haldensify_lrnr <- Lrnr_haldensify$new(
   n_bins = 5, grid_type = "equal_mass",
-  lambda_seq = exp(seq(-1, -10, length = 500))
+  lambda_seq = exp(seq(-1, -10, length = 200))
 )
 # semiparametric density estimator based on homoscedastic errors (HOSE)
-lrn_hose <- make_learner(Lrnr_density_semiparametric,
-  mean_learner = fglm_learner
+hose_hal_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = hal_lrnr
 )
 # semiparametric density estimator based on heteroscedastic errors (HESE)
-lrn_hese <- make_learner(Lrnr_density_semiparametric,
-  mean_learner = xgb_learner,
-  var_learner = fglm_learner
+hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = rf_lrnr,
+  var_learner = fglm_lrnr
 )
-sl_lrn_dens <- Lrnr_sl$new(
-  learners = list(lrn_haldensify, lrn_hose, lrn_hese),
+
+# SL for the conditional treatment density
+sl_dens_lrnr <- Lrnr_sl$new(
+  learners = list(haldensify_lrnr, hose_hal_lrnr, hese_rf_glm_lrnr),
   metalearner = Lrnr_solnp_density$new()
 )
 
 
 ## ----learner-list-shift, message=FALSE, warning=FALSE-------------------------
-learner_list <- list(Y = sl_lrn, A = sl_lrn_dens)
+learner_list <- list(Y = sl_reg_lrnr, A = sl_dens_lrnr)
 
 
 ## ----sim_data, message=FALSE, warning=FALSE-----------------------------------
@@ -76,8 +80,8 @@ head(data)
 # initialize a tmle specification
 tmle_spec <- tmle_shift(
   shift_val = 0.5,
-  shift_fxn = shift_additive_bounded,
-  shift_fxn_inv = shift_additive_bounded_inv
+  shift_fxn = shift_additive,
+  shift_fxn_inv = shift_additive_inv
 )
 
 
@@ -143,13 +147,13 @@ washb_vim_spec <- tmle_vimshift_delta(
 
 ## ----sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE-----------------
 # we need to turn on cross-validation for the HOSE learner
-lrn_cv_hose <- Lrnr_cv$new(
-  learner = lrn_hose,
+cv_hose_hal_lrnr <- Lrnr_cv$new(
+  learner = hose_hal_lrnr,
   full_fit = TRUE
 )
 
 # modify learner list, using existing SL for Q fit
-learner_list <- list(Y = sl_lrn, A = lrn_cv_hose)
+learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
 
 
 ## ----fit_tmle_wrapper_washb_shift, message=FALSE, warning=FALSE, eval=FALSE----
