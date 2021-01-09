@@ -47,12 +47,12 @@ dat
 #> #   asset_tv <dbl>, asset_refrig <dbl>, asset_bike <dbl>, asset_moto <dbl>,
 #> #   asset_sewmach <dbl>, asset_mobile <dbl>
 ```
-For the purposes of this handbook, we start by treating the data as 
-independent and identically distributed (i.i.d.) random draws from a very large 
-target population. We could, with available options, account for the clustering
-of the data (within sampled geographic units), but, for simplification, we 
-avoid these details in the handbook, although modifications of our methodology 
-for biased samples, repeated measures, etc., are available.
+For the purposes of this handbook, we start by treating the data as independent and
+identically distributed (i.i.d.) random draws from a very large target
+population. We could, with available options, account for the clustering of the
+data (within sampled geographic units), but, for simplification, we avoid these
+details in the handbook, although modifications of our methodology for biased
+samples, repeated measures, etc., are available.
 
 We have 28 variables measured, of which 1 variable is set to be the outcome of
 interest. This outcome, $Y$, is the weight-for-height Z-score (`whz` in `dat`);
@@ -61,7 +61,7 @@ the treatment of interest, $A$, is the randomized treatment group (`tr` in
 results in our observed data structure being $n$ i.i.d. copies of $O_i = (W_i,
 A_i, Y_i)$, for $i = 1, \ldots, n$.
 
-Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can 
+Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
 
 
@@ -124,27 +124,26 @@ Table: (\#tab:skim_washb_data)Data summary
 |asset_moto     |         0|          1.00|   0.07|  0.25|   0.00|   0.00|   0.0|   0.00|   1.00|▇▁▁▁▁ |
 |asset_sewmach  |         0|          1.00|   0.06|  0.25|   0.00|   0.00|   0.0|   0.00|   1.00|▇▁▁▁▁ |
 |asset_mobile   |         0|          1.00|   0.86|  0.35|   0.00|   1.00|   1.0|   1.00|   1.00|▁▁▁▁▇ |
-A convenient summary of the relevant variables is given just above, complete 
-with a small visualization describing the marginal characteristics of each 
-covariate. Note that the *asset* variables reflect socio-economic status of the 
-study participants. Notice also the uniform distribution of the treatment groups 
-(with twice as many controls); this is, of course, by design. 
+A convenient summary of the relevant variables is given just above, complete
+with a small visualization describing the marginal characteristics of each
+covariate. Note that the *asset* variables reflect socio-economic status of the
+study participants. Notice also the uniform distribution of the treatment groups
+(with twice as many controls); this is, of course, by design.
 
 ## International Stroke Trial Example Dataset {#ist}
 
-The International Stroke Trial database contains individual patient data
-from the International Stroke Trial (IST), a multi-national randomized trial 
-conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed 
-to assess whether early administration of aspirin, heparin, both aspirin and 
-heparin, or neither influenced the clinical course of acute ischaemic stroke 
-[@sandercock1997international]. The IST dataset includes data on 19,435 patients 
-with acute stroke, with 99\% complete follow-up. De-identified data are 
-available for download at https://datashare.is.ed.ac.uk/handle/10283/128. 
-This study is described in more detail in @sandercock2011international. The 
-example data for this handbook considers a sample of 5,000 patients and the 
-binary outcome of recurrent ischemic stroke within 14 days after randomization. 
-Also in this example data, we ensure that we have subjects with a 
-missing outcome. 
+The International Stroke Trial database contains individual patient data from
+the International Stroke Trial (IST), a multi-national randomized trial
+conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed
+to assess whether early administration of aspirin, heparin, both aspirin and
+heparin, or neither influenced the clinical course of acute ischaemic stroke
+[@sandercock1997international]. The IST dataset includes data on 19,435 patients
+with acute stroke, with 99\% complete follow-up. De-identified data are
+available for download at https://datashare.is.ed.ac.uk/handle/10283/128.  This
+study is described in more detail in @sandercock2011international. The example
+data for this handbook considers a sample of 5,000 patients and the binary
+outcome of recurrent ischemic stroke within 14 days after randomization.  Also
+in this example data, we ensure that we have subjects with a missing outcome.
 
 
 ```r
@@ -168,20 +167,20 @@ ist
 #> #   DRSISC <dbl>
 ```
 
-We have 26 variables measured, and the outcome of interest, $Y$, indicates 
-recurrent ischemic stroke within 14 days after randomization (`DRSISC` in 
-`ist`); the treatment of interest, $A$, is the randomized aspirin vs. no aspirin 
-treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists 
-of all other variables measured at baseline. In this data, the outcome is 
-occasionally missing, but there is no need to create a variable indicating this 
-missingness (such as $\Delta$) for analyses in the `tlverse`, since it is 
-automatically detected when `NA` are present in the outcome. This observed data 
-structure can be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i, 
-\Delta Y_i)$, for $i = 1, \ldots, n$, where $\Delta$ denotes the binary indicator 
-that the outcome is observed.  
+We have 26 variables measured, and the outcome of interest, $Y$, indicates recurrent
+ischemic stroke within 14 days after randomization (`DRSISC` in `ist`); the
+treatment of interest, $A$, is the randomized aspirin vs. no aspirin treatment
+allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists of all
+other variables measured at baseline. In this data, the outcome is occasionally
+missing, but there is no need to create a variable indicating this missingness
+(such as $\Delta$) for analyses in the `tlverse`, since it is automatically
+detected when `NA` are present in the outcome. This observed data structure can
+be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i, \Delta Y_i)$, for
+$i = 1, \ldots, n$, where $\Delta$ denotes the binary indicator that the outcome
+is observed.
 
-Like before, we can summarize the variables measured in the IST sample data 
-set with `skimr`:
+Like before, we can summarize the variables measured in the IST sample data set
+with `skimr`:
 
 
 ```r
@@ -243,7 +242,7 @@ Table: (\#tab:skim_ist_data)Data summary
 
 ## NHANES I Epidemiologic Follow-up Study (NHEFS) {#NHEFS}
 
-This data is from the National Health and Nutrition Examination Survey (NHANES) 
+This data is from the National Health and Nutrition Examination Survey (NHANES)
 Data I Epidemiologic Follow-up Study. More coming soon.
 
 
@@ -276,7 +275,7 @@ NHEFS
 #> #   tax71 <dbl>, tax82 <dbl>, price71_82 <dbl>, tax71_82 <dbl>
 ```
 
-A snapshot of the data set in shown below:
+A snapshot of the data set is shown below:
 
 
 ```r

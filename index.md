@@ -1,10 +1,10 @@
 ---
 knit: "bookdown::render_book"
-title: "Targeted Learning with `R`"
-subtitle: "Causal Data Science in the `tlverse` Software Ecosystem"
+title: "Targeted Learning in R"
+subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "January 08, 2021"
+date: "January 09, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -22,23 +22,21 @@ github-repo: tlverse/tlverse-handbook
 twitter-handle: tlverse
 graphics: yes
 description: "An open source handbook for causal machine learning and data
-  science through the Targeted Learning framework using the [`tlverse` software
+  science with the Targeted Learning framework using the [`tlverse` software
   ecosystem](https://github.com/tlverse)."
 favicon: "img/logos/favicons/favicon.png"
 ---
 
-# Preface {-}
-
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
-     src="img/logos/Rlogo.svg" width="30%" height="30%">
+     src="img/logos/Rlogo.svg" width="35%" height="35%">
 <img style="float: right; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
 
-## About this book {-}
+# About this book {-}
 
 _Targeted Learning in `R`: Causal Data Science with the `tlverse` Software
 Ecosystem_ is an open source, reproducible electronic handbook for applying the
@@ -48,7 +46,7 @@ phase and is available to facilitate input from the community. To view or
 contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
-## Outline {#outline}
+# Outline {#outline}
 
 The contents of this handbook are meant to serve as a reference guide for
 applied research as well as materials that can be taught in a series of short
@@ -62,6 +60,8 @@ interest. The (evolving) set of materials includes
 * The Roadmap and introductory case study: the WASH Beneifits data
 * Introduction to the [`tlverse` software
     ecosystem](https://tlverse.org)
+* Cross-validation with the [`origami`](https://github.com/tlverse/origami)
+    package (⚠️ _work in progress_ ⚠️)
 * Ensemble machine learning with the
     [`sl3`](https://github.com/tlverse/sl3) package
 * Targeted learning for causal inference with the
@@ -70,10 +70,13 @@ interest. The (evolving) set of materials includes
     [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx) package
 * Stochastic treatment regimes and the
     [`tmle3shift`](https://github.com/tlverse/tmle3shift) package
+* Causal mediation analysis with the
+    [`tmle3mediate`](https://github.com/tlverse/tmle3mediate) package
+    (⚠️ _work in progress_ ⚠️)
 * _Coda_: [Why we need a statistical
     revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
 
-## What this book is not {-}
+# What this book is not {-}
 
 The focus of this work is __not__ on providing in-depth technical descriptions
 of current statistical methodology or recent advancements. Instead, the goal is
@@ -88,9 +91,9 @@ in the field of Targeted Learning, the interested reader is invited to consult
 in statistical causal inference, machine learning, and non/semiparametric theory
 include many of the most recent advances in Targeted Learning and related areas.
 
-## About the authors {-}
+# About the authors {-}
 
-### Mark van der Laan {-}
+## Mark van der Laan {-}
 
 Mark J. van der Laan, PhD, is Professor of Biostatistics and Statistics at UC
 Berkeley. His research interests include statistical methods in computational
@@ -108,15 +111,15 @@ part on the development of a centralized, principled set of software tools for
 targeted learning, the `tlverse`. For more information, see
 https://vanderlaan-lab.org.
 
-### Jeremy Coyle {-}
+## Jeremy Coyle {-}
 
-Jeremy R. Coyle, Ph.D., is a consulting data scientist and statistical
+Jeremy Coyle, Ph.D., is a consulting data scientist and statistical
 programmer, currently leading the software development effort that has produced
 the `tlverse` ecosystem of R packages and related software tools. Jeremy earned
 his Ph.D. in Biostatistics from UC Berkeley in 2016, primarily under the
 supervision of Alan Hubbard.
 
-### Nima Hejazi {-}
+## Nima Hejazi {-}
 
 Nima S. Hejazi is a Ph.D. candidate in biostatistics with a designated emphasis
 in computational and genomic biology, working jointly with Mark van der Laan and
@@ -129,7 +132,7 @@ development for applied statistics, including software design, automated
 testing, and reproducible coding practices. For more information, see
 https://nimahejazi.org.
 
-### Ivana Malenica {-}
+## Ivana Malenica {-}
 
 Ivana Malenica is a Ph.D. student in biostatistics advised by Mark van der Laan.
 Ivana is currently a fellow at the Berkeley Institute for Data Science, after
@@ -141,7 +144,7 @@ machine learning, causal inference and high-dimensional statistics. Most of her
 current work involves complex dependent settings (dependence through time and
 network) and adaptive sequential designs.
 
-### Rachael Phillips {-}
+## Rachael Phillips {-}
 
 Rachael is a Ph.D. student in biostatistics, advised by Alan Hubbard and Mark
 van der Laan. She has an M.A. in Biostatistics, B.S. in Biology with a Chemistry
@@ -153,7 +156,7 @@ nonparametric estimation to build clinician-tailored, machine-driven solutions.
 Rachael is also passionate about free, online-mediated education and its
 corresponding pedagogy.
 
-### Alan Hubbard {-}
+## Alan Hubbard {-}
 
 Alan E. Hubbard is Professor of Biostatistics, former head of the Division of
 Biostatistics at UC Berkeley, and head of data analytics core at UC Berkeley's
@@ -165,10 +168,10 @@ motivated by applications to problems in computational biology, epidemiology,
 and precision medicine.
 
 <!--
-## Acknowledgements {-}
+# Acknowledgements {-}
 -->
 
-## Reproduciblity with the `tlverse` {#repro}
+# Reproduciblity with the `tlverse` {#repro}
 
 The `tlverse` software ecosystem is a growing collection of packages, several of
 which are quite early on in the software lifecycle. The team does its best to
@@ -183,50 +186,36 @@ This version of the book was built with R version 4.0.2 (2020-06-22),
 following packages:
 
 
-|package      |version    |source                                |
-|:------------|:----------|:-------------------------------------|
-|arm          |1.11-2     |CRAN (R 4.0.2)                        |
-|bookdown     |0.21.6     |Github (rstudio/bookdown\@92c59d3)    |
-|bslib        |0.2.3.9000 |Github (rstudio/bslib\@c2ca029)       |
-|condensier   |0.1.0      |Github (osofr/condensier\@6bcc973)    |
-|data.table   |1.13.6     |CRAN (R 4.0.2)                        |
-|delayed      |0.3.0      |Github (tlverse/delayed\@77c19b1)     |
-|devtools     |2.3.2      |CRAN (R 4.0.2)                        |
-|downlit      |0.2.1      |CRAN (R 4.0.2)                        |
-|dplyr        |1.0.2      |CRAN (R 4.0.2)                        |
-|e1071        |1.7-4      |CRAN (R 4.0.2)                        |
-|gam          |1.20       |CRAN (R 4.0.2)                        |
-|ggplot2      |3.3.3      |CRAN (R 4.0.2)                        |
-|glmnet       |4.0-2      |CRAN (R 4.0.2)                        |
-|hal9001      |0.2.7      |Github (tlverse/hal9001\@892f71c)     |
-|haldensify   |0.0.7      |Github (nhejazi/haldensify\@9c7bcbd)  |
-|here         |1.0.1      |CRAN (R 4.0.2)                        |
-|kableExtra   |1.3.1      |CRAN (R 4.0.2)                        |
-|knitr        |1.30       |CRAN (R 4.0.2)                        |
-|mvtnorm      |1.1-1      |CRAN (R 4.0.2)                        |
-|nnls         |1.4        |CRAN (R 4.0.2)                        |
-|origami      |1.0.4      |Github (tlverse/origami\@299a2e0)     |
-|randomForest |4.6-14     |CRAN (R 4.0.2)                        |
-|ranger       |0.12.1     |CRAN (R 4.0.2)                        |
-|readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.6.4      |Github (rstudio/rmarkdown\@2e8572e)   |
-|Rsolnp       |1.16       |CRAN (R 4.0.2)                        |
-|simcausal    |0.5.5      |Github (osofr/simcausal\@d7299d4)     |
-|skimr        |2.1.2      |CRAN (R 4.0.2)                        |
-|sl3          |1.3.7      |Github (tlverse/sl3\@7b31005)         |
-|speedglm     |0.3-3      |CRAN (R 4.0.2)                        |
-|stringr      |1.4.0      |CRAN (R 4.0.2)                        |
-|SuperLearner |2.0-26     |CRAN (R 4.0.2)                        |
-|tibble       |3.0.4      |CRAN (R 4.0.2)                        |
-|tidyr        |1.1.2      |CRAN (R 4.0.2)                        |
-|tidyverse    |1.3.0      |CRAN (R 4.0.2)                        |
-|tmle3        |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
-|tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
-|tmle3shift   |0.1.9      |Github (tlverse/tmle3shift\@daa0f96)  |
-|webshot      |0.5.2      |CRAN (R 4.0.2)                        |
-|xgboost      |1.3.1.1    |CRAN (R 4.0.2)                        |
+|package     |version    |source                                |
+|:-----------|:----------|:-------------------------------------|
+|bookdown    |0.21.6     |Github (rstudio/bookdown\@92c59d3)    |
+|bslib       |0.2.3.9000 |Github (rstudio/bslib\@c2ca029)       |
+|data.table  |1.13.6     |CRAN (R 4.0.2)                        |
+|delayed     |0.3.0      |Github (tlverse/delayed\@77c19b1)     |
+|devtools    |2.3.2      |CRAN (R 4.0.2)                        |
+|downlit     |0.2.1      |CRAN (R 4.0.2)                        |
+|dplyr       |1.0.2      |CRAN (R 4.0.2)                        |
+|emo         |0.0.0.9000 |Github (hadley/emo\@3f03b11)          |
+|ggplot2     |3.3.3      |CRAN (R 4.0.2)                        |
+|here        |1.0.1      |CRAN (R 4.0.2)                        |
+|kableExtra  |1.3.1      |CRAN (R 4.0.2)                        |
+|knitr       |1.30       |CRAN (R 4.0.2)                        |
+|mvtnorm     |1.1-1      |CRAN (R 4.0.2)                        |
+|origami     |1.0.4      |Github (tlverse/origami\@299a2e0)     |
+|readr       |1.4.0      |CRAN (R 4.0.2)                        |
+|rmarkdown   |2.6.4      |Github (rstudio/rmarkdown\@2e8572e)   |
+|skimr       |2.1.2      |CRAN (R 4.0.2)                        |
+|sl3         |1.3.7      |Github (tlverse/sl3\@7b31005)         |
+|stringr     |1.4.0      |CRAN (R 4.0.2)                        |
+|tibble      |3.0.4      |CRAN (R 4.0.2)                        |
+|tidyr       |1.1.2      |CRAN (R 4.0.2)                        |
+|tidyverse   |1.3.0      |CRAN (R 4.0.2)                        |
+|tmle3       |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
+|tmle3mopttx |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
+|tmle3shift  |0.1.9      |Github (tlverse/tmle3shift\@daa0f96)  |
+|webshot     |0.5.2      |CRAN (R 4.0.2)                        |
 
-## Learning resources {#learn}
+# Learning resources {#learn}
 
 To effectively utilize this handbook, the reader need not be a fully trained
 statistician to begin understanding and applying these methods. However, it is
@@ -255,18 +244,18 @@ For a general introduction to causal inference, we recommend
   Observational Data_ on
   Coursera](https://www.coursera.org/learn/crash-course-in-causality)
 
-## Setup instructions {#setup}
+# Setup instructions {#setup}
 
-### R and RStudio
+## R and RStudio
 
 **R** and **RStudio** are separate downloads and installations. R is the
 underlying statistical computing environment. RStudio is a graphical integrated
 development environment (IDE) that makes using R much easier and more
 interactive. You need to install R before you install RStudio.
 
-#### Windows
+### Windows
 
-##### If you already have R and RStudio installed
+#### If you already have R and RStudio installed
 
 * Open RStudio, and click on "Help" > "Check for updates". If a new version is
   available, quit RStudio, and download the latest version for RStudio.
@@ -280,7 +269,7 @@ interactive. You need to install R before you install RStudio.
   for more information on how to remove old versions from your system if you
   wish to do so.
 
-##### If you don't have R and RStudio installed
+#### If you don't have R and RStudio installed
 
 * Download R from
   the [CRAN website](http://cran.r-project.org/bin/windows/base/release.htm).
@@ -292,9 +281,9 @@ interactive. You need to install R before you install RStudio.
 * Once it's installed, open RStudio to make sure it works and you don't get any
   error messages.
 
-#### macOS
+### macOS / Mac OS X
 
-##### If you already have R and RStudio installed
+#### If you already have R and RStudio installed
 
 * Open RStudio, and click on "Help" > "Check for updates". If a new version is
   available, quit RStudio, and download the latest version for RStudio.
@@ -305,7 +294,7 @@ interactive. You need to install R before you install RStudio.
   website](https://cran.r-project.org/bin/macosx/) and check whether a more
   recent version is available. If so, please download and install it.
 
-##### If you don't have R and RStudio installed
+#### If you don't have R and RStudio installed
 
 * Download R from
   the [CRAN website](http://cran.r-project.org/bin/macosx).
@@ -321,7 +310,7 @@ interactive. You need to install R before you install RStudio.
 * Once it's installed, open RStudio to make sure it works and you don't get any
   error messages.
 
-#### Linux
+### Linux
 
 * Follow the instructions for your distribution
   from [CRAN](https://cloud.r-project.org/bin/linux), they provide information
