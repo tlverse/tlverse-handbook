@@ -5,7 +5,7 @@
 The data come from a study of the effect of water quality, sanitation, hand
 washing, and nutritional interventions on child development in rural Bangladesh
 (WASH Benefits Bangladesh): a cluster randomized controlled trial
-[@luby2018effects]. The study enrolled pregnant women in their first or second
+[@luby2018effect]. The study enrolled pregnant women in their first or second
 trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
 Tangail districts of central Bangladesh, with an average of eight women per
 cluster. Groups of eight geographically adjacent clusters were block randomized,
@@ -30,7 +30,7 @@ NCT01590095.
 library(readr)
 # read in data via readr::read_csv
 dat <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv")
-dat
+head(dat)
 ```
 For the purposes of this handbook, we start by treating the data as independent and
 identically distributed (i.i.d.) random draws from a very large target
@@ -49,9 +49,16 @@ A_i, Y_i)$, for $i = 1, \ldots, n$.
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
 
-```{r skim_washb_data, message=FALSE, warning=FALSE}
+```{r skim_washb_data, message=FALSE, warning=FALSE, results="asis"}
 library(skimr)
-skim(dat)
+# optionally disable sparkline graphs for PDF output
+skim_no_sparks <- skim_with(numeric = sfl(hist = NULL),
+                            ts = sfl(line_graph = NULL))
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(dat))
+} else {
+  skim(dat)
+}
 ```
 A convenient summary of the relevant variables is given just above, complete
 with a small visualization describing the marginal characteristics of each
@@ -77,7 +84,7 @@ in this example data, we ensure that we have subjects with a missing outcome.
 ```{r load_ist_data_intro, message=FALSE, warning=FALSE}
 # read in data
 ist <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv")
-ist
+head(ist)
 ```
 
 We have 26 variables measured, and the outcome of interest, $Y$, indicates recurrent
@@ -95,8 +102,12 @@ is observed.
 Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
 
-```{r skim_ist_data, message=FALSE, warning=FALSE}
-skim(ist)
+```{r skim_ist_data, message=FALSE, warning=FALSE, results="asis"}
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(ist))
+} else {
+  skim(ist)
+}
 ```
 
 ## NHANES I Epidemiologic Follow-up Study (NHEFS) {#NHEFS}
@@ -107,11 +118,15 @@ Data I Epidemiologic Follow-up Study. More coming soon.
 ```{r load_nhefs_data_intro, message=FALSE, warning=FALSE}
 # read in data
 NHEFS <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/NHEFS.csv")
-NHEFS
+head(NHEFS)
 ```
 
 A snapshot of the data set is shown below:
 
-```{r skim_nhefs_data, message=FALSE, warning=FALSE}
-skim(NHEFS)
+```{r skim_nhefs_data, message=FALSE, warning=FALSE, results="asis"}
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(NHEFS))
+} else {
+  skim(NHEFS)
+}
 ```
