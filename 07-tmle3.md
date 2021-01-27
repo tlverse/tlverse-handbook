@@ -154,22 +154,19 @@ We'll use the same WASH Benefits data as the earlier chapters:
 
 
 ```r
-library(here)
-#> here() starts at /home/travis/build/tlverse/tlverse-handbook
 library(data.table)
-library(tidyverse)
-#> ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──
-#> ✔ ggplot2 3.3.3     ✔ purrr   0.3.4
-#> ✔ tibble  3.0.5     ✔ dplyr   1.0.3
-#> ✔ tidyr   1.1.2     ✔ stringr 1.4.0
-#> ✔ readr   1.4.0     ✔ forcats 0.5.0
-#> ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-#> ✖ dplyr::between()   masks data.table::between()
-#> ✖ dplyr::filter()    masks stats::filter()
-#> ✖ dplyr::first()     masks data.table::first()
-#> ✖ dplyr::lag()       masks stats::lag()
-#> ✖ dplyr::last()      masks data.table::last()
-#> ✖ purrr::transpose() masks data.table::transpose()
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:data.table':
+#> 
+#>     between, first, last
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
 library(tmle3)
 library(sl3)
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
@@ -178,11 +175,11 @@ washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/mast
 
 ### Define the variable roles
 
-We'll use the common W (covariates), A (treatment/intervention), Y (outcome) data
-structure. `tmle3` needs to know what variables in the dataset correspond to
-each of these roles. We use a list of character vectors to tell it. We call this
-a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph (DAG),
-a way of displaying causal relationships between variables.
+We'll use the common $W$ (covariates), $A$ (treatment/intervention), $Y$ (outcome)
+data structure. `tmle3` needs to know what variables in the dataset correspond
+to each of these roles. We use a list of character vectors to tell it. We call
+this a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph
+(DAG), a way of displaying causal relationships between variables.
 
 
 ```r
@@ -276,17 +273,17 @@ We now have everything we need to fit the tmle using `tmle3`:
 
 ```r
 tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
-#> [17:15:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:12:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 ```
 
 ### Evaluate the Estimates
@@ -356,17 +353,17 @@ initial_likelihood <- ate_spec$make_initial_likelihood(
   tmle_task,
   learner_list
 )
-#> [17:15:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:15:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:16:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:16:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:16:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [17:16:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [19:13:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 print(initial_likelihood)
 #> W: Lf_emp
 #> A: LF_fit
@@ -567,7 +564,7 @@ print(tmle_fit_multiparam)
 
 ## Exercises
 
-### Estimation of the ATE with `tmle3` {#sl3ex2}
+### Estimation of the ATE with `tmle3` {#tmle3-ex1}
 
 Follow the steps below to estimate an average treatment effect using data from
 the Collaborative Perinatal Project (CPP), available in the `sl3` package. To
@@ -580,10 +577,13 @@ age.
 ```r
 # load the data set
 data(cpp)
-cpp <- cpp[!is.na(cpp[, "haz"]), ]
-cpp$parity01 <- as.numeric(cpp$parity > 0)
-cpp[is.na(cpp)] <- 0
-cpp$haz01 <- as.numeric(cpp$haz > 0)
+cpp <- cpp %>%
+  as_tibble() %>%
+  dplyr::filter(!is.na(haz)) %>%
+  mutate(
+    parity01 = as.numeric(parity > 0),
+    haz01 = as.numeric(haz > 0)
+  )
 ```
 <!--
 We're interested in using this simplified data to estimate an Average Treatment
@@ -646,17 +646,16 @@ metalearner <- make_learner(Lrnr_solnp,
    make a data copy to deal with `data.table` weirdness
    (`cpp2 <- data.table::copy(cpp)`) and use `cpp2` as the data.
 
-### Estimation of Strata-Specific ATEs with `tmle3` {#sl3ex2}
+### Estimation of Strata-Specific ATEs with `tmle3` {#tmle3-ex2}
 
 For this exercise, we will work with a random sample of 5,000 patients who
 participated in the International Stroke Trial (IST). This data is described in
-the [Chapter 3.2 of the `tlverse`
-handbook](https://tlverse.org/tlverse-handbook/data.html#ist). We included the
-data below and a summarized description that is relevant for this exercise.
+the [Chapter 3.2 of the `tlverse` handbook](#ist). We included the data below
+and a summarized description that is relevant for this exercise.
 
 The outcome, $Y$, indicates recurrent ischemic stroke within 14 days after
 randomization (`DRSISC`); the treatment of interest, $A$, is the randomized
-aspirin vs. no aspirin treatment allocation (`RXASP` in  `ist`); and the
+aspirin vs. no aspirin treatment allocation (`RXASP` in `ist`); and the
 adjustment set, $W$, consists simply of other variables measured at baseline. In
 this data, the outcome is occasionally missing, but there is no need to create a
 variable indicating this missingness (such as $\Delta$) for analyses in the
@@ -684,7 +683,7 @@ covariates was created.
 
 
 ```r
-ist_data <- data.table(read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv"))
+ist_data <- fread("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv")
 ```
 
 ## Summary

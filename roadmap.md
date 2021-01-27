@@ -66,7 +66,7 @@ probability distribution of the data?"* This brings us to Step 2.
 ### (2) The statistical model $\mathcal{M}$ such that $P_0 \in \mathcal{M}$ {-}
 
 The statistical model $\mathcal{M}$ is defined by the question we asked at the
-end of \ref{step1}. It is defined as the set of possible probability
+end of Step 1. It is defined as the set of possible probability
 distributions for our observed data. Often $\mathcal{M}$ is very large (possibly
 infinite-dimensional), to reflect the fact that statistical knowledge is
 limited. In the case that $\mathcal{M}$ is infinite-dimensional, we deem this a
@@ -83,16 +83,16 @@ $\sigma^2$. More formally, a parametric model may be defined
 
 Sadly, the assumption that the data-generating distribution has a specific,
 parametric forms is all-too-common, even when such is a leap of faith. This
-practice of oversimplification in the current culture of data analysis typically
-derails any attempt at trying to answer the scientific question at hand; alas,
-such statements as the ever-popular quip of Box that "All models are wrong but
-some are useful," encourage the data analyst to make arbitrary choices even when
-that often force significant differences in answers to the same estimation
-problem. The Targeted Learning paradigm does not suffer from this bias since it
-defines the statistical model through a representation of the true
+practice of oversimplification in the current culture of data analysis
+typically derails any attempt at trying to answer the scientific question at
+hand; alas, such statements as the ever-popular quip of Box that "All models are
+wrong but some are useful," encourage the data analyst to make arbitrary choices
+even when that often force significant differences in answers to the same
+estimation problem. The Targeted Learning paradigm does not suffer from this
+bias since it defines the statistical model through a representation of the true
 data-generating distribution corresponding to the observed data.
 
-Now, on to Step 3: *``What are we trying to learn from the data?"*
+Now, on to Step 3: *"What are we trying to learn from the data?"*
 
 ### (3) The statistical target parameter $\Psi$ and estimand $\Psi(P_0)$ {-}
 
@@ -124,8 +124,8 @@ To obtain a good approximation of the estimand, we need an estimator, an _a
 priori_-specified algorithm defined as a mapping from the set of possible
 empirical distributions, $P_n$, which live in a non-parametric statistical
 model, $\mathcal{M}_{NP}$ ($P_n \in \mathcal{M}_{NP}$), to the parameter space
-of the parameter of interest. That is, $\hat{\Psi} : \mathcal{M}_{NP} \rightarrow
-\mathbb{R}^d$. The estimator is a function that takes as input
+of the parameter of interest. That is, $\hat{\Psi} : \mathcal{M}_{NP}
+\rightarrow \mathbb{R}^d$. The estimator is a function that takes as input
 the observed data, a realization of $P_n$, and gives as output a value in the
 parameter space, which is the **estimate, $\hat{\Psi}(P_n)$**.
 
@@ -215,13 +215,39 @@ After formalizing the data and the statistical model, we can define a causal
 model to express causal parameters of interest. Directed acyclic graphs (DAGs)
 are one useful tool to express what we know about the causal relations among
 variables. Ignoring exogenous $U$ terms (explained below), we assume the
-following ordering of the variables in the observed data $O$.
+following ordering of the variables in the observed data $O$. We do this below
+using `DAGitty` [@textor2011dagitty]:
 
 
-```{=html}
-<div id="htmlwidget-f24f61b14a52b30b1486" style="width:200px;height:300px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-f24f61b14a52b30b1486">{"x":{"nodes":{"id":["W","A","Y"],"label":["W","A","Y"]},"edges":{"from":["W","W","A"],"to":["A","Y","Y"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"arrows":{"to":true}},"layout":{"randomSeed":25}},"groups":null,"width":"200px","height":"300px","idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+```r
+library(dagitty)
+library(ggdag)
+#> Loading required package: ggplot2
+#> 
+#> Attaching package: 'ggdag'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
+
+# make DAG by specifying dependence structure
+dag <- dagitty(
+  "dag {
+    W -> A
+    W -> Y
+    A -> Y
+    W -> A -> Y
+  }"
+)
+exposures(dag) <- c("A")
+outcomes(dag) <- c("Y")
+tidy_dag <- tidy_dagitty(dag)
+
+# visualize DAG
+ggdag(tidy_dag) +
+  theme_dag()
 ```
+
+<img src="roadmap_files/figure-html/simple-DAG-1.png" width="\textwidth" style="display: block; margin: auto;" />
 
 While directed acyclic graphs (DAGs) like above provide a convenient means by
 which to visualize causal relations between variables, the same causal relations

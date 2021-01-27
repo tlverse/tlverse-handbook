@@ -424,15 +424,15 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 656.8967	 Pars:  0.46065 0.28910 0.25026
-#> Iter: 2 fn: 656.8967	 Pars:  0.46065 0.28910 0.25025
+#> Iter: 1 fn: 656.8967	 Pars:  0.46065 0.28911 0.25024
+#> Iter: 2 fn: 656.8967	 Pars:  0.46064 0.28910 0.25025
 #> solnp--> Completed in 2 iterations
 tmle_fit
 #> A tmle3_Fit that took 1 step(s)
 #>    type         param  init_est  tmle_est         se     lower     upper
-#> 1:  TSM E[Y_{A=NULL}] 0.7951768 0.7953901 0.01923301 0.7576941 0.8330862
+#> 1:  TSM E[Y_{A=NULL}] 0.7951768 0.7953901 0.01923301 0.7576941 0.8330861
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:       0.7953901         0.7576941         0.8330862
+#> 1:       0.7953901         0.7576941         0.8330861
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -710,7 +710,7 @@ tmle_msm_spec <- tmle_vimshift_msm(
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 649.6489	 Pars:  0.49314 0.31452 0.19235
+#> Iter: 1 fn: 649.6489	 Pars:  0.49313 0.31452 0.19234
 #> Iter: 2 fn: 649.6489	 Pars:  0.49313 0.31452 0.19234
 #> solnp--> Completed in 2 iterations
 tmle_msm_fit

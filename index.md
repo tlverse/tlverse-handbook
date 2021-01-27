@@ -10,7 +10,6 @@ site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 fontsize: '12pt, krantz2'
-monofont: "Source Code Pro"
 monofontoptions: "Scale=0.7"
 link-citations: yes
 colorlinks: yes
@@ -61,7 +60,7 @@ interest. The (evolving) set of materials includes
 * Introduction to the [`tlverse` software
     ecosystem](https://tlverse.org)
 * Cross-validation with the [`origami`](https://github.com/tlverse/origami)
-    package (⚠️ _work in progress_ ⚠️)
+    package (_work in progress_)
 * Ensemble machine learning with the
     [`sl3`](https://github.com/tlverse/sl3) package
 * Targeted learning for causal inference with the
@@ -72,7 +71,7 @@ interest. The (evolving) set of materials includes
     [`tmle3shift`](https://github.com/tlverse/tmle3shift) package
 * Causal mediation analysis with the
     [`tmle3mediate`](https://github.com/tlverse/tmle3mediate) package
-    (⚠️ _work in progress_ ⚠️)
+    (_work in progress_)
 * _Coda_: [Why we need a statistical
     revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
 
@@ -190,14 +189,13 @@ following packages:
 |:-----------|:----------|:-------------------------------------|
 |bookdown    |0.21.6     |Github (rstudio/bookdown\@11bedc8)    |
 |bslib       |0.2.4.9000 |Github (rstudio/bslib\@141f69f)       |
+|dagitty     |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table  |1.13.6     |CRAN (R 4.0.2)                        |
 |delayed     |0.3.0      |Github (tlverse/delayed\@77c19b1)     |
-|devtools    |2.3.2      |CRAN (R 4.0.2)                        |
 |downlit     |0.2.1      |CRAN (R 4.0.2)                        |
 |dplyr       |1.0.3      |CRAN (R 4.0.2)                        |
-|emo         |0.0.0.9000 |Github (hadley/emo\@3f03b11)          |
+|ggdag       |0.2.3      |CRAN (R 4.0.2)                        |
 |ggplot2     |3.3.3      |CRAN (R 4.0.2)                        |
-|here        |1.0.1      |CRAN (R 4.0.2)                        |
 |kableExtra  |1.3.1      |CRAN (R 4.0.2)                        |
 |knitr       |1.31       |CRAN (R 4.0.2)                        |
 |mvtnorm     |1.1-1      |CRAN (R 4.0.2)                        |
@@ -209,11 +207,9 @@ following packages:
 |stringr     |1.4.0      |CRAN (R 4.0.2)                        |
 |tibble      |3.0.5      |CRAN (R 4.0.2)                        |
 |tidyr       |1.1.2      |CRAN (R 4.0.2)                        |
-|tidyverse   |1.3.0      |CRAN (R 4.0.2)                        |
 |tmle3       |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
 |tmle3mopttx |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
 |tmle3shift  |0.1.9      |Github (tlverse/tmle3shift\@daa0f96)  |
-|webshot     |0.5.2      |CRAN (R 4.0.2)                        |
 
 # Learning resources {#learn}
 
