@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "January 09, 2021"
+date: "January 27, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -188,26 +188,26 @@ following packages:
 
 |package     |version    |source                                |
 |:-----------|:----------|:-------------------------------------|
-|bookdown    |0.21.6     |Github (rstudio/bookdown\@92c59d3)    |
-|bslib       |0.2.3.9000 |Github (rstudio/bslib\@c2ca029)       |
+|bookdown    |0.21.6     |Github (rstudio/bookdown\@11bedc8)    |
+|bslib       |0.2.4.9000 |Github (rstudio/bslib\@141f69f)       |
 |data.table  |1.13.6     |CRAN (R 4.0.2)                        |
 |delayed     |0.3.0      |Github (tlverse/delayed\@77c19b1)     |
 |devtools    |2.3.2      |CRAN (R 4.0.2)                        |
 |downlit     |0.2.1      |CRAN (R 4.0.2)                        |
-|dplyr       |1.0.2      |CRAN (R 4.0.2)                        |
+|dplyr       |1.0.3      |CRAN (R 4.0.2)                        |
 |emo         |0.0.0.9000 |Github (hadley/emo\@3f03b11)          |
 |ggplot2     |3.3.3      |CRAN (R 4.0.2)                        |
 |here        |1.0.1      |CRAN (R 4.0.2)                        |
 |kableExtra  |1.3.1      |CRAN (R 4.0.2)                        |
-|knitr       |1.30       |CRAN (R 4.0.2)                        |
+|knitr       |1.31       |CRAN (R 4.0.2)                        |
 |mvtnorm     |1.1-1      |CRAN (R 4.0.2)                        |
 |origami     |1.0.4      |Github (tlverse/origami\@299a2e0)     |
 |readr       |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown   |2.6.4      |Github (rstudio/rmarkdown\@2e8572e)   |
+|rmarkdown   |2.6.6      |Github (rstudio/rmarkdown\@4b119a9)   |
 |skimr       |2.1.2      |CRAN (R 4.0.2)                        |
 |sl3         |1.3.7      |Github (tlverse/sl3\@7b31005)         |
 |stringr     |1.4.0      |CRAN (R 4.0.2)                        |
-|tibble      |3.0.4      |CRAN (R 4.0.2)                        |
+|tibble      |3.0.5      |CRAN (R 4.0.2)                        |
 |tidyr       |1.1.2      |CRAN (R 4.0.2)                        |
 |tidyverse   |1.3.0      |CRAN (R 4.0.2)                        |
 |tmle3       |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
