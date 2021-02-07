@@ -350,7 +350,7 @@ object internally (see the `tmle3` documentation for details).
 
 ```
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
