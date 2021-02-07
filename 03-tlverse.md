@@ -81,8 +81,8 @@ above. There are currently two featured examples of this:
 ## Installation {#installtlverse}
 
 The `tlverse` ecosystem of packages are currently hosted at
-https://github.com/tlverse, not yet on [CRAN](http://cran.r-project.org/). You
-can use the `devtools` package to install them:
+https://github.com/tlverse, not yet on [CRAN](https://CRAN.R-project.org/). You
+can use the [`usethis` package](https://usethis.r-lib.org/) to install them:
 
 
 
@@ -114,11 +114,11 @@ user (you'll need a GitHub user account). Follow these two steps:
 3. Copy your Personal Access Token, a long string of lowercase letters and
    numbers.
 4. Type `usethis::edit_r_environ()` in your R console, which will open your
-   `.Renviron` file in the source window of RStudio. If you are not able to 
+   `.Renviron` file in the source window of RStudio. If you are not able to
    access your `.Renviron` file with this command, then try inputting
-   `Sys.setenv(GITHUB_PAT = )` with your Personal Access Token inserted as a 
-   string after the equals symbol; and if this does not error, then skip to 
-   step 8. 
+   `Sys.setenv(GITHUB_PAT = )` with your Personal Access Token inserted as a
+   string after the equals symbol; and if this does not error, then skip to
+   step 8.
 5. In your `.Renviron` file, type `GITHUB_PAT=` and then paste your Personal
    Access Token after the equals symbol with no space.
 6. In your `.Renviron` file, press the enter key to ensure that your `.Renviron`

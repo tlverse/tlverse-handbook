@@ -194,7 +194,7 @@ following packages:
 |bslib       |0.2.4.9001 |Github (rstudio/bslib\@3d98072)       |
 |dagitty     |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table  |1.13.6     |CRAN (R 4.0.2)                        |
-|delayed     |0.3.0      |Github (tlverse/delayed\@77c19b1)     |
+|delayed     |0.3.0      |CRAN (R 4.0.2)                        |
 |downlit     |0.2.1      |CRAN (R 4.0.2)                        |
 |dplyr       |1.0.4      |CRAN (R 4.0.2)                        |
 |ggdag       |0.2.3      |CRAN (R 4.0.2)                        |
@@ -202,7 +202,7 @@ following packages:
 |kableExtra  |1.3.1      |CRAN (R 4.0.2)                        |
 |knitr       |1.31       |CRAN (R 4.0.2)                        |
 |mvtnorm     |1.1-1      |CRAN (R 4.0.2)                        |
-|origami     |1.0.4      |Github (tlverse/origami\@299a2e0)     |
+|origami     |1.0.3      |CRAN (R 4.0.2)                        |
 |readr       |1.4.0      |CRAN (R 4.0.2)                        |
 |rmarkdown   |2.6.6      |Github (rstudio/rmarkdown\@44d7b10)   |
 |skimr       |2.1.2      |CRAN (R 4.0.2)                        |

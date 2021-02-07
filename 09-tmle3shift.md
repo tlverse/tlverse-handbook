@@ -313,12 +313,12 @@ regression while our `g_learner` is used in estimating the treatment mechanism.
 
 ```
 #>    W1 W2         A Y
-#> 1:  1  1  3.064630 1
-#> 2:  0  0 -2.447733 0
-#> 3:  0  0  0.042107 1
-#> 4:  0  1 -0.931888 0
-#> 5:  1  0  1.473985 1
-#> 6:  0  1  0.051512 1
+#> 1:  1  1  0.271651 1
+#> 2:  0  0 -0.663368 1
+#> 3:  0  0  0.113366 0
+#> 4:  0  1 -0.732558 0
+#> 5:  1  1  0.388835 1
+#> 6:  0  0  0.043986 0
 ```
 
 The above composes our observed data structure $O = (W, A, Y)$. To formally
@@ -350,14 +350,14 @@ object internally (see the `tmle3` documentation for details).
 
 ```
 #> 
-#> Iter: 1 fn: 656.8967	 Pars:  0.46065 0.28910 0.25026
-#> Iter: 2 fn: 656.8967	 Pars:  0.46065 0.28910 0.25025
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
+#> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
 #>    type         param init_est tmle_est       se   lower   upper
-#> 1:  TSM E[Y_{A=NULL}]  0.79518  0.79539 0.019233 0.75769 0.83309
+#> 1:  TSM E[Y_{A=NULL}]  0.76199  0.76263 0.021966 0.71958 0.80568
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.79539           0.75769           0.83309
+#> 1:         0.76263           0.71958           0.80568
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -367,21 +367,22 @@ results from computing our TML estimator.
 
 Recall that the asymptotic distribution of TML estimators has been studied
 thoroughly:
-$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^*, g_n) + R(\hat{P}^*, P_0),$$
-which, provided the following two conditions:
+$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^{\star}, g_n) +
+R(\hat{P}^{\star}, P_0),$$
+which, provided the following two conditions,
 
-1. If $D(\bar{Q}_n^*, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
-2. the size of the class of functions considered for estimation of $\bar{Q}_n^*$
-   and $g_n$ is bounded (technically, $\exists \mathcal{F}$ st
-   $D(\bar{Q}_n^*, g_n) \in \mathcal{F}$ *__whp__*, where $\mathcal{F}$ is a
-   Donsker class),
+1. If $D(\bar{Q}_n^{\star}, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
+2. the size of the class of functions considered for estimation of
+   $\bar{Q}_n^{\star}$ and $g_n$ is bounded (technically, $\exists \mathcal{F}$
+   such that $D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}$ _whp_, where
+   $\mathcal{F}$ is a Donsker class),
 readily admits the conclusion that
-$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^*, P_0)$.
+$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
 
-Under the additional condition that the remainder term $R(\hat{P}^*, P_0)$
+Under the additional condition that the remainder term $R(\hat{P}^{\star}, P_0)$
 decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that
 $$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}}
- \right),$$
+\right),$$
 which, by a central limit theorem, establishes a Gaussian limiting distribution
 for the estimator:
 
@@ -495,22 +496,22 @@ delta) in a single function call:
 
 ```
 #> 
-#> Iter: 1 fn: 650.2725	 Pars:  0.52800 0.30315 0.16885
-#> Iter: 2 fn: 650.2725	 Pars:  0.52800 0.30315 0.16885
+#> Iter: 1 fn: 534.0196	 Pars:  0.40783 0.35788 0.23429
+#> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
 #>          type          param init_est tmle_est        se   lower   upper
-#> 1:        TSM  E[Y_{A=NULL}]  0.59391  0.59772 0.0219568 0.55468 0.64075
-#> 2:        TSM  E[Y_{A=NULL}]  0.73059  0.73000 0.0198744 0.69105 0.76895
-#> 3:        TSM  E[Y_{A=NULL}]  0.84765  0.84399 0.0146633 0.81525 0.87273
-#> 4: MSM_linear MSM(intercept)  0.72405  0.72390 0.0177850 0.68904 0.75876
-#> 5: MSM_linear     MSM(slope)  0.12687  0.12313 0.0078537 0.10774 0.13853
+#> 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
+#> 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
+#> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80029 0.0183487 0.76433 0.83625
+#> 4: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
+#> 5: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.59772           0.55468           0.64075
-#> 2:         0.73000           0.69105           0.76895
-#> 3:         0.84399           0.81525           0.87273
-#> 4:         0.72390           0.68904           0.75876
-#> 5:         0.12313           0.10774           0.13853
+#> 1:         0.56184           0.51749           0.60618
+#> 2:         0.69748           0.65240           0.74255
+#> 3:         0.80029           0.76433           0.83625
+#> 4:         0.68653           0.64760           0.72547
+#> 5:         0.11923           0.10137           0.13709
 ```
 
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
@@ -581,11 +582,11 @@ $\text{EIF}_{\beta}(O)$.
 
 ```
 #>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.72405  0.72390 0.0177850 0.68904 0.75876
-#> 2: MSM_linear     MSM(slope)  0.12687  0.12313 0.0078537 0.10774 0.13853
+#> 1: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
+#> 2: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.72390           0.68904           0.75876
-#> 2:         0.12313           0.10774           0.13853
+#> 1:         0.68653           0.64760           0.72547
+#> 2:         0.11923           0.10137           0.13709
 ```
 
 #### Directly Targeting the MSM Parameter $\beta$
@@ -614,16 +615,16 @@ appears above):
 
 ```
 #> 
-#> Iter: 1 fn: 649.6489	 Pars:  0.49313 0.31452 0.19234
-#> Iter: 2 fn: 649.6489	 Pars:  0.49313 0.31452 0.19234
+#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
+#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
 #> solnp--> Completed in 2 iterations
-#> A tmle3_Fit that took 100 step(s)
-#>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.72300  0.72281 0.0176521 0.68821 0.75740
-#> 2: MSM_linear     MSM(slope)  0.12524  0.12537 0.0077039 0.11027 0.14047
+#> A tmle3_Fit that took 1 step(s)
+#>          type          param init_est tmle_est       se   lower   upper
+#> 1: MSM_linear MSM(intercept)  0.69052  0.69085 0.020071 0.65151 0.73019
+#> 2: MSM_linear     MSM(slope)  0.13300  0.13291 0.008957 0.11536 0.15047
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.72281           0.68821           0.75740
-#> 2:         0.12537           0.11027           0.14047
+#> 1:         0.69085           0.65151           0.73019
+#> 2:         0.13291           0.11536           0.15047
 ```
 
 ### Example with the WASH Benefits Data
