@@ -15,7 +15,7 @@ library(tmle3shift)
 mean_lrnr <- Lrnr_mean$new()
 fglm_lrnr <- Lrnr_glm_fast$new()
 rf_lrnr <- Lrnr_ranger$new()
-hal_lrnr <- Lrnr_hal9001$new()
+hal_lrnr <- Lrnr_hal9001$new(max_degree = 3, n_folds = 3)
 
 # SL for the outcome regression
 sl_reg_lrnr <- Lrnr_sl$new(
@@ -31,7 +31,7 @@ sl3_list_learners("density")
 ## ----sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE-----------------------
 # learners used for conditional densities (i.e., generalized propensity score)
 haldensify_lrnr <- Lrnr_haldensify$new(
-  n_bins = 5, grid_type = "equal_mass",
+  n_bins = c(3, 5),
   lambda_seq = exp(seq(-1, -10, length = 200))
 )
 # semiparametric density estimator based on homoscedastic errors (HOSE)
@@ -57,7 +57,7 @@ learner_list <- list(Y = sl_reg_lrnr, A = sl_dens_lrnr)
 
 ## ----sim_data, message=FALSE, warning=FALSE-----------------------------------
 # simulate simple data for tmle-shift sketch
-n_obs <- 500 # number of observations
+n_obs <- 400 # number of observations
 tx_mult <- 2 # multiplier for the effect of W = 1 on the treatment
 
 ## baseline covariates -- simple, binary
@@ -72,7 +72,11 @@ Y <- rbinom(n_obs, 1, prob = plogis(A + W))
 # organize data and nodes for tmle3
 data <- data.table(W, A, Y)
 setnames(data, c("W1", "W2", "A", "Y"))
-node_list <- list(W = c("W1", "W2"), A = "A", Y = "Y")
+node_list <- list(
+  W = c("W1", "W2"),
+  A = "A",
+  Y = "Y"
+)
 head(data)
 
 
@@ -85,7 +89,7 @@ tmle_spec <- tmle_shift(
 )
 
 
-## ----fit_tmle-shift, message=FALSE, warning=FALSE, cache=FALSE----------------
+## ----fit_tmle-shift, message=FALSE, warning=FALSE-----------------------------
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 
@@ -101,7 +105,7 @@ tmle_spec <- tmle_vimshift_delta(
 )
 
 
-## ----fit_tmle_wrapper_vimshift, message=FALSE, warning=FALSE, cache=FALSE-----
+## ----fit_tmle_wrapper_vimshift, message=FALSE, warning=FALSE------------------
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 
@@ -110,7 +114,7 @@ tmle_fit
 tmle_fit$summary[4:5, ]
 
 
-## ----vim_targeted_msm_fit, message=FALSE, warning=FALSE, cache=FALSE----------
+## ----vim_targeted_msm_fit, message=FALSE, warning=FALSE-----------------------
 # initialize a tmle specification
 tmle_msm_spec <- tmle_vimshift_msm(
   shift_grid = delta_grid,
@@ -122,7 +126,7 @@ tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 tmle_msm_fit
 
 
-## ----load_washb_data_shift, message=FALSE, warning=FALSE, cache=FALSE---------
+## ----load_washb_data_shift, message=FALSE, warning=FALSE----------------------
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
                     stringsAsFactors = TRUE)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]

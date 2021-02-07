@@ -1,4 +1,4 @@
 ## ----installation, eval=FALSE-------------------------------------------------
-## install.packages("devtools")
-## devtools::install_github("tlverse/tlverse")
+## install.packages("usethis")
+## usethis::install_github("tlverse/tlverse")
 
