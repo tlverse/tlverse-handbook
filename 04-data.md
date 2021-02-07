@@ -5,7 +5,7 @@
 The data come from a study of the effect of water quality, sanitation, hand
 washing, and nutritional interventions on child development in rural Bangladesh
 (WASH Benefits Bangladesh): a cluster randomized controlled trial
-[@luby2018effects]. The study enrolled pregnant women in their first or second
+[@luby2018effect]. The study enrolled pregnant women in their first or second
 trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
 Tangail districts of central Bangladesh, with an average of eight women per
 cluster. Groups of eight geographically adjacent clusters were block randomized,
@@ -27,12 +27,8 @@ interest. For reference, this trial was registered with ClinicalTrials.gov as
 NCT01590095.
 
 
-```r
-library(tidyverse)
-# read in data
-dat <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv")
-dat
-#> # A tibble: 4,695 x 28
+```
+#> # A tibble: 6 x 28
 #>     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
 #>   <dbl> <chr> <chr>   <dbl> <dbl> <chr>  <dbl> <chr>      <dbl> <chr>   <dbl>
 #> 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3
@@ -40,8 +36,7 @@ dat
 #> 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1
 #> 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3
 #> 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2
-#> 6 -0.51 Cont… N06531      9   304 male      20 Secon…      154. Severe…     0
-#> # … with 4,689 more rows, and 17 more variables: Ncomp <dbl>, watmin <dbl>,
+#> # … with 1 more row, and 17 more variables: Ncomp <dbl>, watmin <dbl>,
 #> #   elec <dbl>, floor <dbl>, walls <dbl>, roof <dbl>, asset_wardrobe <dbl>,
 #> #   asset_table <dbl>, asset_chair <dbl>, asset_khat <dbl>, asset_chouki <dbl>,
 #> #   asset_tv <dbl>, asset_refrig <dbl>, asset_bike <dbl>, asset_moto <dbl>,
@@ -63,12 +58,6 @@ A_i, Y_i)$, for $i = 1, \ldots, n$.
 
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
-
-
-```r
-library(skimr)
-skim(dat)
-```
 
 
 Table: (\#tab:skim_washb_data)Data summary
@@ -146,12 +135,8 @@ outcome of recurrent ischemic stroke within 14 days after randomization.  Also
 in this example data, we ensure that we have subjects with a missing outcome.
 
 
-```r
-library(tidyverse)
-# read in data
-ist <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv")
-ist
-#> # A tibble: 5,000 x 26
+```
+#> # A tibble: 6 x 26
 #>   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP
 #>    <dbl> <chr>  <chr> <dbl> <chr>  <chr>   <chr> <chr>   <chr>  <chr> <dbl>
 #> 1     46 F      F        85 N      N       N     N       Y      N       150
@@ -159,8 +144,7 @@ ist
 #> 3      6 D      M        88 N      Y       N     N       N      N       140
 #> 4      8 F      F        68 Y      N       Y     Y       N      N       118
 #> 5     13 F      M        60 N      N       Y     N       N      N       140
-#> 6     16 F      F        71 Y      N       Y     N       N      N       160
-#> # … with 4,994 more rows, and 15 more variables: RDEF1 <chr>, RDEF2 <chr>,
+#> # … with 1 more row, and 15 more variables: RDEF1 <chr>, RDEF2 <chr>,
 #> #   RDEF3 <chr>, RDEF4 <chr>, RDEF5 <chr>, RDEF6 <chr>, RDEF7 <chr>,
 #> #   RDEF8 <chr>, STYPE <chr>, RXHEP <chr>, REGION <chr>,
 #> #   MISSING_RATRIAL_RASP3 <dbl>, MISSING_RHEP24 <dbl>, RXASP <dbl>,
@@ -181,11 +165,6 @@ is observed.
 
 Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
-
-
-```r
-skim(ist)
-```
 
 
 Table: (\#tab:skim_ist_data)Data summary
@@ -246,12 +225,8 @@ This data is from the National Health and Nutrition Examination Survey (NHANES)
 Data I Epidemiologic Follow-up Study. More coming soon.
 
 
-```r
-library(tidyverse)
-# read in data
-NHEFS <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/NHEFS.csv")
-NHEFS
-#> # A tibble: 1,629 x 64
+```
+#> # A tibble: 6 x 64
 #>    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income
 #>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
 #> 1   233     0     0    NA    NA    NA   175    96     0    42     1     19
@@ -259,8 +234,7 @@ NHEFS
 #> 3   244     0     0    NA    NA    NA   115    75     1    56     1     15
 #> 4   245     0     1    85     2    14   148    78     0    68     1     15
 #> 5   252     0     0    NA    NA    NA   118    77     0    40     0     18
-#> 6   257     0     0    NA    NA    NA   141    83     1    43     1     11
-#> # … with 1,623 more rows, and 52 more variables: marital <dbl>, school <dbl>,
+#> # … with 1 more row, and 52 more variables: marital <dbl>, school <dbl>,
 #> #   education <dbl>, ht <dbl>, wt71 <dbl>, wt82 <dbl>, wt82_71 <dbl>,
 #> #   birthplace <dbl>, smokeintensity <dbl>, smkintensity82_71 <dbl>,
 #> #   smokeyrs <dbl>, asthma <dbl>, bronch <dbl>, tb <dbl>, hf <dbl>, hbp <dbl>,
@@ -276,11 +250,6 @@ NHEFS
 ```
 
 A snapshot of the data set is shown below:
-
-
-```r
-skim(NHEFS)
-```
 
 
 Table: (\#tab:skim_nhefs_data)Data summary

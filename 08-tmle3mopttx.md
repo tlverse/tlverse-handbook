@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-01-27
+Updated: 2021-02-07
 
 ## Learning Objectives
 
@@ -376,12 +376,6 @@ individualized treatment using `tmle3mopptx`. To start, let's load the packages
 we'll use and set a seed:
 
 
-```r
-library(data.table)
-library(sl3)
-library(tmle3)
-library(tmle3mopttx)
-```
 
 ### Simulated Data
 
@@ -397,9 +391,6 @@ our data generating distribution is of the following form:
 \end{align*}
 
 
-```r
-data("data_bin")
-```
 
 The above composes our observed data structure $O = (W, A, Y)$. Note that the
 mean under the true optimal rule is $\psi=0.578$ for this data generating
@@ -412,15 +403,6 @@ _nonparametric structural equation models_ (NPSEMs), reflected in the node list
 that we set up:
 
 
-```r
-# organize data and nodes for tmle3
-data <- data_bin
-node_list <- list(
-  W = c("W1", "W2", "W3"),
-  A = "A",
-  Y = "Y"
-)
-```
 
 We now have an observed data structure (`data`) and a specification of the role
 that each variable in the data set plays as the nodes in a DAG.
@@ -435,34 +417,6 @@ may be fit with ensemble learning, using the cross-validation framework of the
 Super Learner algorithm of @vdl2007super.
 
 
-```r
-# Define sl3 library and metalearners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
-lrn_mean <- Lrnr_mean$new()
-lrn_glm <- Lrnr_glm_fast$new()
-
-## Define the Q learner:
-Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100,
-                  lrn_xgboost_500, lrn_mean, lrn_glm),
-  metalearner = Lrnr_nnls$new()
-)
-
-## Define the g learner:
-g_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_100, lrn_glm),
-  metalearner = Lrnr_nnls$new()
-)
-
-## Define the B learner:
-b_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100,
-                  lrn_xgboost_500,lrn_mean, lrn_glm),
-  metalearner = Lrnr_nnls$new()
-)
-```
 
 As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression (Q), propensity score
@@ -470,10 +424,6 @@ corresponding to the learners for the outcome regression (Q), propensity score
 standard notation by bundling the ensemble learners into a list object below:
 
 
-```r
-# specify outcome and treatment regressions and create learner list
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
-```
 
 The `learner_list` object above specifies the role that each of the ensemble
 learners we've generated is to play in computing initial estimators. Recall that
@@ -497,14 +447,6 @@ outcome, and few other more advanced features including searching for a less
 complex rule and realistic interventions.
 
 
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("W1", "W2", "W3"), type = "blip1",
-  learners = learner_list,
-  maximize = TRUE, complex = TRUE, realistic = FALSE
-)
-```
 
 As seen above, the `tmle3_mopttx_blip_revere` specification object
 (like all `tmle3_Spec` objects) does _not_ store the data for our
@@ -533,59 +475,56 @@ alleviating concerns regarding practical positivity issues. We explore all the
 important extensions of `tmle3mopttx` in later sections.
 
 
-```r
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> [19:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-fit
+```
+#> [20:11:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 #> A tmle3_Fit that took 1 step(s)
-#>    type         param  init_est  tmle_est         se     lower     upper
-#> 1:  TSM E[Y_{A=NULL}] 0.4222253 0.5660602 0.02701513 0.5131115 0.6190089
+#>    type         param init_est tmle_est       se   lower   upper
+#> 1:  TSM E[Y_{A=NULL}]  0.42223  0.56606 0.027015 0.51311 0.61901
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:       0.5660602         0.5131115         0.6190089
+#> 1:         0.56606           0.51311           0.61901
 ```
 
 We can see that the estimate of $psi_0$ is $0.56$, and that the confidence
@@ -613,58 +552,16 @@ of the following form:
 We can just load the data available as part of the package as follows:
 
 
-```r
-data("data_cat_realistic")
-```
 
 The above composes our observed data structure $O = (W, A, Y)$. Note that the
 mean under the true optimal rule is $\psi=0.658$, which is the quantity we aim
 to estimate.
 
 
-```r
-# organize data and nodes for tmle3
-data <- data_cat_realistic
-node_list <- list(
-  W = c("W1", "W2", "W3", "W4"),
-  A = "A",
-  Y = "Y"
-)
-```
 
 ### Constructing Optimal Stacked Regressions with `sl3`
 
 
-```r
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
-lrn_mean <- Lrnr_mean$new()
-lrn_glm <- Lrnr_glm_fast$new()
-
-## Define the Q learner, which is just a regular learner:
-Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-                  lrn_glm),
-  metalearner = Lrnr_nnls$new()
-)
-
-# Define the g learner, which is a multinomial learner:
-#specify the appropriate loss of the multinomial learner:
-mn_metalearner <- make_learner(Lrnr_solnp,
-                               loss_function = loss_loglik_multinomial,
-                               learner_function =
-                                 metalearner_linear_multinomial)
-g_learner <- make_learner(Lrnr_sl,
-                          list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean),
-                          mn_metalearner)
-
-# Define the Blip learner, which is a multivariate learner:
-learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-                 lrn_glm)
-b_learner <- create_mv_learners(learners = learners)
-```
 
 As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression, propensity score, and
@@ -675,22 +572,19 @@ problems. In order to see which learners can be used to estimate $g_0(A|W)$ in
 `sl3`, we run the following:
 
 
-```r
-# See which learners support multi-class classification:
-sl3_list_learners(c("categorical"))
-#>  [1] "Lrnr_bartMachine"           "Lrnr_bound"                
-#>  [3] "Lrnr_caret"                 "Lrnr_cv_selector"          
-#>  [5] "Lrnr_dbarts"                "Lrnr_gam"                  
-#>  [7] "Lrnr_glmnet"                "Lrnr_grf"                  
-#>  [9] "Lrnr_h2o_glm"               "Lrnr_h2o_grid"             
-#> [11] "Lrnr_independent_binomial"  "Lrnr_mean"                 
-#> [13] "Lrnr_multivariate"          "Lrnr_optim"                
-#> [15] "Lrnr_polspline"             "Lrnr_pooled_hazards"       
-#> [17] "Lrnr_randomForest"          "Lrnr_ranger"               
-#> [19] "Lrnr_rpart"                 "Lrnr_screener_corP"        
-#> [21] "Lrnr_screener_corRank"      "Lrnr_screener_randomForest"
-#> [23] "Lrnr_solnp"                 "Lrnr_svm"                  
-#> [25] "Lrnr_xgboost"
+```
+#>  [1] "Lrnr_bartMachine"          "Lrnr_bound"               
+#>  [3] "Lrnr_caret"                "Lrnr_cv_selector"         
+#>  [5] "Lrnr_dbarts"               "Lrnr_gam"                 
+#>  [7] "Lrnr_glmnet"               "Lrnr_grf"                 
+#>  [9] "Lrnr_h2o_glm"              "Lrnr_h2o_grid"            
+#> [11] "Lrnr_independent_binomial" "Lrnr_mean"                
+#> [13] "Lrnr_multivariate"         "Lrnr_nnet"                
+#> [15] "Lrnr_optim"                "Lrnr_polspline"           
+#> [17] "Lrnr_pooled_hazards"       "Lrnr_randomForest"        
+#> [19] "Lrnr_ranger"               "Lrnr_rpart"               
+#> [21] "Lrnr_screener_correlation" "Lrnr_solnp"               
+#> [23] "Lrnr_svm"                  "Lrnr_xgboost"
 ```
 
 Note that since the corresponding blip will be vector valued, we will have a
@@ -702,89 +596,73 @@ We make the above explicit with respect to standard notation by bundling the
 ensemble learners into a list object below:
 
 
-```r
-# specify outcome and treatment regressions and create learner list
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
-```
 
 ### Targeted Estimation of the Mean under the Optimal Individualized Interventions Effects
 
 
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("W1", "W2", "W3", "W4"), type = "blip2",
-  learners = learner_list, maximize = TRUE, complex = TRUE,
-  realistic = FALSE
-)
+
+
 ```
-
-
-```r
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> [19:14:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:14:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-
-fit
+#> [20:12:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:12:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 #> A tmle3_Fit that took 1 step(s)
-#>    type         param  init_est  tmle_est         se     lower     upper
-#> 1:  TSM E[Y_{A=NULL}] 0.5510006 0.6106264 0.06533206 0.4825779 0.7386749
+#>    type         param init_est tmle_est       se   lower   upper
+#> 1:  TSM E[Y_{A=NULL}]    0.551  0.61063 0.065332 0.48258 0.73867
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:       0.6106264         0.4825779         0.7386749
+#> 1:         0.61063           0.48258           0.73867
 ```
 
 We can see that the estimate of $psi_0$ is $0.60$, and that the confidence
@@ -812,81 +690,2192 @@ Within the `tmle3mopttx` paradigm, we just need to change the `complex`
 parameter to `FALSE`:
 
 
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("W4", "W3", "W2", "W1"), type = "blip2",
-  learners = learner_list,
-  maximize = TRUE, complex = FALSE, realistic = FALSE
-)
+
+
 ```
-
-
-```r
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> [19:15:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:15:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:16:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-
-fit
+#> [20:13:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:13:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
 #> A tmle3_Fit that took 1 step(s)
-#>    type             param  init_est  tmle_est         se     lower     upper
-#> 1:  TSM E[Y_{A=W3,W2,W1}] 0.5430883 0.6194625 0.07047122 0.4813415 0.7575836
+#>    type             param init_est tmle_est       se   lower   upper
+#> 1:  TSM E[Y_{A=W3,W2,W1}]  0.54309  0.61946 0.070471 0.48134 0.75758
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:       0.6194625         0.4813415         0.7575836
+#> 1:         0.61946           0.48134           0.75758
 ```
 
 Therefore even though the user specified all baseline covariates as the basis
@@ -905,83 +2894,69 @@ implemented in real life (or is highly unlikely). As such, specifying
 the outcome in question while being supported by the data.
 
 
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("W4", "W3", "W2", "W1"), type = "blip2",
-  learners = learner_list,
-  maximize = TRUE, complex = TRUE, realistic = TRUE
-)
+
+
 ```
-
-
-```r
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> [19:19:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:19:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-fit
+#> [20:16:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:44] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:16:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:17:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 #> A tmle3_Fit that took 1 step(s)
-#>    type         param  init_est  tmle_est         se    lower     upper
-#> 1:  TSM E[Y_{A=NULL}] 0.5484709 0.6545524 0.02160263 0.612212 0.6968928
+#>    type         param init_est tmle_est       se   lower   upper
+#> 1:  TSM E[Y_{A=NULL}]  0.54847  0.65455 0.021603 0.61221 0.69689
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:       0.6545524          0.612212         0.6968928
-
-# How many individuals got assigned each treatment?
-table(tmle_spec$return_rule)
+#> 1:         0.65455           0.61221           0.69689
 #> 
 #>   2   3 
 #> 507 493
@@ -1002,75 +2977,63 @@ interest. As opposed to the previous section however, we will now use
 we want to use Q-learning instead of TMLE.
 
 
-```r
-# initialize a tmle specification
-tmle_spec_Q <- tmle3_mopttx_Q(maximize = TRUE)
-
-# Define data:
-tmle_task <- tmle_spec_Q$make_tmle_task(data, node_list)
-
-# Define likelihood:
-initial_likelihood <- tmle_spec_Q$make_initial_likelihood(tmle_task,
-                                                          learner_list)
-#> [19:21:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-
-# Estimate the parameter:
-Q_learning(tmle_spec_Q, initial_likelihood, tmle_task)[1]
-#> [1] 0.4796372
+```
+#> [20:18:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [1] 0.47964
 ```
 
 ## Variable Importance Analysis with OIT
@@ -1095,17 +3058,6 @@ baseline covariates corresponding to the data-generating distribution described
 in section 5.7.1:
 
 
-```r
-# bin baseline covariates to 3 categories:
-data$W1 <- ifelse(data$W1 < quantile(data$W1)[2], 1,
-                  ifelse(data$W1 < quantile(data$W1)[3], 2, 3))
-
-node_list <- list(
-  W = c("W3", "W4", "W2"),
-  A = c("W1", "A"),
-  Y = "Y"
-)
-```
 
 Note that our node list now includes $W_1$ as treatments as well! Don't worry,
 we will still properly adjust for all baseline covariates.
@@ -1146,147 +3098,3799 @@ multiplicative scale (risk ratio) or linear (similar to average treatment
 effect).
 
 
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_vim(
-  V=c("W2"),
-  type = "blip2",
-  learners = learner_list,
-  contrast = "multiplicative",
-  maximize = FALSE,
-  method = "SL",
-  complex = TRUE,
-  realistic = FALSE
-)
+
+
 ```
-
-
-```r
-# fit the TML estimator
-vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
-  adjust_for_other_A = TRUE
-)
-#> [19:21:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:42] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:21:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:22:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:23] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:25] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:26] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:29] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:30] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:23:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-
-print(vim_results)
-#>    type                  param      init_est    tmle_est         se       lower
-#> 1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.0285889307 -0.14598894 0.05475717 -0.25331102
-#> 2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.0003567081  0.08874165 0.03309036  0.02388574
-#>          upper psi_transformed lower_transformed upper_transformed  A
-#> 1: -0.03866686       0.8641673         0.7762264         0.9620712 W1
-#> 2:  0.15359757       1.0927983         1.0241733         1.1660215  A
-#>              W    Z_stat        p_nz p_nz_corrected
-#> 1:  W3,W4,W2,A -2.666116 0.003836665    0.003836665
-#> 2: W3,W4,W2,W1  2.681798 0.003661386    0.003836665
+#> [20:18:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:45] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:46] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:18:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> [20:19:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:48] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:19:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:03] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:06] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:07] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'binary:logistic' was changed from 'error' to 'logloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> 
+#> Error in xgboost::xgb.DMatrix(Xmat) : 
+#>   xgb.DMatrix does not support construction from double
+#> Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#> Error in self$compute_step() : 
+#>   Error in if (nrow(Xmat) > 0) { : argument is of length zero
+#>    type                  param    init_est  tmle_est       se     lower
+#> 1:   RR RR(E[Y_{A=NULL}]/E[Y])  0.00054055  0.090997 0.032992  0.026334
+#> 2:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.02727623 -0.082020 0.049824 -0.179674
+#>       upper psi_transformed lower_transformed upper_transformed  A           W
+#> 1: 0.155660         1.09527           1.02668            1.1684  A W3,W4,W2,W1
+#> 2: 0.015633         0.92125           0.83554            1.0158 W1  W3,W4,W2,A
+#>     Z_stat      p_nz p_nz_corrected
+#> 1:  2.7582 0.0029063      0.0058125
+#> 2: -1.6462 0.0498606      0.0498606
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list
@@ -1322,11 +6926,7 @@ To start, let's load the data, convert all columns to be of class `numeric`,
 and take a quick look at it:
 
 
-```r
-washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
-washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
-head(washb_data, 3)
+```
 #>      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
 #> 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
 #> 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
@@ -1351,11 +6951,6 @@ treatment is the six intervention groups aimed at improving living conditions.
 All the other collected baseline covariates correspond to $W$.
 
 
-```r
-node_list <- list(W = names(washb_data)[!(names(washb_data) %in%
-                                          c("whz", "tr"))],
-                  A = "tr", Y = "whz")
-```
 
 We pick few potential effect modifiers, including mother's education, current
 living conditions (floor), and possession of material items including the
@@ -1363,614 +6958,40 @@ refrigerator. We concentrate of these covariates as they might be indicative of
 the socio-economic status of individuals involved in the trial.
 
 
-```r
-table(washb_data$momedu)
+```
 #> 
 #>    1    2    3 
 #>  733 1441 2503
-table(washb_data$floor)
 #> 
 #>    0    1 
 #> 4177  500
-table(washb_data$asset_refrig)
 #> 
 #>    0    1 
 #> 4305  372
-summary(washb_data$whz)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -4.6700 -1.2800 -0.6000 -0.5859  0.0800  4.9700
+#>  -4.670  -1.280  -0.600  -0.586   0.080   4.970
 ```
 
 
-```r
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_mean <- Lrnr_mean$new()
 
-## Define the Q learner, which is just a regular learner:
-Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean),
-  metalearner = Lrnr_nnls$new()
-)
 
-# Define the g learner, which is a multinomial learner:
-#specify the appropriate loss of the multinomial learner:
-mn_metalearner <- make_learner(Lrnr_solnp,
-                               loss_function = loss_loglik_multinomial,
-                               learner_function =
-                                 metalearner_linear_multinomial)
-g_learner <- make_learner(Lrnr_sl,
-                          list(lrn_xgboost_100, lrn_mean),
-                          mn_metalearner)
-
-# Define the Blip learner, which is a multivariate learner:
-learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean)
-b_learner <- create_mv_learners(learners = learners)
-
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
 ```
-
-
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("momedu", "floor", "asset_refrig"), type = "blip2",
-  learners = learner_list, maximize = TRUE, complex = TRUE,
-  realistic = FALSE
-)
-
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data=washb_data, node_list, learner_list)
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-#> [19:24:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:28] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:43] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:47] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:24:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:25:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:25:04] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-
-#> Warning in process_data(data, nodes, column_names = column_names, flag = flag, :
-#> Missing covariate data detected: imputing covariates.
-fit
+#> [20:20:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:20:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:05] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:24] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:27] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:21:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 #> A tmle3_Fit that took 1 step(s)
-#>    type         param   init_est   tmle_est         se      lower      upper
-#> 1:  TSM E[Y_{A=NULL}] -0.5567432 -0.4785522 0.04516069 -0.5670655 -0.3900388
+#>    type         param init_est tmle_est       se    lower    upper
+#> 1:  TSM E[Y_{A=NULL}] -0.55674 -0.47855 0.045161 -0.56707 -0.39004
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:      -0.4785522        -0.5670655        -0.3900388
+#> 1:        -0.47855          -0.56707          -0.39004
 ```
 
 ---

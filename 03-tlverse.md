@@ -85,10 +85,6 @@ https://github.com/tlverse, not yet on [CRAN](http://cran.r-project.org/). You
 can use the `devtools` package to install them:
 
 
-```r
-install.packages("devtools")
-devtools::install_github("tlverse/tlverse")
-```
 
 The `tlverse` depends on a large number of other packages that are also hosted
 on GitHub. Because of this, you may see the following error:

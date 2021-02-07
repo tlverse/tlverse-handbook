@@ -82,7 +82,7 @@ above):
 - Thus, every effort is made to achieve minimal bias and the asymptotic
   semi-parametric efficiency bound for the variance.
 
-<embed src="img/misc/TMLEimage.pdf" width="\textwidth" style="display: block; margin: auto;" type="application/pdf" />
+<embed src="img/misc/TMLEimage.pdf" width="80%" style="display: block; margin: auto;" type="application/pdf" />
 
 - There are different types of TMLE, sometimes for the same set of parameters,
   but below is an example of the algorithm for estimating the ATE.
@@ -153,25 +153,6 @@ As a reminder, the ATE is identified with the following statistical parameter
 We'll use the same WASH Benefits data as the earlier chapters:
 
 
-```r
-library(data.table)
-library(dplyr)
-#> 
-#> Attaching package: 'dplyr'
-#> The following objects are masked from 'package:data.table':
-#> 
-#>     between, first, last
-#> The following objects are masked from 'package:stats':
-#> 
-#>     filter, lag
-#> The following objects are masked from 'package:base':
-#> 
-#>     intersect, setdiff, setequal, union
-library(tmle3)
-library(sl3)
-washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
-```
 
 ### Define the variable roles
 
@@ -182,21 +163,6 @@ this a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph
 (DAG), a way of displaying causal relationships between variables.
 
 
-```r
-node_list <- list(
-  W = c(
-    "month", "aged", "sex", "momage", "momedu",
-    "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin",
-    "elec", "floor", "walls", "roof", "asset_wardrobe",
-    "asset_table", "asset_chair", "asset_khat",
-    "asset_chouki", "asset_tv", "asset_refrig",
-    "asset_bike", "asset_moto", "asset_sewmach",
-    "asset_mobile"
-  ),
-  A = "tr",
-  Y = "whz"
-)
-```
 
 ### Handle Missingness
 
@@ -213,11 +179,6 @@ treatment variable as well.
 These steps are implemented in the `process_missing` function in `tmle3`:
 
 
-```r
-processed <- process_missing(washb_data, node_list)
-washb_data <- processed$data
-node_list <- processed$node_list
-```
 
 ### Create a "Spec" Object
 
@@ -231,12 +192,6 @@ We'll start with using one of the specs, and then work our way down into the
 internals of `tmle3`.
 
 
-```r
-ate_spec <- tmle_ATE(
-  treatment_level = "Nutrition + WSH",
-  control_level = "Control"
-)
-```
 
 ### Define the learners
 
@@ -247,21 +202,6 @@ This takes the form of a list of `sl3` learners, one for each likelihood factor
 to be estimated with `sl3`:
 
 
-```r
-# choose base learners
-lrnr_mean <- make_learner(Lrnr_mean)
-lrnr_xgboost <- make_learner(Lrnr_xgboost)
-
-# define metalearners appropriate to data types
-ls_metalearner <- make_learner(Lrnr_nnls)
-mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial,
-                               loss_loglik_multinomial)
-sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
-                    metalearner = ls_metalearner)
-sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
-                    metalearner = mn_metalearner)
-learner_list <- list(A = sl_A, Y = sl_Y)
-```
 
 Here, we use a Super Learner as defined in the previous chapter. In the future,
 we plan to include reasonable defaults learners.
@@ -271,19 +211,18 @@ we plan to include reasonable defaults learners.
 We now have everything we need to fit the tmle using `tmle3`:
 
 
-```r
-tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
-#> [19:12:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:12:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+```
+#> [20:10:49] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:50] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:51] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:10:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 ```
 
 ### Evaluate the Estimates
@@ -291,19 +230,13 @@ tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
 We can see the summary results by printing the fit object. Alternatively, we
 can extra results from the summary by indexing into it:
 
-```r
-print(tmle_fit)
+```
 #> A tmle3_Fit that took 1 step(s)
-#>    type                                    param    init_est      tmle_est
-#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002627994 -0.0007386462
-#>           se       lower     upper psi_transformed lower_transformed
-#> 1: 0.0503909 -0.09950299 0.0980257   -0.0007386462       -0.09950299
-#>    upper_transformed
-#> 1:         0.0980257
-
-estimates <- tmle_fit$summary$psi_transformed
-print(estimates)
-#> [1] -0.0007386462
+#>    type                                    param init_est    tmle_est       se
+#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002628 -0.00073865 0.050391
+#>        lower    upper psi_transformed lower_transformed upper_transformed
+#> 1: -0.099503 0.098026     -0.00073865         -0.099503          0.098026
+#> [1] -0.00073865
 ```
 
 ## `tmle3` Components
@@ -319,13 +252,9 @@ fitting the TMLE to, as well as an NP-SEM generated from the `node_list`
 defined above, describing the variables and their relationships.
 
 
-```r
-tmle_task <- ate_spec$make_tmle_task(washb_data, node_list)
+
+
 ```
-
-
-```r
-tmle_task$npsem
 #> $W
 #> tmle3_Node: W
 #> 	Variables: month, aged, sex, momedu, hfiacat, Nlt18, Ncomp, watmin, elec, floor, walls, roof, asset_wardrobe, asset_table, asset_chair, asset_khat, asset_chouki, asset_tv, asset_refrig, asset_bike, asset_moto, asset_sewmach, asset_mobile, momage, momheight, delta_momage, delta_momheight
@@ -348,23 +277,18 @@ Next, is an object representing the likelihood, factorized according to the
 NPSEM described above:
 
 
-```r
-initial_likelihood <- ate_spec$make_initial_likelihood(
-  tmle_task,
-  learner_list
-)
-#> [19:13:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:19] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:20] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:21] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-#> [19:13:22] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
-print(initial_likelihood)
+```
+#> [20:11:08] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:09] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:10] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:11] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:12] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:13] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:14] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:15] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:16] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:17] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
+#> [20:11:18] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.
 #> W: Lf_emp
 #> A: LF_fit
 #> Y: LF_fit
@@ -378,20 +302,19 @@ the `learner_list`) above.
 We can use this in tandem with the `tmle_task` object to obtain likelihood
 estimates for each observation:
 
-```r
-initial_likelihood$get_likelihoods(tmle_task)
-#>                  W         A          Y
-#>    1: 0.0002129925 0.2477705 -0.6602440
-#>    2: 0.0002129925 0.2547313 -0.6328198
-#>    3: 0.0002129925 0.2592729 -0.6204262
-#>    4: 0.0002129925 0.2806710 -0.5998659
-#>    5: 0.0002129925 0.2536705 -0.5424670
-#>   ---                                  
-#> 4691: 0.0002129925 0.1350256 -0.4613934
-#> 4692: 0.0002129925 0.1261600 -0.4804883
-#> 4693: 0.0002129925 0.1264077 -0.5662543
-#> 4694: 0.0002129925 0.1759711 -0.8187170
-#> 4695: 0.0002129925 0.1299655 -0.5395139
+```
+#>                W       A        Y
+#>    1: 0.00021299 0.24777 -0.66024
+#>    2: 0.00021299 0.25473 -0.63282
+#>    3: 0.00021299 0.25927 -0.62043
+#>    4: 0.00021299 0.28067 -0.59987
+#>    5: 0.00021299 0.25367 -0.54247
+#>   ---                            
+#> 4691: 0.00021299 0.13503 -0.46139
+#> 4692: 0.00021299 0.12616 -0.48049
+#> 4693: 0.00021299 0.12641 -0.56625
+#> 4694: 0.00021299 0.17597 -0.81872
+#> 4695: 0.00021299 0.12997 -0.53951
 ```
 
 <!-- TODO: make helper to get learners out of fit objects -->
@@ -404,9 +327,6 @@ object defines the update strategy (e.g. submodel, loss function, CV-TMLE or
 not, etc).
 
 
-```r
-targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood)
-```
 
 When constructing the targeted likelihood, you can specify different update
 options. See the documentation for `tmle3_Update` for details of the different
@@ -414,12 +334,6 @@ options. For example, you can disable CV-TMLE (the default in `tmle3`) as
 follows:
 
 
-```r
-targeted_likelihood_no_cv <-
-  Targeted_Likelihood$new(initial_likelihood,
-    updater = list(cvtmle = FALSE)
-  )
-```
 
 ### Parameter Mapping
 
@@ -428,9 +342,7 @@ single parameter, the ATE. In the next section, we'll see how to add additional
 parameters.
 
 
-```r
-tmle_params <- ate_spec$make_params(tmle_task, targeted_likelihood)
-print(tmle_params)
+```
 #> [[1]]
 #> Param_ATE: ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}]
 ```
@@ -441,19 +353,12 @@ Having used the spec to manually generate all these components, we can now
 manually fit a `tmle3`:
 
 
-```r
-tmle_fit_manual <- fit_tmle3(
-  tmle_task, targeted_likelihood, tmle_params,
-  targeted_likelihood$updater
-)
-print(tmle_fit_manual)
+```
 #> A tmle3_Fit that took 1 step(s)
-#>    type                                    param    init_est     tmle_est
-#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002453345 -0.009640469
-#>            se      lower     upper psi_transformed lower_transformed
-#> 1: 0.05076837 -0.1091446 0.0898637    -0.009640469        -0.1091446
-#>    upper_transformed
-#> 1:         0.0898637
+#>    type                                    param  init_est   tmle_est       se
+#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.0024533 -0.0096405 0.050768
+#>       lower    upper psi_transformed lower_transformed upper_transformed
+#> 1: -0.10914 0.089864      -0.0096405          -0.10914          0.089864
 ```
 
 The result is equivalent to fitting using the `tmle3` function as above.
@@ -465,11 +370,7 @@ multiple parameters simultaneously. To illustrate this, we'll use the
 `tmle_TSM_all` spec:
 
 
-```r
-tsm_spec <- tmle_TSM_all()
-targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood)
-all_tsm_params <- tsm_spec$make_params(tmle_task, targeted_likelihood)
-print(all_tsm_params)
+```
 #> [[1]]
 #> Param_TSM: E[Y_{A=Control}]
 #> 
@@ -504,13 +405,7 @@ parameters. For instance, we can estimate a ATE using the delta method and two
 of the above TSM parameters:
 
 
-```r
-ate_param <- define_param(
-  Param_delta, targeted_likelihood,
-  delta_param_ATE,
-  list(all_tsm_params[[1]], all_tsm_params[[4]])
-)
-print(ate_param)
+```
 #> Param_delta: E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]
 ```
 
@@ -523,43 +418,35 @@ We can now fit a TMLE simultaneously for all TSM parameters, as well as the
 above defined ATE parameter
 
 
-```r
-all_params <- c(all_tsm_params, ate_param)
-
-tmle_fit_multiparam <- fit_tmle3(
-  tmle_task, targeted_likelihood, all_params,
-  targeted_likelihood$updater
-)
-
-print(tmle_fit_multiparam)
+```
 #> A tmle3_Fit that took 1 step(s)
-#>    type                                       param     init_est     tmle_est
-#> 1:  TSM                            E[Y_{A=Control}] -0.593796190 -0.613477215
-#> 2:  TSM                        E[Y_{A=Handwashing}] -0.606412367 -0.644887554
-#> 3:  TSM                          E[Y_{A=Nutrition}] -0.601906431 -0.615316053
-#> 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.591342845 -0.623089242
-#> 5:  TSM                         E[Y_{A=Sanitation}] -0.587144095 -0.585549936
-#> 6:  TSM                                E[Y_{A=WSH}] -0.528004773 -0.451936915
-#> 7:  TSM                              E[Y_{A=Water}] -0.575403180 -0.531405639
-#> 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.002453345 -0.009612027
-#>            se      lower       upper psi_transformed lower_transformed
-#> 1: 0.03000551 -0.6722869 -0.55466750    -0.613477215        -0.6722869
-#> 2: 0.04233468 -0.7278620 -0.56191311    -0.644887554        -0.7278620
-#> 3: 0.04254265 -0.6986981 -0.53193400    -0.615316053        -0.6986981
-#> 4: 0.04103837 -0.7035230 -0.54265551    -0.623089242        -0.7035230
-#> 5: 0.04221152 -0.6682830 -0.50281688    -0.585549936        -0.6682830
-#> 6: 0.04496162 -0.5400601 -0.36381375    -0.451936915        -0.5400601
-#> 7: 0.03872841 -0.6073119 -0.45549935    -0.531405639        -0.6073119
-#> 8: 0.05075994 -0.1090997  0.08987562    -0.009612027        -0.1090997
+#>    type                                       param   init_est  tmle_est
+#> 1:  TSM                            E[Y_{A=Control}] -0.5937962 -0.613477
+#> 2:  TSM                        E[Y_{A=Handwashing}] -0.6064124 -0.644888
+#> 3:  TSM                          E[Y_{A=Nutrition}] -0.6019064 -0.615316
+#> 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.5913428 -0.623089
+#> 5:  TSM                         E[Y_{A=Sanitation}] -0.5871441 -0.585550
+#> 6:  TSM                                E[Y_{A=WSH}] -0.5280048 -0.451937
+#> 7:  TSM                              E[Y_{A=Water}] -0.5754032 -0.531406
+#> 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.0024533 -0.009612
+#>          se    lower     upper psi_transformed lower_transformed
+#> 1: 0.030006 -0.67229 -0.554667       -0.613477          -0.67229
+#> 2: 0.042335 -0.72786 -0.561913       -0.644888          -0.72786
+#> 3: 0.042543 -0.69870 -0.531934       -0.615316          -0.69870
+#> 4: 0.041038 -0.70352 -0.542656       -0.623089          -0.70352
+#> 5: 0.042212 -0.66828 -0.502817       -0.585550          -0.66828
+#> 6: 0.044962 -0.54006 -0.363814       -0.451937          -0.54006
+#> 7: 0.038728 -0.60731 -0.455499       -0.531406          -0.60731
+#> 8: 0.050760 -0.10910  0.089876       -0.009612          -0.10910
 #>    upper_transformed
-#> 1:       -0.55466750
-#> 2:       -0.56191311
-#> 3:       -0.53193400
-#> 4:       -0.54265551
-#> 5:       -0.50281688
-#> 6:       -0.36381375
-#> 7:       -0.45549935
-#> 8:        0.08987562
+#> 1:         -0.554667
+#> 2:         -0.561913
+#> 3:         -0.531934
+#> 4:         -0.542656
+#> 5:         -0.502817
+#> 6:         -0.363814
+#> 7:         -0.455499
+#> 8:          0.089876
 ```
 
 ## Exercises
@@ -574,17 +461,6 @@ binary outcome, `haz01` -- an indicator of having an above average height for
 age.
 
 
-```r
-# load the data set
-data(cpp)
-cpp <- cpp %>%
-  as_tibble() %>%
-  dplyr::filter(!is.na(haz)) %>%
-  mutate(
-    parity01 = as.numeric(parity > 0),
-    haz01 = as.numeric(haz > 0)
-  )
-```
 <!--
 We're interested in using this simplified data to estimate an Average Treatment
 Effect (ATE):
@@ -626,12 +502,6 @@ but also tailored to have robust finite sample performance.
 4. Define the metalearner like below.
 
 
-```r
-metalearner <- make_learner(Lrnr_solnp,
-  loss_function = loss_loglik_binomial,
-  learner_function = metalearner_logistic_binomial
-)
-```
 
 5. Define one super learner for estimating $Q$ and another for estimating $g$.
    Use the metalearner above for both $Q$ and $g$ super learners.
@@ -682,9 +552,6 @@ covariates was created.
    strata specific ATEs according to geographical region (`REGION`).
 
 
-```r
-ist_data <- fread("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/ist_sample.csv")
-```
 
 ## Summary
 
