@@ -35,22 +35,17 @@ options(
 # overwrite options by output type
 if (knitr:::is_html_output()) {
   #options(width = 80)
-
-  # automatically create a bib database for R packages
-  knitr::write_bib(c(
-    .packages(), "bookdown", "knitr", "rmarkdown"
-  ), "packages.bib")
 }
 if (knitr:::is_latex_output()) {
   #knitr::opts_chunk$set(width = 67)
   #options(width = 67)
   options(cli.unicode = TRUE)
-
-  # automatically create a bib database for R packages
-  knitr::write_bib(c(
-    .packages(), "bookdown", "knitr", "rmarkdown"
-  ), "packages.bib")
 }
+
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), "bookdown", "knitr", "rmarkdown"
+), "packages.bib")
 
 # create and set global ggplot theme
 # borrowed from https://github.com/tidymodels/TMwR/blob/master/_common.R
