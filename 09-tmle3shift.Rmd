@@ -279,7 +279,7 @@ regression techniques:
 mean_lrnr <- Lrnr_mean$new()
 fglm_lrnr <- Lrnr_glm_fast$new()
 rf_lrnr <- Lrnr_ranger$new()
-hal_lrnr <- Lrnr_hal9001$new()
+hal_lrnr <- Lrnr_hal9001$new(max_degree = 3, n_folds = 3)
 
 # SL for the outcome regression
 sl_reg_lrnr <- Lrnr_sl$new(
@@ -312,7 +312,7 @@ regression techniques.
 ```{r sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
 # learners used for conditional densities (i.e., generalized propensity score)
 haldensify_lrnr <- Lrnr_haldensify$new(
-  n_bins = 5, grid_type = "equal_mass",
+  n_bins = c(3, 5),
   lambda_seq = exp(seq(-1, -10, length = 200))
 )
 # semiparametric density estimator based on homoscedastic errors (HOSE)
@@ -349,7 +349,7 @@ regression while our `g_learner` is used in estimating the treatment mechanism.
 
 ```{r sim_data, message=FALSE, warning=FALSE}
 # simulate simple data for tmle-shift sketch
-n_obs <- 500 # number of observations
+n_obs <- 400 # number of observations
 tx_mult <- 2 # multiplier for the effect of W = 1 on the treatment
 
 ## baseline covariates -- simple, binary
@@ -364,7 +364,11 @@ Y <- rbinom(n_obs, 1, prob = plogis(A + W))
 # organize data and nodes for tmle3
 data <- data.table(W, A, Y)
 setnames(data, c("W1", "W2", "A", "Y"))
-node_list <- list(W = c("W1", "W2"), A = "A", Y = "Y")
+node_list <- list(
+  W = c("W1", "W2"),
+  A = "A",
+  Y = "Y"
+)
 head(data)
 ```
 
@@ -401,7 +405,7 @@ object internally (see the `tmle3` documentation for details).
 
 ### Targeted Estimation of Stochastic Interventions Effects
 
-```{r fit_tmle-shift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r fit_tmle-shift, message=FALSE, warning=FALSE}
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 ```
@@ -413,21 +417,22 @@ results from computing our TML estimator.
 
 Recall that the asymptotic distribution of TML estimators has been studied
 thoroughly:
-$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^*, g_n) + R(\hat{P}^*, P_0),$$
-which, provided the following two conditions:
+$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^{\star}, g_n) +
+R(\hat{P}^{\star}, P_0),$$
+which, provided the following two conditions,
 
-1. If $D(\bar{Q}_n^*, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
-2. the size of the class of functions considered for estimation of $\bar{Q}_n^*$
-   and $g_n$ is bounded (technically, $\exists \mathcal{F}$ st
-   $D(\bar{Q}_n^*, g_n) \in \mathcal{F}$ *__whp__*, where $\mathcal{F}$ is a
-   Donsker class),
+1. If $D(\bar{Q}_n^{\star}, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
+2. the size of the class of functions considered for estimation of
+   $\bar{Q}_n^{\star}$ and $g_n$ is bounded (technically, $\exists \mathcal{F}$
+   such that $D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}$ _whp_, where
+   $\mathcal{F}$ is a Donsker class),
 readily admits the conclusion that
-$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^*, P_0)$.
+$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
 
-Under the additional condition that the remainder term $R(\hat{P}^*, P_0)$
+Under the additional condition that the remainder term $R(\hat{P}^{\star}, P_0)$
 decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that
 $$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}}
- \right),$$
+\right),$$
 which, by a central limit theorem, establishes a Gaussian limiting distribution
 for the estimator:
 
@@ -548,7 +553,7 @@ One may invoke the `tmle3` wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:
 
-```{r fit_tmle_wrapper_vimshift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r fit_tmle_wrapper_vimshift, message=FALSE, warning=FALSE}
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 ```
@@ -645,7 +650,7 @@ parameters of the working marginal structural model, we may use the
 `tmle_vimshift_msm` Spec (instead of the `tmle_vimshift_delta` Spec that
 appears above):
 
-```{r vim_targeted_msm_fit, message=FALSE, warning=FALSE, cache=FALSE}
+```{r vim_targeted_msm_fit, message=FALSE, warning=FALSE}
 # initialize a tmle specification
 tmle_msm_spec <- tmle_vimshift_msm(
   shift_grid = delta_grid,
@@ -663,7 +668,7 @@ To complete our walk through, let's turn to using stochastic interventions to
 investigate the data from the WASH Benefits trial. To start, let's load the
 data, convert all columns to be of class `numeric`, and take a quick look at it
 
-```{r load_washb_data_shift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r load_washb_data_shift, message=FALSE, warning=FALSE}
 washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
                     stringsAsFactors = TRUE)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]

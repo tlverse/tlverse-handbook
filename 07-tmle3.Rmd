@@ -236,15 +236,15 @@ to be estimated with `sl3`:
 ```{r tmle3-learner-list}
 # choose base learners
 lrnr_mean <- make_learner(Lrnr_mean)
-lrnr_xgboost <- make_learner(Lrnr_xgboost)
+lrnr_rf <- make_learner(Lrnr_ranger)
 
 # define metalearners appropriate to data types
 ls_metalearner <- make_learner(Lrnr_nnls)
 mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial,
                                loss_loglik_multinomial)
-sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
+sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_rf),
                     metalearner = ls_metalearner)
-sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_xgboost),
+sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_rf),
                     metalearner = mn_metalearner)
 learner_list <- list(A = sl_A, Y = sl_Y)
 ```
@@ -258,6 +258,7 @@ We now have everything we need to fit the tmle using `tmle3`:
 
 ```{r tmle3-spec-fit}
 tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
+print(tmle_fit)
 ```
 
 ### Evaluate the Estimates
@@ -265,8 +266,6 @@ tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
 We can see the summary results by printing the fit object. Alternatively, we
 can extra results from the summary by indexing into it:
 ```{r tmle3-spec-summary}
-print(tmle_fit)
-
 estimates <- tmle_fit$summary$psi_transformed
 print(estimates)
 ```
@@ -477,7 +476,7 @@ but also tailored to have robust finite sample performance.
    above.
 2. Define a `tmle3_Spec` object for the ATE, `tmle_ATE()`.
 3. Using the same base learning libraries defined above, specify `sl3` base
-   learners for estimation of $Q = E(Y|A,Y)$ and $g=P(A|W)$.
+   learners for estimation of $Q = E(Y \mid A,Y)$ and $g=P(A \mid W)$.
 4. Define the metalearner like below.
 
 ```{r, metalrnr-exercise}
