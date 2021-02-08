@@ -235,7 +235,7 @@ of the package (i.e., `usethis::install_github(tlverse/sl3@devel)`), re-start
 your `R` session, and then re-load the `sl3` package.
 -->
 
-```{r setup, message=FALSE, warning=FALSE}
+```{r setup}
 library(data.table)
 library(dplyr)
 library(readr)
@@ -345,7 +345,7 @@ settings. Documentation for the learners and their hyperparameters can be found
 in the [`sl3` Learners
 Reference](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
 
-```{r extra-lrnr-awesome, message=FALSE, warning=FALSE}
+```{r extra-lrnr-awesome}
 lrnr_ranger50 <- make_learner(Lrnr_ranger, num.trees = 50)
 lrnr_hal_simple <- make_learner(Lrnr_hal9001, max_degree = 2, n_folds = 2)
 lrnr_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
@@ -355,7 +355,7 @@ lrnr_elasticnet <- make_learner(Lrnr_glmnet, alpha = 0.5)
 
 We can also include learners from the `SuperLearner` `R` package.
 
-```{r extra-lrnr-woah, message=FALSE, warning=FALSE}
+```{r extra-lrnr-woah}
 lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
 
@@ -451,7 +451,7 @@ Analogous to what we have seen before, we have to stack the pipeline and
 original `stack` together, so we may use them as base learners in our super
 learner.
 
-```{r screeners-stack, message=FALSE, warning=FALSE}
+```{r screeners-stack}
 fancy_stack <- make_learner(Stack, screen_rf_pipeline, stack)
 # we can visualize the stack
 dt_stack <- delayed_learner_train(fancy_stack, washb_task)
@@ -473,7 +473,7 @@ We have made a library/stack of base learners, so we are ready to make the super
 learner. The super learner algorithm fits a metalearner on the validation-set
 predictions.
 
-```{r make-sl, message=FALSE, warning=FALSE}
+```{r make-sl}
 sl <- make_learner(Lrnr_sl,
   learners = fancy_stack
 )
@@ -495,7 +495,7 @@ point of this figure: we can see there are 10 realizations of the stack which
 represent the 10 cross-validation folds and there is a separate hold-out
 (top branch of the figure) that will not be used to fit the Super Learner.
 
-```{r make-sl-plot, message=FALSE, warning=FALSE}
+```{r make-sl-plot}
 dt_sl <- delayed_learner_train(sl, washb_task)
 plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 ```
@@ -596,8 +596,8 @@ CVsl %>%
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, we like it, and so do
 collaborators, so we created a variable importance function in `sl3`! The `sl3`
-`varimp` function returns a table with variables listed in decreasing order of
-importance (i.e. most important on the first row).
+`importance` function returns a table with variables listed in decreasing order
+of importance (i.e., most important on the first row).
 
 The measure of importance in `sl3` is based on a risk difference between the
 learner fit with a permuted covariate and the learner fit with the true
@@ -618,20 +618,20 @@ instead of removing saves a lot of time, and is also incorporated in the
 Let's explore the `sl3` variable importance measurements for the `washb` data.
 
 ```{r varimp}
-washb_varimp <- varimp(sl_fit, loss_squared_error)
+washb_varimp <- importance(sl_fit, loss_squared_error, type = "permute")
 washb_varimp %>%
   kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
   scroll_box(width = "100%", height = "300px")
 ```
 
-```{r varimp-plot, warning = FALSE, message = FALSE}
+```{r varimp-plot}
 # plot variable importance
 washb_varimp %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
+  labs(x = "Risk Difference", y = "Covariate",
        title = "sl3 Variable Importance for WASH Benefits Example Data")
 ```
 <!-- Explain summary!!!! -->
@@ -644,15 +644,17 @@ Follow the steps below to predict myocardial infarction (`mi`) using the
 available covariate data. We thank Prof. David Benkeser at Emory University for
 making the this Cardiovascular Health Study (CHS) data accessible.
 
-```{r ex-setup, warning=FALSE, message=FALSE}
+```{r ex-setup}
 # load the data set
-db_data <-
- url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+db_data <- url(
+  paste0("https://raw.githubusercontent.com/benkeser/sllecture/master/",
+         "chspred.csv")
+)
 chspred <- read_csv(file = db_data, col_names = TRUE)
 # take a quick peek
 head(chspred) %>%
   kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
   scroll_box(width = "100%", height = "300px")
 ```
 
@@ -691,7 +693,7 @@ handbook](https://tlverse.org/tlverse-handbook/data.html#ist).
 4. Which covariates are the most predictive of 14-day recurrent stroke,
    according to `sl3` variable importance measures?
 
-```{r ex-setup2, warning=FALSE, message=FALSE}
+```{r ex-setup2}
 ist_data <- paste0("https://raw.githubusercontent.com/tlverse/",
                    "tlverse-handbook/master/data/ist_sample.csv") %>% fread()
 
@@ -934,7 +936,7 @@ both referred to as TMLE.
 Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
 Infarction with `sl3`](#sl3ex1).
 
-```{r ex-key, eval=FALSE, message=FALSE, warning=FALSE}
+```{r ex-key, eval=FALSE}
 db_data <-
  url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
 chspred <- read_csv(file = db_data, col_names = TRUE)
@@ -982,7 +984,7 @@ sl_fit$print()
 CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
 CVsl
 
-importance <- varimp(sl_fit, loss_squared_error)
+importance <- importance(sl_fit, loss_squared_error, type = "permute")
 importance %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
@@ -1056,7 +1058,7 @@ CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 CVsl
 
 # sl3 variable importance plot
-importance <- varimp(sl_fit, loss_loglik_binomial)
+importance <- importance(sl_fit, loss_loglik_binomial, type = "permute")
 
 importance %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
