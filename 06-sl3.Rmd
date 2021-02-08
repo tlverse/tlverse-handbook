@@ -628,11 +628,9 @@ washb_varimp %>%
 ```{r varimp-plot}
 # plot variable importance
 washb_varimp %>%
-  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
-  ggplot(aes(x = risk_diff, y = name)) +
-  geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate",
-       title = "sl3 Variable Importance for WASH Benefits Example Data")
+  importance_plot(
+    main = "sl3 Variable Importance for WASH Benefits Example Data"
+  )
 ```
 <!-- Explain summary!!!! -->
 
@@ -651,6 +649,7 @@ db_data <- url(
          "chspred.csv")
 )
 chspred <- read_csv(file = db_data, col_names = TRUE)
+
 # take a quick peek
 head(chspred) %>%
   kable(digits = 4) %>%
@@ -672,7 +671,7 @@ head(chspred) %>%
 7. Cross-validate your Super Learner fit to see how well it performs on unseen
    data. Specify `loss_squared_error` as the loss function to evaluate the
    Super Learner.
-8. Use the `varimp()` function to identify the most important predictor of
+8. Use the `importance()` function to identify the most important predictor of
    myocardial infarction.
 
 ### Predicting Recurrent Ischemic Stroke in an RCT with `sl3` {#sl3ex2}
@@ -707,8 +706,8 @@ ist_task_CVsl <- make_sl3_Task(
     n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
-    )
   )
+)
 ```
 
 <!--
@@ -937,8 +936,9 @@ Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
 Infarction with `sl3`](#sl3ex1).
 
 ```{r ex-key, eval=FALSE}
-db_data <-
- url("https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv")
+db_data <- url(
+  "https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv"
+)
 chspred <- read_csv(file = db_data, col_names = TRUE)
 
 # make task
@@ -946,7 +946,7 @@ chspred_task <- make_sl3_Task(
   data = chspred,
   covariates = head(colnames(chspred), -1),
   outcome = "mi"
-  )
+)
 
 # make learners
 glm_learner <- Lrnr_glm$new()
@@ -972,26 +972,23 @@ stack <- make_learner(
   lasso_learner, ridge_learner, enet_learner,
   curated_glm_learner, mean_learner, glm_fast_learner,
   ranger_learner, svm_learner, xgb_learner
-  )
+)
 
 # make and train super learner
 sl <- Lrnr_sl$new(
   learners = stack
-  )
+)
 sl_fit <- sl$train(chspred_task)
 sl_fit$print()
 
 CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
 CVsl
 
-importance <- importance(sl_fit, loss_squared_error, type = "permute")
-importance %>%
-  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
-  ggplot(aes(x = risk_diff, y = name)) +
-  geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
-       title = "sl3 Variable Importance for Myocardian Infarction Prediction")
-
+varimp <- importance(sl_fit, loss_squared_error, type = "permute")
+varimp %>%
+  importance_plot(
+    main = "sl3 Variable Importance for Myocardial Infarction Prediction"
+  )
 ```
 
 ### Exercise 2 Solution {#sl3ex2-sol}
@@ -1018,7 +1015,7 @@ lrnr_glm <- Lrnr_glm$new()
 lrnr_lasso <- Lrnr_glmnet$new(alpha = 1)
 lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
 lrnr_enet <- Lrnr_glmnet$new(alpha = 0.5)
-lrnr_mean <- Lrnr_mean$new() 
+lrnr_mean <- Lrnr_mean$new()
 lrnr_ranger <- Lrnr_ranger$new()
 lrnr_svm <- Lrnr_svm$new()
 # xgboost grid
@@ -1052,20 +1049,17 @@ ist_task_CVsl <- make_sl3_Task(
     n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
-    )
   )
+)
 CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 CVsl
 
 # sl3 variable importance plot
-importance <- importance(sl_fit, loss_loglik_binomial, type = "permute")
-
-importance %>%
-  mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
-  ggplot(aes(x = risk_diff, y = name)) +
-  geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate",
-       title = "Variable Importance for Predicting Recurrent Ischemic Stroke")
+ist_varimp <- importance(sl_fit, loss_loglik_binomial, type = "permute")
+ist_varimp %>%
+   importance_plot(
+     main = "Variable Importance for Predicting Recurrent Ischemic Stroke"
+   )
 ```
 
 <!--
