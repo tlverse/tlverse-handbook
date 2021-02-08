@@ -156,11 +156,11 @@ We'll use the same WASH Benefits data as the earlier chapters:
 
 ### Define the variable roles
 
-We'll use the common $W$ (covariates), $A$ (treatment/intervention), $Y$ (outcome)
-data structure. `tmle3` needs to know what variables in the dataset correspond
-to each of these roles. We use a list of character vectors to tell it. We call
-this a "Node List" as it corresponds to the nodes in a Directed Acyclic Graph
-(DAG), a way of displaying causal relationships between variables.
+We'll use the common $W$ (covariates), $A$ (treatment/intervention), $Y$
+(outcome) data structure. `tmle3` needs to know what variables in the dataset
+correspond to each of these roles. We use a list of character vectors to tell
+it. We call this a "Node List" as it corresponds to the nodes in a Directed
+Acyclic Graph (DAG), a way of displaying causal relationships between variables.
 
 
 

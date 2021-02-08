@@ -151,17 +151,17 @@ in this example data, we ensure that we have subjects with a missing outcome.
 #> #   DRSISC <dbl>
 ```
 
-We have 26 variables measured, and the outcome of interest, $Y$, indicates recurrent
-ischemic stroke within 14 days after randomization (`DRSISC` in `ist`); the
-treatment of interest, $A$, is the randomized aspirin vs. no aspirin treatment
-allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists of all
-other variables measured at baseline. In this data, the outcome is occasionally
-missing, but there is no need to create a variable indicating this missingness
-(such as $\Delta$) for analyses in the `tlverse`, since it is automatically
-detected when `NA` are present in the outcome. This observed data structure can
-be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i, \Delta Y_i)$, for
-$i = 1, \ldots, n$, where $\Delta$ denotes the binary indicator that the outcome
-is observed.
+We have 26 variables measured, and the outcome of interest, $Y$, indicates
+recurrent ischemic stroke within 14 days after randomization (`DRSISC` in
+`ist`); the treatment of interest, $A$, is the randomized aspirin vs. no aspirin
+treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists
+of all other variables measured at baseline. In this data, the outcome is
+occasionally missing, but there is no need to create a variable indicating this
+missingness (such as $\Delta$) for analyses in the `tlverse`, since it is
+automatically detected when `NA` are present in the outcome. This observed data
+structure can be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i,
+\Delta Y_i)$, for $i = 1, \ldots, n$, where $\Delta$ denotes the binary
+indicator that the outcome is observed.
 
 Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
@@ -254,16 +254,16 @@ A snapshot of the data set is shown below:
 
 Table: (\#tab:skim_nhefs_data)Data summary
 
-|                         |      |
-|:------------------------|:-----|
-|Name                     |NHEFS |
-|Number of rows           |1629  |
-|Number of columns        |64    |
-|_______________________  |      |
-|Column type frequency:   |      |
-|numeric                  |64    |
-|________________________ |      |
-|Group variables          |None  |
+|                         |           |
+|:------------------------|:----------|
+|Name                     |nhefs_data |
+|Number of rows           |1629       |
+|Number of columns        |64         |
+|_______________________  |           |
+|Column type frequency:   |           |
+|numeric                  |64         |
+|________________________ |           |
+|Group variables          |None       |
 
 
 **Variable type: numeric**

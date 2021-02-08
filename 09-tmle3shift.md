@@ -251,7 +251,7 @@ give a recipe:
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
 <div class="figure" style="text-align: center">
-<img src="img/gif/shift_animation.gif" alt="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention" width="60%" />
+<img src="img/gif/shift_animation.gif" alt="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention" width="80%" />
 <p class="caption">(\#fig:unnamed-chunk-1)Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention</p>
 </div>
 
@@ -261,23 +261,22 @@ To start, let us load the packages we will use and set a seed for simulation:
 
 
 
-We need to estimate two components of the likelihood in order to construct a
-TML estimator. The first of these components is the outcome regression,
-$\hat{Q}_n$, which is a simple regression of the form $\mathbb{E}[Y \mid A,W]$.
-An estimate for such a quantity may be constructed using the Super Learner
-algorithm. We construct the components of an `sl3`-style Super Learner for a
-regression below, using a small variety of parametric and nonparametric
-regression techniques:
+We need to estimate two components of the likelihood in order to construct a TML
+estimator. The first of these components is the outcome regression, $\hat{Q}_n$,
+which is a simple regression of the form $\mathbb{E}[Y \mid A,W]$.  An estimate
+for such a quantity may be constructed using the Super Learner algorithm. We
+construct the components of an `sl3`-style Super Learner for a regression below,
+using a small variety of parametric and nonparametric regression techniques:
 
 
 
 The second of these is an estimate of the treatment mechanism, $\hat{g}_n$,
-i.e., the _propensity score_. In the case of a continuous intervention node
-$A$, such a quantity takes the form $p(A \mid W)$, which is a conditional
-density. Generally speaking, conditional density estimation is a challenging
-problem that has received much attention in the literature. To estimate the
-treatment mechanism, we must make use of learning algorithms specifically suited
-to conditional density estimation; a list of such learners may be extracted from
+i.e., the _propensity score_. In the case of a continuous intervention node $A$,
+such a quantity takes the form $p(A \mid W)$, which is a conditional density.
+Generally speaking, conditional density estimation is a challenging problem that
+has received much attention in the literature. To estimate the treatment
+mechanism, we must make use of learning algorithms specifically suited to
+conditional density estimation; a list of such learners may be extracted from
 `sl3` by using `sl3_list_learners()`:
 
 
@@ -350,7 +349,7 @@ object internally (see the `tmle3` documentation for details).
 
 ```
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
@@ -539,9 +538,9 @@ $$u(\beta, (\psi_{\delta}: \delta)) = \sum_{\delta}h(\delta)
 \left(\psi_{\delta}(P_0) - m_{\beta}(\delta) \right) \frac{d}{d\beta}
 m_{\beta}(\delta) = 0.$$
 This then leads to the following expansion
-$$\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta} u(\beta_0,
-\vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)(\vec{\psi}_n -
-\vec{\psi}_0),$$
+$$\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta}
+  u(\beta_0, \vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)
+  (\vec{\psi}_n - \vec{\psi}_0),$$
 where we have
 $$\frac{d}{d\beta} u(\beta, \psi) = -\sum_{\delta} h(\delta) \frac{d}{d\beta}
 m_{\beta}(\delta)^t \frac{d}{d\beta} m_{\beta}(\delta)
@@ -615,8 +614,8 @@ appears above):
 
 ```
 #> 
-#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
-#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
+#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
+#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
 #>          type          param init_est tmle_est       se   lower   upper

@@ -207,7 +207,7 @@ inference (i.e., confidence intervals and hypothesis tests).
 
 In many cases, we are interested in problems that ask questions regarding the
 effect of an intervention on a future outcome of interest. These questions can
-be represented as causal estimands. 
+be represented as causal estimands.
 
 ### The Causal Model {-}
 

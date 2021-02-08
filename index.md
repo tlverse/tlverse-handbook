@@ -188,31 +188,33 @@ This version of the book was built with R version 4.0.2 (2020-06-22),
 following packages:
 
 
-|package     |version    |source                                |
-|:-----------|:----------|:-------------------------------------|
-|bookdown    |0.21.6     |Github (rstudio/bookdown\@6c7346a)    |
-|bslib       |0.2.4.9001 |Github (rstudio/bslib\@3d98072)       |
-|dagitty     |0.3-1      |CRAN (R 4.0.2)                        |
-|data.table  |1.13.6     |CRAN (R 4.0.2)                        |
-|delayed     |0.3.0      |CRAN (R 4.0.2)                        |
-|downlit     |0.2.1      |CRAN (R 4.0.2)                        |
-|dplyr       |1.0.4      |CRAN (R 4.0.2)                        |
-|ggdag       |0.2.3      |CRAN (R 4.0.2)                        |
-|ggplot2     |3.3.3      |CRAN (R 4.0.2)                        |
-|kableExtra  |1.3.1      |CRAN (R 4.0.2)                        |
-|knitr       |1.31       |CRAN (R 4.0.2)                        |
-|mvtnorm     |1.1-1      |CRAN (R 4.0.2)                        |
-|origami     |1.0.3      |CRAN (R 4.0.2)                        |
-|readr       |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown   |2.6.6      |Github (rstudio/rmarkdown\@44d7b10)   |
-|skimr       |2.1.2      |CRAN (R 4.0.2)                        |
-|sl3         |1.4.2      |Github (tlverse/sl3\@a119d47)         |
-|stringr     |1.4.0      |CRAN (R 4.0.2)                        |
-|tibble      |3.0.6      |CRAN (R 4.0.2)                        |
-|tidyr       |1.1.2      |CRAN (R 4.0.2)                        |
-|tmle3       |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
-|tmle3mopttx |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
-|tmle3shift  |0.1.9      |Github (tlverse/tmle3shift\@daa0f96)  |
+|package      |version    |source                                |
+|:------------|:----------|:-------------------------------------|
+|bookdown     |0.21.6     |Github (rstudio/bookdown\@6c7346a)    |
+|bslib        |0.2.4.9001 |Github (rstudio/bslib\@3d98072)       |
+|dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
+|data.table   |1.13.6     |CRAN (R 4.0.2)                        |
+|delayed      |0.3.0      |CRAN (R 4.0.2)                        |
+|downlit      |0.2.1      |CRAN (R 4.0.2)                        |
+|dplyr        |1.0.4      |CRAN (R 4.0.2)                        |
+|forecast     |8.13       |CRAN (R 4.0.2)                        |
+|ggdag        |0.2.3      |CRAN (R 4.0.2)                        |
+|ggplot2      |3.3.3      |CRAN (R 4.0.2)                        |
+|kableExtra   |1.3.1      |CRAN (R 4.0.2)                        |
+|knitr        |1.31       |CRAN (R 4.0.2)                        |
+|mvtnorm      |1.1-1      |CRAN (R 4.0.2)                        |
+|origami      |1.0.3      |CRAN (R 4.0.2)                        |
+|randomForest |4.6-14     |CRAN (R 4.0.2)                        |
+|readr        |1.4.0      |CRAN (R 4.0.2)                        |
+|rmarkdown    |2.6.6      |Github (rstudio/rmarkdown\@44d7b10)   |
+|skimr        |2.1.2      |CRAN (R 4.0.2)                        |
+|sl3          |1.4.2      |Github (tlverse/sl3\@a119d47)         |
+|stringr      |1.4.0      |CRAN (R 4.0.2)                        |
+|tibble       |3.0.6      |CRAN (R 4.0.2)                        |
+|tidyr        |1.1.2      |CRAN (R 4.0.2)                        |
+|tmle3        |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
+|tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
+|tmle3shift   |0.1.9      |Github (tlverse/tmle3shift\@daa0f96)  |
 
 ## Learning resources {#learn}
 
