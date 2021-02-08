@@ -247,8 +247,11 @@ library(knitr)
 library(kableExtra)
 
 # load data set and take a peek
-washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
 head(washb_data) %>%
   kable() %>%
   kableExtra:::kable_styling(fixed_thead = T) %>%
@@ -257,8 +260,9 @@ head(washb_data) %>%
 
 ### 1. Define the machine learning task {-}
 
-To define the machine learning **"task"** (predict weight-for-height z-score `whz`
-using the available covariate data), we need to create an `sl3_Task` object.
+To define the machine learning **"task"** (predict weight-for-height Z-score
+`whz` using the available covariate data), we need to create an `sl3_Task`
+object.
 
 The `sl3_Task` keeps track of the roles the variables play in the machine
 learning problem, the data, and any metadata (e.g., observational-level weights,
@@ -346,7 +350,7 @@ lrnr_ranger50 <- make_learner(Lrnr_ranger, num.trees = 50)
 lrnr_hal_simple <- make_learner(Lrnr_hal9001, max_degree = 2, n_folds = 2)
 lrnr_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
 lrnr_ridge <- make_learner(Lrnr_glmnet, alpha = 0)
-lrnr_elasticnet <- make_learner(Lrnr_glmnet, alpha = .5)
+lrnr_elasticnet <- make_learner(Lrnr_glmnet, alpha = 0.5)
 ```
 
 We can also include learners from the `SuperLearner` `R` package.
@@ -412,16 +416,20 @@ We can optionally select a subset of available covariates and pass only
 those variables to the modeling algorithm.
 
 Let's consider screening covariates based on their `randomForest` variable
-importance ranking (ordered by mean decrease in accuracy). We select the top 5
-most important covariates according to this ranking, and we decreased the
-`ntree` to 20.
+importance ranking (ordered by mean decrease in accuracy). To select the top
+$5$ most important covariates according to this ranking, we can combine
+`Lrnr_screener_importance` with `Lrnr_randomForest` (limiting the number of
+trees by setting `ntree = 20`).
 
-Before you think it -- I will confess. Bob Ross and I both know that 20 trees
-makes for a lonely forest, and I shouldn't even consider it, but these are the
-sacrifices I have to make for this chapter to build in under 50 minutes!
+Hang on! Before you think it -- I will confess: Bob Ross and I both know that 20
+trees makes for a lonely forest, and I shouldn't even consider it, but these are
+the sacrifices I have to make for this chapter to build in under 50 minutes!
 
 ```{r screener}
-screen_rf <- make_learner(Lrnr_screener_randomForest, nVar = 5, ntree = 20)
+screen_rf <- Lrnr_screener_importance$new(
+  Lrnr_randomForest$new(ntree = 20),
+  num_screen = 5
+)
 # which covariates are selected on the full data?
 screen_rf$train(washb_task)
 ```
@@ -921,7 +929,7 @@ both referred to as TMLE.
 
 ## Appendix {-}
 
-### Exercise 1 Solution {sl3ex1-sol}
+### Exercise 1 Solution {#sl3ex1-sol}
 
 Here is a potential solution to the [`sl3` Exercise 1 -- Predicting Myocardial
 Infarction with `sl3`](#sl3ex1).
@@ -1039,7 +1047,7 @@ ist_task_CVsl <- make_sl3_Task(
   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
   drop_missing_outcome = TRUE,
   folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)), 
+    n = sum(!is.na(ist_data$DRSISC)),
     fold_fun = folds_vfold,
     V = 5
     )
@@ -1054,12 +1062,12 @@ importance %>%
   mutate(name = forcats::fct_reorder(X, risk_diff)) %>%
   ggplot(aes(x = risk_diff, y = name)) +
   geom_dotplot(binaxis = "y") +
-  labs(x = "Risk Difference", y = "Covariate", 
+  labs(x = "Risk Difference", y = "Covariate",
        title = "Variable Importance for Predicting Recurrent Ischemic Stroke")
 ```
 
 <!--
-### Exercise 3 Solution {sl3ex3-sol}
+### Exercise 3 Solution {#sl3ex3-sol}
 
 Here's a potential solution to the (Exercise 3)[#sl3ex3].
 
