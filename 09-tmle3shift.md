@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-02-07
+Updated: 2021-02-08
 
 ## Learning Objectives
 
@@ -350,7 +350,7 @@ object internally (see the `tmle3` documentation for details).
 
 ```
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
@@ -615,8 +615,8 @@ appears above):
 
 ```
 #> 
-#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
-#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
+#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
+#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
 #> solnp--> Completed in 2 iterations
 #> A tmle3_Fit that took 1 step(s)
 #>          type          param init_est tmle_est       se   lower   upper
