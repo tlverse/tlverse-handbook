@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 3 Datasets | Targeted Learning in R</title>
+<title>Chapter 4 Datasets | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
@@ -35,16 +35,16 @@
       <nav aria-label="Table of contents"><h2>Table of contents</h2>
         <ul class="book-toc list-unstyled">
 <li><a class="" href="index.html">About this book</a></li>
-<li><a class="" href="motivation.html">Motivation</a></li>
-<li><a class="" href="intro.html"><span class="header-section-number">1</span> The Roadmap for Targeted Learning</a></li>
-<li><a class="" href="tlverse.html"><span class="header-section-number">2</span> Welcome to the tlverse</a></li>
-<li><a class="active" href="data.html"><span class="header-section-number">3</span> Datasets</a></li>
-<li><a class="" href="origami.html"><span class="header-section-number">4</span> Cross-validation</a></li>
-<li><a class="" href="sl3.html"><span class="header-section-number">5</span> Super (Machine) Learning</a></li>
-<li><a class="" href="tmle3.html"><span class="header-section-number">6</span> The TMLE Framework</a></li>
-<li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">7</span> Optimal Individualized Treatment Regimes</a></li>
-<li><a class="" href="stochastic-treatment-regimes.html"><span class="header-section-number">8</span> Stochastic Treatment Regimes</a></li>
-<li><a class="" href="r6.html"><span class="header-section-number">9</span> A Primer on the R6 Class System</a></li>
+<li><a class="" href="robust.html"><span class="header-section-number">1</span> Robust Statistics for Reproducible Research</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">2</span> The Roadmap for Targeted Learning</a></li>
+<li><a class="" href="tlverse.html"><span class="header-section-number">3</span> Welcome to the tlverse</a></li>
+<li><a class="active" href="data.html"><span class="header-section-number">4</span> Datasets</a></li>
+<li><a class="" href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></li>
+<li><a class="" href="tmle3.html"><span class="header-section-number">7</span> The TMLE Framework</a></li>
+<li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">8</span> Optimal Individualized Treatment Regimes</a></li>
+<li><a class="" href="stochastic-treatment-regimes.html"><span class="header-section-number">9</span> Stochastic Treatment Regimes</a></li>
+<li><a class="" href="r6.html"><span class="header-section-number">10</span> A Primer on the R6 Class System</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -55,11 +55,11 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="data" class="section level1">
 <h1>
-<span class="header-section-number">3</span> Datasets<a class="anchor" aria-label="anchor" href="#data"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4</span> Datasets<a class="anchor" aria-label="anchor" href="#data"><i class="fas fa-link"></i></a>
 </h1>
 <div id="wash" class="section level2">
 <h2>
-<span class="header-section-number">3.1</span> WASH Benefits Example Dataset<a class="anchor" aria-label="anchor" href="#wash"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.1</span> WASH Benefits Example Dataset<a class="anchor" aria-label="anchor" href="#wash"><i class="fas fa-link"></i></a>
 </h2>
 <p>The data come from a study of the effect of water quality, sanitation, hand
 washing, and nutritional interventions on child development in rural Bangladesh
@@ -84,19 +84,27 @@ supplements; and</li>
 <p>In the handbook, we concentrate on child growth (size for age) as the outcome of
 interest. For reference, this trial was registered with ClinicalTrials.gov as
 NCT01590095.</p>
-<pre><code>#&gt; # A tibble: 6 x 28
-#&gt;     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
-#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;
-#&gt; 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3
-#&gt; 2 -1.16 Cont… N05265      9   286 male      25 Prima…      149. Modera…     2
-#&gt; 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1
-#&gt; 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3
-#&gt; 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2
-#&gt; # … with 1 more row, and 17 more variables: Ncomp &lt;dbl&gt;, watmin &lt;dbl&gt;,
-#&gt; #   elec &lt;dbl&gt;, floor &lt;dbl&gt;, walls &lt;dbl&gt;, roof &lt;dbl&gt;, asset_wardrobe &lt;dbl&gt;,
-#&gt; #   asset_table &lt;dbl&gt;, asset_chair &lt;dbl&gt;, asset_khat &lt;dbl&gt;, asset_chouki &lt;dbl&gt;,
-#&gt; #   asset_tv &lt;dbl&gt;, asset_refrig &lt;dbl&gt;, asset_bike &lt;dbl&gt;, asset_moto &lt;dbl&gt;,
-#&gt; #   asset_sewmach &lt;dbl&gt;, asset_mobile &lt;dbl&gt;</code></pre>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span>
+<span class="co"># read in data via readr::read_csv</span>
+<span class="va">dat</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
+         <span class="st">"wash-benefits/washb_data.csv"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 28</span>
+<span class="co">#&gt;     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3</span>
+<span class="co">#&gt; 2 -1.16 Cont… N05265      9   286 male      25 Prima…      149. Modera…     2</span>
+<span class="co">#&gt; 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1</span>
+<span class="co">#&gt; 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3</span>
+<span class="co">#&gt; 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2</span>
+<span class="co">#&gt; # … with 1 more row, and 17 more variables: Ncomp &lt;dbl&gt;, watmin &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   elec &lt;dbl&gt;, floor &lt;dbl&gt;, walls &lt;dbl&gt;, roof &lt;dbl&gt;, asset_wardrobe &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   asset_table &lt;dbl&gt;, asset_chair &lt;dbl&gt;, asset_khat &lt;dbl&gt;, asset_chouki &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   asset_tv &lt;dbl&gt;, asset_refrig &lt;dbl&gt;, asset_bike &lt;dbl&gt;, asset_moto &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   asset_sewmach &lt;dbl&gt;, asset_mobile &lt;dbl&gt;</span></code></pre></div>
 <p>For the purposes of this handbook, we start by treating the data as independent and
 identically distributed (i.i.d.) random draws from a very large target
 population. We could, with available options, account for the clustering of the
@@ -110,6 +118,16 @@ the treatment of interest, <span class="math inline">\(A\)</span>, is the random
 results in our observed data structure being <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</p>
 <p>Using the <a href="https://CRAN.R-project.org/package=skimr"><code>skimr</code> package</a>, we can
 quickly summarize the variables measured in the WASH Benefits data set:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr">skimr</a></span><span class="op">)</span>
+<span class="co"># optionally disable sparkline graphs for PDF output</span>
+<span class="va">skim_no_sparks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim_with.html">skim_with</a></span><span class="op">(</span>numeric <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/sfl.html">sfl</a></span><span class="op">(</span>hist <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
+                            ts <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/sfl.html">sfl</a></span><span class="op">(</span>line_graph <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span><span class="op">)</span>
+<span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+  <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>(#tab:skim_washb_data)Data summary</caption>
 <tbody>
@@ -541,7 +559,7 @@ study participants. Notice also the uniform distribution of the treatment groups
 </div>
 <div id="ist" class="section level2">
 <h2>
-<span class="header-section-number">3.2</span> International Stroke Trial Example Dataset<a class="anchor" aria-label="anchor" href="#ist"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.2</span> International Stroke Trial Example Dataset<a class="anchor" aria-label="anchor" href="#ist"><i class="fas fa-link"></i></a>
 </h2>
 <p>The International Stroke Trial database contains individual patient data from
 the International Stroke Trial (IST), a multi-national randomized trial
@@ -555,19 +573,26 @@ study is described in more detail in <span class="citation">Sandercock, Niewada,
 data for this handbook considers a sample of 5,000 patients and the binary
 outcome of recurrent ischemic stroke within 14 days after randomization. Also
 in this example data, we ensure that we have subjects with a missing outcome.</p>
-<pre><code>#&gt; # A tibble: 6 x 26
-#&gt;   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP
-#&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;
-#&gt; 1     46 F      F        85 N      N       N     N       Y      N       150
-#&gt; 2     33 F      M        71 Y      Y       Y     Y       N      Y       180
-#&gt; 3      6 D      M        88 N      Y       N     N       N      N       140
-#&gt; 4      8 F      F        68 Y      N       Y     Y       N      N       118
-#&gt; 5     13 F      M        60 N      N       Y     N       N      N       140
-#&gt; # … with 1 more row, and 15 more variables: RDEF1 &lt;chr&gt;, RDEF2 &lt;chr&gt;,
-#&gt; #   RDEF3 &lt;chr&gt;, RDEF4 &lt;chr&gt;, RDEF5 &lt;chr&gt;, RDEF6 &lt;chr&gt;, RDEF7 &lt;chr&gt;,
-#&gt; #   RDEF8 &lt;chr&gt;, STYPE &lt;chr&gt;, RXHEP &lt;chr&gt;, REGION &lt;chr&gt;,
-#&gt; #   MISSING_RATRIAL_RASP3 &lt;dbl&gt;, MISSING_RHEP24 &lt;dbl&gt;, RXASP &lt;dbl&gt;,
-#&gt; #   DRSISC &lt;dbl&gt;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># read in data</span>
+<span class="va">ist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/"</span>,
+         <span class="st">"data/ist_sample.csv"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ist</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 26</span>
+<span class="co">#&gt;   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP</span>
+<span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1     46 F      F        85 N      N       N     N       Y      N       150</span>
+<span class="co">#&gt; 2     33 F      M        71 Y      Y       Y     Y       N      Y       180</span>
+<span class="co">#&gt; 3      6 D      M        88 N      Y       N     N       N      N       140</span>
+<span class="co">#&gt; 4      8 F      F        68 Y      N       Y     Y       N      N       118</span>
+<span class="co">#&gt; 5     13 F      M        60 N      N       Y     N       N      N       140</span>
+<span class="co">#&gt; # … with 1 more row, and 15 more variables: RDEF1 &lt;chr&gt;, RDEF2 &lt;chr&gt;,</span>
+<span class="co">#&gt; #   RDEF3 &lt;chr&gt;, RDEF4 &lt;chr&gt;, RDEF5 &lt;chr&gt;, RDEF6 &lt;chr&gt;, RDEF7 &lt;chr&gt;,</span>
+<span class="co">#&gt; #   RDEF8 &lt;chr&gt;, STYPE &lt;chr&gt;, RXHEP &lt;chr&gt;, REGION &lt;chr&gt;,</span>
+<span class="co">#&gt; #   MISSING_RATRIAL_RASP3 &lt;dbl&gt;, MISSING_RHEP24 &lt;dbl&gt;, RXASP &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   DRSISC &lt;dbl&gt;</span></code></pre></div>
 <p>We have 26 variables measured, and the outcome of interest, <span class="math inline">\(Y\)</span>, indicates
 recurrent ischemic stroke within 14 days after randomization (<code>DRSISC</code> in
 <code>ist</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized aspirin vs. no aspirin
@@ -580,6 +605,12 @@ structure can be denoted as <span class="math inline">\(n\)</span> i.i.d. copies
 indicator that the outcome is observed.</p>
 <p>Like before, we can summarize the variables measured in the IST sample data set
 with <code>skimr</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">ist</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+  <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">ist</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>(#tab:skim_ist_data)Data summary</caption>
 <tbody>
@@ -938,32 +969,45 @@ with <code>skimr</code>:</p>
 </div>
 <div id="NHEFS" class="section level2">
 <h2>
-<span class="header-section-number">3.3</span> NHANES I Epidemiologic Follow-up Study (NHEFS)<a class="anchor" aria-label="anchor" href="#NHEFS"><i class="fas fa-link"></i></a>
+<span class="header-section-number">4.3</span> NHANES I Epidemiologic Follow-up Study (NHEFS)<a class="anchor" aria-label="anchor" href="#NHEFS"><i class="fas fa-link"></i></a>
 </h2>
 <p>This data is from the National Health and Nutrition Examination Survey (NHANES)
 Data I Epidemiologic Follow-up Study. More coming soon.</p>
-<pre><code>#&gt; # A tibble: 6 x 64
-#&gt;    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income
-#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
-#&gt; 1   233     0     0    NA    NA    NA   175    96     0    42     1     19
-#&gt; 2   235     0     0    NA    NA    NA   123    80     0    36     0     18
-#&gt; 3   244     0     0    NA    NA    NA   115    75     1    56     1     15
-#&gt; 4   245     0     1    85     2    14   148    78     0    68     1     15
-#&gt; 5   252     0     0    NA    NA    NA   118    77     0    40     0     18
-#&gt; # … with 1 more row, and 52 more variables: marital &lt;dbl&gt;, school &lt;dbl&gt;,
-#&gt; #   education &lt;dbl&gt;, ht &lt;dbl&gt;, wt71 &lt;dbl&gt;, wt82 &lt;dbl&gt;, wt82_71 &lt;dbl&gt;,
-#&gt; #   birthplace &lt;dbl&gt;, smokeintensity &lt;dbl&gt;, smkintensity82_71 &lt;dbl&gt;,
-#&gt; #   smokeyrs &lt;dbl&gt;, asthma &lt;dbl&gt;, bronch &lt;dbl&gt;, tb &lt;dbl&gt;, hf &lt;dbl&gt;, hbp &lt;dbl&gt;,
-#&gt; #   pepticulcer &lt;dbl&gt;, colitis &lt;dbl&gt;, hepatitis &lt;dbl&gt;, chroniccough &lt;dbl&gt;,
-#&gt; #   hayfever &lt;dbl&gt;, diabetes &lt;dbl&gt;, polio &lt;dbl&gt;, tumor &lt;dbl&gt;,
-#&gt; #   nervousbreak &lt;dbl&gt;, alcoholpy &lt;dbl&gt;, alcoholfreq &lt;dbl&gt;, alcoholtype &lt;dbl&gt;,
-#&gt; #   alcoholhowmuch &lt;dbl&gt;, pica &lt;dbl&gt;, headache &lt;dbl&gt;, otherpain &lt;dbl&gt;,
-#&gt; #   weakheart &lt;dbl&gt;, allergies &lt;dbl&gt;, nerves &lt;dbl&gt;, lackpep &lt;dbl&gt;,
-#&gt; #   hbpmed &lt;dbl&gt;, boweltrouble &lt;dbl&gt;, wtloss &lt;dbl&gt;, infection &lt;dbl&gt;,
-#&gt; #   active &lt;dbl&gt;, exercise &lt;dbl&gt;, birthcontrol &lt;dbl&gt;, pregnancies &lt;dbl&gt;,
-#&gt; #   cholesterol &lt;dbl&gt;, hightax82 &lt;dbl&gt;, price71 &lt;dbl&gt;, price82 &lt;dbl&gt;,
-#&gt; #   tax71 &lt;dbl&gt;, tax82 &lt;dbl&gt;, price71_82 &lt;dbl&gt;, tax71_82 &lt;dbl&gt;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># read in data</span>
+<span class="va">nhefs_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op">(</span>
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/"</span>,
+         <span class="st">"data/NHEFS.csv"</span><span class="op">)</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 6 x 64</span>
+<span class="co">#&gt;    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income</span>
+<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;</span>
+<span class="co">#&gt; 1   233     0     0    NA    NA    NA   175    96     0    42     1     19</span>
+<span class="co">#&gt; 2   235     0     0    NA    NA    NA   123    80     0    36     0     18</span>
+<span class="co">#&gt; 3   244     0     0    NA    NA    NA   115    75     1    56     1     15</span>
+<span class="co">#&gt; 4   245     0     1    85     2    14   148    78     0    68     1     15</span>
+<span class="co">#&gt; 5   252     0     0    NA    NA    NA   118    77     0    40     0     18</span>
+<span class="co">#&gt; # … with 1 more row, and 52 more variables: marital &lt;dbl&gt;, school &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   education &lt;dbl&gt;, ht &lt;dbl&gt;, wt71 &lt;dbl&gt;, wt82 &lt;dbl&gt;, wt82_71 &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   birthplace &lt;dbl&gt;, smokeintensity &lt;dbl&gt;, smkintensity82_71 &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   smokeyrs &lt;dbl&gt;, asthma &lt;dbl&gt;, bronch &lt;dbl&gt;, tb &lt;dbl&gt;, hf &lt;dbl&gt;, hbp &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   pepticulcer &lt;dbl&gt;, colitis &lt;dbl&gt;, hepatitis &lt;dbl&gt;, chroniccough &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   hayfever &lt;dbl&gt;, diabetes &lt;dbl&gt;, polio &lt;dbl&gt;, tumor &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   nervousbreak &lt;dbl&gt;, alcoholpy &lt;dbl&gt;, alcoholfreq &lt;dbl&gt;, alcoholtype &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   alcoholhowmuch &lt;dbl&gt;, pica &lt;dbl&gt;, headache &lt;dbl&gt;, otherpain &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   weakheart &lt;dbl&gt;, allergies &lt;dbl&gt;, nerves &lt;dbl&gt;, lackpep &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   hbpmed &lt;dbl&gt;, boweltrouble &lt;dbl&gt;, wtloss &lt;dbl&gt;, infection &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   active &lt;dbl&gt;, exercise &lt;dbl&gt;, birthcontrol &lt;dbl&gt;, pregnancies &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   cholesterol &lt;dbl&gt;, hightax82 &lt;dbl&gt;, price71 &lt;dbl&gt;, price82 &lt;dbl&gt;,</span>
+<span class="co">#&gt; #   tax71 &lt;dbl&gt;, tax82 &lt;dbl&gt;, price71_82 &lt;dbl&gt;, tax71_82 &lt;dbl&gt;</span></code></pre></div>
 <p>A snapshot of the data set is shown below:</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
+  <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span>
+<span class="op">}</span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
 <caption>(#tab:skim_nhefs_data)Data summary</caption>
 <tbody>
@@ -1854,15 +1898,15 @@ Data I Epidemiologic Follow-up Study. More coming soon.</p>
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="tlverse.html"><span class="header-section-number">2</span> Welcome to the tlverse</a></div>
-<div class="next"><a href="origami.html"><span class="header-section-number">4</span> Cross-validation</a></div>
+<div class="prev"><a href="tlverse.html"><span class="header-section-number">3</span> Welcome to the tlverse</a></div>
+<div class="next"><a href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#data"><span class="header-section-number">3</span> Datasets</a></li>
-<li><a class="nav-link" href="#wash"><span class="header-section-number">3.1</span> WASH Benefits Example Dataset</a></li>
-<li><a class="nav-link" href="#ist"><span class="header-section-number">3.2</span> International Stroke Trial Example Dataset</a></li>
-<li><a class="nav-link" href="#NHEFS"><span class="header-section-number">3.3</span> NHANES I Epidemiologic Follow-up Study (NHEFS)</a></li>
+<li><a class="nav-link" href="#data"><span class="header-section-number">4</span> Datasets</a></li>
+<li><a class="nav-link" href="#wash"><span class="header-section-number">4.1</span> WASH Benefits Example Dataset</a></li>
+<li><a class="nav-link" href="#ist"><span class="header-section-number">4.2</span> International Stroke Trial Example Dataset</a></li>
+<li><a class="nav-link" href="#NHEFS"><span class="header-section-number">4.3</span> NHANES I Epidemiologic Follow-up Study (NHEFS)</a></li>
 </ul>
 
       <div class="book-extra">

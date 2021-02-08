@@ -191,7 +191,7 @@ following packages:
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
 |bookdown     |0.21.6     |Github (rstudio/bookdown\@6c7346a)    |
-|bslib        |0.2.4.9001 |Github (rstudio/bslib\@3d98072)       |
+|bslib        |0.2.4.9001 |Github (rstudio/bslib\@5a3d789)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table   |1.13.6     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
@@ -199,6 +199,7 @@ following packages:
 |dplyr        |1.0.4      |CRAN (R 4.0.2)                        |
 |forecast     |8.13       |CRAN (R 4.0.2)                        |
 |ggdag        |0.2.3      |CRAN (R 4.0.2)                        |
+|ggfortify    |0.4.11     |CRAN (R 4.0.2)                        |
 |ggplot2      |3.3.3      |CRAN (R 4.0.2)                        |
 |kableExtra   |1.3.1      |CRAN (R 4.0.2)                        |
 |knitr        |1.31       |CRAN (R 4.0.2)                        |
@@ -206,7 +207,7 @@ following packages:
 |origami      |1.0.3      |CRAN (R 4.0.2)                        |
 |randomForest |4.6-14     |CRAN (R 4.0.2)                        |
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.6.6      |Github (rstudio/rmarkdown\@44d7b10)   |
+|rmarkdown    |2.6.6      |Github (rstudio/rmarkdown\@de0e2ec)   |
 |skimr        |2.1.2      |CRAN (R 4.0.2)                        |
 |sl3          |1.4.2      |Github (tlverse/sl3\@a119d47)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |

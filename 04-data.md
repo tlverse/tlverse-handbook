@@ -27,7 +27,14 @@ interest. For reference, this trial was registered with ClinicalTrials.gov as
 NCT01590095.
 
 
-```
+```r
+library(readr)
+# read in data via readr::read_csv
+dat <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv")
+)
+head(dat)
 #> # A tibble: 6 x 28
 #>     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
 #>   <dbl> <chr> <chr>   <dbl> <dbl> <chr>  <dbl> <chr>      <dbl> <chr>   <dbl>
@@ -58,6 +65,19 @@ A_i, Y_i)$, for $i = 1, \ldots, n$.
 
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
+
+
+```r
+library(skimr)
+# optionally disable sparkline graphs for PDF output
+skim_no_sparks <- skim_with(numeric = sfl(hist = NULL),
+                            ts = sfl(line_graph = NULL))
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(dat))
+} else {
+  skim(dat)
+}
+```
 
 
 Table: (\#tab:skim_washb_data)Data summary
@@ -135,7 +155,13 @@ outcome of recurrent ischemic stroke within 14 days after randomization.  Also
 in this example data, we ensure that we have subjects with a missing outcome.
 
 
-```
+```r
+# read in data
+ist <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/",
+         "data/ist_sample.csv")
+)
+head(ist)
 #> # A tibble: 6 x 26
 #>   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP
 #>    <dbl> <chr>  <chr> <dbl> <chr>  <chr>   <chr> <chr>   <chr>  <chr> <dbl>
@@ -165,6 +191,15 @@ indicator that the outcome is observed.
 
 Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
+
+
+```r
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(ist))
+} else {
+  skim(ist)
+}
+```
 
 
 Table: (\#tab:skim_ist_data)Data summary
@@ -225,7 +260,13 @@ This data is from the National Health and Nutrition Examination Survey (NHANES)
 Data I Epidemiologic Follow-up Study. More coming soon.
 
 
-```
+```r
+# read in data
+nhefs_data <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/",
+         "data/NHEFS.csv")
+)
+head(nhefs_data)
 #> # A tibble: 6 x 64
 #>    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income
 #>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
@@ -250,6 +291,15 @@ Data I Epidemiologic Follow-up Study. More coming soon.
 ```
 
 A snapshot of the data set is shown below:
+
+
+```r
+if (knitr::is_latex_output()) {
+  knitr::kable(skim_no_sparks(nhefs_data))
+} else {
+  skim(nhefs_data)
+}
+```
 
 
 Table: (\#tab:skim_nhefs_data)Data summary

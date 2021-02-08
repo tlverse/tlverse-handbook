@@ -218,6 +218,29 @@ variables. Ignoring exogenous $U$ terms (explained below), we assume the
 following ordering of the variables in the observed data $O$. We do this below
 using `DAGitty` [@textor2011dagitty]:
 
+
+```r
+library(dagitty)
+library(ggdag)
+
+# make DAG by specifying dependence structure
+dag <- dagitty(
+  "dag {
+    W -> A
+    W -> Y
+    A -> Y
+    W -> A -> Y
+  }"
+)
+exposures(dag) <- c("A")
+outcomes(dag) <- c("Y")
+tidy_dag <- tidy_dagitty(dag)
+
+# visualize DAG
+ggdag(tidy_dag) +
+  theme_dag()
+```
+
 <img src="02-roadmap_files/figure-html/simple-DAG-1.png" width="80%" style="display: block; margin: auto;" />
 
 While directed acyclic graphs (DAGs) like above provide a convenient means by

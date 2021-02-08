@@ -260,6 +260,13 @@ give a recipe:
 To start, let us load the packages we will use and set a seed for simulation:
 
 
+```r
+library(data.table)
+library(haldensify)
+library(sl3)
+library(tmle3)
+library(tmle3shift)
+```
 
 We need to estimate two components of the likelihood in order to construct a TML
 estimator. The first of these components is the outcome regression, $\hat{Q}_n$,
@@ -269,6 +276,19 @@ construct the components of an `sl3`-style Super Learner for a regression below,
 using a small variety of parametric and nonparametric regression techniques:
 
 
+```r
+# learners used for conditional mean of the outcome
+mean_lrnr <- Lrnr_mean$new()
+fglm_lrnr <- Lrnr_glm_fast$new()
+rf_lrnr <- Lrnr_ranger$new()
+hal_lrnr <- Lrnr_hal9001$new(max_degree = 3, n_folds = 3)
+
+# SL for the outcome regression
+sl_reg_lrnr <- Lrnr_sl$new(
+  learners = list(mean_lrnr, fglm_lrnr, rf_lrnr, hal_lrnr),
+  metalearner = Lrnr_nnls$new()
+)
+```
 
 The second of these is an estimate of the treatment mechanism, $\hat{g}_n$,
 i.e., the _propensity score_. In the case of a continuous intervention node $A$,
@@ -280,7 +300,8 @@ conditional density estimation; a list of such learners may be extracted from
 `sl3` by using `sl3_list_learners()`:
 
 
-```
+```r
+sl3_list_learners("density")
 #> [1] "Lrnr_density_discretize"     "Lrnr_density_hse"           
 #> [3] "Lrnr_density_semiparametric" "Lrnr_haldensify"            
 #> [5] "Lrnr_solnp_density"
@@ -295,11 +316,36 @@ constructed by pooling estimates from each of these modified conditional density
 regression techniques.
 
 
+```r
+# learners used for conditional densities (i.e., generalized propensity score)
+haldensify_lrnr <- Lrnr_haldensify$new(
+  n_bins = c(3, 5),
+  lambda_seq = exp(seq(-1, -10, length = 200))
+)
+# semiparametric density estimator based on homoscedastic errors (HOSE)
+hose_hal_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = hal_lrnr
+)
+# semiparametric density estimator based on heteroscedastic errors (HESE)
+hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = rf_lrnr,
+  var_learner = fglm_lrnr
+)
+
+# SL for the conditional treatment density
+sl_dens_lrnr <- Lrnr_sl$new(
+  learners = list(haldensify_lrnr, hose_hal_lrnr, hese_rf_glm_lrnr),
+  metalearner = Lrnr_solnp_density$new()
+)
+```
 
 Finally, we construct a `learner_list` object for use in constructing a TML
 estimator of our target parameter of interest:
 
 
+```r
+learner_list <- list(Y = sl_reg_lrnr, A = sl_dens_lrnr)
+```
 
 The `learner_list` object above specifies the role that each of the ensemble
 learners we have generated is to play in computing initial estimators to be
@@ -310,7 +356,29 @@ regression while our `g_learner` is used in estimating the treatment mechanism.
 ### Example with Simulated Data
 
 
-```
+```r
+# simulate simple data for tmle-shift sketch
+n_obs <- 400 # number of observations
+tx_mult <- 2 # multiplier for the effect of W = 1 on the treatment
+
+## baseline covariates -- simple, binary
+W <- replicate(2, rbinom(n_obs, 1, 0.5))
+
+## create treatment based on baseline W
+A <- rnorm(n_obs, mean = tx_mult * W, sd = 1)
+
+## create outcome as a linear function of A, W + white noise
+Y <- rbinom(n_obs, 1, prob = plogis(A + W))
+
+# organize data and nodes for tmle3
+data <- data.table(W, A, Y)
+setnames(data, c("W1", "W2", "A", "Y"))
+node_list <- list(
+  W = c("W1", "W2"),
+  A = "A",
+  Y = "Y"
+)
+head(data)
 #>    W1 W2         A Y
 #> 1:  1  1  0.271651 1
 #> 2:  0  0 -0.663368 1
@@ -337,6 +405,14 @@ the scale of the treatment $A$ -- that is, we specify $\delta = 0.5$ (note that
 this is an arbitrarily chosen value for this example).
 
 
+```r
+# initialize a tmle specification
+tmle_spec <- tmle_shift(
+  shift_val = 0.5,
+  shift_fxn = shift_additive,
+  shift_fxn_inv = shift_additive_inv
+)
+```
 
 As seen above, the `tmle_shift` specification object (like all `tmle3_Spec`
 objects) does _not_ store the data for our specific analysis of interest. Later,
@@ -347,11 +423,13 @@ object internally (see the `tmle3` documentation for details).
 ### Targeted Estimation of Stochastic Interventions Effects
 
 
-```
+```r
+tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
 #> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
+tmle_fit
 #> A tmle3_Fit that took 1 step(s)
 #>    type         param init_est tmle_est       se   lower   upper
 #> 1:  TSM E[Y_{A=NULL}]  0.76199  0.76263 0.021966 0.71958 0.80568
@@ -475,6 +553,16 @@ in assessing the mean counterfactual outcome over a grid of shifts -1, 0, 1 on t
 choice of shift is an arbitrarily chosen set of values for this example).
 
 
+```r
+# what's the grid of shifts we wish to consider?
+delta_grid <- seq(-1, 1, 1)
+
+# initialize a tmle specification
+tmle_spec <- tmle_vimshift_delta(
+  shift_grid = delta_grid,
+  max_shifted_ratio = 2
+)
+```
 
 As seen above, the `tmle_vimshift` specification object (like all `tmle3_Spec`
 objects) does _not_ store the data for our specific analysis of interest. Later,
@@ -493,23 +581,25 @@ to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:
 
 
-```
+```r
+tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
+#> Iter: 1 fn: 534.0196	 Pars:  0.40783 0.35788 0.23429
 #> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
 #> solnp--> Completed in 2 iterations
+tmle_fit
 #> A tmle3_Fit that took 1 step(s)
 #>          type          param init_est tmle_est        se   lower   upper
 #> 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
 #> 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
 #> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80029 0.0183487 0.76433 0.83625
-#> 4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64760 0.72547
+#> 4: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
 #> 5: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
 #> 1:         0.56184           0.51749           0.60618
 #> 2:         0.69748           0.65240           0.74255
 #> 3:         0.80029           0.76433           0.83625
-#> 4:         0.68654           0.64760           0.72547
+#> 4:         0.68653           0.64760           0.72547
 #> 5:         0.11923           0.10137           0.13709
 ```
 
@@ -579,12 +669,13 @@ for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
 $\text{EIF}_{\beta}(O)$.
 
 
-```
+```r
+tmle_fit$summary[4:5, ]
 #>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64760 0.72547
+#> 1: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
 #> 2: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.68654           0.64760           0.72547
+#> 1:         0.68653           0.64760           0.72547
 #> 2:         0.11923           0.10137           0.13709
 ```
 
@@ -612,11 +703,20 @@ parameters of the working marginal structural model, we may use the
 appears above):
 
 
-```
+```r
+# initialize a tmle specification
+tmle_msm_spec <- tmle_vimshift_msm(
+  shift_grid = delta_grid,
+  max_shifted_ratio = 2
+)
+
+# fit the TML estimator and examine the results
+tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
 #> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
 #> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
 #> solnp--> Completed in 2 iterations
+tmle_msm_fit
 #> A tmle3_Fit that took 1 step(s)
 #>          type          param init_est tmle_est       se   lower   upper
 #> 1: MSM_linear MSM(intercept)  0.69052  0.69085 0.020071 0.65151 0.73019
@@ -633,7 +733,14 @@ investigate the data from the WASH Benefits trial. To start, let's load the
 data, convert all columns to be of class `numeric`, and take a quick look at it
 
 
-```
+```r
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
+washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
+head(washb_data, 3)
 #>      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
 #> 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
 #> 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
@@ -658,6 +765,14 @@ chapters), the intervention of interest to be the mother's age at time of
 child's birth, and take all other covariates to be potential confounders.
 
 
+```r
+node_list <- list(
+  W = names(washb_data)[!(names(washb_data) %in%
+    c("whz", "momage"))],
+  A = "momage",
+  Y = "whz"
+)
+```
 
 Were we to consider the counterfactual weight-for-height Z-score under shifts in
 the age of the mother at child's birth, how would we interpret estimates of our
@@ -674,6 +789,13 @@ a shift in the mother's age down by two years ($\delta = -2$) or up by two years
 just as we did in a previous example:
 
 
+```r
+# initialize a tmle specification for the variable importance parameter
+washb_vim_spec <- tmle_vimshift_delta(
+  shift_grid = c(-2, 2),
+  max_shifted_ratio = 2
+)
+```
 
 Prior to running our analysis, we'll modify the `learner_list` object we had
 created such that the density estimation procedure we rely on will be only the
@@ -683,6 +805,16 @@ conditional density approach based on the highly adaptive lasso [@diaz2011super;
 is currently unable to accommodate larger datasets.
 
 
+```r
+# we need to turn on cross-validation for the HOSE learner
+cv_hose_hal_lrnr <- Lrnr_cv$new(
+  learner = hose_hal_lrnr,
+  full_fit = TRUE
+)
+
+# modify learner list, using existing SL for Q fit
+learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
+```
 
 Having made the above preparations, we're now ready to estimate the
 counterfactual mean of the weight-for-height Z-score under a small grid of
@@ -690,6 +822,10 @@ shifts in the mother's age at child's birth. Just as before, we do this through
 a simple call to our `tmle3` wrapper function:
 
 
+```r
+washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
+washb_tmle_fit
+```
 
 ---
 

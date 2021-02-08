@@ -14,19 +14,22 @@ Updated: 2021-02-08
 3. Select a loss function that is appropriate for the functional parameter to be
    estimated.
 4. Understand and contrast different cross-validation schemes for i.i.d. data.
-5. Understand and contrast different cross-validation schemes for dependent
-   (time-series) data.
-6. Setup the proper cross-validation structure for the use by the Super Learner
+5. Understand and contrast different cross-validation schemes for time dependent
+   data.
+6. Setup the proper fold structure, build custom fold-based function, and
+   cross-validate the proposed function using the `origami` `R` package.
+7. Setup the proper cross-validation structure for the use by the Super Learner
    using the the `origami` `R` package.
 
 ## Introduction
 
-In this chapter, we start elaborating on the estimation step outlined in
-[Chapter 5](#intro) introducing the [_Roadmap for Targeted Learning_](#roadmap).
-In order to generate an initial estimate of our target parameter - which is the
-focus of the following chapter [Chapter 9](#sl3), we first need to translate,
-and incorporate, our knowledge about the data generating process into the
-estimation procedure, and decide how to evaluate our estimation performance.
+In this chapter, we start elaborating on the estimation step outlined in the
+[introductory chapter](#intro), which discussed the [_Roadmap for Targeted
+Learning_](#roadmap). In order to generate an initial estimate of our target
+parameter -- which is the focus of the following [chapter on Super
+Learning](#sl3), we first need to translate, and incorporate, our knowledge
+about the data generating process into the estimation procedure, and decide how
+to evaluate our estimation performance.
 
 The performance, or error, of any algorithm used in the estimation procedure
 directly relates to its generalizability on the independent data.  The proper
@@ -34,16 +37,22 @@ assessment of the performance of proposed algorithms is extremely important; it
 guides the choice of the final learning method, and it gives us a quantitative
 assessment of how good the chosen algorithm is doing. In order to assess the
 performance of an algorithm, we introduce the concept of a **loss** function,
-which helps us define the **expected prediction error**, also referred to as the
-**risk**. Our goal, as further specified in the next chapter, will be to
-estimate the true risk of the proposed statistical learning method.  In the
-following, we propose a method to do so using the observed data and
+which helps us define the **risk**, also referred to as the **expected
+prediction error**.  Our goal, as further specified in the next chapter, will be
+to estimate the true risk of the proposed statistical learning method. Our
+goal(s) consist of:
+
+1. Estimating the performance of different algorithms in order to choose the
+   best one.
+2. Having chosen a winner, try to estimate the true risk of the proposed
+   statistical learning method.
+
+In the following, we propose a method to do so using the observed data and
 **cross-validation** procedure using the `origami` package [@coyle2018origami].
 
 ## Background
 
-Ideally, in a data-rich scenario, we would split our dataset
-into three parts:
+Ideally, in a data-rich scenario, we would split our dataset into three parts:
 
 1. training set,
 2. validation set,
@@ -69,7 +78,9 @@ particularly useful for model selection and estimation of the true risk. In
 addition, they might provide more insight on variability and robustness of the
 algorithm fit then fitting an algorithm only once on all the training data.
 
-In this chapter, we focus on **cross-validation** - an essential tool for
+### Introducing: cross-validation
+
+In this chapter, we focus on **cross-validation** -- an essential tool for
 evaluating how any given algorithm extends from a sample to the target
 population from which the sample is derived. It has seen widespread application
 in all facets of statistics, perhaps most notably statistical machine learning.
@@ -78,8 +89,11 @@ estimation of the true risk associated with any statistical learning method in
 order to evaluate its performance. It particular, cross-validation directly
 estimates the true risk when the estimate is applied to an independent sample
 from the joint distribution of the predictors and outcome. When used for model
-selection, cross-validation has powerful optimality properties; for further
-details, we suggest @vdl2004asymptotic, @dudoit2005asymptotics and
+selection, cross-validation has powerful optimality properties. The asymptotic
+optimality results state that the cross-validated selector performs (in terms of
+risk) asymptotically as well as an optimal oracle selector based on the true,
+unknown data generating distribution. For further details on the theoretical
+results, we suggest @vdl2004asymptotic, @dudoit2005asymptotics and
 @vaart2006oracle.
 
 In great generality, cross-validation works by partitioning a sample into
@@ -90,32 +104,32 @@ of the data. A variety of different partitioning schemes exist, depending on the
 problem of interest, data size, prevalence of the outcome, and dependence
 structure. The `origami` package provides a suite of tools that generalize the
 application of cross-validation to arbitrary data analytic procedures. In the
-the following, we introduce the general structure of the `origami` package,
-describe different types of cross-validation schemes readily available in
-`origami`, and show their use in applied settings.
+the following, we describe different types of cross-validation schemes readily
+available in `origami`, introduce the general structure of the `origami`
+package, and show their use in applied settings.
 
 ---
 
-## Estimation Roadmap
+## Estimation Roadmap: how does it all fit together?
 
 Similarly to how we defined the [_Roadmap for Targeted Learning_](#roadmap), we
 can define the **Estimation Roadmap** to guide the estimation process. In
 particular, we have developed a unified loss-based cross-validation methodology
 for estimator construction, selection, and performance assessment in a series of
-articles (e.g., see [@vdl2004asymptotic; @dudoit2005asymptotics;
-@vaart2006oracle; @vdl2007super]) that follow three main steps:
+articles (e.g., see @vdl2004asymptotic, @dudoit2005asymptotics,
+@vaart2006oracle, and @vdl2007super) that follow three main steps:
 
-1. **The loss funtion**
+1. **The loss funtion**:
 Define the target parameter as the minimizer of the expected loss (risk) for a
-full data loss function chosen to represent the desired measure of performance.
-Further, map the full data loss function into an observed data loss function,
-having the same expected value and leading to an efficient estimator of risk.
+full data loss function chosen to represent the desired performance measure.
+Map the full data loss function into an observed data loss function, having the
+same expected value and leading to an efficient estimator of risk.
 
-2. **The algorithms**
+2. **The algorithms**:
 Construct a finite collection of candidate estimators for the parameter of
 interest.
 
-3. **The cross-validation**
+3. **The cross-validation scheme**:
 Apply appropriate cross-validation to select an optimal estimator among the
 candidates, and assess the overall performance of the resulting estimator.
 
@@ -130,35 +144,27 @@ indicator (0-1) loss. The unified loss-based framework also reconciles censored
 and full data estimation methods, as full data estimators are recovered as
 special cases of censored data estimators.
 
-In the following, we focus on Step 3 of the Estimator Roadmap, namely
-cross-validation for estimator selection and performance assessment. The
-asymptotic optimality results state that the cross-validated selector performs
-(in terms of risk) asymptotically as well as an optimal oracle selector based on
-the true, unknown data generating distribution.  For theoretical derivations of
-the stated results, we suggest the interest reader consults
-[@dudoit2005asymptotics].
-
-## Data Structure and Notation
+## Example: cross-validation and prediction
 
 Now that we introduced the Estimation Roadmap, we can define our objective with
-more mathematical notation. Let the observed data be defined as $X = (W,Y)$,
-where a unit specific data can be written as $X_i = (W_i,Y_i)$, for $i = 1,
-\cdots, n$.  For each of the $n$ samples, we denote $Y_i$ as the outcome of
-interest (polychotomous or continuous), and $W_i$ as a $p$-dimensional set of
-covariates. Let $\psi_0(W)$ denote the target parameter of interest we want to
-estimate; for example, we might be interested in estimating the conditional
-expectation of the outcome given the covariates, so $\psi_0(W) = E(Y \mid W)$.
-Following the Estimation Roadmap, we chose the appropriate loss function, $L$,
-such that $\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]$.  But how do we
-know how each $\psi$ is doing? In order to pick the optimal estimator among the
-candidates, and assess the overall performance of the resulting estimator, use
-cross-validation - effectively, dividing the available data into the training
-set and validation set. Observations in the training set are used to fit (or
-train) the estimator, while the validation set is used to assess the risk of (or
-validate) it.
+more mathematical notation, using prediction as an example. Let the observed
+data be defined as $X = (W,Y)$, where a unit specific data can be written as
+$X_i = (W_i,Y_i)$, for $i = 1, \ldots, n$. For each of the $n$ samples, we
+denote $Y_i$ as the outcome of interest (polychotomous or continuous), and $W_i$
+as a $p$-dimensional set of covariates. Let $\psi_0(W)$ denote the target
+parameter of interest we want to estimate; for this example, we are interested
+in estimating the conditional expectation of the outcome given the covariates,
+$\psi_0(W) = E(Y \mid W)$.  Following the Estimation Roadmap, we chose the
+appropriate loss function, $L$, such that $\psi_0(W) = \text{argmin}_{\psi}
+E[L(X,\psi(W))]$. But how do we know how each $\psi$ is doing? In order to pick
+the optimal estimator among the candidates, and assess the overall performance
+of the resulting estimator, use cross-validation -- dividing the available data
+into the training set and validation set. Observations in the training set are
+used to fit (or train) the estimator, while the validation set is used to assess
+the risk of (or validate) it.
 
 To derive a general representation for cross-validation, we define a **split
-vector**, $B_n = (B_n(i): i = 1, \cdots, n) \in \{0,1\}^n$. Note that split
+vector**, $B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n$. Note that split
 vector is independent of the empirical distribution, $P_n$. A realization of
 $B_n$ defines a random split of the data into a training and validation set such
 that if
@@ -170,61 +176,12 @@ distributions of the training and validation sets, respectively. Then $n_0 =
 set. The particular distribution of the split vector $B_n$ defines the type of
 cross-validation scheme, tailored to the problem and data set in hand.
 
-## General workflow of `origami`
-
-Before we dive into more details, let's take a moment to review some of the
-basic functionality in `origami` R package. The main function in the `origami`
-is `cross_validate`. To start off, the user must define folds and a function
-that operates on each fold. Once these are passed to `cross_validate`, this
-function will map the fold-specific function across the folds, combining the
-results in a reasonable way. We will see this in action in later sections; for
-now, we provide specific details on each each step of this process below.
-
-### (1) Define folds
-
-The `folds` object passed to `cross_validate` is a list of folds; such lists can
-be generated using the `make_folds` function. Each fold consists of a list with
-a `training` index vector, a `validation` index vector, and a `fold_index` (its
-order in the list of folds). This function supports a variety of
-cross-validation schemes we describe in the following section. The `make_folds`
-can balance across levels of a variable (`stratify_ids`), and it can also keep
-all observations from the same independent unit together (`cluster`).
-
-### (2) Define fold function
-
-The `cv_fun` argument to `cross_validate` is a function that will perform some
-operation on each fold. The first argument to this function must be `fold`,
-which will receive an individual fold object to operate on. Additional arguments
-can be passed to `cv_fun` using the `...` argument to `cross_validate`. Within
-this function, the convenience functions `training`, `validation` and
-`fold_index` can return the various components of a fold object. If `training`
-or `validation` is passed an object, it will index into it in a sensible way.
-For instance, if it is a vector, it will index the vector directly. If it is a
-`data.frame` or `matrix`, it will index rows. This allows the user to easily
-partition data into training and validation sets. The fold function must return
-a named list of results containing whatever fold-specific outputs are generated.
-
-### (3) Apply `cross-validate`
-
-After defining folds, `cross_validate` can be used to map the `cv_fun` across
-the `folds` using `future_lapply`. This means that it can be easily parallelized
-by specifying a parallelization scheme (i.e., a `plan`). The application of
-`cross_validate` generates a list of results. As described above, each call to
-`cv_fun` itself returns a list of results, with different elements for each type
-of result we care about. The main loop generates a list of these individual
-lists of results (a sort of "meta-list"). This "meta-list" is then inverted such
-that there is one element per result type (this too is a list of the results for
-each fold). By default, `combine_results` is used to combine these results type
-lists in a sensible manner. How results are combined is determined automatically
-by examining the data types of the results from the first fold. This can be
-modified by specifying a list of arguments to `.combine_control`.
-
 ## Cross-validation schemes in `origami`
 
 As we specified earlier, the particular distribution of the split vector $B_n$
 defines the type of cross-validation method. In the following, we describe
 different types of cross-validation schemes available in `origami` package, and
-show their use in the following sections.
+show their use in the sequel.
 
 ### WASH Benefits Study Example {-}
 
@@ -236,6 +193,27 @@ illustration, we will start by treating the data as independent and identically
 distributed (i.i.d.) random draws. To see what each cross-validation scheme is
 doing, we will subset the data to only $n=30$. Note that each row represents an
 i.i.d. sample, indexed by the row number.
+
+
+```r
+library(data.table)
+library(origami)
+library(knitr)
+library(kableExtra)
+
+# load data set and take a peek
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
+
+washb_data <- washb_data[1:30, ]
+head(washb_data) %>%
+  kable() %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
+```
 
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
  <thead>
@@ -474,10 +452,11 @@ unique i.i.d. sample. Notice the structure of the `origami` output:
 
 This structure of the `origami` output (fold(s)) will persist for each of the
 cross-validation schemes we present in this chapter. Below, we show the fold
-generated by the resubstitution method:
+generated by the re-substitution method:
 
 
-```
+```r
+folds_resubstitution(nrow(washb_data))
 #> [[1]]
 #> $v
 #> [1] 1
@@ -498,14 +477,14 @@ generated by the resubstitution method:
 
 The holdout method, or the validation set approach, consists of randomly
 dividing the available data into the training set and validation set (holdout
-set).  The model is then fitted on the training set, and further evaluated on
+set). The model is then fitted on the training set, and further evaluated on
 the observations in the validation set. Typically, the data is split into
 $60/40$, $70/30$ or $80/20$ splits.
 
 The holdout method is intuitive, conceptually easy, and computationally not too
 demanding. However, if we repeat the process of randomly splitting the data into
 the training and validation set, we might get a different validation loss (e.g.,
-MSE).  In particular, the loss over the validation sets might be highly
+MSE). In particular, the loss over the validation sets might be highly
 variable, depending on which samples were included in the training/validation
 split. For classification problems, there is a possibility of an uneven
 distribution of different classes in the training and validation set unless data
@@ -519,7 +498,7 @@ method. In particular, it also involves splitting the data into the training and
 validation set; however, instead of partitioning the observed data into sets of
 similar size, a single observation is used as a validation set. With that,
 majority of the units are employed for training (fitting) the proposed
-algorithm. Since only one unit (for example $x_1 = (w_1,y_1)$) is not used in
+algorithm. Since only one unit (for example $x_1 = (w_1, y_1)$) is not used in
 the fitting process, leave-one-out cross-validation results in a possibly less
 biased estimate of the true risk; typically, leave-one-out approach will not
 overestimate the risk as much as the holdout method. On the other hand, since
@@ -531,7 +510,7 @@ until all samples are part of the validation set at some point. For example,
 next iteration of the cross-validation might have $x_2 = (w_2,y_2)$ as the
 validation set and all the rest of $n-1$ samples as the training set. Repeating
 this approach $n$ times results in, for example, $n$ squared errors $MSE_1,
-MSE_2, \cdots, MSE_n$.  The estimate of the true risk is the average over the
+MSE_2, \ldots, MSE_n$. The estimate of the true risk is the average over the
 $n$ squared errors. While the leave-one-out cross-validation results in a less
 biased (albeit, more variable) estimate of risk than the holdout method, it
 could be expensive to implement if $n$ is large.
@@ -543,7 +522,9 @@ number of samples we want to cross-validate.  We show the first two folds
 generated by the leave-one-out cross-validation below.
 
 
-```
+```r
+folds <- folds_loo(nrow(washb_data))
+folds[[1]]
 #> $v
 #> [1] 1
 #> 
@@ -556,6 +537,7 @@ generated by the leave-one-out cross-validation below.
 #> 
 #> attr(,"class")
 #> [1] "fold"
+folds[[2]]
 #> $v
 #> [1] 2
 #> 
@@ -610,7 +592,9 @@ At $V=2$, we get 2 folds with $n/2$ number of samples in both training and
 validation set.
 
 
-```
+```r
+folds <- folds_vfold(nrow(washb_data), V = 2)
+folds[[1]]
 #> $v
 #> [1] 1
 #> 
@@ -622,6 +606,7 @@ validation set.
 #> 
 #> attr(,"class")
 #> [1] "fold"
+folds[[2]]
 #> $v
 #> [1] 2
 #> 
@@ -645,9 +630,9 @@ a validation set of $n_1 = n \cdot p$ observations. This process is then
 repeated multiple times, generating (at random) new training and validation
 partitions each time.
 
-Since the partitions are done independently for each fold, the same sample can
-appear in the validation set multiple times -- note that this is a stark
-difference between Monte Carlo and V-fold cross-validation. With Monte Carlo
+Since the partitions are independent across folds, the same sample can appear in
+the validation set multiple times -- note that this is a stark difference
+between Monte Carlo and V-fold cross-validation. With Monte Carlo
 cross-validation, one is able to explore many more available partitions than
 with V-fold cross-validation -- resulting in a possibly less variable estimate
 of the risk, at a cost of an increase in bias.
@@ -664,7 +649,9 @@ At $V=2$ and $pvalidation=0.2$, we obtain 2 folds with approximately $6$ samples
 in validation set per fold.
 
 
-```
+```r
+folds <- folds_montecarlo(nrow(washb_data), V = 2, pvalidation = 0.2)
+folds[[1]]
 #> $v
 #> [1] 1
 #> 
@@ -676,6 +663,7 @@ in validation set per fold.
 #> 
 #> attr(,"class")
 #> [1] "fold"
+folds[[2]]
 #> $v
 #> [1] 2
 #> 
@@ -691,17 +679,18 @@ in validation set per fold.
 
 #### Bootstrap
 
-The bootstrap cross-validation also consists of randomly selecting samples with
-replacement for the training set. The rest of the samples not picked for the
+The bootstrap cross-validation also consists of randomly selecting samples, with
+replacement, for the training set. The rest of the samples not picked for the
 training set are allocated to the validation set. This process is then repeated
 multiple times, generating (at random) new training and validation partitions
 each time. In contract to the Monte Carlo cross-validation, the total number of
-samples in a training and validation size across folds is not constant.  The
-proportion of observations in the validation sets is a random variable, with
-expectation $\sim 0.368$.
+samples in a training and validation size across folds is not constant. We also
+sample with replacement, hence the same samples can be in multiple training
+sets. The proportion of observations in the validation sets is a random
+variable, with expectation $\sim 0.368$.
 
-We illustrate the usage of the Monte Carlo cross-validation with `origami`
-package below using the function `folds_bootstrap(n, V)`. In order to setup
+We illustrate the usage of the bootstrap cross-validation with `origami` package
+below using the function `folds_bootstrap(n, V)`. In order to setup
 `folds_bootstrap(n, V)`, we need:
 
 1. the total number of samples we want to cross-validate;
@@ -711,7 +700,9 @@ At $V=2$, we obtain $2$ folds with different number of samples in the validation
 set across folds.
 
 
-```
+```r
+folds <- folds_bootstrap(nrow(washb_data), V = 2)
+folds[[1]]
 #> $v
 #> [1] 1
 #> 
@@ -724,6 +715,7 @@ set across folds.
 #> 
 #> attr(,"class")
 #> [1] "fold"
+folds[[2]]
 #> $v
 #> [1] 2
 #> 
@@ -744,6 +736,36 @@ The `origami` package also supports numerous cross-validation schemes for
 time-series data, for both single and multiple time-series with arbitrary time
 and network dependence.
 
+### AirPassenger Example {-}
+
+In order to illustrate different cross-validation schemes for time-series, we
+will be using the AirPassenger data; this is a widely used, freely available
+dataset. The AirPassenger dataset in `R` provides monthly totals of
+international airline passengers from 1949 to 1960. This dataset is already of a
+time series class therefore no further class or date manipulation is required.
+
+**Goal:** we want to forecast the number of airline passengers at time $h$
+horizon using the historical data from 1949 to 1960.
+
+
+```r
+library(ggfortify)
+
+data(AirPassengers)
+AP <- AirPassengers
+
+autoplot(AP) +
+   labs(
+     x ="Date",
+     y = "Passenger numbers (1000's)",
+     title = "Air Passengers from 1949 to 1961"
+   )
+
+t <- length(AP)
+```
+
+<img src="05-origami_files/figure-html/plot_airpass-1.png" width="80%" style="display: block; margin: auto;" />
+
 #### Rolling origin
 
 Rolling origin cross-validation scheme lends itself to "online" algorithms,
@@ -751,13 +773,9 @@ where large streams of data have to be fit continually, and the final fit is
 constantly updated with more data acquired. In general, the rolling origin
 scheme defines an initial training set, and with each iteration the size of the
 training set grows by $m$ observations until we reach time $t$ for a particular
-fold. Whether or not the samples in the training set are also present in the
-validation set is optional, but classically, rolling origin cross-validation
-represents the scenario where the training and validation points are evaluated
-on the same time-series. Regardless of which samples are included in the
-training and validation sets, time points included in the training set are
-always behind the validation set time points; in addition, there might be a gap
-between training and validation times of size $h$.
+fold. The time points included in the training set are always behind the
+validation set time points; in addition, there might be a gap between training
+and validation times of size $h$.
 
 To further illustrate rolling origin cross-validation, we show below an example
 with 3 folds. Here, the first window size is 15 time points, on which we first
@@ -767,10 +785,64 @@ For the following fold, we train the algorithm on a longer stream of data, 25
 time points, including the original 15 we started with. We then evaluate its
 performance on 10 time points in the future.
 
+
+```r
+knitr::include_graphics(path = "img/image/rolling_origin.png")
+```
+
 <div class="figure" style="text-align: center">
 <img src="img/image/rolling_origin.png" alt="Illustration of rolling origin CV" width="80%" />
 <p class="caption">(\#fig:unnamed-chunk-1)Illustration of rolling origin CV</p>
 </div>
+
+We illustrate the usage of the rolling origin cross-validation with `origami`
+package below using the function `folds_rolling_origin(n, first_window,
+validation_size, gap, batch)`. In order to setup `folds_rolling_origin(n,
+first_window, validation_size, gap, batch)`, we need:
+
+1. the total number of time points we want to cross-validate
+2. the size of the first training set
+3. the size of the validation set
+4. the gap between training and validation set
+5. the size of the update on the training set per each iteration of CV
+
+Our time-series has $t=144$ time points. Setting the `first_window` to $50$,
+`validation_size` to 10, `gap` to 5 and `batch` to 20, we get 4 time-series
+folds; we show the first two below.
+
+
+```r
+folds <- folds_rolling_origin(
+  t, first_window = 50, validation_size = 10, gap = 5, batch = 20
+)
+folds[[1]]
+#> $v
+#> [1] 1
+#> 
+#> $training_set
+#>  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+#> [26] 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+#> 
+#> $validation_set
+#>  [1] 56 57 58 59 60 61 62 63 64 65
+#> 
+#> attr(,"class")
+#> [1] "fold"
+folds[[2]]
+#> $v
+#> [1] 2
+#> 
+#> $training_set
+#>  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+#> [26] 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+#> [51] 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70
+#> 
+#> $validation_set
+#>  [1] 76 77 78 79 80 81 82 83 84 85
+#> 
+#> attr(,"class")
+#> [1] "fold"
+```
 
 #### Rolling window
 
@@ -794,20 +866,80 @@ This setup keeps the training sets comparable over time (and fold) as compared
 to the rolling origin CV. We then evaluate the performance of the proposed
 algorithm on 10 time points in the future.
 
+
+```r
+knitr::include_graphics(path = "img/image/rolling_window.png")
+```
+
 <div class="figure" style="text-align: center">
 <img src="img/image/rolling_window.png" alt="Illustration of rolling window CV" width="80%" />
 <p class="caption">(\#fig:unnamed-chunk-2)Illustration of rolling window CV</p>
 </div>
 
+We illustrate the usage of the rolling window cross-validation with `origami`
+package below using the function `folds_rolling_window(n, window_size,
+validation_size, gap, batch)`. In order to setup `folds_rolling_window(n,
+window_size, validation_size, gap, batch)`, we need:
+
+1. the total number of time points we want to cross-validate
+2. the size of the training sets
+3. the size of the validation set
+4. the gap between training and validation set
+5. the size of the update on the training set per each iteration of CV
+
+Setting the `window_size` to $50$, `validation_size` to 10, `gap` to 5 and
+`batch` to 20, we also get 4 time-series folds; we show the first two below.
+
+
+```r
+folds <- folds_rolling_window(
+  t, window_size = 50, validation_size = 10, gap = 5, batch = 20
+)
+folds[[1]]
+#> $v
+#> [1] 1
+#> 
+#> $training_set
+#>  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25
+#> [26] 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+#> 
+#> $validation_set
+#>  [1] 56 57 58 59 60 61 62 63 64 65
+#> 
+#> attr(,"class")
+#> [1] "fold"
+folds[[2]]
+#> $v
+#> [1] 2
+#> 
+#> $training_set
+#>  [1] 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45
+#> [26] 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70
+#> 
+#> $validation_set
+#>  [1] 76 77 78 79 80 81 82 83 84 85
+#> 
+#> attr(,"class")
+#> [1] "fold"
+```
+
 #### Rolling origin with V-fold
 
 A variant of rolling origin scheme which accounts for sample dependence is the
-rolling-origin-$v$-fold cross-validation. In contrast to the canonical rolling
+rolling-origin-$V$-fold cross-validation. In contrast to the canonical rolling
 origin CV, samples in the training and validation set are not the same, as the
-variant encompasses $v$-fold CV in addition to the time-series setup. The
+variant encompasses $V$-fold CV in addition to the time-series setup. The
 predictions are evaluated on the future times of time-series units not seen
-during the training step, allowing for dependence in both samples and time. In
-the figure below, we show $v=2$ $v$-folds, and 2 time-series CV folds.
+during the training step, allowing for dependence in both samples and time. One
+can use the rolling-origin-$v$-fold cross-validation with `origami` package
+using the function `folds_vfold_rolling_origin_pooled(n, t, id, time, V,
+first_window, validation_size, gap, batch)`. In the figure below, we show $V=2$
+$V$-folds, and 2 time-series CV folds.
+
+
+```r
+knitr::include_graphics(path = "img/image/rolling_origin_v_fold.png")
+```
 
 <div class="figure" style="text-align: center">
 <img src="img/image/rolling_origin_v_fold.png" alt="Illustration of rolling origin v-fold CV" width="80%" />
@@ -817,40 +949,79 @@ the figure below, we show $v=2$ $v$-folds, and 2 time-series CV folds.
 #### Rolling window with v-fold
 
 Analogous to the previous section, we can extend rolling window CV to support
-multiple time-series with arbitrary sample dependence. In the figure below, we
-show $v=2$ $v$-folds, and 2 time-series CV folds.
+multiple time-series with arbitrary sample dependence. One can use the
+rolling-window-$V$-fold cross-validation with `origami` package using the
+function `folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size,
+validation_size, gap, batch)`. In the figure below, we show $V=2$ $V$-folds, and
+2 time-series CV folds.
+
+
+```r
+knitr::include_graphics(path = "img/image/rolling_window_v_fold.png")
+```
 
 <div class="figure" style="text-align: center">
 <img src="img/image/rolling_window_v_fold.png" alt="Illustration of rolling window V-fold CV" width="80%" />
 <p class="caption">(\#fig:unnamed-chunk-4)Illustration of rolling window V-fold CV</p>
 </div>
 
+## General workflow of `origami`
+
+Before we dive into more details, let's take a moment to review some of the
+basic functionality in `origami` R package. The main function in the `origami`
+is `cross_validate`. To start off, the user must define folds and a function
+that operates on each fold. Once these are passed to `cross_validate`, this
+function will map the fold-specific function across the folds, combining the
+results in a reasonable way. We will see this in action in later sections; for
+now, we provide specific details on each each step of this process below.
+
+### (1) Define folds
+
+The `folds` object passed to `cross_validate` is a list of folds; such lists can
+be generated using the `make_folds` function. Each fold consists of a list with
+a `training` index vector, a `validation` index vector, and a `fold_index` (its
+order in the list of folds). This function supports a variety of
+cross-validation schemes we describe in the following section. The `make_folds`
+can balance across levels of a variable (`stratify_ids`), and it can also keep
+all observations from the same independent unit together (`cluster`).
+
+### (2) Define fold function
+
+The `cv_fun` argument to `cross_validate` is a function that will perform some
+operation on each fold. The first argument to this function must be `fold`,
+which will receive an individual fold object to operate on. Additional arguments
+can be passed to `cv_fun` using the `...` argument to `cross_validate`. Within
+this function, the convenience functions `training`, `validation` and
+`fold_index` can return the various components of a fold object. If `training`
+or `validation` is passed an object, it will index into it in a sensible way.
+For instance, if it is a vector, it will index the vector directly. If it is a
+`data.frame` or `matrix`, it will index rows. This allows the user to easily
+partition data into training and validation sets. The fold function must return
+a named list of results containing whatever fold-specific outputs are generated.
+
+### (3) Apply `cross_validate`
+
+After defining folds, `cross_validate` can be used to map the `cv_fun` across
+the `folds` using `future_lapply`. This means that it can be easily parallelized
+by specifying a parallelization scheme (i.e., a `plan` from the [future
+parallelization framework for `R`](https://Cran.R-project.org/package=future)
+[@bengtsson2020unifying]). The application of `cross_validate` generates a list
+of results. As described above, each call to `cv_fun` itself returns a list of
+results, with different elements for each type of result we care about. The main
+loop generates a list of these individual lists of results (a sort of
+"meta-list"). This "meta-list" is then inverted such that there is one element
+per result type (this too is a list of the results for each fold). By default,
+`combine_results` is used to combine these results type lists in a sensible
+manner. How results are combined is determined automatically by examining the
+data types of the results from the first fold. This can be modified by
+specifying a list of arguments to `.combine_control`.
+
 ## Cross-validation in action
 
-First, let's review the basic structure of the `origami` R package again:
-
-1. **define folds**: to start, we first must define the cross-validation scheme
-   to use on our data, which then in return defines the folds. We can generate
-   a list of folds by calling one of the cross-validation functions we defined
-   in the previous section, or by using the `make_folds` function with
-   `fold_fun` specified to the picked CV.  Using `make_folds` function to define
-   CV gives us more options (e.g., to provide a vector of cluster ids or
-   stratify).
-
-2. **define a fold-specific function**: with the fold structure defined,
-   we must now define a function (operation) we want performed on each fold. The
-   first argument to this function must be `fold`, which will receive an
-   individual fold object to operate on. The fold function must return a named
-   list of results containing whatever fold-specific outputs are generated.
-
-3.  **apply cross-validation**: finally, the application of `cross_validate`
-    generates a list of results. By default, `combine_results` is used to
-    combine the results for each fold in a sensible manner.
-
-Next, we illustrate these concepts with the `origami` package. In the following
-chapter we will learn how to use cross-validation with the Super Learner, and
-how we can utilize the power of cross-validation to build optimal ensembles of
-algorithms, not just its use of a single statistical learning method.
+Let's see `origami` in action! In the following chapter we will learn how to use
+cross-validation with the Super Learner, and how we can utilize the power of
+cross-validation to build optimal ensembles of algorithms, not just its use on a
+single statistical learning method.
 
 ### Cross-validation with linear regression
 
@@ -862,6 +1033,33 @@ assume the data is independent and identically distributed, ignoring the cluster
 structure imposed by the clinical trial design. For the sake of illustration, we
 will work with a subset of data, and remove all samples with missing data from
 the dataset; we will learn in the next chapter how to deal with missingness.
+
+
+```r
+library(stringr)
+library(dplyr)
+library(tidyr)
+
+# load data set and take a peek
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
+
+# Remove missing data, then pick just the first 500 rows
+washb_data <- washb_data %>%
+  drop_na() %>%
+  slice(1:500)
+
+outcome <- "whz"
+covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
+
+head(washb_data) %>%
+  kable() %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
+```
 
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
  <thead>
@@ -1083,8 +1281,10 @@ the dataset; we will learn in the next chapter how to deal with missingness.
 We can see the covariates used in the prediction:
 
 
-```
+```r
+outcome
 #> [1] "whz"
+covars
 #>  [1] "tr"             "fracode"        "month"          "aged"          
 #>  [5] "sex"            "momage"         "momedu"         "momheight"     
 #>  [9] "hfiacat"        "Nlt18"          "Ncomp"          "watmin"        
@@ -1099,7 +1299,9 @@ weight-for-height Z-score `whz` using all of the available covariate data. Let's
 try it out:
 
 
-```
+```r
+lm_mod <- lm(whz ~ ., data = washb_data)
+summary(lm_mod)
 #> 
 #> Call:
 #> lm(formula = whz ~ ., data = washb_data)
@@ -1177,7 +1379,8 @@ known (and standard) mean squared error. We can extract that from the `lm` model
 object like so:
 
 
-```
+```r
+(err <- mean(resid(lm_mod)^2))
 #> [1] 0.86568
 ```
 
@@ -1201,6 +1404,27 @@ We can easily add cross-validation to our linear regression procedure using
 specific partition of the data (called a "fold"):
 
 
+```r
+cv_lm <- function(fold, data, reg_form) {
+  # get name and index of outcome variable from regression formula
+  out_var <- as.character(unlist(str_split(reg_form, " "))[1])
+  out_var_ind <- as.numeric(which(colnames(data) == out_var))
+
+  # split up data into training and validation sets
+  train_data <- training(data)
+  valid_data <- validation(data)
+
+  # fit linear model on training set and predict on validation set
+  mod <- lm(as.formula(reg_form), data = train_data)
+  preds <- predict(mod, newdata = valid_data)
+  valid_data <- as.data.frame(valid_data)
+
+  # capture results to be returned as output
+  out <- list(coef = data.frame(t(coef(mod))),
+              SE = (preds - valid_data[, out_var_ind])^2)
+  return(out)
+}
+```
 
 Our `cv_lm` function is rather simple: we merely split the available data into a
 training and validation sets, using the eponymous functions provided in
@@ -1214,7 +1438,11 @@ re-substitution estimate of the error -- we did this "by hand" above -- using
 the functions `make_folds` and `cv_lm`.
 
 
-```
+```r
+# re-substitution estimate
+resub <- make_folds(washb_data, fold_fun = folds_resubstitution)[[1]]
+resub_results <- cv_lm(fold = resub, data = washb_data, reg_form = "whz ~ .")
+mean(resub_results$SE, na.rm = TRUE)
 #> [1] 0.86568
 ```
 
@@ -1228,7 +1456,14 @@ repeated such that each subset is used for testing. We can easily apply our
 performs 10-fold cross-validation):
 
 
-```
+```r
+# cross-validated estimate
+folds <- make_folds(washb_data)
+cvlm_results <- cross_validate(
+  cv_fun = cv_lm, folds = folds, data = washb_data, reg_form = "whz ~ .",
+  use_future = FALSE
+)
+mean(cvlm_results$SE, na.rm = TRUE)
 #> [1] 1.35
 ```
 
@@ -1240,9 +1475,33 @@ estimate of the error is larger.
 
 To examine `origami` further, let us return to our example analysis using the
 WASH data set. Here, we will write a new `cv_fun` type object. As an example, we
-will use Breiman's `randomForest`:
+will use Breiman's `randomForest` [@breiman2001random]:
 
 
+```r
+# make sure to load the package!
+library(randomForest)
+
+cv_rf <- function(fold, data, reg_form) {
+  # get name and index of outcome variable from regression formula
+  out_var <- as.character(unlist(str_split(reg_form, " "))[1])
+  out_var_ind <- as.numeric(which(colnames(data) == out_var))
+
+  # define training and validation sets based on input object of class "folds"
+  train_data <- training(data)
+  valid_data <- validation(data)
+
+  # fit Random Forest regression on training set and predict on holdout set
+  mod <- randomForest(formula = as.formula(reg_form), data = train_data)
+  preds <- predict(mod, newdata = valid_data)
+  valid_data <- as.data.frame(valid_data)
+
+  # define output object to be returned as list (for flexibility)
+  out <- list(coef = data.frame(mod$coefs),
+              SE = ((preds - valid_data[, out_var_ind])^2))
+  return(out)
+}
+```
 
 Above, in writing our `cv_rf` function to cross-validate `randomForest`, we used
 our previous function `cv_lm` as an example. For now, individual `cv_fun` must
@@ -1253,7 +1512,14 @@ Below, we use `cross_validate` to apply our new `cv_rf` function over the `folds
 object generated by `make_folds`.
 
 
-```
+```r
+# now, let's cross-validate...
+folds <- make_folds(washb_data)
+cvrf_results <- cross_validate(
+  cv_fun = cv_rf, folds = folds, data = washb_data, reg_form = "whz ~ .",
+  use_future = FALSE
+)
+mean(cvrf_results$SE)
 #> [1] 1.0271
 ```
 
@@ -1267,12 +1533,14 @@ techniques, given availability of an appropriate `cv_fun` function.
 Cross-validation can also be used for forecast model selection in a time series
 setting. Here, the partitioning scheme mirrors the application of the
 forecasting model: we'll train the data on past observations (either all
-available or a recent subset), and then use the model fit to predict the
-next few observations. Consider the `AirPassengers` dataset, a monthly time
+available or a recent subset), and then use the model fit to predict the next
+few observations. We consider the `AirPassengers` dataset again, a monthly time
 series of passenger air traffic in thousands of people.
 
 
-```
+```r
+data(AirPassengers)
+print(AirPassengers)
 #>      Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec
 #> 1949 112 118 132 129 121 135 148 148 136 119 104 118
 #> 1950 115 126 141 135 125 149 170 170 158 133 114 140
@@ -1293,8 +1561,16 @@ configurations. We can do that by evaluating their forecasting performance.
 First, we set up the appropriate cross-validation scheme for time-series.
 
 
-```
+```r
+folds <- make_folds(AirPassengers, fold_fun = folds_rolling_origin,
+                    first_window = 36, validation_size = 24, batch = 10)
+
+# How many folds where generated?
+length(folds)
 #> [1] 9
+
+# Examine the first 2 folds.
+folds[[1]]
 #> $v
 #> [1] 1
 #> 
@@ -1307,6 +1583,7 @@ First, we set up the appropriate cross-validation scheme for time-series.
 #> 
 #> attr(,"class")
 #> [1] "fold"
+folds[[2]]
 #> $v
 #> [1] 2
 #> 
@@ -1329,7 +1606,45 @@ folds to train! Luckily, we can pass the `batch` as option to
 `gap` argument remains the default (0).
 
 
-```
+```r
+# make sure to load the package!
+library(forecast)
+
+# function to calculate cross-validated squared error
+cv_forecasts <- function(fold, data) {
+  # Get training and validation data
+  train_data <- training(data)
+  valid_data <- validation(data)
+  valid_size <- length(valid_data)
+
+  train_ts <- ts(log10(train_data), frequency = 12)
+
+  # First arima model
+  arima_fit <- arima(train_ts, c(0, 1, 1),
+                     seasonal = list(order = c(0, 1, 1),
+                                     period = 12))
+  raw_arima_pred <- predict(arima_fit, n.ahead = valid_size)
+  arima_pred <- 10^raw_arima_pred$pred
+  arima_MSE <- mean((arima_pred - valid_data)^2)
+
+  # Second arima model
+  arima_fit2 <- arima(train_ts, c(5, 1, 1),
+                     seasonal = list(order = c(0, 1, 1),
+                                     period = 12))
+  raw_arima_pred2 <- predict(arima_fit2, n.ahead = valid_size)
+  arima_pred2 <- 10^raw_arima_pred2$pred
+  arima_MSE2 <- mean((arima_pred2 - valid_data)^2)
+
+  out <- list(mse = data.frame(fold = fold_index(),
+                               arima = arima_MSE, arima2 = arima_MSE2))
+  return(out)
+}
+
+mses <- cross_validate(
+  cv_fun = cv_forecasts, folds = folds, data = AirPassengers,
+  use_future = FALSE
+)
+mses$mse
 #>   fold   arima  arima2
 #> 1    1   68.21  137.28
 #> 2    2  319.68  313.15
@@ -1340,9 +1655,12 @@ folds to train! Luckily, we can pass the `batch` as option to
 #> 7    7  827.56  910.12
 #> 8    8 2099.59 2213.15
 #> 9    9  398.37  293.38
+colMeans(mses$mse[, c("arima", "arima2")])
 #>  arima arima2 
 #> 601.07 634.22
 ```
+
+The arima model with no AR component seems to be a better fit for this data.
 
 ## Exercises
 
@@ -1363,7 +1681,7 @@ folds to train! Luckily, we can pass the `batch` as option to
 
 ### The Ideas in Action
 
-1. Let $Y$ be a binary variable with $P(Y=1|W) = 0.01$. What kind of
+1. Let $Y$ be a binary variable with $P(Y=1 \mid W) = 0.01$. What kind of
    cross-validation should be use for a rare outcome? How can we do this with
    the `origami` package?
 

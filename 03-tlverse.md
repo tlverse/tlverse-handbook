@@ -85,6 +85,10 @@ https://github.com/tlverse, not yet on [CRAN](https://CRAN.R-project.org/). You
 can use the [`usethis` package](https://usethis.r-lib.org/) to install them:
 
 
+```r
+install.packages("usethis")
+usethis::install_github("tlverse/tlverse")
+```
 
 The `tlverse` depends on a large number of other packages that are also hosted
 on GitHub. Because of this, you may see the following error:
