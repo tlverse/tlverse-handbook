@@ -15,9 +15,9 @@ knitr::opts_chunk$set(
   fig.retina = 0.8,
   fig.show = "hold",
   dpi = 300,
-  echo = FALSE,
   message = FALSE,
-  warning = FALSE
+  warning = FALSE,
+  echo = TRUE
 )
 
 # global options

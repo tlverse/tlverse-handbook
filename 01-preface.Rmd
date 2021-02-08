@@ -1,4 +1,4 @@
-# Motivation {-}
+# Robust Statistics for Reproducible Research {#robust}
 
 > "One enemy of robust science is our humanity — our appetite for
 > being right, and our tendency to find patterns in noise, to see supporting
@@ -108,7 +108,8 @@ directly model the key objects defined in the mathematical and theoretical
 framework of Targeted Learning. What's more, the `tlverse` `R` packages share a
 core set of design principles centered on extensibility, allowing for them to be
 used in conjunction with each other and built upon one other in a cohesive
-fashion.
+fashion. For an introduction to Targeted Learning, we recommend the recent
+review paper from @coyle2020targeted.
 
 In this handbook, the reader will embark on a journey through the `tlverse`
 ecosystem. Guided by `R` programming exercises, case studies, and

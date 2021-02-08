@@ -21,12 +21,13 @@ Updated: `r Sys.Date()`
 
 ## Introduction
 
-In this chapter, we start elaborating on the estimation step outlined in
-[Chapter 5](#intro) introducing the [_Roadmap for Targeted Learning_](#roadmap).
-In order to generate an initial estimate of our target parameter - which is the
-focus of the following chapter [Chapter 9](#sl3), we first need to translate,
-and incorporate, our knowledge about the data generating process into the
-estimation procedure, and decide how to evaluate our estimation performance.
+In this chapter, we start elaborating on the estimation step outlined in the
+[introductory chapter](#intro), which discussed the [_Roadmap for Targeted
+Learning_](#roadmap). In order to generate an initial estimate of our target
+parameter -- which is the focus of the following [chapter on Super
+Learning](#sl3), we first need to translate, and incorporate, our knowledge
+about the data generating process into the estimation procedure, and decide how
+to evaluate our estimation performance.
 
 The performance, or error, of any algorithm used in the estimation procedure
 directly relates to its generalizability on the independent data.  The proper
@@ -42,8 +43,7 @@ following, we propose a method to do so using the observed data and
 
 ## Background
 
-Ideally, in a data-rich scenario, we would split our dataset
-into three parts:
+Ideally, in a data-rich scenario, we would split our dataset into three parts:
 
 1. training set,
 2. validation set,
@@ -69,7 +69,7 @@ particularly useful for model selection and estimation of the true risk. In
 addition, they might provide more insight on variability and robustness of the
 algorithm fit then fitting an algorithm only once on all the training data.
 
-In this chapter, we focus on **cross-validation** - an essential tool for
+In this chapter, we focus on **cross-validation** -- an essential tool for
 evaluating how any given algorithm extends from a sample to the target
 population from which the sample is derived. It has seen widespread application
 in all facets of statistics, perhaps most notably statistical machine learning.
@@ -102,20 +102,20 @@ Similarly to how we defined the [_Roadmap for Targeted Learning_](#roadmap), we
 can define the **Estimation Roadmap** to guide the estimation process. In
 particular, we have developed a unified loss-based cross-validation methodology
 for estimator construction, selection, and performance assessment in a series of
-articles (e.g., see [@vdl2004asymptotic; @dudoit2005asymptotics;
-@vaart2006oracle; @vdl2007super]) that follow three main steps:
+articles (e.g., see @vdl2004asymptotic, @dudoit2005asymptotics,
+@vaart2006oracle, and @vdl2007super) that follow three main steps:
 
-1. **The loss funtion**
+1. **The loss funtion**:
 Define the target parameter as the minimizer of the expected loss (risk) for a
-full data loss function chosen to represent the desired measure of performance.
-Further, map the full data loss function into an observed data loss function,
-having the same expected value and leading to an efficient estimator of risk.
+full data loss function chosen to represent the desired performance measure.
+Map the full data loss function into an observed data loss function, having the
+same expected value and leading to an efficient estimator of risk.
 
-2. **The algorithms**
+2. **The algorithms**:
 Construct a finite collection of candidate estimators for the parameter of
 interest.
 
-3. **The cross-validation**
+3. **The cross-validation scheme**:
 Apply appropriate cross-validation to select an optimal estimator among the
 candidates, and assess the overall performance of the resulting estimator.
 
@@ -134,7 +134,7 @@ In the following, we focus on Step 3 of the Estimator Roadmap, namely
 cross-validation for estimator selection and performance assessment. The
 asymptotic optimality results state that the cross-validated selector performs
 (in terms of risk) asymptotically as well as an optimal oracle selector based on
-the true, unknown data generating distribution.  For theoretical derivations of
+the true, unknown data generating distribution. For theoretical derivations of
 the stated results, we suggest the interest reader consults
 [@dudoit2005asymptotics].
 
@@ -143,22 +143,22 @@ the stated results, we suggest the interest reader consults
 Now that we introduced the Estimation Roadmap, we can define our objective with
 more mathematical notation. Let the observed data be defined as $X = (W,Y)$,
 where a unit specific data can be written as $X_i = (W_i,Y_i)$, for $i = 1,
-\cdots, n$.  For each of the $n$ samples, we denote $Y_i$ as the outcome of
+\ldots, n$. For each of the $n$ samples, we denote $Y_i$ as the outcome of
 interest (polychotomous or continuous), and $W_i$ as a $p$-dimensional set of
 covariates. Let $\psi_0(W)$ denote the target parameter of interest we want to
 estimate; for example, we might be interested in estimating the conditional
 expectation of the outcome given the covariates, so $\psi_0(W) = E(Y \mid W)$.
 Following the Estimation Roadmap, we chose the appropriate loss function, $L$,
-such that $\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]$.  But how do we
+such that $\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]$. But how do we
 know how each $\psi$ is doing? In order to pick the optimal estimator among the
 candidates, and assess the overall performance of the resulting estimator, use
-cross-validation - effectively, dividing the available data into the training
+cross-validation -- effectively, dividing the available data into the training
 set and validation set. Observations in the training set are used to fit (or
 train) the estimator, while the validation set is used to assess the risk of (or
 validate) it.
 
 To derive a general representation for cross-validation, we define a **split
-vector**, $B_n = (B_n(i): i = 1, \cdots, n) \in \{0,1\}^n$. Note that split
+vector**, $B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n$. Note that split
 vector is independent of the empirical distribution, $P_n$. A realization of
 $B_n$ defines a random split of the data into a training and validation set such
 that if
@@ -204,27 +204,29 @@ For instance, if it is a vector, it will index the vector directly. If it is a
 partition data into training and validation sets. The fold function must return
 a named list of results containing whatever fold-specific outputs are generated.
 
-### (3) Apply `cross-validate`
+### (3) Apply `cross_validate`
 
 After defining folds, `cross_validate` can be used to map the `cv_fun` across
 the `folds` using `future_lapply`. This means that it can be easily parallelized
-by specifying a parallelization scheme (i.e., a `plan`). The application of
-`cross_validate` generates a list of results. As described above, each call to
-`cv_fun` itself returns a list of results, with different elements for each type
-of result we care about. The main loop generates a list of these individual
-lists of results (a sort of "meta-list"). This "meta-list" is then inverted such
-that there is one element per result type (this too is a list of the results for
-each fold). By default, `combine_results` is used to combine these results type
-lists in a sensible manner. How results are combined is determined automatically
-by examining the data types of the results from the first fold. This can be
-modified by specifying a list of arguments to `.combine_control`.
+by specifying a parallelization scheme (i.e., a `plan` in the [future
+ecosystem](cran.r-project.org/package=future) [@bengtsson2020unifying]). The
+application of `cross_validate` generates a list of results. As described above,
+each call to `cv_fun` itself returns a list of results, with different elements
+for each type of result we care about. The main loop generates a list of these
+individual lists of results (a sort of "meta-list"). This "meta-list" is then
+inverted such that there is one element per result type (this too is a list of
+the results for each fold). By default, `combine_results` is used to combine
+these results type lists in a sensible manner. How results are combined is
+determined automatically by examining the data types of the results from the
+first fold. This can be modified by specifying a list of arguments to
+`.combine_control`.
 
 ## Cross-validation schemes in `origami`
 
 As we specified earlier, the particular distribution of the split vector $B_n$
 defines the type of cross-validation method. In the following, we describe
 different types of cross-validation schemes available in `origami` package, and
-show their use in the following sections.
+show their use in the sequel.
 
 ### WASH Benefits Study Example {-}
 
@@ -320,7 +322,7 @@ until all samples are part of the validation set at some point. For example,
 next iteration of the cross-validation might have $x_2 = (w_2,y_2)$ as the
 validation set and all the rest of $n-1$ samples as the training set. Repeating
 this approach $n$ times results in, for example, $n$ squared errors $MSE_1,
-MSE_2, \cdots, MSE_n$.  The estimate of the true risk is the average over the
+MSE_2, \ldots, MSE_n$.  The estimate of the true risk is the average over the
 $n$ squared errors. While the leave-one-out cross-validation results in a less
 biased (albeit, more variable) estimate of risk than the holdout method, it
 could be expensive to implement if $n$ is large.
@@ -392,9 +394,9 @@ a validation set of $n_1 = n \cdot p$ observations. This process is then
 repeated multiple times, generating (at random) new training and validation
 partitions each time.
 
-Since the partitions are done independently for each fold, the same sample can
-appear in the validation set multiple times -- note that this is a stark
-difference between Monte Carlo and V-fold cross-validation. With Monte Carlo
+Since the partitions are independent across folds, the same sample can appear in
+the validation set multiple times -- note that this is a stark difference
+between Monte Carlo and V-fold cross-validation. With Monte Carlo
 cross-validation, one is able to explore many more available partitions than
 with V-fold cross-validation -- resulting in a possibly less variable estimate
 of the risk, at a cost of an increase in bias.
@@ -701,7 +703,7 @@ estimate of the error is larger.
 
 To examine `origami` further, let us return to our example analysis using the
 WASH data set. Here, we will write a new `cv_fun` type object. As an example, we
-will use Breiman's `randomForest`:
+will use Breiman's `randomForest` [@breiman2001random]:
 
 ```{r cv_fun_randomForest}
 # make sure to load the package!
