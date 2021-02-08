@@ -29,7 +29,10 @@ NCT01590095.
 ```{r load_washb_data_intro, message=FALSE, warning=FALSE}
 library(readr)
 # read in data via readr::read_csv
-dat <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv")
+dat <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv")
+)
 head(dat)
 ```
 For the purposes of this handbook, we start by treating the data as independent and
@@ -49,7 +52,7 @@ A_i, Y_i)$, for $i = 1, \ldots, n$.
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
 
-```{r skim_washb_data, message=FALSE, warning=FALSE, results="asis"}
+```{r skim_washb_data, results="asis"}
 library(skimr)
 # optionally disable sparkline graphs for PDF output
 skim_no_sparks <- skim_with(numeric = sfl(hist = NULL),
@@ -83,26 +86,29 @@ in this example data, we ensure that we have subjects with a missing outcome.
 
 ```{r load_ist_data_intro, message=FALSE, warning=FALSE}
 # read in data
-ist <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/ist_sample.csv")
+ist <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/",
+         "data/ist_sample.csv")
+)
 head(ist)
 ```
 
-We have 26 variables measured, and the outcome of interest, $Y$, indicates recurrent
-ischemic stroke within 14 days after randomization (`DRSISC` in `ist`); the
-treatment of interest, $A$, is the randomized aspirin vs. no aspirin treatment
-allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists of all
-other variables measured at baseline. In this data, the outcome is occasionally
-missing, but there is no need to create a variable indicating this missingness
-(such as $\Delta$) for analyses in the `tlverse`, since it is automatically
-detected when `NA` are present in the outcome. This observed data structure can
-be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i, \Delta Y_i)$, for
-$i = 1, \ldots, n$, where $\Delta$ denotes the binary indicator that the outcome
-is observed.
+We have 26 variables measured, and the outcome of interest, $Y$, indicates
+recurrent ischemic stroke within 14 days after randomization (`DRSISC` in
+`ist`); the treatment of interest, $A$, is the randomized aspirin vs. no aspirin
+treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists
+of all other variables measured at baseline. In this data, the outcome is
+occasionally missing, but there is no need to create a variable indicating this
+missingness (such as $\Delta$) for analyses in the `tlverse`, since it is
+automatically detected when `NA` are present in the outcome. This observed data
+structure can be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i,
+\Delta Y_i)$, for $i = 1, \ldots, n$, where $\Delta$ denotes the binary
+indicator that the outcome is observed.
 
 Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
 
-```{r skim_ist_data, message=FALSE, warning=FALSE, results="asis"}
+```{r skim_ist_data, results="asis"}
 if (knitr::is_latex_output()) {
   knitr::kable(skim_no_sparks(ist))
 } else {
@@ -115,18 +121,21 @@ if (knitr::is_latex_output()) {
 This data is from the National Health and Nutrition Examination Survey (NHANES)
 Data I Epidemiologic Follow-up Study. More coming soon.
 
-```{r load_nhefs_data_intro, message=FALSE, warning=FALSE}
+```{r load_nhefs_data_intro}
 # read in data
-NHEFS <- read_csv("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/data/NHEFS.csv")
-head(NHEFS)
+nhefs_data <- read_csv(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/",
+         "data/NHEFS.csv")
+)
+head(nhefs_data)
 ```
 
 A snapshot of the data set is shown below:
 
-```{r skim_nhefs_data, message=FALSE, warning=FALSE, results="asis"}
+```{r skim_nhefs_data, results="asis"}
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(NHEFS))
+  knitr::kable(skim_no_sparks(nhefs_data))
 } else {
-  skim(NHEFS)
+  skim(nhefs_data)
 }
 ```

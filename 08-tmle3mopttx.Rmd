@@ -44,19 +44,19 @@ patient the intervention they are most likely to benefit from, as well as
 improve efficiency by not allocating resources to individuals that do not need
 them, or would not benefit from it.
 
-```{r, fig.cap="Illustration of a Dynamic Treatment Regime in a Clinical Setting", echo=FALSE, eval=TRUE, out.width='60%'}
+```{r, fig.cap="Illustration of a Dynamic Treatment Regime in a Clinical Setting", echo=FALSE, out.width='60%'}
 knitr::include_graphics(path = "img/image/DynamicA_Illustration.png")
 ```
 
-One opts to administer the intervention to individuals who will profit from it,
+One opts to administer the intervention to individuals who will profit from it instead,
 instead of assigning treatment on a population level. But how do we know which
 intervention works for which patient? This aim motivates a different type of
 intervention, as opposed to the static exposures we might be used to. In
-particular, in this chapter we learn about dynamic or individualized interventions
-that tailor the treatment decision based on the collected covariates. Formally,
-dynamic treatments represent interventions that at each treatment-decision stage
-are allowed to respond to the currently available treatment and covariate
-history.
+particular, in this chapter we learn about dynamic or individualized
+interventions that tailor the treatment decision based on the collected
+covariates. Formally, dynamic treatments represent interventions that at each
+treatment-decision stage are allowed to respond to the currently available
+treatment and covariate history.
 
 In the statistics community such a treatment strategy is termed an
 __individualized treatment regime__ (ITR), and the (counterfactual) population
@@ -374,7 +374,7 @@ Finally, we demonstrate how to evaluate the mean outcome under the optimal
 individualized treatment using `tmle3mopptx`. To start, let's load the packages
 we'll use and set a seed:
 
-```{r setup-mopttx, message=FALSE, warning=FALSE}
+```{r setup-mopttx}
 library(data.table)
 library(sl3)
 library(tmle3)
@@ -525,7 +525,7 @@ optimal individualized interventions via the `realistic` specification. If
 alleviating concerns regarding practical positivity issues. We explore all the
 important extensions of `tmle3mopttx` in later sections.
 
-```{r mopttx_fit_tmle_auto_blip_revere_complex, eval=T}
+```{r mopttx_fit_tmle_auto_blip_revere_complex}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
@@ -643,10 +643,9 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 ```
 
-```{r fit_tmle_auto, eval=T}
+```{r fit_tmle_auto}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
-
 fit
 ```
 
@@ -683,10 +682,9 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 ```
 
-```{r mopttx_fit_tmle_auto_blip_revere_noncomplex, eval=T}
+```{r mopttx_fit_tmle_auto_blip_revere_noncomplex}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
-
 fit
 ```
 
@@ -714,7 +712,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 ```
 
-```{r mopttx_fit_tmle_auto_blip_revere_realistic, eval=T}
+```{r mopttx_fit_tmle_auto_blip_revere_realistic}
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
@@ -826,7 +824,7 @@ effect).
 ```{r mopttx_spec_init_vim}
 # initialize a tmle specification
 tmle_spec <- tmle3_mopttx_vim(
-  V=c("W2"),
+  V = c("W2"),
   type = "blip2",
   learners = learner_list,
   contrast = "multiplicative",
@@ -837,12 +835,11 @@ tmle_spec <- tmle3_mopttx_vim(
 )
 ```
 
-```{r mopttx_fit_tmle_auto_vim, eval=TRUE}
+```{r mopttx_fit_tmle_auto_vim}
 # fit the TML estimator
 vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
   adjust_for_other_A = TRUE
 )
-
 print(vim_results)
 ```
 
@@ -878,9 +875,12 @@ ITR for the main intervention in WASH Benefits data.
 To start, let's load the data, convert all columns to be of class `numeric`,
 and take a quick look at it:
 
-```{r load-washb-data, message=FALSE, warning=FALSE, cache=FALSE}
-washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
+```{r load-washb-data}
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
 ```
@@ -890,10 +890,12 @@ interest is the weight-for-height Z-score which we seek to maximize, whereas our
 treatment is the six intervention groups aimed at improving living conditions.
 All the other collected baseline covariates correspond to $W$.
 
-```{r washb-data-npsem-mopttx, message=FALSE, warning=FALSE, cache=FALSE}
-node_list <- list(W = names(washb_data)[!(names(washb_data) %in%
-                                          c("whz", "tr"))],
-                  A = "tr", Y = "whz")
+```{r washb-data-npsem-mopttx}
+node_list <- list(
+  W = names(washb_data)[!(names(washb_data) %in% c("whz", "tr"))],
+  A = "tr",
+  Y = "whz"
+)
 ```
 
 We pick few potential effect modifiers, including mother's education, current

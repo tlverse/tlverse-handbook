@@ -250,7 +250,7 @@ give a recipe:
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-```{r, fig.cap="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention", echo=FALSE, eval=TRUE, out.width='60%'}
+```{r, fig.cap="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention", echo=FALSE, out.width='60%'}
 knitr::include_graphics(path = "img/gif/shift_animation.gif")
 ```
 
@@ -258,7 +258,7 @@ knitr::include_graphics(path = "img/gif/shift_animation.gif")
 
 To start, let us load the packages we will use and set a seed for simulation:
 
-```{r setup-shift, message=FALSE, warning=FALSE}
+```{r setup-shift}
 library(data.table)
 library(haldensify)
 library(sl3)
@@ -266,15 +266,14 @@ library(tmle3)
 library(tmle3shift)
 ```
 
-We need to estimate two components of the likelihood in order to construct a
-TML estimator. The first of these components is the outcome regression,
-$\hat{Q}_n$, which is a simple regression of the form $\mathbb{E}[Y \mid A,W]$.
-An estimate for such a quantity may be constructed using the Super Learner
-algorithm. We construct the components of an `sl3`-style Super Learner for a
-regression below, using a small variety of parametric and nonparametric
-regression techniques:
+We need to estimate two components of the likelihood in order to construct a TML
+estimator. The first of these components is the outcome regression, $\hat{Q}_n$,
+which is a simple regression of the form $\mathbb{E}[Y \mid A,W]$.  An estimate
+for such a quantity may be constructed using the Super Learner algorithm. We
+construct the components of an `sl3`-style Super Learner for a regression below,
+using a small variety of parametric and nonparametric regression techniques:
 
-```{r sl3_lrnrs-Qfit-shift, message=FALSE, warning=FALSE}
+```{r sl3_lrnrs-Qfit-shift}
 # learners used for conditional mean of the outcome
 mean_lrnr <- Lrnr_mean$new()
 fglm_lrnr <- Lrnr_glm_fast$new()
@@ -289,15 +288,15 @@ sl_reg_lrnr <- Lrnr_sl$new(
 ```
 
 The second of these is an estimate of the treatment mechanism, $\hat{g}_n$,
-i.e., the _propensity score_. In the case of a continuous intervention node
-$A$, such a quantity takes the form $p(A \mid W)$, which is a conditional
-density. Generally speaking, conditional density estimation is a challenging
-problem that has received much attention in the literature. To estimate the
-treatment mechanism, we must make use of learning algorithms specifically suited
-to conditional density estimation; a list of such learners may be extracted from
+i.e., the _propensity score_. In the case of a continuous intervention node $A$,
+such a quantity takes the form $p(A \mid W)$, which is a conditional density.
+Generally speaking, conditional density estimation is a challenging problem that
+has received much attention in the literature. To estimate the treatment
+mechanism, we must make use of learning algorithms specifically suited to
+conditional density estimation; a list of such learners may be extracted from
 `sl3` by using `sl3_list_learners()`:
 
-```{r sl3_density_lrnrs_search-shift, message=FALSE, warning=FALSE}
+```{r sl3_density_lrnrs_search-shift}
 sl3_list_learners("density")
 ```
 
@@ -309,7 +308,7 @@ semiparametric location-scale conditional density estimators implemented in the
 constructed by pooling estimates from each of these modified conditional density
 regression techniques.
 
-```{r sl3_lrnrs-gfit-shift, message=FALSE, warning=FALSE}
+```{r sl3_lrnrs-gfit-shift}
 # learners used for conditional densities (i.e., generalized propensity score)
 haldensify_lrnr <- Lrnr_haldensify$new(
   n_bins = c(3, 5),
@@ -335,7 +334,7 @@ sl_dens_lrnr <- Lrnr_sl$new(
 Finally, we construct a `learner_list` object for use in constructing a TML
 estimator of our target parameter of interest:
 
-```{r learner-list-shift, message=FALSE, warning=FALSE}
+```{r learner-list-shift}
 learner_list <- list(Y = sl_reg_lrnr, A = sl_dens_lrnr)
 ```
 
@@ -347,7 +346,7 @@ regression while our `g_learner` is used in estimating the treatment mechanism.
 
 ### Example with Simulated Data
 
-```{r sim_data, message=FALSE, warning=FALSE}
+```{r sim_data}
 # simulate simple data for tmle-shift sketch
 n_obs <- 400 # number of observations
 tx_mult <- 2 # multiplier for the effect of W = 1 on the treatment
@@ -388,7 +387,7 @@ interest (called a `tmle3_Spec` in the `tlverse` nomenclature) simply by calling
 the scale of the treatment $A$ -- that is, we specify $\delta = 0.5$ (note that
 this is an arbitrarily chosen value for this example).
 
-```{r spec_init-shift, message=FALSE, warning=FALSE}
+```{r spec_init-shift}
 # initialize a tmle specification
 tmle_spec <- tmle_shift(
   shift_val = 0.5,
@@ -405,7 +404,7 @@ object internally (see the `tmle3` documentation for details).
 
 ### Targeted Estimation of Stochastic Interventions Effects
 
-```{r fit_tmle-shift, message=FALSE, warning=FALSE}
+```{r fit_tmle-shift}
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 ```
@@ -526,7 +525,7 @@ in assessing the mean counterfactual outcome over a grid of shifts `r seq(-1,
 1, by = 1)` on the scale of the treatment $A$ (note that the numerical
 choice of shift is an arbitrarily chosen set of values for this example).
 
-```{r vim_spec_init, message=FALSE, warning=FALSE}
+```{r vim_spec_init}
 # what's the grid of shifts we wish to consider?
 delta_grid <- seq(-1, 1, 1)
 
@@ -553,7 +552,7 @@ One may invoke the `tmle3` wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:
 
-```{r fit_tmle_wrapper_vimshift, message=FALSE, warning=FALSE}
+```{r fit_tmle_wrapper_vimshift}
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 ```
@@ -583,9 +582,9 @@ $$u(\beta, (\psi_{\delta}: \delta)) = \sum_{\delta}h(\delta)
 \left(\psi_{\delta}(P_0) - m_{\beta}(\delta) \right) \frac{d}{d\beta}
 m_{\beta}(\delta) = 0.$$
 This then leads to the following expansion
-$$\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta} u(\beta_0,
-\vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)(\vec{\psi}_n -
-\vec{\psi}_0),$$
+$$\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta}
+  u(\beta_0, \vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)
+  (\vec{\psi}_n - \vec{\psi}_0),$$
 where we have
 $$\frac{d}{d\beta} u(\beta, \psi) = -\sum_{\delta} h(\delta) \frac{d}{d\beta}
 m_{\beta}(\delta)^t \frac{d}{d\beta} m_{\beta}(\delta)
@@ -623,7 +622,7 @@ for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
 \Sigma),$$ where $\Sigma$ is the empirical covariance matrix of
 $\text{EIF}_{\beta}(O)$.
 
-```{r msm_fit, message=FALSE, warning=FALSE}
+```{r msm_fit}
 tmle_fit$summary[4:5, ]
 ```
 
@@ -650,7 +649,7 @@ parameters of the working marginal structural model, we may use the
 `tmle_vimshift_msm` Spec (instead of the `tmle_vimshift_delta` Spec that
 appears above):
 
-```{r vim_targeted_msm_fit, message=FALSE, warning=FALSE}
+```{r vim_targeted_msm_fit}
 # initialize a tmle specification
 tmle_msm_spec <- tmle_vimshift_msm(
   shift_grid = delta_grid,
@@ -668,9 +667,12 @@ To complete our walk through, let's turn to using stochastic interventions to
 investigate the data from the WASH Benefits trial. To start, let's load the
 data, convert all columns to be of class `numeric`, and take a quick look at it
 
-```{r load_washb_data_shift, message=FALSE, warning=FALSE}
-washb_data <- fread("https://raw.githubusercontent.com/tlverse/tlverse-data/master/wash-benefits/washb_data.csv",
-                    stringsAsFactors = TRUE)
+```{r load_washb_data_shift}
+washb_data <- fread(
+  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+         "wash-benefits/washb_data.csv"),
+  stringsAsFactors = TRUE
+)
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
 ```
@@ -680,11 +682,12 @@ we'll consider the outcome to be the weight-for-height Z-score (as in previous
 chapters), the intervention of interest to be the mother's age at time of
 child's birth, and take all other covariates to be potential confounders.
 
-```{r washb_data_npsem_shift, message=FALSE, warning=FALSE, cache=FALSE}
+```{r washb_data_npsem_shift}
 node_list <- list(
   W = names(washb_data)[!(names(washb_data) %in%
     c("whz", "momage"))],
-  A = "momage", Y = "whz"
+  A = "momage",
+  Y = "whz"
 )
 ```
 
@@ -702,7 +705,7 @@ a shift in the mother's age down by two years ($\delta = -2$) or up by two years
 ($\delta = 2$). To do this, we simply initialize a `Spec` `tmle_vimshift_delta`
 just as we did in a previous example:
 
-```{r vim_spec_init_washb_shift, message=FALSE, warning=FALSE}
+```{r vim_spec_init_washb_shift}
 # initialize a tmle specification for the variable importance parameter
 washb_vim_spec <- tmle_vimshift_delta(
   shift_grid = c(-2, 2),
@@ -717,7 +720,7 @@ conditional density approach based on the highly adaptive lasso [@diaz2011super;
 @benkeser2016hal; @coyle2020hal9001; @hejazi2020hal9001; @hejazi2020haldensify]
 is currently unable to accommodate larger datasets.
 
-```{r sl3_lrnrs_gfit_washb_shift, message=FALSE, warning=FALSE}
+```{r sl3_lrnrs_gfit_washb_shift}
 # we need to turn on cross-validation for the HOSE learner
 cv_hose_hal_lrnr <- Lrnr_cv$new(
   learner = hose_hal_lrnr,
