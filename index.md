@@ -191,7 +191,7 @@ following packages:
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
 |bookdown     |0.21.6     |Github (rstudio/bookdown\@6c7346a)    |
-|bslib        |0.2.4.9001 |Github (rstudio/bslib\@5a3d789)       |
+|bslib        |0.2.4.9001 |Github (rstudio/bslib\@f613324)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table   |1.13.6     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
