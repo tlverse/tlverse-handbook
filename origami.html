@@ -38,7 +38,7 @@
 <li><a class="" href="robust.html"><span class="header-section-number">1</span> Robust Statistics and Reproducible Science</a></li>
 <li><a class="" href="intro.html"><span class="header-section-number">2</span> The Roadmap for Targeted Learning</a></li>
 <li><a class="" href="tlverse.html"><span class="header-section-number">3</span> Welcome to the tlverse</a></li>
-<li><a class="" href="data.html"><span class="header-section-number">4</span> Datasets</a></li>
+<li><a class="" href="data.html"><span class="header-section-number">4</span> Meet the Data</a></li>
 <li><a class="active" href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></li>
 <li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></li>
 <li><a class="" href="tmle3.html"><span class="header-section-number">7</span> The TMLE Framework</a></li>
@@ -60,7 +60,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/origami"><code>origami</code> <code>R</code> package</a>
 by <em>Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips</em>.</p>
-<p>Updated: 2021-02-08</p>
+<p>Updated: 2021-02-09</p>
 <div id="learning-objectives-2" class="section level2">
 <h2>
 <span class="header-section-number">5.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-2"><i class="fas fa-link"></i></a>
@@ -1220,12 +1220,10 @@ points, with a gap of size 5 between the training and validation time points.
 For the following fold, we train the algorithm on a longer stream of data, 25
 time points, including the original 15 we started with. We then evaluate its
 performance on 10 time points in the future.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"img/image/rolling_origin.png"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-1"></span>
-<img src="img/image/rolling_origin.png" alt="Illustration of rolling origin CV" width="80%"><p class="caption">
-FIGURE 5.1: Illustration of rolling origin CV
+<img src="img/image/rolling_origin.png" alt="Rolling origin CV" width="80%"><p class="caption">
+FIGURE 5.1: Rolling origin CV
 </p>
 </div>
 <p>We illustrate the usage of the rolling origin cross-validation with <code>origami</code>
@@ -1240,7 +1238,7 @@ package below using the function <code><a href="http://tlverse.org/origami/refer
 <p>Our time-series has <span class="math inline">\(t=144\)</span> time points. Setting the <code>first_window</code> to <span class="math inline">\(50\)</span>,
 <code>validation_size</code> to 10, <code>gap</code> to 5 and <code>batch</code> to 20, we get 4 time-series
 folds; we show the first two below.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin</a></span><span class="op">(</span>
   <span class="va">t</span>, first_window <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
 <span class="op">)</span>
@@ -1294,12 +1292,10 @@ training set in the new fold is the same as in the first fold (15 time points).
 This setup keeps the training sets comparable over time (and fold) as compared
 to the rolling origin CV. We then evaluate the performance of the proposed
 algorithm on 10 time points in the future.</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"img/image/rolling_window.png"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-2"></span>
-<img src="img/image/rolling_window.png" alt="Illustration of rolling window CV" width="80%"><p class="caption">
-FIGURE 5.2: Illustration of rolling window CV
+<img src="img/image/rolling_window.png" alt="Rolling window CV" width="80%"><p class="caption">
+FIGURE 5.2: Rolling window CV
 </p>
 </div>
 <p>We illustrate the usage of the rolling window cross-validation with <code>origami</code>
@@ -1313,7 +1309,7 @@ package below using the function <code><a href="http://tlverse.org/origami/refer
 </ol>
 <p>Setting the <code>window_size</code> to <span class="math inline">\(50\)</span>, <code>validation_size</code> to 10, <code>gap</code> to 5 and
 <code>batch</code> to 20, we also get 4 time-series folds; we show the first two below.</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window</a></span><span class="op">(</span>
   <span class="va">t</span>, window_size <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
 <span class="op">)</span>
@@ -1357,12 +1353,10 @@ during the training step, allowing for dependence in both samples and time. One
 can use the rolling-origin-<span class="math inline">\(v\)</span>-fold cross-validation with <code>origami</code> package
 using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold_rolling_origin_pooled(n, t, id, time, V, first_window, validation_size, gap, batch)</a></code>. In the figure below, we show <span class="math inline">\(V=2\)</span>
 <span class="math inline">\(V\)</span>-folds, and 2 time-series CV folds.</p>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"img/image/rolling_origin_v_fold.png"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-3"></span>
-<img src="img/image/rolling_origin_v_fold.png" alt="Illustration of rolling origin v-fold CV" width="80%"><p class="caption">
-FIGURE 5.3: Illustration of rolling origin v-fold CV
+<img src="img/image/rolling_origin_v_fold.png" alt="Rolling origin V-fold CV" width="80%"><p class="caption">
+FIGURE 5.3: Rolling origin V-fold CV
 </p>
 </div>
 </div>
@@ -1375,12 +1369,10 @@ multiple time-series with arbitrary sample dependence. One can use the
 rolling-window-<span class="math inline">\(V\)</span>-fold cross-validation with <code>origami</code> package using the
 function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size, validation_size, gap, batch)</a></code>. In the figure below, we show <span class="math inline">\(V=2\)</span> <span class="math inline">\(V\)</span>-folds, and
 2 time-series CV folds.</p>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/include_graphics.html">include_graphics</a></span><span class="op">(</span>path <span class="op">=</span> <span class="st">"img/image/rolling_window_v_fold.png"</span><span class="op">)</span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span id="fig:unnamed-chunk-4"></span>
-<img src="img/image/rolling_window_v_fold.png" alt="Illustration of rolling window V-fold CV" width="80%"><p class="caption">
-FIGURE 5.4: Illustration of rolling window V-fold CV
+<img src="img/image/rolling_window_v_fold.png" alt="Rolling window V-fold CV" width="80%"><p class="caption">
+FIGURE 5.4: Rolling window V-fold CV
 </p>
 </div>
 </div>
@@ -1465,7 +1457,7 @@ assume the data is independent and identically distributed, ignoring the cluster
 structure imposed by the clinical trial design. For the sake of illustration, we
 will work with a subset of data, and remove all samples with missing data from
 the dataset; we will learn in the next chapter how to deal with missingness.</p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://stringr.tidyverse.org">stringr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
@@ -2098,7 +2090,7 @@ Severely Food Insecure
 </table></div>
 </div>
 <p>We can see the covariates used in the prediction:</p>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">outcome</span>
 <span class="co">#&gt; [1] "whz"</span>
 <span class="va">covars</span>
@@ -2112,7 +2104,7 @@ Severely Food Insecure
 <p>Next, we fit a linear model on the full data, with the goal of predicting the
 weight-for-height Z-score <code>whz</code> using all of the available covariate data. Let’s
 try it out:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lm_mod</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">whz</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">washb_data</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">lm_mod</span><span class="op">)</span>
 <span class="co">#&gt; </span>
@@ -2188,7 +2180,7 @@ try it out:</p>
 the linear model to the true outcomes observed in the data set. This is the well
 known (and standard) mean squared error. We can extract that from the <code>lm</code> model
 object like so:</p>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">err</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/residuals.html">resid</a></span><span class="op">(</span><span class="va">lm_mod</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0.86568</span></code></pre></div>
 <p>The mean squared error is 0.86568. There is an important problem that arises
@@ -2207,7 +2199,7 @@ honest evaluation of the error.</p>
 <p>We can easily add cross-validation to our linear regression procedure using
 <code>origami</code>. First, let us define a new function to perform linear regression on a
 specific partition of the data (called a “fold”):</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv_lm</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">fold</span>, <span class="va">data</span>, <span class="va">reg_form</span><span class="op">)</span> <span class="op">{</span>
   <span class="co"># get name and index of outcome variable from regression formula</span>
   <span class="va">out_var</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_split.html">str_split</a></span><span class="op">(</span><span class="va">reg_form</span>, <span class="st">" "</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>
@@ -2237,7 +2229,7 @@ set of partitions using <code>origami</code>’s <code>make_folds</code> functio
 function over the resultant <code>folds</code> object. Below, we replicate the
 re-substitution estimate of the error – we did this “by hand” above – using
 the functions <code>make_folds</code> and <code>cv_lm</code>.</p>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># re-substitution estimate</span>
 <span class="va">resub</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">washb_data</span>, fold_fun <span class="op">=</span> <span class="va">folds_resubstitution</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="va">resub_results</span> <span class="op">&lt;-</span> <span class="fu">cv_lm</span><span class="op">(</span>fold <span class="op">=</span> <span class="va">resub</span>, data <span class="op">=</span> <span class="va">washb_data</span>, reg_form <span class="op">=</span> <span class="st">"whz ~ ."</span><span class="op">)</span>
@@ -2250,7 +2242,7 @@ subsets and evaluating on the subset that was held out for testing. This is
 repeated such that each subset is used for testing. We can easily apply our
 <code>cv_lm</code> function using <code>origami</code>’s <code>cross_validate</code> (n.b., by default this
 performs 10-fold cross-validation):</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># cross-validated estimate</span>
 <span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">)</span>
 <span class="va">cvlm_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/cross_validate.html">cross_validate</a></span><span class="op">(</span>
@@ -2270,7 +2262,7 @@ estimate of the error is larger.</p>
 <p>To examine <code>origami</code> further, let us return to our example analysis using the
 WASH data set. Here, we will write a new <code>cv_fun</code> type object. As an example, we
 will use Breiman’s <code>randomForest</code> <span class="citation">(Breiman <a href="references.html#ref-breiman2001random">2001</a>)</span>:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># make sure to load the package!</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/">randomForest</a></span><span class="op">)</span>
 
@@ -2299,7 +2291,7 @@ be written by hand; however, in future releases, a wrapper may be available to
 support auto-generating <code>cv_fun</code>s to be used with <code>origami</code>.</p>
 <p>Below, we use <code>cross_validate</code> to apply our new <code>cv_rf</code> function over the <code>folds</code>
 object generated by <code>make_folds</code>.</p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># now, let's cross-validate...</span>
 <span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">)</span>
 <span class="va">cvrf_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/cross_validate.html">cross_validate</a></span><span class="op">(</span>
@@ -2323,7 +2315,7 @@ forecasting model: we’ll train the data on past observations (either all
 available or a recent subset), and then use the model fit to predict the next
 few observations. We consider the <code>AirPassengers</code> dataset again, a monthly time
 series of passenger air traffic in thousands of people.</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">AirPassengers</span><span class="op">)</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">AirPassengers</span><span class="op">)</span>
 <span class="co">#&gt;      Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec</span>
@@ -2342,7 +2334,7 @@ series of passenger air traffic in thousands of people.</p>
 <p>Suppose we want to pick between two forecasting models with different <code>arima</code>
 configurations. We can do that by evaluating their forecasting performance.
 First, we set up the appropriate cross-validation scheme for time-series.</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">AirPassengers</span>, fold_fun <span class="op">=</span> <span class="va">folds_rolling_origin</span>,
                     first_window <span class="op">=</span> <span class="fl">36</span>, validation_size <span class="op">=</span> <span class="fl">24</span>, batch <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
 
@@ -2383,7 +2375,7 @@ folds to train! Luckily, we can pass the <code>batch</code> as option to
 <code>folds_rolling_origin</code> that tells it to increase the size of the training set by
 10 points each iteration. Since we want to forecast the immediate next point,
 <code>gap</code> argument remains the default (0).</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># make sure to load the package!</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://pkg.robjhyndman.com/forecast/">forecast</a></span><span class="op">)</span>
 
@@ -2507,7 +2499,7 @@ of the proposed algorithm.</li>
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="data.html"><span class="header-section-number">4</span> Datasets</a></div>
+<div class="prev"><a href="data.html"><span class="header-section-number">4</span> Meet the Data</a></div>
 <div class="next"><a href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
@@ -2566,7 +2558,7 @@ of the proposed algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on February 08, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on February 09, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-02-08
+Updated: 2021-02-09
 
 ## Learning Objectives
 
@@ -251,13 +251,13 @@ give a recipe:
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
 <div class="figure" style="text-align: center">
-<img src="img/gif/shift_animation.gif" alt="Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)Animation of how a counterfactual outcome changes as the natural treatment distribution is subjected to a simple stochastic intervention</p>
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
 </div>
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
-To start, let us load the packages we will use and set a seed for simulation:
+To start, let's load the packages we'll be using throughout our simple data example
 
 
 ```r
@@ -426,7 +426,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 tmle_fit

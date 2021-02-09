@@ -592,7 +592,8 @@ but also tailored to have robust finite sample performance.
 
 
 ```r
-metalearner <- make_learner(Lrnr_solnp,
+metalearner <- make_learner(
+  Lrnr_solnp,
   loss_function = loss_loglik_binomial,
   learner_function = metalearner_logistic_binomial
 )

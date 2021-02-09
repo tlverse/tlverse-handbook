@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
-Updated: 2021-02-08
+Updated: 2021-02-09
 
 ## Learning Objectives
 
@@ -785,14 +785,9 @@ For the following fold, we train the algorithm on a longer stream of data, 25
 time points, including the original 15 we started with. We then evaluate its
 performance on 10 time points in the future.
 
-
-```r
-knitr::include_graphics(path = "img/image/rolling_origin.png")
-```
-
 <div class="figure" style="text-align: center">
-<img src="img/image/rolling_origin.png" alt="Illustration of rolling origin CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)Illustration of rolling origin CV</p>
+<img src="img/image/rolling_origin.png" alt="Rolling origin CV" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)Rolling origin CV</p>
 </div>
 
 We illustrate the usage of the rolling origin cross-validation with `origami`
@@ -866,14 +861,9 @@ This setup keeps the training sets comparable over time (and fold) as compared
 to the rolling origin CV. We then evaluate the performance of the proposed
 algorithm on 10 time points in the future.
 
-
-```r
-knitr::include_graphics(path = "img/image/rolling_window.png")
-```
-
 <div class="figure" style="text-align: center">
-<img src="img/image/rolling_window.png" alt="Illustration of rolling window CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-2)Illustration of rolling window CV</p>
+<img src="img/image/rolling_window.png" alt="Rolling window CV" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-2)Rolling window CV</p>
 </div>
 
 We illustrate the usage of the rolling window cross-validation with `origami`
@@ -936,14 +926,9 @@ using the function `folds_vfold_rolling_origin_pooled(n, t, id, time, V,
 first_window, validation_size, gap, batch)`. In the figure below, we show $V=2$
 $V$-folds, and 2 time-series CV folds.
 
-
-```r
-knitr::include_graphics(path = "img/image/rolling_origin_v_fold.png")
-```
-
 <div class="figure" style="text-align: center">
-<img src="img/image/rolling_origin_v_fold.png" alt="Illustration of rolling origin v-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-3)Illustration of rolling origin v-fold CV</p>
+<img src="img/image/rolling_origin_v_fold.png" alt="Rolling origin V-fold CV" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-3)Rolling origin V-fold CV</p>
 </div>
 
 #### Rolling window with v-fold
@@ -955,14 +940,9 @@ function `folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size,
 validation_size, gap, batch)`. In the figure below, we show $V=2$ $V$-folds, and
 2 time-series CV folds.
 
-
-```r
-knitr::include_graphics(path = "img/image/rolling_window_v_fold.png")
-```
-
 <div class="figure" style="text-align: center">
-<img src="img/image/rolling_window_v_fold.png" alt="Illustration of rolling window V-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-4)Illustration of rolling window V-fold CV</p>
+<img src="img/image/rolling_window_v_fold.png" alt="Rolling window V-fold CV" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-4)Rolling window V-fold CV</p>
 </div>
 
 ## General workflow of `origami`
