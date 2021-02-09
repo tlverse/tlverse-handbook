@@ -1,4 +1,4 @@
-# Datasets {#data}
+# Meet the Data {#data}
 
 ## WASH Benefits Example Dataset {#wash}
 

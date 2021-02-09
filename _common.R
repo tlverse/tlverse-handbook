@@ -34,11 +34,11 @@ options(
 
 # overwrite options by output type
 if (knitr:::is_html_output()) {
-  #options(width = 80)
+  options(width = 80)
 }
 if (knitr:::is_latex_output()) {
-  #knitr::opts_chunk$set(width = 67)
-  #options(width = 67)
+  knitr::opts_chunk$set(width = 67)
+  options(width = 67)
   options(cli.unicode = TRUE)
 }
 

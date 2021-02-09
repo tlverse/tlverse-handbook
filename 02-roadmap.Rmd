@@ -74,23 +74,24 @@ nonparametric statistical model.
 
 Alternatively, if the probability distribution of the data at hand is described
 by a finite number of parameters, then the statistical model is parametric. In
-this case, we prescribe to the belief that the random variable $O$ being
-observed has, e.g., a normal distribution with mean $\mu$ and variance
-$\sigma^2$. More formally, a parametric model may be defined
+this case, we subscribe to the belief that the random variable $O$ being
+observed has, for example, a normal distribution with mean $\mu$ and variance
+$\sigma^2$. Formally, a parametric model may be defined
 \begin{equation*}
   \mathcal{M} = \{P_{\theta} : \theta \in \mathcal{R}^d \}
 \end{equation*}
 
 Sadly, the assumption that the data-generating distribution has a specific,
-parametric forms is all-too-common, even when such is a leap of faith. This
-practice of oversimplification in the current culture of data analysis
-typically derails any attempt at trying to answer the scientific question at
-hand; alas, such statements as the ever-popular quip of Box that "All models are
-wrong but some are useful," encourage the data analyst to make arbitrary choices
-even when that often force significant differences in answers to the same
-estimation problem. The Targeted Learning paradigm does not suffer from this
-bias since it defines the statistical model through a representation of the true
-data-generating distribution corresponding to the observed data.
+parametric form is all too common, especially since this is a leap of faith or
+an assumption made of convenience. This practice of oversimplification in the
+current culture of data analysis typically derails any attempt at trying to
+answer the scientific question at hand; alas, such statements as the
+ever-popular quip of Box that "All models are wrong but some are useful"
+encourage the data analyst to make arbitrary choices even when such a practice
+often forces starkly different answers to the same estimation problem.  The
+Targeted Learning paradigm does not suffer from this bias since it defines the
+statistical model through a representation of the true data-generating
+distribution corresponding to the observed data.
 
 Now, on to Step 3: *"What are we trying to learn from the data?"*
 
@@ -180,9 +181,10 @@ A 95\% confidence interval means that if we were to take 100 different samples
 of size $n$ and compute a 95% confidence interval for each sample, then
 approximately 95 of the 100 confidence intervals would contain the estimand,
 $\Psi(P_0)$. More practically, this means that there is a 95% probability
-(or 95% confidence) that the confidence interval procedure will contain the
-true estimand. However, any single estimated confidence interval either will
-contain the true estimand or will not.
+that the confidence interval procedure generates intervals containing the
+true estimand value (or 95% confidence of "covering" the true value). That is,
+any single estimated confidence interval either will contain the true estimand
+or will not (also called "coverage").
 
 ## Summary of the Roadmap {#roadmap-summary}
 
@@ -192,16 +194,16 @@ probability distribution $P_0$, such that $O_1, \ldots, O_n \sim P_0$. We have
 statistical knowledge about the experiment that generated this data. In other
 words, we make a statement that the true data distribution $P_0$ falls in a
 certain set called a statistical model, $\mathcal{M}$. Often these sets are very
-large because statistical knowledge is very limited - hence, these statistical models
-are often infinite dimensional models. Our statistical query is, "What are we
-trying to learn from the data?" denoted by the statistical target parameter,
-$\Psi$, which maps the $P_0$ into the estimand, $\Psi(P_0)$. At this point the
-statistical estimation problem is formally defined and now we will need
-statistical theory to guide us in the construction of estimators. There's a lot
-of statistical theory we will review in this course that, in particular, relies
-on the Central Limit Theorem, allowing us to come up with estimators that are
-approximately normally distributed and also allowing us to come with statistical
-inference (i.e., confidence intervals and hypothesis tests).
+large because statistical knowledge is very limited - hence, these statistical
+models are often infinite dimensional models. Our statistical query is, "What
+are we trying to learn from the data?" denoted by the statistical target
+parameter, $\Psi$, which maps the $P_0$ into the estimand, $\Psi(P_0)$. At this
+point the statistical estimation problem is formally defined and now we will
+need statistical theory to guide us in the construction of estimators. There's a
+lot of statistical theory we will review in this course that, in particular,
+relies on the Central Limit Theorem, allowing us to come up with estimators that
+are approximately normally distributed and also allowing us to come with
+statistical inference (i.e., confidence intervals and hypothesis tests).
 
 ## Causal Target Parameters {#causal}
 
