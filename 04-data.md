@@ -36,13 +36,13 @@ dat <- read_csv(
 )
 head(dat)
 #> # A tibble: 6 x 28
-#>     whz tr    fracode month  aged sex   momage momedu momheight hfiacat Nlt18
-#>   <dbl> <chr> <chr>   <dbl> <dbl> <chr>  <dbl> <chr>      <dbl> <chr>   <dbl>
-#> 1  0    Cont… N05265      9   268 male      30 Prima…      146. Food S…     3
-#> 2 -1.16 Cont… N05265      9   286 male      25 Prima…      149. Modera…     2
-#> 3 -1.05 Cont… N08002      9   264 male      25 Prima…      152. Food S…     1
-#> 4 -1.26 Cont… N08002      9   252 fema…     28 Prima…      140. Food S…     3
-#> 5 -0.59 Cont… N06531      9   336 fema…     19 Secon…      151. Food S…     2
+#>     whz tr     fracode month  aged sex    momage momedu momheight hfiacat  Nlt18
+#>   <dbl> <chr>  <chr>   <dbl> <dbl> <chr>   <dbl> <chr>      <dbl> <chr>    <dbl>
+#> 1  0    Contr… N05265      9   268 male       30 Prima…      146. Food Se…     3
+#> 2 -1.16 Contr… N05265      9   286 male       25 Prima…      149. Moderat…     2
+#> 3 -1.05 Contr… N08002      9   264 male       25 Prima…      152. Food Se…     1
+#> 4 -1.26 Contr… N08002      9   252 female     28 Prima…      140. Food Se…     3
+#> 5 -0.59 Contr… N06531      9   336 female     19 Secon…      151. Food Se…     2
 #> # … with 1 more row, and 17 more variables: Ncomp <dbl>, watmin <dbl>,
 #> #   elec <dbl>, floor <dbl>, walls <dbl>, roof <dbl>, asset_wardrobe <dbl>,
 #> #   asset_table <dbl>, asset_chair <dbl>, asset_khat <dbl>, asset_chouki <dbl>,

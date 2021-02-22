@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "February 09, 2021"
+date: "February 22, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -190,10 +190,10 @@ following packages:
 
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
-|bookdown     |0.21.6     |Github (rstudio/bookdown\@6c7346a)    |
-|bslib        |0.2.4.9001 |Github (rstudio/bslib\@f613324)       |
+|bookdown     |0.21.6     |Github (rstudio/bookdown\@7199eef)    |
+|bslib        |0.2.4.9002 |Github (rstudio/bslib\@ed563f7)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
-|data.table   |1.13.6     |CRAN (R 4.0.2)                        |
+|data.table   |1.14.0     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
 |downlit      |0.2.1      |CRAN (R 4.0.2)                        |
 |dplyr        |1.0.4      |CRAN (R 4.0.2)                        |
@@ -201,13 +201,13 @@ following packages:
 |ggdag        |0.2.3      |CRAN (R 4.0.2)                        |
 |ggfortify    |0.4.11     |CRAN (R 4.0.2)                        |
 |ggplot2      |3.3.3      |CRAN (R 4.0.2)                        |
-|kableExtra   |1.3.1      |CRAN (R 4.0.2)                        |
+|kableExtra   |1.3.4      |CRAN (R 4.0.2)                        |
 |knitr        |1.31       |CRAN (R 4.0.2)                        |
 |mvtnorm      |1.1-1      |CRAN (R 4.0.2)                        |
 |origami      |1.0.3      |CRAN (R 4.0.2)                        |
 |randomForest |4.6-14     |CRAN (R 4.0.2)                        |
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.6.6      |Github (rstudio/rmarkdown\@de0e2ec)   |
+|rmarkdown    |2.7.1      |Github (rstudio/rmarkdown\@e455285)   |
 |skimr        |2.1.2      |CRAN (R 4.0.2)                        |
 |sl3          |1.4.2      |Github (tlverse/sl3\@a119d47)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |
