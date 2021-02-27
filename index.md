@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "February 22, 2021"
+date: "February 27, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -149,14 +149,10 @@ network) and adaptive sequential designs.
 ### Rachael Phillips {-}
 
 Rachael Phillips is a PhD student in biostatistics, advised by Alan Hubbard and
-Mark van der Laan. She has an MA in Biostatistics, BS in Biology with a
-Chemistry minor and a BA in Mathematics with a Spanish minor. Rachael's research
-focuses on narrowing the gap between the theory and application of modern
-statistics for real-world data science. Specifically, Rachael is motivated by
-issues arising in healthcare, and she leverages strategies rooted in causal
-inference and nonparametric estimation to build clinician-tailored,
-machine-driven solutions. Rachael is also passionate about free, online-mediated
-education and its corresponding pedagogy.
+Mark van der Laan. She has an MA in Biostatistics, BS in Biology, and BA in 
+Mathematics. A student of targeted learning and causal inference; her research 
+integrates personalized medicine, human-computer interaction, experimental 
+design, and regulatory policy. 
 
 ### Alan Hubbard {-}
 
@@ -190,8 +186,8 @@ following packages:
 
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
-|bookdown     |0.21.6     |Github (rstudio/bookdown\@7199eef)    |
-|bslib        |0.2.4.9002 |Github (rstudio/bslib\@ed563f7)       |
+|bookdown     |0.21.6     |Github (rstudio/bookdown\@ca0145f)    |
+|bslib        |0.2.4.9002 |Github (rstudio/bslib\@aa5a842)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table   |1.14.0     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
@@ -207,11 +203,11 @@ following packages:
 |origami      |1.0.3      |CRAN (R 4.0.2)                        |
 |randomForest |4.6-14     |CRAN (R 4.0.2)                        |
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.7.1      |Github (rstudio/rmarkdown\@e455285)   |
+|rmarkdown    |2.7.2      |Github (rstudio/rmarkdown\@5ba64c4)   |
 |skimr        |2.1.2      |CRAN (R 4.0.2)                        |
 |sl3          |1.4.2      |Github (tlverse/sl3\@a119d47)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |
-|tibble       |3.0.6      |CRAN (R 4.0.2)                        |
+|tibble       |3.1.0      |CRAN (R 4.0.2)                        |
 |tidyr        |1.1.2      |CRAN (R 4.0.2)                        |
 |tmle3        |0.1.7      |Github (tlverse/tmle3\@5d86bd4)       |
 |tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
