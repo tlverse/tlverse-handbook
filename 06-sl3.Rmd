@@ -179,10 +179,10 @@ The `sl3` implementation consists of the following steps:
 
 ### WASH Benefits Study Example {-}
 
-Using the WASH data, we are interested in predicting weight-for-height z-score
-`whz` using the available covariate data. More information on this dataset, and
-all other data that we will work with in this handbook, is contained in [Chapter
-3]{#data}. Let's begin!
+Using the WASH Benefits Bangladesh data, we are interested in predicting 
+weight-for-height z-score `whz` using the available covariate data. More 
+information on this dataset, and all other data that we will work with in this 
+handbook, is contained in [Chapter 3]{#data}. Let's begin!
 
 ### 0. Load the necessary libraries and data {-}
 
@@ -322,8 +322,8 @@ Now that we have an idea of some learners, we can construct them using the
 
 ```{r baselearners}
 # choose base learners
-lrnr_glm <- make_learner(Lrnr_glm)
-lrnr_mean <- Lrnr_mean$new()
+lrn_glm <- make_learner(Lrnr_glm)
+lrn_mean <- Lrnr_mean$new()
 ```
 We can customize learner hyperparameters to incorporate a diversity of different
 settings. Documentation for the learners and their hyperparameters can be found
@@ -331,18 +331,50 @@ in the [`sl3` Learners
 Reference](https://tlverse.org/sl3/reference/index.html#section-sl-learners).
 
 ```{r extra-lrnr-awesome}
-lrnr_ranger50 <- make_learner(Lrnr_ranger, num.trees = 50)
-lrnr_hal_faster <- Lrnr_hal9001$new(max_degree = 2, reduce_basis = 0.05)
-lrnr_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
-lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
-lrnr_elasticnet <- make_learner(Lrnr_glmnet, alpha = 0.5)
-xgb_fast <- Lrnr_xgboost$new()
+lrn_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
+lrn_ridge <- Lrnr_glmnet$new(alpha = 0)
+lrn_enet.5 <- make_learner(Lrnr_glmnet, alpha = 0.5)
+
+lrn_polspline <- Lrnr_polspline$new()
+
+lrn_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
+
+lrn_hal_faster <- Lrnr_hal9001$new(max_degree = 2, reduce_basis = 0.05)
+
+xgb_fast <- Lrnr_xgboost$new() # default with nrounds = 20 is pretty fast
+xgb_50 <- Lrnr_xgboost$new(nrounds = 50)
+```
+We can use `Lrnr_define_interactions` to define interaction terms among 
+covariates. The interactions should be supplied as list of character vectors, 
+where each vector specifies an interaction. For example, we specify interactions 
+below between (1) `tr` (whether or not the subject received the WASH 
+intervention) and `elec` (whether or not the subject had electricity); and 
+between (2) `tr` and `hfiacat` (the subject's level of food security). 
+
+```{r interaction-learner}
+interactions <- list(c("elec", "tr"), c("tr", "hfiacat"))
+# main terms as well as the interactions above will be included
+lrn_interaction <- make_learner(Lrnr_define_interactions, interactions)
+```
+What we just defined above is incomplete. In order to fit learners with these 
+interactions, we need to create a `Pipeline`. A `Pipeline` is a set of learners 
+to be fit sequentially, where the fit from one learner is used to define the 
+task for the next learner. We need to create a `Pipeline` with the interaction 
+defining learner and another learner that incorporate these terms when fitting
+a model. Let's create a learner pipeline that will fit a linear model with the 
+combination of main terms and interactions terms, as specified in 
+`lrn_interaction_main`. 
+
+```{r interaction-pipe}
+# we already instantiated a linear model learner above, no need to do that again
+lrn_glm_interaction <- make_learner(Pipeline, lrn_interaction, lrn_glm)
+lrn_glm_interaction
 ```
 
 We can also include learners from the `SuperLearner` `R` package.
 
 ```{r extra-lrnr-woah}
-lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
+lrn_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ```
 
 Here is a fun trick to create customized learners over a grid of parameters.
@@ -367,9 +399,12 @@ grid_params <- list(
   nrounds = 100
 )
 grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
+grid
+
 xgb_learners <- apply(grid, MARGIN = 1, function(tuning_params) {
   do.call(Lrnr_xgboost$new, as.list(tuning_params))
 })
+xgb_learners
 ```
 
 Did you see `Lrnr_caret` when we called `sl3_list_learners(c("binomial"))`?
@@ -400,7 +435,9 @@ training them simultaneously, so that their predictions can be either combined
 or compared.
 
 ```{r stack}
-stack <- make_learner(Stack, lrnr_glm, lrnr_ridge, lrnr_lasso, xgb_fast)
+stack <- make_learner(
+  Stack, lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50
+)
 stack
 ```
 
@@ -410,8 +447,8 @@ modify the names of the learners.
 
 ```{r alt-stack}
 # named vector of learners first
-learners <- c(lrnr_glm, lrnr_ridge, lrnr_lasso, xgb_fast)
-names(learners) <- c("glm", "ridge", "lasso", "xgboost")
+learners <- c(lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50)
+names(learners) <- c("glm", "polspline", "enet.5", "ridge", "lasso", "xgboost50")
 # next make the stack
 stack <- make_learner(Stack, learners)
 # now the names are pretty
@@ -426,6 +463,7 @@ all of the learners will train in a cross-validated manner.
 cv_stack <- Lrnr_cv$new(stack)
 cv_stack
 ```
+
 #### Screening Algorithms for Feature Selection {-}
 
 We can optionally select a subset of available covariates and pass only
@@ -458,8 +496,8 @@ importance ranking (ordered by mean decrease in accuracy). To select the top
 setting `ntree = 20`). 
 
 Hang on! Before you think it -- I will confess: Bob Ross and I both know that 20
-trees makes for a lonely forest, and I shouldn't even consider it, but these are
-the sacrifices I have to make for this chapter to build in a timely manner! 
+trees makes for a lonely forest, and I shouldn't consider it, but these are the 
+sacrifices I have to make for this chapter to build in time! 
 
 ```{r screener}
 miniforest <- Lrnr_ranger$new(
@@ -486,18 +524,29 @@ screen_augment_rf <- Lrnr_screener_augment$new(
 screen_augment_rf
 ```
 
+Selecting covariates with non-zero lasso coefficients is quite common. Let's 
+construct `Lrnr_screener_coefs` screener that does just that, and test it 
+out. 
+
+```{r screener-coefs}
+# we already instantiated a lasso learner above, no need to do it again
+screen_lasso <- Lrnr_screener_coefs$new(learner = lrn_lasso, threshold = 0)
+screen_lasso
+```
+
 To **"pipe"** only the selected covariates to the modeling algorithm, we need to
-make a `Pipeline`, which is a just set of learners to be fit sequentially, where
-the fit from one learner is used to define the task for the next learner.
+make a `Pipeline`, similar to the one we built for the regression model with 
+interaction terms. 
 
 ```{r screener-pipe}
-screen_rf_pipeline <- make_learner(Pipeline, screen_rf, stack)
+screen_rf_pipe <- make_learner(Pipeline, screen_rf, stack)
+screen_lasso_pipe <- make_learner(Pipeline, screen_lasso, stack)
 ```
-Now our learners will be preceded by a screening step.
+Now, these learners with no internal screening will be preceded by a screening 
+step.
 
 We also consider the original `stack`, to compare how the feature selection
-methods perform in comparison to the methods without feature selection, and
-because
+methods perform in comparison to the methods without feature selection.
 
 Analogous to what we have seen before, we have to stack the pipeline and
 original `stack` together, so we may use them as base learners in our super
@@ -505,15 +554,11 @@ learner.
 
 ```{r screeners-stack}
 # pretty names again
-learners2 <- c(learners, screen_rf_pipeline)
-names(learners2) <- c(names(learners), "rf_screen")
+learners2 <- c(learners, screen_rf_pipe, screen_lasso_pipe)
+names(learners2) <- c(names(learners), "randomforest_screen", "lasso_screen")
 
 fancy_stack <- make_learner(Stack, learners2)
 fancy_stack
-
-# we can visualize the stack
-dt_stack <- delayed_learner_train(fancy_stack, washb_task)
-plot(dt_stack, color = FALSE, height = "400px", width = "90%")
 ```
 
 We will use the [default
@@ -527,9 +572,9 @@ function](https://github.com/tlverse/sl3/blob/master/R/metalearners.R). This
 default metalearner selects a loss and metalearner pairing based on the outcome
 type. Note that any learner can be used as a metalearner.
 
-We have made a library/stack of base learners, so we are ready to make the super
-learner. The super learner algorithm fits a metalearner on the validation-set
-predictions.
+Now that we have made a diverse stack of base learners, we are ready to make the 
+super learner. The super learner algorithm fits a metalearner on the 
+validation-set predictions.
 
 ```{r make-sl}
 sl <- make_learner(Lrnr_sl, learners = fancy_stack)
@@ -544,6 +589,19 @@ Learners](https://tlverse.org/sl3/articles/custom_lrnrs.html) which can be used
 in all the places you could otherwise use any other `sl3` learners, including
 `Pipelines`, `Stacks`, and the Super Learner.
 
+Recall that the discrete Super Learner, or cross-validated selector, is a 
+metalearner that assigns a weight of 1 to the learner with the lowest 
+cross-validated empirical risk, and weight of 0 to all other learners. This 
+metalearner specification can be invoked with `Lrnr_cv_selector`. 
+
+```{r make-sl-discrete}
+discrete_sl_metalrn <- Lrnr_cv_selector$new()
+discrete_sl <- Lrnr_sl$new(
+  learners = fancy_stack,
+  metalearner = discrete_sl_metalrn
+)
+```
+<!--
 In the plot below, we visualize the steps for executing the Super Learner in the
 `tlverse/delayed` framework. For those like myself who are not particularly
 keen on understanding the intricacies of `delayed`, let's focus on the main
@@ -555,6 +613,7 @@ represent the 10 cross-validation folds and there is a separate hold-out
 dt_sl <- delayed_learner_train(sl, washb_task)
 plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 ```
+--->
 
 ### 3. Train the Super Learner on the machine learning task {-}
 
@@ -564,7 +623,8 @@ predictions in a cross-validated manner, thereby avoiding overfitting.
 Now we are ready to **"train"** our Super Learner on our `sl3_task` object,
 `washb_task`.
 
-```{r sl, eval=FALSE}
+```{r sl}
+set.seed(4197)
 sl_fit <- sl$train(washb_task)
 ```
 
@@ -573,7 +633,7 @@ sl_fit <- sl$train(washb_task)
 Now that we have fit the super learner, we are ready to calculate the predicted
 outcome for each subject.
 
-```{r sl-predictions, eval=FALSE}
+```{r sl-predictions}
 # we did it! now we have super learner predictions
 sl_preds <- sl_fit$predict()
 head(sl_preds)
@@ -581,32 +641,25 @@ head(sl_preds)
 <!--
 Below we visualize the observed versus predicted values.
 
-For fun, we will also
-include the cross-validated predictions from most popular learner on the block,
-main terms linear regression.
+For fun, we will also include the cross-validated predictions from most popular 
+learner on the block, main terms linear regression.
 
 
 ```{r, plot-predvobs-woohoo, eval=FALSE}
 
-# df_plot <- data.frame(
-  Observed = washb_data$whz,
-  Predicted = sl_preds,
-  count = c(1:nrow(washb_data))
-)
+# df_plot <- data.frame(Observed = washb_data[["whz"]], Predicted = sl_preds,
+#                        count = seq(1:nrow(washb_data))
 
-# df_plot_melted <- melt(df_plot,
-  id.vars = "count",
-  measure.vars = c("Observed", "Predicted")
-)
+# df_plot_melted <- melt(df_plot, id.vars = "count",
+#                         measure.vars = c("Observed", "Predicted"))
 
-# ggplot(df_plot_melted, aes(value, count, color = variable)) +
-  geom_point()
+# ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 ```
 -->
 
 We can also obtain a summary of the results.
 
-```{r, sl-summary, eval=FALSE}
+```{r, sl-summary}
 sl_fit_summary <- sl_fit$print()
 ```
 From the table of the printed Super Learner fit, we note that the Super Learner
@@ -616,8 +669,9 @@ not weighting the `mean` learner highly.
 
 We can also see that the `glmnet` learner had the lowest cross-validated mean
 risk, thus making it the cross-validated selector (or the _discrete_ Super
-Learner). The mean risk of the Super Learner is calculated using the hold-out
-set that we visualized in the `dt_sl` plot.
+Learner). The mean risk of the Super Learner is calculated using all of the 
+data, and not a separate hold-out, so the Super Learner's mean risk that 
+is reported here is an underestimation.
 
 ## Cross-validated Super Learner {-}
 
@@ -636,7 +690,7 @@ We also need to specify a loss function to evaluate Super Learner.
 Documentation for the available loss functions can be found in the [`sl3` Loss
 Function Reference](https://tlverse.org/sl3/reference/loss_functions.html).
 
-```{r CVsl, eval=FALSE}
+```{r CVsl}
 washb_task_new <- make_sl3_Task(
   data = washb_data,
   covariates = covars,
@@ -682,7 +736,7 @@ is risky, so the importance function default is to remove and refit.
 
 Let's explore the `sl3` variable importance measurements for the `washb` data.
 
-```{r varimp, eval=FALSE}
+```{r varimp}
 washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
 washb_varimp %>%
   kable(digits = 4) %>%
@@ -690,7 +744,7 @@ washb_varimp %>%
   scroll_box(width = "100%", height = "300px")
 ```
 
-```{r varimp-plot, eval=FALSE}
+```{r varimp-plot}
 # plot variable importance
 importance_plot(
   washb_varimp,
@@ -912,35 +966,64 @@ validation sample is $P_{n,B_n}^1$.
 ## Concluding Remarks
 
 * The general ensemble learning approach of Super Learner can be applied to a
-diversity of estimation and prediction problems that can be defined by a loss
-function.
+  diversity of estimation and prediction problems that can be defined by a loss
+  function. 
+  
+* It would be straightforward to plug in the estimator returned by Super Learner 
+  into the target parameter mapping. For example, suppose we are after the 
+  average treatment effect (ATE) of a binary treatment intervention: 
+  $\Psi_0 = E_{0,W}[E_0(Y|A=1,W) - E_0(Y|A=0,W)]$. We could use the Super 
+  Learner that was trained on the original data (let's call this `sl_fit`) to 
+  predict the outcome for all subjects under each intervention. All we would 
+  need to do is take the average difference between the counterfactual outcomes 
+  under each intervention of interest. Considering $\Psi_0$ above, we would 
+  first need two $n$-length vectors of predicted outcomes under each 
+  intervention. One vector would represent the predicted outcomes under an 
+  intervention that sets all subjects to receive $A=1$, $Y_i|A_i=1,W_i$ for all 
+  $i=1,\ldots,n$. The other vector would represent the predicted outcomes under 
+  an intervention that sets all subjects to receive $A=0$, $Y_i|A_i=0,W_i$ for 
+  all $i=1,\ldots,n$. After obtaining these vectors of counterfactual 
+  predicted outcomes, all we would need to do is average and then take the 
+  difference in order to "plug-in" the Super Learner estimator into the target 
+  parameter mapping. In `sl3`, this could be achieved with
+  `mean(sl_fit$predict(A1_task)) - mean(sl_fit$predict(A0_task))`, 
+  where `A1_task$data` would contain all 1's (or the level that pertains to 
+  receiving the treatment) for the treatment column in the data (keeping all 
+  else the same) and `A0_task$data` would contain all 0's (or the level that 
+  pertains to not receiving the treatment) for the treatment column in the data. 
+  It's a worthwhile exercise to obtain the predicted counterfactual outcomes 
+  and create these counterfactual `sl3` tasks. It's too biased; however, to
+  plug the Super Learner fit into the target parameter mapping, calling the 
+  result of `mean(sl_fit$predict(A1_task)) - mean(sl_fit$predict(A0_task))`
+  the estimated ATE. We would end up with an estimator for the ATE that was
+  optimized for estimation of the prediction function, and not the ATE! 
+  
+* At the end of the analysis day, we want an estimator that is optimized for 
+  our target estimand of interest. We ultimately care about doing a good job 
+  estimating $\psi_0$. The Super Learner is an essential step to help us get 
+  there. In fact, we will use the counterfactual predicted outcomes that were 
+  explained at length above. However, Super Learner is not the end of the 
+  estimation procedure. Specifically, the Super Learner would not be an
+  asymptotically linear estimator of the target estimand; and it is not an 
+  efficient substitution estimator. This begs the question, why is it so 
+  important for an estimator to possess these properties? 
 
-* We just discussed conditional mean estimation, outcome prediction and
-variable importance. In future updates of this chapter, we will delve into
-prediction of a conditional density, and the optimal individualized treatment
-rule.
-
-* If we plug in the estimator returned by super learner into the target
-  parameter mapping, then we would end up with an estimator that has the same
-  bias as what we plugged in, and would not be asymptotically linear. It also
-  would not be a plug-in estimator or efficient.
-
-  + An asymptotically linear estimator is important to have, since
-  they converge to the estimand at $\frac{1}{\sqrt{n}}$ rate, and thereby permit
-  formal statistical inference (i.e. confidence intervals and $p$-values).
-  + Plug-in estimators of the estimand are desirable because they respect both
-  the local and global constraints of the statistical model (e.g. bounds), and
-  have they have better finite-sample properties.
+  + An asymptotically linear estimator converges to the estimand a
+    $\frac{1}{\sqrt{n}}$ rate, thereby permitting formal statistical inference 
+    (i.e., confidence intervals and $p$-values). 
+  + Substitution, or plug-in, estimators of the estimand are desirable because 
+    they respect both the local and global constraints of the statistical model 
+    (e.g., bounds), and have they have better finite-sample properties. 
   + An efficient estimator is optimal in the sense that it has the lowest
-  possible variance, and is thus the most precise. An estimator is efficient if
-  and only if is asymptotically linear with influence curve equal to the
-  canonical gradient. The canonical gradient is a mathematical object that is
-  specific to the target estimand, and it provides information on the level of
-  difficulty of the estimation problem. The canonical gradient is shown in the
-  chapters that follow. Practitioner's do not need to know how to calculate a
-  canonical gradient in order to understand efficiency and use Targeted Maximum
-  Likelihood Estimation (TMLE). Metaphorically, you do not need to be Yoda in
-  order to be a Jedi.
+    possible variance, and is thus the most precise. An estimator is efficient 
+    if and only if is asymptotically linear with influence curve equal to the 
+    canonical gradient. The canonical gradient is a mathematical object that is 
+    specific to the target estimand, and it provides information on the level of
+    difficulty of the estimation problem. The canonical gradient is shown in the
+    chapters that follow. Practitioner's do not need to know how to calculate a
+    canonical gradient in order to understand efficiency and use Targeted 
+    Maximum Likelihood Estimation (TMLE). Metaphorically, you do not need to be 
+    Yoda in order to be a Jedi.
 
 * TMLE is a general strategy that succeeds in constructing efficient and
   asymptotically linear plug-in estimators.
@@ -1082,13 +1165,13 @@ ist_task <- make_sl3_Task(
 )
 
 # learner library
-lrnr_glm <- Lrnr_glm$new()
-lrnr_lasso <- Lrnr_glmnet$new(alpha = 1)
-lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
-lrnr_enet <- Lrnr_glmnet$new(alpha = 0.5)
-lrnr_mean <- Lrnr_mean$new()
-lrnr_ranger <- Lrnr_ranger$new()
-lrnr_svm <- Lrnr_svm$new()
+lrn_glm <- Lrnr_glm$new()
+lrn_lasso <- Lrnr_glmnet$new(alpha = 1)
+lrn_ridge <- Lrnr_glmnet$new(alpha = 0)
+lrn_enet <- Lrnr_glmnet$new(alpha = 0.5)
+lrn_mean <- Lrnr_mean$new()
+lrn_ranger <- Lrnr_ranger$new()
+lrn_svm <- Lrnr_svm$new()
 # xgboost grid
 grid_params <- list(
   max_depth = c(2, 5, 8),
@@ -1100,8 +1183,8 @@ xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
   do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))
 })
 learners <- unlist(list(
-  xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso,
-  lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm
+  xgb_learners, lrn_ridge, lrn_mean, lrn_lasso,
+  lrn_glm, lrn_enet, lrn_ranger, lrn_svm
 ),
 recursive = TRUE
 )

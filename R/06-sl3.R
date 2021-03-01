@@ -59,21 +59,39 @@ sl3_list_learners("continuous")
 
 ## ----baselearners-------------------------------------------------------------
 # choose base learners
-lrnr_glm <- make_learner(Lrnr_glm)
-lrnr_mean <- Lrnr_mean$new()
+lrn_glm <- make_learner(Lrnr_glm)
+lrn_mean <- Lrnr_mean$new()
 
 
 ## ----extra-lrnr-awesome-------------------------------------------------------
-lrnr_ranger50 <- make_learner(Lrnr_ranger, num.trees = 50)
-lrnr_hal_faster <- Lrnr_hal9001$new(max_degree = 2, reduce_basis = 0.05)
-lrnr_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
-lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
-lrnr_elasticnet <- make_learner(Lrnr_glmnet, alpha = 0.5)
-xgb_fast <- Lrnr_xgboost$new()
+lrn_lasso <- make_learner(Lrnr_glmnet) # alpha default is 1
+lrn_ridge <- Lrnr_glmnet$new(alpha = 0)
+lrn_enet.5 <- make_learner(Lrnr_glmnet, alpha = 0.5)
+
+lrn_polspline <- Lrnr_polspline$new()
+
+lrn_ranger100 <- make_learner(Lrnr_ranger, num.trees = 100)
+
+lrn_hal_faster <- Lrnr_hal9001$new(max_degree = 2, reduce_basis = 0.05)
+
+xgb_fast <- Lrnr_xgboost$new() # default with nrounds = 20 is pretty fast
+xgb_50 <- Lrnr_xgboost$new(nrounds = 50)
+
+
+## ----interaction-learner------------------------------------------------------
+interactions <- list(c("elec", "tr"), c("tr", "hfiacat"))
+# main terms as well as the interactions above will be included
+lrn_interaction <- make_learner(Lrnr_define_interactions, interactions)
+
+
+## ----interaction-pipe---------------------------------------------------------
+# we already instantiated a linear model learner above, no need to do that again
+lrn_glm_interaction <- make_learner(Pipeline, lrn_interaction, lrn_glm)
+lrn_glm_interaction
 
 
 ## ----extra-lrnr-woah----------------------------------------------------------
-lrnr_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
+lrn_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 
 
 ## ----extra-lrnr-mindblown-svm, eval = FALSE-----------------------------------
@@ -96,9 +114,12 @@ grid_params <- list(
   nrounds = 100
 )
 grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
+grid
+
 xgb_learners <- apply(grid, MARGIN = 1, function(tuning_params) {
   do.call(Lrnr_xgboost$new, as.list(tuning_params))
 })
+xgb_learners
 
 
 ## ----carotene, eval = FALSE---------------------------------------------------
@@ -113,14 +134,16 @@ xgb_learners <- apply(grid, MARGIN = 1, function(tuning_params) {
 
 
 ## ----stack--------------------------------------------------------------------
-stack <- make_learner(Stack, lrnr_glm, lrnr_ridge, lrnr_lasso, xgb_fast)
+stack <- make_learner(
+  Stack, lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50
+)
 stack
 
 
 ## ----alt-stack----------------------------------------------------------------
 # named vector of learners first
-learners <- c(lrnr_glm, lrnr_ridge, lrnr_lasso, xgb_fast)
-names(learners) <- c("glm", "ridge", "lasso", "xgboost")
+learners <- c(lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50)
+names(learners) <- c("glm", "polspline", "enet.5", "ridge", "lasso", "xgboost50")
 # next make the stack
 stack <- make_learner(Stack, learners)
 # now the names are pretty
@@ -155,25 +178,36 @@ screen_augment_rf <- Lrnr_screener_augment$new(
 screen_augment_rf
 
 
+## ----screener-coefs-----------------------------------------------------------
+# we already instantiated a lasso learner above, no need to do it again
+screen_lasso <- Lrnr_screener_coefs$new(learner = lrn_lasso, threshold = 0)
+screen_lasso
+
+
 ## ----screener-pipe------------------------------------------------------------
-screen_rf_pipeline <- make_learner(Pipeline, screen_rf, stack)
+screen_rf_pipe <- make_learner(Pipeline, screen_rf, stack)
+screen_lasso_pipe <- make_learner(Pipeline, screen_lasso, stack)
 
 
 ## ----screeners-stack----------------------------------------------------------
 # pretty names again
-learners2 <- c(learners, screen_rf_pipeline)
-names(learners2) <- c(names(learners), "rf_screen")
+learners2 <- c(learners, screen_rf_pipe, screen_lasso_pipe)
+names(learners2) <- c(names(learners), "randomforest_screen", "lasso_screen")
 
 fancy_stack <- make_learner(Stack, learners2)
 fancy_stack
 
-# we can visualize the stack
-dt_stack <- delayed_learner_train(fancy_stack, washb_task)
-plot(dt_stack, color = FALSE, height = "400px", width = "90%")
-
 
 ## ----make-sl------------------------------------------------------------------
 sl <- make_learner(Lrnr_sl, learners = fancy_stack)
+
+
+## ----make-sl-discrete---------------------------------------------------------
+discrete_sl_metalrn <- Lrnr_cv_selector$new()
+discrete_sl <- Lrnr_sl$new(
+  learners = fancy_stack,
+  metalearner = discrete_sl_metalrn
+)
 
 
 ## ----make-sl-plot-------------------------------------------------------------
@@ -182,6 +216,7 @@ plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 
 
 ## ----sl-----------------------------------------------------------------------
+set.seed(4197)
 sl_fit <- sl$train(washb_task)
 
 
@@ -193,19 +228,13 @@ head(sl_preds)
 
 ## ---- plot-predvobs-woohoo, eval=FALSE----------------------------------------
 ## 
-## # df_plot <- data.frame(
-##   Observed = washb_data$whz,
-##   Predicted = sl_preds,
-##   count = c(1:nrow(washb_data))
-## )
+## # df_plot <- data.frame(Observed = washb_data[["whz"]], Predicted = sl_preds,
+## #                        count = seq(1:nrow(washb_data))
 ## 
-## # df_plot_melted <- melt(df_plot,
-##   id.vars = "count",
-##   measure.vars = c("Observed", "Predicted")
-## )
+## # df_plot_melted <- melt(df_plot, id.vars = "count",
+## #                         measure.vars = c("Observed", "Predicted"))
 ## 
-## # ggplot(df_plot_melted, aes(value, count, color = variable)) +
-##   geom_point()
+## # ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 
 
 ## ---- sl-summary--------------------------------------------------------------
@@ -354,13 +383,13 @@ ist_task_CVsl <- make_sl3_Task(
 ## )
 ## 
 ## # learner library
-## lrnr_glm <- Lrnr_glm$new()
-## lrnr_lasso <- Lrnr_glmnet$new(alpha = 1)
-## lrnr_ridge <- Lrnr_glmnet$new(alpha = 0)
-## lrnr_enet <- Lrnr_glmnet$new(alpha = 0.5)
-## lrnr_mean <- Lrnr_mean$new()
-## lrnr_ranger <- Lrnr_ranger$new()
-## lrnr_svm <- Lrnr_svm$new()
+## lrn_glm <- Lrnr_glm$new()
+## lrn_lasso <- Lrnr_glmnet$new(alpha = 1)
+## lrn_ridge <- Lrnr_glmnet$new(alpha = 0)
+## lrn_enet <- Lrnr_glmnet$new(alpha = 0.5)
+## lrn_mean <- Lrnr_mean$new()
+## lrn_ranger <- Lrnr_ranger$new()
+## lrn_svm <- Lrnr_svm$new()
 ## # xgboost grid
 ## grid_params <- list(
 ##   max_depth = c(2, 5, 8),
@@ -372,8 +401,8 @@ ist_task_CVsl <- make_sl3_Task(
 ##   do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))
 ## })
 ## learners <- unlist(list(
-##   xgb_learners, lrnr_ridge, lrnr_mean, lrnr_lasso,
-##   lrnr_glm, lrnr_enet, lrnr_ranger, lrnr_svm
+##   xgb_learners, lrn_ridge, lrn_mean, lrn_lasso,
+##   lrn_glm, lrn_enet, lrn_ranger, lrn_svm
 ## ),
 ## recursive = TRUE
 ## )

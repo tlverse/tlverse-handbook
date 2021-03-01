@@ -440,8 +440,10 @@ lrn_glm <- Lrnr_glm_fast$new()
 
 ## Define the Q learner:
 Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100,
-                  lrn_xgboost_500, lrn_mean, lrn_glm),
+  learners = list(
+    lrn_xgboost_50, lrn_xgboost_100,
+    lrn_xgboost_500, lrn_mean, lrn_glm
+  ),
   metalearner = Lrnr_nnls$new()
 )
 
@@ -453,8 +455,10 @@ g_learner <- Lrnr_sl$new(
 
 ## Define the B learner:
 b_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100,
-                  lrn_xgboost_500,lrn_mean, lrn_glm),
+  learners = list(
+    lrn_xgboost_50, lrn_xgboost_100,
+    lrn_xgboost_500, lrn_mean, lrn_glm
+  ),
   metalearner = Lrnr_nnls$new()
 )
 ```
@@ -585,24 +589,31 @@ lrn_glm <- Lrnr_glm_fast$new()
 
 ## Define the Q learner, which is just a regular learner:
 Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-                  lrn_glm),
+  learners = list(
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
+    lrn_glm
+  ),
   metalearner = Lrnr_nnls$new()
 )
 
 # Define the g learner, which is a multinomial learner:
-#specify the appropriate loss of the multinomial learner:
+# specify the appropriate loss of the multinomial learner:
 mn_metalearner <- make_learner(Lrnr_solnp,
-                               loss_function = loss_loglik_multinomial,
-                               learner_function =
-                                 metalearner_linear_multinomial)
-g_learner <- make_learner(Lrnr_sl,
-                          list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean),
-                          mn_metalearner)
+  loss_function = loss_loglik_multinomial,
+  learner_function =
+    metalearner_linear_multinomial
+)
+g_learner <- make_learner(
+  Lrnr_sl,
+  list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean),
+  mn_metalearner
+)
 
 # Define the Blip learner, which is a multivariate learner:
-learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-                 lrn_glm)
+learners <- list(
+  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
+  lrn_glm
+)
 b_learner <- create_mv_learners(learners = learners)
 ```
 
@@ -743,8 +754,10 @@ tmle_spec_Q <- tmle3_mopttx_Q(maximize = TRUE)
 tmle_task <- tmle_spec_Q$make_tmle_task(data, node_list)
 
 # Define likelihood:
-initial_likelihood <- tmle_spec_Q$make_initial_likelihood(tmle_task,
-                                                          learner_list)
+initial_likelihood <- tmle_spec_Q$make_initial_likelihood(
+  tmle_task,
+  learner_list
+)
 
 # Estimate the parameter:
 Q_learning(tmle_spec_Q, initial_likelihood, tmle_task)[1]
@@ -774,7 +787,8 @@ in section 5.7.1:
 ```{r data_vim-nodes-mopttx}
 # bin baseline covariates to 3 categories:
 data$W1 <- ifelse(data$W1 < quantile(data$W1)[2], 1,
-                  ifelse(data$W1 < quantile(data$W1)[3], 2, 3))
+  ifelse(data$W1 < quantile(data$W1)[3], 2, 3)
+)
 
 node_list <- list(
   W = c("W3", "W4", "W2"),
@@ -877,8 +891,10 @@ and take a quick look at it:
 
 ```{r load-washb-data}
 washb_data <- fread(
-  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
-         "wash-benefits/washb_data.csv"),
+  paste0(
+    "https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+    "wash-benefits/washb_data.csv"
+  ),
   stringsAsFactors = TRUE
 )
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
@@ -923,14 +939,17 @@ Q_learner <- Lrnr_sl$new(
 )
 
 # Define the g learner, which is a multinomial learner:
-#specify the appropriate loss of the multinomial learner:
+# specify the appropriate loss of the multinomial learner:
 mn_metalearner <- make_learner(Lrnr_solnp,
-                               loss_function = loss_loglik_multinomial,
-                               learner_function =
-                                 metalearner_linear_multinomial)
-g_learner <- make_learner(Lrnr_sl,
-                          list(lrn_xgboost_100, lrn_mean),
-                          mn_metalearner)
+  loss_function = loss_loglik_multinomial,
+  learner_function =
+    metalearner_linear_multinomial
+)
+g_learner <- make_learner(
+  Lrnr_sl,
+  list(lrn_xgboost_100, lrn_mean),
+  mn_metalearner
+)
 
 # Define the Blip learner, which is a multivariate learner:
 learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean)
@@ -948,7 +967,7 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 )
 
 # fit the TML estimator
-fit <- tmle3(tmle_spec, data=washb_data, node_list, learner_list)
+fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
 fit
 ```
 

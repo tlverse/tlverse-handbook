@@ -4,11 +4,14 @@ library(sl3)
 
 
 ## -----------------------------------------------------------------------------
-vet_data <- read.csv("https://raw.githubusercontent.com/tlverse/deming2019-workshop/master/data/veteran.csv")
+vet_data <- read.csv(
+  paste0("https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
+         "master/data/veteran.csv")
+)
 vet_data$trt <- vet_data$trt - 1
 # make fewer times for illustration
-vet_data$time <- ceiling(vet_data$time / 20) 
-k_grid <- 1:max(vet_data$time)
+vet_data$time <- ceiling(vet_data$time / 20)
+k_grid <- seq_len(:max(vet_data$time))
 head(vet_data)
 
 
@@ -43,14 +46,14 @@ initial_likelihood <- survival_spec$make_initial_likelihood(tmle_task,
 
 ## -----------------------------------------------------------------------------
 up <- tmle3_Update_survival$new(
-    maxit = 3e1, 
-    cvtmle = TRUE,
-    convergence_type = "scaled_var",
-    delta_epsilon = 1e-2,
-    fit_method = "l2",
-    use_best = TRUE,
-    verbose=FALSE
-  )
+  maxit = 3e1,
+  cvtmle = TRUE,
+  convergence_type = "scaled_var",
+  delta_epsilon = 1e-2,
+  fit_method = "l2",
+  use_best = TRUE,
+  verbose=FALSE
+)
 
 targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood,
                                                updater = up)
