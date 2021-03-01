@@ -60,7 +60,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/origami"><code>origami</code> <code>R</code> package</a>
 by <em>Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips</em>.</p>
-<p>Updated: 2021-02-27</p>
+<p>Updated: 2021-03-01</p>
 <div id="learning-objectives-2" class="section level2">
 <h2>
 <span class="header-section-number">5.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-2"><i class="fas fa-link"></i></a>
@@ -262,8 +262,10 @@ i.i.d. sample, indexed by the row number.</p>
 
 <span class="co"># load data set and take a peek</span>
 <span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
-         <span class="st">"wash-benefits/washb_data.csv"</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
+    <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
+    <span class="st">"wash-benefits/washb_data.csv"</span>
+  <span class="op">)</span>,
   stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
@@ -1193,11 +1195,11 @@ horizon using the historical data from 1949 to 1960.</p>
 <span class="va">AP</span> <span class="op">&lt;-</span> <span class="va">AirPassengers</span>
 
 <span class="fu">autoplot</span><span class="op">(</span><span class="va">AP</span><span class="op">)</span> <span class="op">+</span>
-   <span class="fu">labs</span><span class="op">(</span>
-     x <span class="op">=</span><span class="st">"Date"</span>,
-     y <span class="op">=</span> <span class="st">"Passenger numbers (1000's)"</span>,
-     title <span class="op">=</span> <span class="st">"Air Passengers from 1949 to 1961"</span>
-   <span class="op">)</span>
+  <span class="fu">labs</span><span class="op">(</span>
+    x <span class="op">=</span> <span class="st">"Date"</span>,
+    y <span class="op">=</span> <span class="st">"Passenger numbers (1000's)"</span>,
+    title <span class="op">=</span> <span class="st">"Air Passengers from 1949 to 1961"</span>
+  <span class="op">)</span>
 
 <span class="va">t</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">AP</span><span class="op">)</span></code></pre></div>
 <div class="inline-figure"><img src="05-origami_files/figure-html/plot_airpass-1.png" width="80%" style="display: block; margin: auto;"></div>
@@ -1240,7 +1242,8 @@ package below using the function <code><a href="http://tlverse.org/origami/refer
 folds; we show the first two below.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin</a></span><span class="op">(</span>
-  <span class="va">t</span>, first_window <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
+  <span class="va">t</span>,
+  first_window <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
 <span class="op">)</span>
 <span class="va">folds</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; $v</span>
@@ -1311,7 +1314,8 @@ package below using the function <code><a href="http://tlverse.org/origami/refer
 <code>batch</code> to 20, we also get 4 time-series folds; we show the first two below.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window</a></span><span class="op">(</span>
-  <span class="va">t</span>, window_size <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
+  <span class="va">t</span>,
+  window_size <span class="op">=</span> <span class="fl">50</span>, validation_size <span class="op">=</span> <span class="fl">10</span>, gap <span class="op">=</span> <span class="fl">5</span>, batch <span class="op">=</span> <span class="fl">20</span>
 <span class="op">)</span>
 <span class="va">folds</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>
 <span class="co">#&gt; $v</span>
@@ -1464,8 +1468,10 @@ the dataset; we will learn in the next chapter how to deal with missingness.</p>
 
 <span class="co"># load data set and take a peek</span>
 <span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
-         <span class="st">"wash-benefits/washb_data.csv"</span><span class="op">)</span>,
+  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
+    <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
+    <span class="st">"wash-benefits/washb_data.csv"</span>
+  <span class="op">)</span>,
   stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span>
 
@@ -2215,8 +2221,10 @@ specific partition of the data (called a “fold”):</p>
   <span class="va">valid_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">valid_data</span><span class="op">)</span>
 
   <span class="co"># capture results to be returned as output</span>
-  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>coef <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-              SE <span class="op">=</span> <span class="op">(</span><span class="va">preds</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">[</span>, <span class="va">out_var_ind</span><span class="op">]</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    coef <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html">coef</a></span><span class="op">(</span><span class="va">mod</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
+    SE <span class="op">=</span> <span class="op">(</span><span class="va">preds</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">[</span>, <span class="va">out_var_ind</span><span class="op">]</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span>
+  <span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>Our <code>cv_lm</code> function is rather simple: we merely split the available data into a
@@ -2281,8 +2289,10 @@ will use Breiman’s <code>randomForest</code> <span class="citation">(Breiman <
   <span class="va">valid_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">valid_data</span><span class="op">)</span>
 
   <span class="co"># define output object to be returned as list (for flexibility)</span>
-  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>coef <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">coefs</span><span class="op">)</span>,
-              SE <span class="op">=</span> <span class="op">(</span><span class="op">(</span><span class="va">preds</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">[</span>, <span class="va">out_var_ind</span><span class="op">]</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    coef <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">mod</span><span class="op">$</span><span class="va">coefs</span><span class="op">)</span>,
+    SE <span class="op">=</span> <span class="op">(</span><span class="op">(</span><span class="va">preds</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">[</span>, <span class="va">out_var_ind</span><span class="op">]</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+  <span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>Above, in writing our <code>cv_rf</code> function to cross-validate <code>randomForest</code>, we used
@@ -2335,8 +2345,10 @@ series of passenger air traffic in thousands of people.</p>
 configurations. We can do that by evaluating their forecasting performance.
 First, we set up the appropriate cross-validation scheme for time-series.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">AirPassengers</span>, fold_fun <span class="op">=</span> <span class="va">folds_rolling_origin</span>,
-                    first_window <span class="op">=</span> <span class="fl">36</span>, validation_size <span class="op">=</span> <span class="fl">24</span>, batch <span class="op">=</span> <span class="fl">10</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/origami/reference/make_folds.html">make_folds</a></span><span class="op">(</span><span class="va">AirPassengers</span>,
+  fold_fun <span class="op">=</span> <span class="va">folds_rolling_origin</span>,
+  first_window <span class="op">=</span> <span class="fl">36</span>, validation_size <span class="op">=</span> <span class="fl">24</span>, batch <span class="op">=</span> <span class="fl">10</span>
+<span class="op">)</span>
 
 <span class="co"># How many folds where generated?</span>
 <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">folds</span><span class="op">)</span>
@@ -2390,22 +2402,30 @@ folds to train! Luckily, we can pass the <code>batch</code> as option to
 
   <span class="co"># First arima model</span>
   <span class="va">arima_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/arima.html">arima</a></span><span class="op">(</span><span class="va">train_ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-                     seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-                                     period <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span>
+    seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
+      period <span class="op">=</span> <span class="fl">12</span>
+    <span class="op">)</span>
+  <span class="op">)</span>
   <span class="va">raw_arima_pred</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">arima_fit</span>, n.ahead <span class="op">=</span> <span class="va">valid_size</span><span class="op">)</span>
   <span class="va">arima_pred</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="va">raw_arima_pred</span><span class="op">$</span><span class="va">pred</span>
   <span class="va">arima_MSE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">arima_pred</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 
   <span class="co"># Second arima model</span>
   <span class="va">arima_fit2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/arima.html">arima</a></span><span class="op">(</span><span class="va">train_ts</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-                     seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
-                                     period <span class="op">=</span> <span class="fl">12</span><span class="op">)</span><span class="op">)</span>
+    seasonal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+      order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span>,
+      period <span class="op">=</span> <span class="fl">12</span>
+    <span class="op">)</span>
+  <span class="op">)</span>
   <span class="va">raw_arima_pred2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/predict.html">predict</a></span><span class="op">(</span><span class="va">arima_fit2</span>, n.ahead <span class="op">=</span> <span class="va">valid_size</span><span class="op">)</span>
   <span class="va">arima_pred2</span> <span class="op">&lt;-</span> <span class="fl">10</span><span class="op">^</span><span class="va">raw_arima_pred2</span><span class="op">$</span><span class="va">pred</span>
   <span class="va">arima_MSE2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="op">(</span><span class="va">arima_pred2</span> <span class="op">-</span> <span class="va">valid_data</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
 
-  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>fold <span class="op">=</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_helpers.html">fold_index</a></span><span class="op">(</span><span class="op">)</span>,
-                               arima <span class="op">=</span> <span class="va">arima_MSE</span>, arima2 <span class="op">=</span> <span class="va">arima_MSE2</span><span class="op">)</span><span class="op">)</span>
+  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mse <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+    fold <span class="op">=</span> <span class="fu"><a href="http://tlverse.org/origami/reference/fold_helpers.html">fold_index</a></span><span class="op">(</span><span class="op">)</span>,
+    arima <span class="op">=</span> <span class="va">arima_MSE</span>, arima2 <span class="op">=</span> <span class="va">arima_MSE2</span>
+  <span class="op">)</span><span class="op">)</span>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
 <span class="op">}</span>
 
@@ -2558,7 +2578,7 @@ of the proposed algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on February 27, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 01, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

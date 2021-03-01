@@ -159,8 +159,10 @@ library(dplyr)
 library(tmle3)
 library(sl3)
 washb_data <- fread(
-  paste0("https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
-         "wash-benefits/washb_data.csv"),
+  paste0(
+    "https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+    "wash-benefits/washb_data.csv"
+  ),
   stringsAsFactors = TRUE
 )
 ```
@@ -246,12 +248,18 @@ lrnr_rf <- make_learner(Lrnr_ranger)
 
 # define metalearners appropriate to data types
 ls_metalearner <- make_learner(Lrnr_nnls)
-mn_metalearner <- make_learner(Lrnr_solnp, metalearner_linear_multinomial,
-                               loss_loglik_multinomial)
-sl_Y <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_rf),
-                    metalearner = ls_metalearner)
-sl_A <- Lrnr_sl$new(learners = list(lrnr_mean, lrnr_rf),
-                    metalearner = mn_metalearner)
+mn_metalearner <- make_learner(
+  Lrnr_solnp, metalearner_linear_multinomial,
+  loss_loglik_multinomial
+)
+sl_Y <- Lrnr_sl$new(
+  learners = list(lrnr_mean, lrnr_rf),
+  metalearner = ls_metalearner
+)
+sl_A <- Lrnr_sl$new(
+  learners = list(lrnr_mean, lrnr_rf),
+  metalearner = mn_metalearner
+)
 learner_list <- list(A = sl_A, Y = sl_Y)
 ```
 
@@ -650,8 +658,10 @@ covariates was created.
 
 ```r
 ist_data <- fread(
-  paste0("https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
-         "master/data/ist_sample.csv")
+  paste0(
+    "https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
+    "master/data/ist_sample.csv"
+  )
 )
 ```
 
