@@ -337,7 +337,7 @@ ist_task_CVsl <- make_sl3_Task(
 ## xgb_learner <- Lrnr_xgboost$new()
 ## 
 ## # screening
-## screen_cor <- make_learner(Lrnr_screener_corP)
+## screen_cor <- make_learner(Lrnr_screener_correlation)
 ## glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
 ## 
 ## # stack learners together
@@ -356,10 +356,10 @@ ist_task_CVsl <- make_sl3_Task(
 ## sl_fit <- sl$train(chspred_task)
 ## sl_fit$print()
 ## 
-## CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
+## CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_loglik_binomial)
 ## CVsl
 ## 
-## varimp <- importance(sl_fit, loss_squared_error, type = "permute")
+## varimp <- importance(sl_fit, type = "permute")
 ## varimp %>%
 ##   importance_plot(
 ##     main = "sl3 Variable Importance for Myocardial Infarction Prediction"
@@ -433,7 +433,7 @@ ist_task_CVsl <- make_sl3_Task(
 ## CVsl
 ## 
 ## # sl3 variable importance plot
-## ist_varimp <- importance(sl_fit, loss_loglik_binomial, type = "permute")
+## ist_varimp <- importance(sl_fit, type = "permute")
 ## ist_varimp %>%
 ##   importance_plot(
 ##     main = "Variable Importance for Predicting Recurrent Ischemic Stroke"

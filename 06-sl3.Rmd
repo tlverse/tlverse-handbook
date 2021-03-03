@@ -784,16 +784,16 @@ head(chspred) %>%
    not consider BART or HAL). Customize hyperparameters for one of your
    learners. Feel free to use learners from `sl3` or `SuperLearner`. You may
    use the same base learning library that is presented above.
-3. Incorporate feature selection with the screener `screen.corP`.
+3. Incorporate at least one pipeline with feature selection. Any screener and 
+   learner(s) can be used.
 4. Fit the metalearning step with the default metalearner.
 5. With the metalearner and base learners, make the Super Learner and train it
    on the task.
 6. Print your Super Learner fit by calling `print()` with `$`.
 7. Cross-validate your Super Learner fit to see how well it performs on unseen
-   data. Specify `loss_squared_error` as the loss function to evaluate the
-   Super Learner.
-8. Use the `importance()` function to identify the most important predictor of
-   myocardial infarction.
+   data. Specify a valid loss function to evaluate the Super Learner.
+8. Use the `importance()` function to identify the "most important" predictor of
+   myocardial infarction, according to `sl3` importance metrics.
 
 ### Predicting Recurrent Ischemic Stroke in an RCT with `sl3` {#sl3ex2}
 
@@ -1114,7 +1114,7 @@ svm_learner <- Lrnr_svm$new()
 xgb_learner <- Lrnr_xgboost$new()
 
 # screening
-screen_cor <- make_learner(Lrnr_screener_corP)
+screen_cor <- make_learner(Lrnr_screener_correlation)
 glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
 
 # stack learners together
@@ -1133,10 +1133,10 @@ sl <- Lrnr_sl$new(
 sl_fit <- sl$train(chspred_task)
 sl_fit$print()
 
-CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
+CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_loglik_binomial)
 CVsl
 
-varimp <- importance(sl_fit, loss_squared_error, type = "permute")
+varimp <- importance(sl_fit, type = "permute")
 varimp %>%
   importance_plot(
     main = "sl3 Variable Importance for Myocardial Infarction Prediction"
@@ -1215,7 +1215,7 @@ CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 CVsl
 
 # sl3 variable importance plot
-ist_varimp <- importance(sl_fit, loss_loglik_binomial, type = "permute")
+ist_varimp <- importance(sl_fit, type = "permute")
 ist_varimp %>%
   importance_plot(
     main = "Variable Importance for Predicting Recurrent Ischemic Stroke"
