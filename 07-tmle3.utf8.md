@@ -17,9 +17,7 @@ In the previous chapter on `sl3` we learned how to estimate a regression functio
 
 Going back to the roadmap in Chapter 1, suppose we'd like to estimate the effect of a treatment variable $A$ on an outcome $Y$. As discussed, one potential parameter that characterizes that effect is the Average Treatment Effect ATE, defined as: $\psi_0=E_W[E[Y|A=1,W]-E[Y|A=0,W]]$ and interpreted as the difference in mean outcome under when treatment $A=1$ and $A=0$, averaging over the distribution of covariates $W$. We'll illustrate several potential estimators for this parameter, and motivate the use of TMLE, using the following example data:
 
-```{r tmle_fig1, results="asis", echo = FALSE}
-knitr::include_graphics("img/misc/tmle_sim/schematic_1_truedgd.png")
-```
+<img src="img/misc/tmle_sim/schematic_1_truedgd.png" width="80%" style="display: block; margin: auto;" />
 
 The small ticks on the right indicate the mean outcomes (averaging over $W$) under $A=1$ and $A=0$ respectively, so their difference is the quantity we'd like to estimate.
 
@@ -32,9 +30,7 @@ We can use `sl3` to fit a Super Learner or other regression model to estimate th
 
 Applying `sl3` to estimate the outcome regression in our example, we can see that it fits the data quite well:
 
-```{r tmle_fig2, results="asis", echo = FALSE}
-knitr::include_graphics("img/misc/tmle_sim/schematic_2b_sllik.png")
-```
+<img src="img/misc/tmle_sim/schematic_2b_sllik.png" width="80%" style="display: block; margin: auto;" />
 
 The solid lines indicate the `sl3` estimate of the regression function, with the dotted lines indicating the `tmle3` update described below.
 
@@ -42,9 +38,7 @@ While substitution estimators are intuitive, naively using this approach with a 
 
 We can see these limitations illustrated in the estimates generated for the example data: 
 
-```{r tmle_fig3, results="asis", echo = FALSE}
-knitr::include_graphics("img/misc/tmle_sim/schematic_3_effects.png")
-```
+<img src="img/misc/tmle_sim/schematic_3_effects.png" width="80%" style="display: block; margin: auto;" />
 
 We see that Super Learner, estimates the true parameter value (indicated by the dashed vertical line) more accurately than GLM. However, it is still less accurate than TMLE, and valid inference is not possible. In contrast, TMLE achieves a less biased estimator and valid inference.
 
@@ -77,7 +71,8 @@ introduced earlier and estimating an Average Treatment Effect (ATE).
 
 We'll use the same WASH Benefits data as the earlier chapters:
 
-```{r tmle3-load-data}
+
+```r
 library(data.table)
 library(dplyr)
 library(tmle3)
@@ -99,7 +94,8 @@ correspond to each of these roles. We use a list of character vectors to tell
 it. We call this a "Node List" as it corresponds to the nodes in a Directed
 Acyclic Graph (DAG), a way of displaying causal relationships between variables.
 
-```{r tmle3-node-list}
+
+```r
 node_list <- list(
   W = c(
     "month", "aged", "sex", "momage", "momedu",
@@ -129,7 +125,8 @@ treatment variable as well.
 
 These steps are implemented in the `process_missing` function in `tmle3`:
 
-```{r tmle3-process_missing}
+
+```r
 processed <- process_missing(washb_data, node_list)
 washb_data <- processed$data
 node_list <- processed$node_list
@@ -146,7 +143,8 @@ that, with minimal additional detail, can be run by an end-user.
 We'll start with using one of the specs, and then work our way down into the
 internals of `tmle3`.
 
-```{r tmle3-ate-spec}
+
+```r
 ate_spec <- tmle_ATE(
   treatment_level = "Nutrition + WSH",
   control_level = "Control"
@@ -161,7 +159,8 @@ to estimate the relevant factors of the likelihood: Q and g.
 This takes the form of a list of `sl3` learners, one for each likelihood factor
 to be estimated with `sl3`:
 
-```{r tmle3-learner-list}
+
+```r
 # choose base learners
 lrnr_mean <- make_learner(Lrnr_mean)
 lrnr_xgb <- make_learner(Lrnr_xgboost)
@@ -190,18 +189,26 @@ we plan to include reasonable defaults learners.
 
 We now have everything we need to fit the tmle using `tmle3`:
 
-```{r tmle3-spec-fit}
+
+```r
 tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
 print(tmle_fit)
+#> A tmle3_Fit that took 1 step(s)
+#>    type                                    param init_est    tmle_est       se
+#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002628 -0.00073865 0.050391
+#>        lower    upper psi_transformed lower_transformed upper_transformed
+#> 1: -0.099503 0.098026     -0.00073865         -0.099503          0.098026
 ```
 
 ### Evaluate the Estimates
 
 We can see the summary results by printing the fit object. Alternatively, we
 can extra results from the summary by indexing into it:
-```{r tmle3-spec-summary}
+
+```r
 estimates <- tmle_fit$summary$psi_transformed
 print(estimates)
+#> [1] -0.00073865
 ```
 
 ## `tmle3` Components
@@ -216,12 +223,28 @@ First is, a `tmle3_Task`, analogous to an `sl3_Task`, containing the data we're
 fitting the TMLE to, as well as an NP-SEM generated from the `node_list`
 defined above, describing the variables and their relationships.
 
-```{r tmle3-spec-task}
+
+```r
 tmle_task <- ate_spec$make_tmle_task(washb_data, node_list)
 ```
 
-```{r tmle3-spec-task-npsem}
+
+```r
 tmle_task$npsem
+#> $W
+#> tmle3_Node: W
+#> 	Variables: month, aged, sex, momedu, hfiacat, Nlt18, Ncomp, watmin, elec, floor, walls, roof, asset_wardrobe, asset_table, asset_chair, asset_khat, asset_chouki, asset_tv, asset_refrig, asset_bike, asset_moto, asset_sewmach, asset_mobile, momage, momheight, delta_momage, delta_momheight
+#> 	Parents: 
+#> 
+#> $A
+#> tmle3_Node: A
+#> 	Variables: tr
+#> 	Parents: W
+#> 
+#> $Y
+#> tmle3_Node: Y
+#> 	Variables: whz
+#> 	Parents: A, W
 ```
 
 ### Initial Likelihood
@@ -229,12 +252,16 @@ tmle_task$npsem
 Next, is an object representing the likelihood, factorized according to the
 NPSEM described above:
 
-```{r tmle3-spec-initial-likelihood}
+
+```r
 initial_likelihood <- ate_spec$make_initial_likelihood(
   tmle_task,
   learner_list
 )
 print(initial_likelihood)
+#> W: Lf_emp
+#> A: LF_fit
+#> Y: LF_fit
 ```
 
 These components of the likelihood indicate how the factors were estimated: the
@@ -244,8 +271,21 @@ the `learner_list`) above.
 
 We can use this in tandem with the `tmle_task` object to obtain likelihood
 estimates for each observation:
-```{r tmle3-spec-initial-likelihood-estimates}
+
+```r
 initial_likelihood$get_likelihoods(tmle_task)
+#>                W       A        Y
+#>    1: 0.00021299 0.24794 -0.66398
+#>    2: 0.00021299 0.25452 -0.63569
+#>    3: 0.00021299 0.25881 -0.62291
+#>    4: 0.00021299 0.27902 -0.60170
+#>    5: 0.00021299 0.25352 -0.54249
+#>   ---                            
+#> 4691: 0.00021299 0.13460 -0.45886
+#> 4692: 0.00021299 0.12623 -0.47856
+#> 4693: 0.00021299 0.12646 -0.56703
+#> 4694: 0.00021299 0.17328 -0.82745
+#> 4695: 0.00021299 0.12982 -0.53945
 ```
 
 <!-- TODO: make helper to get learners out of fit objects -->
@@ -257,7 +297,8 @@ of likelihood that is able to be updated using an `tmle3_Update` object. This
 object defines the update strategy (e.g. submodel, loss function, CV-TMLE or
 not, etc).
 
-```{r tmle3-spec-targeted-likelihood}
+
+```r
 targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood)
 ```
 
@@ -266,7 +307,8 @@ options. See the documentation for `tmle3_Update` for details of the different
 options. For example, you can disable CV-TMLE (the default in `tmle3`) as
 follows:
 
-```{r tmle3-spec-targeted-likelihood-no-cv}
+
+```r
 targeted_likelihood_no_cv <-
   Targeted_Likelihood$new(initial_likelihood,
     updater = list(cvtmle = FALSE)
@@ -279,9 +321,12 @@ Finally, we need to define the parameters of interest. Here, the spec defines a
 single parameter, the ATE. In the next section, we'll see how to add additional
 parameters.
 
-```{r tmle3-spec-params}
+
+```r
 tmle_params <- ate_spec$make_params(tmle_task, targeted_likelihood)
 print(tmle_params)
+#> [[1]]
+#> Param_ATE: ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}]
 ```
 
 ### Putting it all together
@@ -289,12 +334,18 @@ print(tmle_params)
 Having used the spec to manually generate all these components, we can now
 manually fit a `tmle3`:
 
-```{r tmle3-manual-fit}
+
+```r
 tmle_fit_manual <- fit_tmle3(
   tmle_task, targeted_likelihood, tmle_params,
   targeted_likelihood$updater
 )
 print(tmle_fit_manual)
+#> A tmle3_Fit that took 1 step(s)
+#>    type                                    param  init_est   tmle_est       se
+#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.0025307 0.00095714 0.050741
+#>        lower   upper psi_transformed lower_transformed upper_transformed
+#> 1: -0.098493 0.10041      0.00095714         -0.098493           0.10041
 ```
 
 The result is equivalent to fitting using the `tmle3` function as above.
@@ -305,11 +356,32 @@ Above, we fit a `tmle3` with just one parameter. `tmle3` also supports fitting
 multiple parameters simultaneously. To illustrate this, we'll use the
 `tmle_TSM_all` spec:
 
-```{r tmle3-tsm-all}
+
+```r
 tsm_spec <- tmle_TSM_all()
 targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood)
 all_tsm_params <- tsm_spec$make_params(tmle_task, targeted_likelihood)
 print(all_tsm_params)
+#> [[1]]
+#> Param_TSM: E[Y_{A=Control}]
+#> 
+#> [[2]]
+#> Param_TSM: E[Y_{A=Handwashing}]
+#> 
+#> [[3]]
+#> Param_TSM: E[Y_{A=Nutrition}]
+#> 
+#> [[4]]
+#> Param_TSM: E[Y_{A=Nutrition + WSH}]
+#> 
+#> [[5]]
+#> Param_TSM: E[Y_{A=Sanitation}]
+#> 
+#> [[6]]
+#> Param_TSM: E[Y_{A=WSH}]
+#> 
+#> [[7]]
+#> Param_TSM: E[Y_{A=Water}]
 ```
 
 This spec generates a Treatment Specific Mean (TSM) for each level of the
@@ -323,13 +395,15 @@ We can also define parameters based on Delta Method Transformations of other
 parameters. For instance, we can estimate a ATE using the delta method and two
 of the above TSM parameters:
 
-```{r tmle3-delta-method-param}
+
+```r
 ate_param <- define_param(
   Param_delta, targeted_likelihood,
   delta_param_ATE,
   list(all_tsm_params[[1]], all_tsm_params[[4]])
 )
 print(ate_param)
+#> Param_delta: E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]
 ```
 
 This can similarly be used to estimate other derived parameters like Relative
@@ -340,7 +414,8 @@ Risks, and Population Attributable Risks
 We can now fit a TMLE simultaneously for all TSM parameters, as well as the
 above defined ATE parameter
 
-```{r tmle3-tsm-plus-delta}
+
+```r
 all_params <- c(all_tsm_params, ate_param)
 
 tmle_fit_multiparam <- fit_tmle3(
@@ -349,6 +424,34 @@ tmle_fit_multiparam <- fit_tmle3(
 )
 
 print(tmle_fit_multiparam)
+#> A tmle3_Fit that took 1 step(s)
+#>    type                                       param   init_est    tmle_est
+#> 1:  TSM                            E[Y_{A=Control}] -0.5954401 -0.62318317
+#> 2:  TSM                        E[Y_{A=Handwashing}] -0.6084539 -0.64388251
+#> 3:  TSM                          E[Y_{A=Nutrition}] -0.6038060 -0.61835518
+#> 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.5929094 -0.62220437
+#> 5:  TSM                         E[Y_{A=Sanitation}] -0.5885783 -0.58570257
+#> 6:  TSM                                E[Y_{A=WSH}] -0.5275749 -0.44733225
+#> 7:  TSM                              E[Y_{A=Water}] -0.5764673 -0.52850264
+#> 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.0025307  0.00097879
+#>          se     lower    upper psi_transformed lower_transformed
+#> 1: 0.029815 -0.681620 -0.56475     -0.62318317         -0.681620
+#> 2: 0.041980 -0.726162 -0.56160     -0.64388251         -0.726162
+#> 3: 0.042469 -0.701594 -0.53512     -0.61835518         -0.701594
+#> 4: 0.041197 -0.702950 -0.54146     -0.62220437         -0.702950
+#> 5: 0.042171 -0.668356 -0.50305     -0.58570257         -0.668356
+#> 6: 0.044888 -0.535312 -0.35935     -0.44733225         -0.535312
+#> 7: 0.038797 -0.604544 -0.45246     -0.52850264         -0.604544
+#> 8: 0.050726 -0.098442  0.10040      0.00097879         -0.098442
+#>    upper_transformed
+#> 1:          -0.56475
+#> 2:          -0.56160
+#> 3:          -0.53512
+#> 4:          -0.54146
+#> 5:          -0.50305
+#> 6:          -0.35935
+#> 7:          -0.45246
+#> 8:           0.10040
 ```
 
 ## Exercises
@@ -362,7 +465,8 @@ an indicator of having one or more children before the current child and a
 binary outcome, `haz01` -- an indicator of having an above average height for
 age.
 
-```{r tmle-exercise-data}
+
+```r
 # load the data set
 data(cpp)
 cpp <- cpp %>%
@@ -413,7 +517,8 @@ but also tailored to have robust finite sample performance.
    learners for estimation of $Q = E(Y \mid A,Y)$ and $g=P(A \mid W)$.
 4. Define the metalearner like below.
 
-```{r, metalrnr-exercise}
+
+```r
 metalearner <- make_learner(
   Lrnr_solnp,
   loss_function = loss_loglik_binomial,
@@ -469,7 +574,8 @@ covariates was created.
    average across all geographical regions may not be warranted. Calculate the
    strata specific ATEs according to geographical region (`REGION`).
 
-```{r tmle3-ex2}
+
+```r
 ist_data <- fread(
   paste0(
     "https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
