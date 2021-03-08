@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "March 03, 2021"
+date: "March 08, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -186,13 +186,13 @@ following packages:
 
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
-|bookdown     |0.21.6     |Github (rstudio/bookdown\@ca0145f)    |
+|bookdown     |0.21.6     |Github (rstudio/bookdown\@6ae8ead)    |
 |bslib        |0.2.4.9002 |Github (rstudio/bslib\@aa5a842)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table   |1.14.0     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
 |downlit      |0.2.1      |CRAN (R 4.0.2)                        |
-|dplyr        |1.0.4      |CRAN (R 4.0.2)                        |
+|dplyr        |1.0.5      |CRAN (R 4.0.2)                        |
 |forecast     |8.13       |CRAN (R 4.0.2)                        |
 |ggdag        |0.2.3      |CRAN (R 4.0.2)                        |
 |ggfortify    |0.4.11     |CRAN (R 4.0.2)                        |
@@ -203,9 +203,9 @@ following packages:
 |origami      |1.0.3      |CRAN (R 4.0.2)                        |
 |randomForest |4.6-14     |CRAN (R 4.0.2)                        |
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.7.2      |Github (rstudio/rmarkdown\@c0b8584)   |
-|skimr        |2.1.2      |CRAN (R 4.0.2)                        |
-|sl3          |1.4.3      |Github (tlverse/sl3\@629e1f0)         |
+|rmarkdown    |2.7.3      |Github (rstudio/rmarkdown\@61db7a9)   |
+|skimr        |2.1.3      |CRAN (R 4.0.2)                        |
+|sl3          |1.4.3      |Github (tlverse/sl3\@7e9580a)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |
 |tibble       |3.1.0      |CRAN (R 4.0.2)                        |
 |tidyr        |1.1.3      |CRAN (R 4.0.2)                        |
