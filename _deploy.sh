@@ -14,7 +14,8 @@ git config --global http.postBuffer 100000000
 git clone -b gh-pages \
   https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git \
   book-output
-cp -r _book/* book-output/
+cd book-output
+cp -r ../_book/* ./
 
 # stage, commit, push copied files to branch gh-pages
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ]
@@ -25,4 +26,4 @@ else
 fi
 git add --all *
 git commit -m "${COMMIT_MESSAGE}"
-git push -q origin gh-pages
+git push origin gh-pages
