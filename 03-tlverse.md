@@ -86,8 +86,8 @@ can use the [`usethis` package](https://usethis.r-lib.org/) to install them:
 
 
 ```r
-install.packages("usethis")
-usethis::install_github("tlverse/tlverse")
+install.packages("devtools")
+devtools::install_github("tlverse/tlverse")
 ```
 
 The `tlverse` depends on a large number of other packages that are also hosted

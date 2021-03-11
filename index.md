@@ -149,10 +149,10 @@ network) and adaptive sequential designs.
 ### Rachael Phillips {-}
 
 Rachael Phillips is a PhD student in biostatistics, advised by Alan Hubbard and
-Mark van der Laan. She has an MA in Biostatistics, BS in Biology, and BA in 
-Mathematics. A student of targeted learning and causal inference; her research 
-integrates personalized medicine, human-computer interaction, experimental 
-design, and regulatory policy. 
+Mark van der Laan. She has an MA in Biostatistics, BS in Biology, and BA in
+Mathematics. A student of targeted learning and causal inference; her research
+integrates personalized medicine, human-computer interaction, experimental
+design, and regulatory policy.
 
 ### Alan Hubbard {-}
 
@@ -205,7 +205,7 @@ following packages:
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
 |rmarkdown    |2.7.3      |Github (rstudio/rmarkdown\@61db7a9)   |
 |skimr        |2.1.3      |CRAN (R 4.0.2)                        |
-|sl3          |1.4.3      |Github (tlverse/sl3\@f7bd843)         |
+|sl3          |1.4.3      |Github (tlverse/sl3\@9b11f74)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |
 |tibble       |3.1.0      |CRAN (R 4.0.2)                        |
 |tidyr        |1.1.3      |CRAN (R 4.0.2)                        |
@@ -236,8 +236,8 @@ introductory resources:
 
 For a general introduction to causal inference, we recommend
 
-* [Miguel A. Hernán and James M. Robins' _Causal Inference_, forthcoming
-    2020](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/)
+* [Miguel A. Hernán and James M. Robins' _Causal Inference: What If_,
+    2021](https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/)
 * [Jason A. Roy's _A Crash Course in Causality: Inferring Causal Effects from
   Observational Data_ on
   Coursera](https://www.coursera.org/learn/crash-course-in-causality)

@@ -75,43 +75,98 @@
 <h2>
 <span class="header-section-number">7.2</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction-3"><i class="fas fa-link"></i></a>
 </h2>
-<p>In the previous chapter on <code>sl3</code> we learned how to estimate a regression function like <span class="math inline">\(E[Y|X]\)</span> from data. That’s an important first step in learning from data, but how can we use this predictive model to estimate statistical and causal effects?</p>
-<p>Going back to the roadmap in Chapter 1, suppose we’d like to estimate the effect of a treatment variable <span class="math inline">\(A\)</span> on an outcome <span class="math inline">\(Y\)</span>. As discussed, one potential parameter that characterizes that effect is the Average Treatment Effect ATE, defined as: <span class="math inline">\(\psi_0=E_W[E[Y|A=1,W]-E[Y|A=0,W]]\)</span> and interpreted as the difference in mean outcome under when treatment <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span>, averaging over the distribution of covariates <span class="math inline">\(W\)</span>. We’ll illustrate several potential estimators for this parameter, and motivate the use of TMLE, using the following example data:</p>
+<p>In the previous chapter on <code>sl3</code> we learned how to estimate a regression
+function like <span class="math inline">\(\mathbb{E}[Y \mid X]\)</span> from data. That’s an important first step
+in learning from data, but how can we use this predictive model to estimate
+statistical and causal effects?</p>
+<p>Going back to the roadmap in Chapter 1, suppose we’d like to estimate the effect
+of a treatment variable <span class="math inline">\(A\)</span> on an outcome <span class="math inline">\(Y\)</span>. As discussed, one potential
+parameter that characterizes that effect is the Average Treatment Effect (ATE),
+defined as <span class="math inline">\(\psi_0 = \mathbb{E}_W[E[Y \mid A=1,W] - \mathbb{E}[Y \mid A=0,W]]\)</span>
+and interpreted as the difference in mean outcome under when treatment <span class="math inline">\(A=1\)</span> and
+<span class="math inline">\(A=0\)</span>, averaging over the distribution of covariates <span class="math inline">\(W\)</span>. We’ll illustrate
+several potential estimators for this parameter, and motivate the use of TMLE,
+using the following example data:</p>
 <div class="inline-figure"><img src="img/misc/tmle_sim/schematic_1_truedgd.png" width="80%" style="display: block; margin: auto;"></div>
-<p>The small ticks on the right indicate the mean outcomes (averaging over <span class="math inline">\(W\)</span>) under <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> respectively, so their difference is the quantity we’d like to estimate.</p>
-<p>While we hope to motivate the application of TMLE in this chapter, we refer the interested reader to the two Targeted Learning books and associated works for full technical details.</p>
+<p>The small ticks on the right indicate the mean outcomes (averaging over <span class="math inline">\(W\)</span>)
+under <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> respectively, so their difference is the quantity we’d
+like to estimate.</p>
+<p>While we hope to motivate the application of TMLE in this chapter, we refer the
+interested reader to the two Targeted Learning books and associated works for
+full technical details.</p>
 <div id="substitution-estimators" class="section level3">
 <h3>
 <span class="header-section-number">7.2.1</span> Substitution Estimators<a class="anchor" aria-label="anchor" href="#substitution-estimators"><i class="fas fa-link"></i></a>
 </h3>
-<p>We can use <code>sl3</code> to fit a Super Learner or other regression model to estimate the function <span class="math inline">\(E[Y|A,W]\)</span>. We refer to this function as <span class="math inline">\(\bar{Q}_0(A,W)\)</span> and our estimate of it as <span class="math inline">\(\bar{Q}_n(A,W)\)</span>. We can then directly “plug-in” that estimate to obtain an estimate of the ATE: <span class="math inline">\(\hat{\psi}_n=\frac{1}{n}\sum(\bar{Q}_n(1,W)-\bar{Q}_n(0,W))\)</span>. This kind of estimator is called a plug-in or substitution estimator, as we substitute our estimate <span class="math inline">\(Q_n(A,W)\)</span> of the function <span class="math inline">\(Q_0(A,W)\)</span> for the function itself.</p>
-<p>Applying <code>sl3</code> to estimate the outcome regression in our example, we can see that it fits the data quite well:</p>
+<p>We can use <code>sl3</code> to fit a Super Learner or other regression model to estimate
+the function <span class="math inline">\(\mathbb{E}_0[Y \mid A,W]\)</span>. We refer to this function as
+<span class="math inline">\(\bar{Q}_0(A,W)\)</span> and our estimate of it as <span class="math inline">\(\bar{Q}_n(A,W)\)</span>. We can then
+directly “plug-in” that estimate to obtain an estimate of the ATE:
+<span class="math inline">\(\hat{\psi}_n=\frac{1}{n}\sum(\bar{Q}_n(1,W)-\bar{Q}_n(0,W))\)</span>. This kind of
+estimator is called a plug-in or substitution estimator, as we substitute our
+estimate <span class="math inline">\(Q_n(A,W)\)</span> of the function <span class="math inline">\(Q_0(A,W)\)</span> for the function itself.</p>
+<p>Applying <code>sl3</code> to estimate the outcome regression in our example, we can see
+that it fits the data quite well:</p>
 <div class="inline-figure"><img src="img/misc/tmle_sim/schematic_2b_sllik.png" width="80%" style="display: block; margin: auto;"></div>
-<p>The solid lines indicate the <code>sl3</code> estimate of the regression function, with the dotted lines indicating the <code>tmle3</code> update described below.</p>
-<p>While substitution estimators are intuitive, naively using this approach with a Super Learner estimate of <span class="math inline">\(\bar{Q}_0(A,W)\)</span> has several limitations. First, Super Learner is selecting learner weights to minimize risk across the entire regression function, instead of “targeting” the ATE parameter we hope to estimate, leading to biased estimation. That is, <code>sl3</code> is trying to do well on the full regression curve on the left, instead of focusing on the small ticks on the right. What’s more, the sampling distribution of this approach is not asymptotically linear, and therefore inference is not possible.</p>
-<p>We can see these limitations illustrated in the estimates generated for the example data:</p>
+<p>The solid lines indicate the <code>sl3</code> estimate of the regression function, with the
+dotted lines indicating the <code>tmle3</code> update described below.</p>
+<p>While substitution estimators are intuitive, naively using this approach with a
+Super Learner estimate of <span class="math inline">\(\bar{Q}_0(A,W)\)</span> has several limitations. First, Super
+Learner is selecting learner weights to minimize risk across the entire
+regression function, instead of “targeting” the ATE parameter we hope to
+estimate, leading to biased estimation. That is, <code>sl3</code> is trying to do well on
+the full regression curve on the left, instead of focusing on the small ticks on
+the right. What’s more, the sampling distribution of this approach is not
+asymptotically linear, and therefore inference is not possible.</p>
+<p>We can see these limitations illustrated in the estimates generated for the
+example data:</p>
 <div class="inline-figure"><img src="img/misc/tmle_sim/schematic_3_effects.png" width="80%" style="display: block; margin: auto;"></div>
-<p>We see that Super Learner, estimates the true parameter value (indicated by the dashed vertical line) more accurately than GLM. However, it is still less accurate than TMLE, and valid inference is not possible. In contrast, TMLE achieves a less biased estimator and valid inference.</p>
+<p>We see that Super Learner, estimates the true parameter value (indicated by the
+dashed vertical line) more accurately than GLM. However, it is still less
+accurate than TMLE, and valid inference is not possible. In contrast, TMLE
+achieves a less biased estimator and valid inference.</p>
 </div>
 </div>
 <div id="tmle" class="section level2">
 <h2>
 <span class="header-section-number">7.3</span> TMLE<a class="anchor" aria-label="anchor" href="#tmle"><i class="fas fa-link"></i></a>
 </h2>
-<p>TMLE takes an initial estimate of <span class="math inline">\(\bar{Q}_0(A,W)\)</span> as well as an estimate of the propensity score <span class="math inline">\(\bar{g}_0(A|W)=p(A|W)\)</span> and produces an updated estimate <span class="math inline">\(\bar{Q}^{\star}_0(A,W)\)</span> that is “targeted” to the parameter of interest. TMLE keeps the benefits of substitution estimators (it is one), but augments the original estimates to correct for bias and also results in an asymptotically linear (and thus normally-distributed) estimator with consistent Wald-style confidence intervals.</p>
-<p>There are different types of TMLE, sometimes for the same set of parameters, but below is an example of the algorithm for estimating the ATE. <span class="math inline">\(\bar{Q}^{\star}_n(A,W)\)</span> is the TMLE augmented estimate
+<p>TMLE takes an initial estimate <span class="math inline">\(\bar{Q}_n(A,W)\)</span> as well as an estimate of the
+propensity score <span class="math inline">\(g_n(A \mid W) = p(A \mid W)\)</span> and produces an updated estimate
+<span class="math inline">\(\bar{Q}^{\star}_n(A,W)\)</span> that is “targeted” to the parameter of interest. TMLE
+keeps the benefits of substitution estimators (it is one), but augments the
+original estimates to correct for bias and also results in an asymptotically
+linear (and thus normally-distributed) estimator with consistent Wald-style
+confidence intervals.</p>
+<p>There are different types of TMLE, sometimes for the same set of parameters,
+but below is an example of the algorithm for estimating the ATE.
+<span class="math inline">\(\bar{Q}^{\star}_n(A,W)\)</span> is the TMLE-augmented estimate
 <span class="math inline">\(f(\bar{Q}^{\star}_n(A,W)) = f(\bar{Q}_n(A,W)) + \epsilon_n \cdot h_n(A,W)\)</span>,
-where <span class="math inline">\(f(\cdot)\)</span> is the appropriate link function (e.g., logit), <span class="math inline">\(\epsilon_n\)</span>
-is an estimated coefficient and <span class="math inline">\(h_n(A,W)\)</span> is a “clever covariate”. In this case, <span class="math inline">\(h_n(A,W) = \frac{A}{g_n(W)}-\frac{1-A}{1-g_n(W)}\)</span>, with <span class="math inline">\(g_n(W)  = \mathbb{P}(A=1 \mid W)\)</span> being the estimated (also by SL) propensity score,
-so the estimator depends both on initial SL fit of the outcome regression
-(<span class="math inline">\(\bar{Q}_0\)</span>) and an SL fit of the propensity score (<span class="math inline">\(g_n\)</span>).</p>
-<p>There are further robust augmentations that are used in <code>tlverse</code>, such as an added layer of cross-validation to avoid over-fitting bias (CV-TMLE), and so called methods that can more robustly estimated several parameters simultaneously (e.g., the points on a survival curve).</p>
+where <span class="math inline">\(f(\cdot)\)</span> is the appropriate link function (e.g., logit), <span class="math inline">\(\epsilon_n\)</span> is
+an estimated coefficient and <span class="math inline">\(h_n(A,W)\)</span> is a “clever covariate”. In this case,
+<span class="math inline">\(h_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A, W)}\)</span>, with <span class="math inline">\(g_n(A, W) = \mathbb{P}(A=1 \mid W)\)</span> being the estimated (also by SL) propensity score, so
+the estimator depends both on initial SL fit of the outcome regression
+(<span class="math inline">\(\bar{Q}_n\)</span>) and an SL fit of the propensity score (<span class="math inline">\(g_n\)</span>).</p>
+<p>There are further robust augmentations that are used in <code>tlverse</code>, such as an
+added layer of cross-validation to avoid over-fitting bias (CV-TMLE), and so
+called methods that can more robustly estimated several parameters
+simultaneously (e.g., the points on a survival curve).</p>
 <div id="inference" class="section level3">
 <h3>
 <span class="header-section-number">7.3.1</span> Inference<a class="anchor" aria-label="anchor" href="#inference"><i class="fas fa-link"></i></a>
 </h3>
-<p>Because TMLE yields an <strong>asymptotically linear</strong>, estimator, obtaining inference is trivial. Each TMLE is associated with an <strong>influence function</strong> that describes its asymptotic distribution, and Wald-style inference can be obtained by plugging into this function our estimates <span class="math inline">\(\bar{Q}^{\star}_n\)</span> and <span class="math inline">\(g_n\)</span> and taking the sample standard error.</p>
-<p>The following sections describe both a simple and more detailed way of specifying and estimating a TMLE in the <code>tlverse</code>. In designing <code>tmle3</code>, we sought to replicate as closely as possible the very general estimation framework of TMLE, and so each theoretical object relevant to TMLE is encoded in a corresponding software object. First, we will present the simple application of <code>tmle3</code> to the WASH Benefits exaple, and then go on to describe the underlying objects in more detail.</p>
+<p>Because TMLE yields an <strong>asymptotically linear</strong>, estimator, obtaining inference
+is trivial. Each TMLE is associated with an <strong>influence function</strong> that
+describes its asymptotic distribution, and Wald-style inference can be obtained
+by plugging into this function our estimates <span class="math inline">\(\bar{Q}^{\star}_n\)</span> and <span class="math inline">\(g_n\)</span> and
+taking the sample standard error.</p>
+<p>The following sections describe both a simple and more detailed way of
+specifying and estimating a TMLE in the <code>tlverse</code>. In designing <code>tmle3</code>, we
+sought to replicate as closely as possible the very general estimation framework
+of TMLE, and so each theoretical object relevant to TMLE is encoded in a
+corresponding software object. First, we will present the simple application of
+<code>tmle3</code> to the WASH Benefits example, and then go on to describe the underlying
+objects in more detail.</p>
 </div>
 </div>
 <div id="easy-bake-example-tmle3-for-ate" class="section level2">
@@ -170,7 +225,7 @@ Acyclic Graph (DAG), a way of displaying causal relationships between variables.
 <ul>
 <li>Missing covariates are median (for continuous) or mode (for discrete)
 imputed, and additional covariates indicating imputation are generated</li>
-<li>Observations missing either treatment or outcome variables are excluded.</li>
+<li>Observations missing treatment variable are excluded.</li>
 </ul>
 <p>We implemented IPCW-TMLE to more efficiently handle missingness in the outcome
 variable, and we plan to implement an IPCW-TMLE to handle missingness in the
@@ -188,8 +243,8 @@ treatment variable as well.</p>
 <p><code>tmle3</code> is general, and allows most components of the TMLE procedure to be
 specified in a modular way. However, most end-users will not be interested in
 manually specifying all of these components. Therefore, <code>tmle3</code> implements a
-<code>tmle3_Spec</code> object that bundles a set ofcomponents into a <em>specification</em>
-that, with minimal additional detail, can be run by an end-user.</p>
+<code>tmle3_Spec</code> object that bundles a set of components into a <em>specification</em>
+(“Spec”) that, with minimal additional detail, can be run by an end-user.</p>
 <p>We’ll start with using one of the specs, and then work our way down into the
 internals of <code>tmle3</code>.</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
@@ -209,7 +264,7 @@ to be estimated with <code>sl3</code>:</p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># choose base learners</span>
 <span class="va">lrnr_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_mean</span><span class="op">)</span>
-<span class="va">lrnr_xgb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_xgboost</span><span class="op">)</span>
+<span class="va">lrnr_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_ranger</span><span class="op">)</span>
 
 <span class="co"># define metalearners appropriate to data types</span>
 <span class="va">ls_metalearner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_nnls</span><span class="op">)</span>
@@ -218,11 +273,11 @@ to be estimated with <code>sl3</code>:</p>
   <span class="va">loss_loglik_multinomial</span>
 <span class="op">)</span>
 <span class="va">sl_Y</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrnr_mean</span>, <span class="va">lrnr_xgb</span><span class="op">)</span>,
+  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrnr_mean</span>, <span class="va">lrnr_rf</span><span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va">ls_metalearner</span>
 <span class="op">)</span>
 <span class="va">sl_A</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrnr_mean</span>, <span class="va">lrnr_xgb</span><span class="op">)</span>,
+  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrnr_mean</span>, <span class="va">lrnr_rf</span><span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va">mn_metalearner</span>
 <span class="op">)</span>
 <span class="va">learner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>A <span class="op">=</span> <span class="va">sl_A</span>, Y <span class="op">=</span> <span class="va">sl_Y</span><span class="op">)</span></code></pre></div>
@@ -236,23 +291,12 @@ we plan to include reasonable defaults learners.</p>
 <p>We now have everything we need to fit the tmle using <code>tmle3</code>:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">ate_spec</span>, <span class="va">washb_data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="co">#&gt; [03:52:31] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:32] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:33] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:34] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:35] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:36] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:37] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:38] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:39] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:40] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:41] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type                                    param init_est    tmle_est       se</span>
-<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.002628 -0.00073865 0.050391</span>
-<span class="co">#&gt;        lower    upper psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1: -0.099503 0.098026     -0.00073865         -0.099503          0.098026</span></code></pre></div>
+<span class="co">#&gt;    type                                    param   init_est tmle_est      se</span>
+<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0035831 0.010337 0.05064</span>
+<span class="co">#&gt;        lower   upper psi_transformed lower_transformed upper_transformed</span>
+<span class="co">#&gt; 1: -0.088915 0.10959        0.010337         -0.088915           0.10959</span></code></pre></div>
 </div>
 <div id="evaluate-the-estimates" class="section level3">
 <h3>
@@ -263,7 +307,7 @@ can extra results from the summary by indexing into it:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">tmle_fit</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">psi_transformed</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">estimates</span><span class="op">)</span>
-<span class="co">#&gt; [1] -0.00073865</span></code></pre></div>
+<span class="co">#&gt; [1] 0.010337</span></code></pre></div>
 </div>
 </div>
 <div id="tmle3-components" class="section level2">
@@ -310,17 +354,6 @@ NPSEM described above:</p>
   <span class="va">tmle_task</span>,
   <span class="va">learner_list</span>
 <span class="op">)</span>
-<span class="co">#&gt; [03:52:52] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:53] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:54] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:55] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:56] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:57] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:58] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:52:59] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:53:00] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:53:01] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
-<span class="co">#&gt; [03:53:02] WARNING: amalgamation/../src/learner.cc:1061: Starting in XGBoost 1.3.0, the default evaluation metric used with the objective 'multi:softprob' was changed from 'merror' to 'mlogloss'. Explicitly set eval_metric if you'd like to restore the old behavior.</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">initial_likelihood</span><span class="op">)</span>
 <span class="co">#&gt; W: Lf_emp</span>
 <span class="co">#&gt; A: LF_fit</span>
@@ -334,17 +367,17 @@ estimates for each observation:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">initial_likelihood</span><span class="op">$</span><span class="fu">get_likelihoods</span><span class="op">(</span><span class="va">tmle_task</span><span class="op">)</span>
 <span class="co">#&gt;                W       A        Y</span>
-<span class="co">#&gt;    1: 0.00021299 0.24777 -0.66024</span>
-<span class="co">#&gt;    2: 0.00021299 0.25473 -0.63282</span>
-<span class="co">#&gt;    3: 0.00021299 0.25927 -0.62043</span>
-<span class="co">#&gt;    4: 0.00021299 0.28067 -0.59987</span>
-<span class="co">#&gt;    5: 0.00021299 0.25367 -0.54247</span>
+<span class="co">#&gt;    1: 0.00021299 0.35119 -0.35564</span>
+<span class="co">#&gt;    2: 0.00021299 0.36392 -0.92990</span>
+<span class="co">#&gt;    3: 0.00021299 0.34124 -0.80184</span>
+<span class="co">#&gt;    4: 0.00021299 0.34758 -0.91770</span>
+<span class="co">#&gt;    5: 0.00021299 0.34353 -0.61402</span>
 <span class="co">#&gt;   ---                            </span>
-<span class="co">#&gt; 4691: 0.00021299 0.13503 -0.46139</span>
-<span class="co">#&gt; 4692: 0.00021299 0.12616 -0.48049</span>
-<span class="co">#&gt; 4693: 0.00021299 0.12641 -0.56625</span>
-<span class="co">#&gt; 4694: 0.00021299 0.17597 -0.81872</span>
-<span class="co">#&gt; 4695: 0.00021299 0.12997 -0.53951</span></code></pre></div>
+<span class="co">#&gt; 4691: 0.00021299 0.23773 -0.57275</span>
+<span class="co">#&gt; 4692: 0.00021299 0.22197 -0.23114</span>
+<span class="co">#&gt; 4693: 0.00021299 0.22567 -0.80089</span>
+<span class="co">#&gt; 4694: 0.00021299 0.28334 -0.89036</span>
+<span class="co">#&gt; 4695: 0.00021299 0.19391 -1.06870</span></code></pre></div>
 <!-- TODO: make helper to get learners out of fit objects -->
 </div>
 <div id="targeted-likelihood-updater" class="section level3">
@@ -393,10 +426,10 @@ manually fit a <code>tmle3</code>:</p>
 <span class="op">)</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit_manual</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type                                    param  init_est   tmle_est       se</span>
-<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] 0.0024533 -0.0096405 0.050768</span>
-<span class="co">#&gt;       lower    upper psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1: -0.10914 0.089864      -0.0096405          -0.10914          0.089864</span></code></pre></div>
+<span class="co">#&gt;    type                                    param   init_est tmle_est       se</span>
+<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0050134 0.013088 0.050723</span>
+<span class="co">#&gt;        lower  upper psi_transformed lower_transformed upper_transformed</span>
+<span class="co">#&gt; 1: -0.086327 0.1125        0.013088         -0.086327            0.1125</span></code></pre></div>
 <p>The result is equivalent to fitting using the <code>tmle3</code> function as above.</p>
 </div>
 </div>
@@ -470,33 +503,33 @@ above defined ATE parameter</p>
 
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit_multiparam</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type                                       param   init_est  tmle_est</span>
-<span class="co">#&gt; 1:  TSM                            E[Y_{A=Control}] -0.5937962 -0.613477</span>
-<span class="co">#&gt; 2:  TSM                        E[Y_{A=Handwashing}] -0.6064124 -0.644888</span>
-<span class="co">#&gt; 3:  TSM                          E[Y_{A=Nutrition}] -0.6019064 -0.615316</span>
-<span class="co">#&gt; 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.5913428 -0.623089</span>
-<span class="co">#&gt; 5:  TSM                         E[Y_{A=Sanitation}] -0.5871441 -0.585550</span>
-<span class="co">#&gt; 6:  TSM                                E[Y_{A=WSH}] -0.5280048 -0.451937</span>
-<span class="co">#&gt; 7:  TSM                              E[Y_{A=Water}] -0.5754032 -0.531406</span>
-<span class="co">#&gt; 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]  0.0024533 -0.009612</span>
-<span class="co">#&gt;          se    lower     upper psi_transformed lower_transformed</span>
-<span class="co">#&gt; 1: 0.030006 -0.67229 -0.554667       -0.613477          -0.67229</span>
-<span class="co">#&gt; 2: 0.042335 -0.72786 -0.561913       -0.644888          -0.72786</span>
-<span class="co">#&gt; 3: 0.042543 -0.69870 -0.531934       -0.615316          -0.69870</span>
-<span class="co">#&gt; 4: 0.041038 -0.70352 -0.542656       -0.623089          -0.70352</span>
-<span class="co">#&gt; 5: 0.042212 -0.66828 -0.502817       -0.585550          -0.66828</span>
-<span class="co">#&gt; 6: 0.044962 -0.54006 -0.363814       -0.451937          -0.54006</span>
-<span class="co">#&gt; 7: 0.038728 -0.60731 -0.455499       -0.531406          -0.60731</span>
-<span class="co">#&gt; 8: 0.050760 -0.10910  0.089876       -0.009612          -0.10910</span>
+<span class="co">#&gt;    type                                       param   init_est tmle_est</span>
+<span class="co">#&gt; 1:  TSM                            E[Y_{A=Control}] -0.5961253 -0.62053</span>
+<span class="co">#&gt; 2:  TSM                        E[Y_{A=Handwashing}] -0.6168261 -0.65898</span>
+<span class="co">#&gt; 3:  TSM                          E[Y_{A=Nutrition}] -0.6109573 -0.60538</span>
+<span class="co">#&gt; 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.6011387 -0.60735</span>
+<span class="co">#&gt; 5:  TSM                         E[Y_{A=Sanitation}] -0.5877457 -0.58053</span>
+<span class="co">#&gt; 6:  TSM                                E[Y_{A=WSH}] -0.5195720 -0.44788</span>
+<span class="co">#&gt; 7:  TSM                              E[Y_{A=Water}] -0.5652293 -0.53685</span>
+<span class="co">#&gt; 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}] -0.0050134  0.01318</span>
+<span class="co">#&gt;          se     lower    upper psi_transformed lower_transformed</span>
+<span class="co">#&gt; 1: 0.029842 -0.679020 -0.56204        -0.62053         -0.679020</span>
+<span class="co">#&gt; 2: 0.041960 -0.741218 -0.57674        -0.65898         -0.741218</span>
+<span class="co">#&gt; 3: 0.042067 -0.687834 -0.52293        -0.60538         -0.687834</span>
+<span class="co">#&gt; 4: 0.041236 -0.688173 -0.52653        -0.60735         -0.688173</span>
+<span class="co">#&gt; 5: 0.042322 -0.663485 -0.49758        -0.58053         -0.663485</span>
+<span class="co">#&gt; 6: 0.045677 -0.537408 -0.35836        -0.44788         -0.537408</span>
+<span class="co">#&gt; 7: 0.039059 -0.613405 -0.46030        -0.53685         -0.613405</span>
+<span class="co">#&gt; 8: 0.050718 -0.086226  0.11259         0.01318         -0.086226</span>
 <span class="co">#&gt;    upper_transformed</span>
-<span class="co">#&gt; 1:         -0.554667</span>
-<span class="co">#&gt; 2:         -0.561913</span>
-<span class="co">#&gt; 3:         -0.531934</span>
-<span class="co">#&gt; 4:         -0.542656</span>
-<span class="co">#&gt; 5:         -0.502817</span>
-<span class="co">#&gt; 6:         -0.363814</span>
-<span class="co">#&gt; 7:         -0.455499</span>
-<span class="co">#&gt; 8:          0.089876</span></code></pre></div>
+<span class="co">#&gt; 1:          -0.56204</span>
+<span class="co">#&gt; 2:          -0.57674</span>
+<span class="co">#&gt; 3:          -0.52293</span>
+<span class="co">#&gt; 4:          -0.52653</span>
+<span class="co">#&gt; 5:          -0.49758</span>
+<span class="co">#&gt; 6:          -0.35836</span>
+<span class="co">#&gt; 7:          -0.46030</span>
+<span class="co">#&gt; 8:           0.11259</span></code></pre></div>
 </div>
 </div>
 <div id="exercises-1" class="section level2">
