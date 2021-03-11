@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-03-08
+Updated: 2021-03-11
 
 ## Learning Objectives
 
@@ -426,7 +426,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 tmle_fit
@@ -584,7 +584,7 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.0196	 Pars:  0.40783 0.35788 0.23429
+#> Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
 #> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
 #> solnp--> Completed in 2 iterations
 tmle_fit
@@ -593,13 +593,13 @@ tmle_fit
 #> 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
 #> 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
 #> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80029 0.0183487 0.76433 0.83625
-#> 4: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
+#> 4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64760 0.72547
 #> 5: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
 #> 1:         0.56184           0.51749           0.60618
 #> 2:         0.69748           0.65240           0.74255
 #> 3:         0.80029           0.76433           0.83625
-#> 4:         0.68653           0.64760           0.72547
+#> 4:         0.68654           0.64760           0.72547
 #> 5:         0.11923           0.10137           0.13709
 ```
 
@@ -672,10 +672,10 @@ $\text{EIF}_{\beta}(O)$.
 ```r
 tmle_fit$summary[4:5, ]
 #>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
+#> 1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64760 0.72547
 #> 2: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.68653           0.64760           0.72547
+#> 1:         0.68654           0.64760           0.72547
 #> 2:         0.11923           0.10137           0.13709
 ```
 
@@ -713,8 +713,8 @@ tmle_msm_spec <- tmle_vimshift_msm(
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
-#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
+#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
+#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
 #> solnp--> Completed in 2 iterations
 tmle_msm_fit
 #> A tmle3_Fit that took 1 step(s)
