@@ -121,72 +121,87 @@ series. Also, let's say we have $k$ number of candidate learners/algorithms.
 
 2. For each fold $v$:
 
-    a. Separate (a) the data that was selected for fold $v$ in Step 1, which
-       should contain roughly $n/V$ total observations; from (b) the data that
-       was NOT selected for fold $v$, which should contain roughly $n - n/V$
-       total observations. We will use the (b) data to model/fit the learners,
-       referring to this subset of the data as the "training data". We will use
-       the (b) data to validate/test the learners on data that was not used for
-       fitting, referring to this subset of the data as the "validation data".
-       Let's call $n_{\text{validation}}$ the number of observations in the
-       validation data, and $n_{\text{training}}$ the number of observations in
-       the training data. Note that
-       $n_{\text{validation}} + n_{\text{training}}$ should be equal to $n$.
-    b. Fit each of the $k$ learners on the training data.
+    a. Separate (i) from (ii):
+    
+      i. The data that was selected for fold $v$ in Step 1, which contains 
+         roughly $n/V$ total observations. We will refer to this subset of the 
+         data as the "validation" data, and it's also commonly referred to as 
+         the "test" data. Let's call $n_{\text{validation}}$ as the number of 
+         observations in then validation data, 
+      ii. The data that was NOT selected for fold $v$ in Step 1, which contains
+          roughly $n - n_{\text{validation}}$ total observations. We will refer 
+          to this subset of the data as the "training", and 
+          $n_{\text{training}}$ as the number of observations in the training 
+          data. 
+    b. Fit each of the $k$ learners on the training data (ii).
     c. Using each of the $k$ trained learners, predict the outcomes in the
-       validation data. We can call these predictions
+       validation data (i). We can call these predictions
        "cross-validated predictions"; since they were obtained from the
        validation sample's covariate information, which was never seen while
-       fitting these models. We thus end up with a $n_{validation} \by k$
+       fitting these models. We end up with a $n_{validation} \times k$
        matrix of cross-validated predictions.
 
- 3. Bind together the rows of all $v$ $n_{validation} \by k$ matrices of
-    cross-validated predictions, to obtain an $n \by k$ matrix of
-    cross-validated predictions. This matrix is often referred to as the
+ 3. Bind together the rows of all $v$ $n_{validation} \times k$ matrices of
+    cross-validated predictions, to obtain an $n \times k$ matrix of
+    cross-validated predictions. This matrix $n \times k$ matrix of 
+    cross-validated predictions is often referred to as the
     "level-one" or "Z" matrix.
- 4. Retain the observed outcome $Y$ for each of the $n$ observations, using
+ 4. Retain the observed outcome $Y$ for all of the $n$ observations, using
     them to measure the "loss" of each cross-validated prediction
     (e.g., ($Y − \hat{Y}^2$).
  5. For each $k$ column, take the (potentially weighted) mean across all of the
-    $n$ losses, so we have a measure of performance, which we call the
-    "cross-validated empirical risk", for each of the $k$ learners. The
-    weights, and subsequent weighted mean, can be used to up/down-weight
-    samples whose should be considered less/more important (e.g., survey
-    weights).
- 6. Fit the so-called "metalearner". The metalearner is just a function that
-    decides on weights to be assigned to each of the $k$ learners, taking as
-    input the $k$ learner losses (or the loss function itself) and the Z
-    matrix.
+    $n$ losses, which we call the "cross-validated empirical risk". The 
+    cross-validated empirical risk provides measure of performance, summarized 
+    across all $n$, for each of the $k$ learners. The weights that could be 
+    incorporated in the data, and used to calculate a weighted mean, serve to
+    to up weight or down weight samples whose loss should be considered less or
+    more important, respectively. 
+ 6. Establish the ensemble/combination of the $k$ learners by fitting the 
+    so-called "metalearner". The ensemble is just a weighted combination of  
+    the learners, so the weights here are just a $k$-dimensional vector. The 
+    metalearner is a function that decides on the weights to be assigned to 
+    each of the $k$ learners; taking as input the cross-validated empirical risk
+    for all $k$ learners (a), or taking as input a loss function and the Z 
+    matrix (b).
 
      a. The discrete SL (or cross-validated selector) employs a simple
-        metalearner that assigns weight of 1 to the single learner with
-        smallest cross-validated risk, and weight of 0 to all other learners.
-     b. The ensemble SL (often referred to just as the "Super Learner") employs
-        a metalearner that assigns weights that minimize the cross-validated
-        risk (e.g., non-negative least squares regression). This often results
-        in more than one learner having positive weight. Aggressive
-        metalearning (e.g., assigning negative weight) comes with consequences
-        that we will discuss later.
+        metalearner that takes as input the cross-validated empirical risk
+        for all $k$ learners. This metalearner assigns weight of 1 to the 
+        single learner with smallest cross-validated risk, and a weight of 0 to 
+        all other learners. 
+     b. The ensemble SL (often referred to as the "Super Learner") employs
+        metalearners that take as input the Z matrix, and the loss function of
+        interest (unless the loss is implied by the metalearning function 
+        itself). These metalearners assign the weights such that the weighted 
+        combination of Z matrix predictions is optimized to minimize 
+        the cross-validated empirical risk. This often results in more than one 
+        learner having positive weight. Aggressive metalearning (e.g.,
+        assigning negative weight) can be problematic, leading to overfitting.
 
-  6. Fit the learners on the entire sample of $n$ observations, ignoring the
-     cross-validation folds, and use the weights that were obtained in Step 5
-     to get the SL fit. The SL fit is actually just all of $k$ learner fits --
-     the weights don't come in to play until we obtain the predictions from the
-     SL, which are the weighted combination of the $k$ learner predictions as
-     determined by the metalearner. are the SL predictions. Notice that, we use
-     this rigorous, optimal, and fair procedure to derive the weights from the
-     $n \by k$ Z-matrix of cross-validated predictions; but once we've done
-     that, we move our focus to obtaining the best fit possible of our $k$
-     learners by capitalizing on the entire sample of observations.
-  7. Predictions, variable importance, and/or a cross-validated SL can be
+  6. Fit the learners (or only the learners with non-zero weight from Step 5) 
+     on the entire sample of $n$ observations, and use the weights that were 
+     obtained in Step 5 to get the SL fit. That's it! The SL fit is just all of 
+     $k$ learner fits --- the weights don't come in to play until we obtain the 
+     predictions from the SL; where the SL predictions are the weighted 
+     combination of the $k$ learner predictions, as determined by the 
+     metalearner. Notice that, we use this rigorous, optimal, and fair 
+     procedure to derive the weights from the $n \times k$ Z matrix of 
+     cross-validated predictions; but once we've done that, we capitalize on the 
+     entire sample of observations, transitioning our focus to obtaining the 
+     best fit possible of our $k$ learners.
+  7. SL predictions, variable importance, and/or a cross-validated SL can be
      obtained from an SL fit (like most other learners). The cross-validated SL
      provides an estimate of the performance of the SL on unseen data, and
      incorporates a outer layer of cross-validation in order to cross-validate
      this entire procedure.
 
+Below is a figure from [ADD REF] describing the same step-by-step procedure. 
+This figure considers $k$=16 learners, and in the figure $p=k$; and the squared
+error loss function, thus mean squared error (MSE) is the risk.
 ```{r cv_fig, fig.show="hold", echo = FALSE}
 knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 ```
+<!-- ADD REFERENCE + CV-SL FIGURE AND REFERENCE -->
 
 ### Summary of Super Learner's Foundations {-}
 
