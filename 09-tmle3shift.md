@@ -713,8 +713,8 @@ tmle_msm_spec <- tmle_vimshift_msm(
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
-#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
+#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
+#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44440 0.12736
 #> solnp--> Completed in 2 iterations
 tmle_msm_fit
 #> A tmle3_Fit that took 1 step(s)
