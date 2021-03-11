@@ -98,7 +98,7 @@ samples [@polley2010super]. The SL is proven to be asymptotically as accurate as
 the best possible prediction algorithm in the library [@vdl2003unified;
 @vaart2006oracle].
 
-### General step-by-step overview of the Super Learner algorithm {-}
+### Step-by-step overview {-}
 
 Consider the scenario in which we have $n$ independent and identically
 distributed observations in the data, and our data structure is not a time
@@ -203,8 +203,13 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 ```
 <!-- ADD REFERENCE + CV-SL FIGURE AND REFERENCE -->
 
-### Summary of Super Learner's Foundations {-}
+### Theoretical Foundations and Further Reading {-}
 
+- Cross-validation is proven to be optimal for selection among estimators. This
+  result was established through the oracle inequality for the cross-validation
+  selector among a collection of candidate estimators [@vdl2003unified;
+  @vaart2006oracle]. The only condition is that loss function is uniformly
+  bounded, which is guaranteed in `sl3`.
 - We use a *loss function* $L$ to assign a measure of performance to each
   learner $\psi$ when applied to the data $O$, and subsequently compare
   performance across the learners. More generally, $L$ maps every
@@ -213,8 +218,8 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 
     + It is important to recall that $\psi$ is an estimator of $\psi_0$, the
       unknown and true parameter value under $P_0$.
-    + A valid loss function will have expectation (risk) that is minimized at
-      the true value of the parameter $\psi_0$. Thus, minimizing the expected
+    + A valid loss function will have mean/expectation (risk) that is minimized 
+      at the true value of the parameter $\psi_0$. Thus, minimizing the expected
       loss will bring an estimator $\psi$ closer to the true $\psi_0$.
     + For example, say we observe a learning data set $O_i=(Y_i,X_i)$, of
       $i=1, \ldots, n$ independent and identically distributed observations,
@@ -239,22 +244,19 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 - The *cross-validated empirical risk* of an algorithm is defined as the
   empirical mean over a validation sample of the loss of the algorithm fitted
   on the training sample, averaged across the splits of the data.
-- The *discrete Super Learner*, or *cross-validation selector*, is the algorithm
-  in the library that minimizes the cross-validated empirical risk.
-- The *continuous/ensemble Super Learner*, often referred to as *Super Learner*
-  is a weighted average of the library of algorithms, where the weights are
-  chosen to minimize the cross-validated empirical risk of the library.
-  Restricting the weights to be positive and sum to one (i.e., a convex
-  combination) has been shown to improve upon the discrete Super Learner
-  [@polley2010super; @vdl2007super]. This notion of weighted combinations was
-  introduced in @wolpert1992stacked for neural networks and adapted for
-  regressions in @breiman1996stacked.
-- Cross-validation is proven to be optimal for selection among estimators. This
-  result was established through the oracle inequality for the cross-validation
-  selector among a collection of candidate estimators [@vdl2003unified;
-  @vaart2006oracle]. The only condition is that loss function is uniformly
-  bounded, which is guaranteed in `sl3`.
-
+  
+    + The *discrete Super Learner*, or *cross-validation selector*, is the 
+      algorithm in the library that minimizes the cross-validated empirical 
+      risk.
+    + The *continuous/ensemble Super Learner*, often referred to as 
+      *Super Learner* is a weighted average of the library of algorithm 
+      predictions, where the weights are chosen to minimize the cross-validated 
+      empirical risk of the library. This notion of weighted combinations 
+      was introduced in @wolpert1992stacked for neural networks and adapted for 
+      regressions in @breiman1996stacked. Restricting the weights to be 
+      positive and sum to one (i.e., a convex combination) has been shown to 
+      perform well in practice [@polley2010super; @vdl2007super].
+      
 <!--
 The *oracle results* prove that, if the number of algorithms in the library are
 polynomial in sample size, then the cross-validation selector (i.e., discrete
@@ -285,11 +287,11 @@ implemented in `sl3`.
 
 The `sl3` implementation consists of the following steps:
 
-0. Load the necessary libraries and data
-1. Define the machine learning task
-2. Make an SL by creating library of base learners and a metalearner
-3. Train the SL on the machine learning task
-4. Obtain predicted values
+0. Load the necessary libraries and data.
+1. Define the machine learning task.
+2. Make an SL by creating library of base learners and a metalearner.
+3. Train the SL on the machine learning task.
+4. Obtain predicted values.
 
 ### WASH Benefits Study Example {-}
 
