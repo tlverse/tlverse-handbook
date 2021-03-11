@@ -1,3 +1,7 @@
+## ----cv_fig, fig.show="hold", echo = FALSE------------------------------------
+knitr::include_graphics("img/misc/SLKaiserNew.pdf")
+
+
 ## ----setup--------------------------------------------------------------------
 library(data.table)
 library(dplyr)
@@ -95,7 +99,7 @@ lrn_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 
 
 ## ----extra-lrnr-mindblown-svm, eval = FALSE-----------------------------------
-## # I like to crock pot my super learners
+## # I like to crock pot my SLs
 ## grid_params <- list(
 ##   cost = c(0.01, 0.1, 1, 10, 100, 1000),
 ##   gamma = c(0.001, 0.01, 0.1, 1),
@@ -221,7 +225,7 @@ sl_fit <- sl$train(washb_task)
 
 
 ## ----sl-predictions-----------------------------------------------------------
-# we did it! now we have super learner predictions
+# we did it! now we have SL predictions
 sl_preds <- sl_fit$predict()
 head(sl_preds)
 
@@ -349,7 +353,7 @@ ist_task_CVsl <- make_sl3_Task(
 ##   ranger_learner, svm_learner, xgb_learner
 ## )
 ## 
-## # make and train super learner
+## # make and train SL
 ## sl <- Lrnr_sl$new(
 ##   learners = stack
 ## )
@@ -407,7 +411,7 @@ ist_task_CVsl <- make_sl3_Task(
 ## recursive = TRUE
 ## )
 ## 
-## # super learner
+## # SL
 ## sl <- Lrnr_sl$new(learners)
 ## sl_fit <- sl$train(ist_task)
 ## 
