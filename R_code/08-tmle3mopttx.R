@@ -308,4 +308,3 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
 fit
-

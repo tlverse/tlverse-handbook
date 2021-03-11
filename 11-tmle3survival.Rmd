@@ -36,13 +36,15 @@ library(sl3)
 
 ```{r}
 vet_data <- read.csv(
-  paste0("https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
-         "master/data/veteran.csv")
+  paste0(
+    "https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
+    "master/data/veteran.csv"
+  )
 )
 vet_data$trt <- vet_data$trt - 1
 # make fewer times for illustration
 vet_data$time <- ceiling(vet_data$time / 20)
-k_grid <- seq_len(:max(vet_data$time))
+k_grid <- seq_len(max(vet_data$time))
 head(vet_data)
 ```
 
@@ -70,14 +72,20 @@ speficy W (covariates), A (treatment/intervention), T_tilde (time-to-event
 vector), Delta (censoring indicator vector), and row ids for the nodelist.
 
 ```{r}
-var_types <- list(T_tilde = Variable_Type$new("continuous"),
-                  t = Variable_Type$new("continuous"),
-                  Delta = Variable_Type$new("binomial"))
-survival_spec <- tmle_survival(treatment_level = 1, control_level = 0,
-                                 target_times = intersect(1:10, k_grid),
-                                 variable_types = var_types)
-node_list <- list(W = c("celltype", "karno", "diagtime", "age", "prior"),
-                  A = "trt", T_tilde = "time", Delta = "status", id ="X")
+var_types <- list(
+  T_tilde = Variable_Type$new("continuous"),
+  t = Variable_Type$new("continuous"),
+  Delta = Variable_Type$new("binomial")
+)
+survival_spec <- tmle_survival(
+  treatment_level = 1, control_level = 0,
+  target_times = intersect(1:10, k_grid),
+  variable_types = var_types
+)
+node_list <- list(
+  W = c("celltype", "karno", "diagtime", "age", "prior"),
+  A = "trt", T_tilde = "time", Delta = "status", id = "X"
+)
 
 long_data_tuple <- survival_spec$transform_data(vet_data, node_list)
 df_long <- long_data_tuple$long_data
@@ -98,8 +106,10 @@ learner_list <- list(A = sl_A, N = sl_A, A_c = sl_A)
 
 ```{r}
 tmle_task <- survival_spec$make_tmle_task(df_long, long_node_list)
-initial_likelihood <- survival_spec$make_initial_likelihood(tmle_task,
-                                                            learner_list)
+initial_likelihood <- survival_spec$make_initial_likelihood(
+  tmle_task,
+  learner_list
+)
 ```
 
 ### Perform TMLE adjustment of the initial conditional survival estimate
@@ -116,11 +126,12 @@ up <- tmle3_Update_survival$new(
   delta_epsilon = 1e-2,
   fit_method = "l2",
   use_best = TRUE,
-  verbose=FALSE
+  verbose = FALSE
 )
 
 targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood,
-                                               updater = up)
+  updater = up
+)
 tmle_params <- survival_spec$make_params(tmle_task, targeted_likelihood)
 tmle_fit_manual <- fit_tmle3(
   tmle_task, targeted_likelihood, tmle_params,

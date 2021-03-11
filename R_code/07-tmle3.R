@@ -56,7 +56,7 @@ ate_spec <- tmle_ATE(
 ## ----tmle3-learner-list-------------------------------------------------------
 # choose base learners
 lrnr_mean <- make_learner(Lrnr_mean)
-lrnr_xgb <- make_learner(Lrnr_xgboost)
+lrnr_rf <- make_learner(Lrnr_ranger)
 
 # define metalearners appropriate to data types
 ls_metalearner <- make_learner(Lrnr_nnls)
@@ -65,11 +65,11 @@ mn_metalearner <- make_learner(
   loss_loglik_multinomial
 )
 sl_Y <- Lrnr_sl$new(
-  learners = list(lrnr_mean, lrnr_xgb),
+  learners = list(lrnr_mean, lrnr_rf),
   metalearner = ls_metalearner
 )
 sl_A <- Lrnr_sl$new(
-  learners = list(lrnr_mean, lrnr_xgb),
+  learners = list(lrnr_mean, lrnr_rf),
   metalearner = mn_metalearner
 )
 learner_list <- list(A = sl_A, Y = sl_Y)
@@ -183,4 +183,3 @@ ist_data <- fread(
     "master/data/ist_sample.csv"
   )
 )
-

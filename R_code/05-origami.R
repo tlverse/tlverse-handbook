@@ -16,7 +16,7 @@ washb_data <- fread(
 washb_data <- washb_data[1:30, ]
 head(washb_data) %>%
   kable() %>%
-  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  kableExtra::kable_styling(fixed_thead = TRUE) %>%
   scroll_box(width = "100%", height = "300px")
 
 
@@ -122,7 +122,7 @@ covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
 
 head(washb_data) %>%
   kable() %>%
-  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  kableExtra::kable_styling(fixed_thead = TRUE) %>%
   scroll_box(width = "100%", height = "300px")
 
 
@@ -285,4 +285,3 @@ mses <- cross_validate(
 )
 mses$mse
 colMeans(mses$mse[, c("arima", "arima2")])
-

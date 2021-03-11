@@ -18,4 +18,3 @@ tidy_dag <- tidy_dagitty(dag)
 # visualize DAG
 ggdag(tidy_dag) +
   theme_dag()
-
