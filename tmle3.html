@@ -59,34 +59,36 @@
 </h1>
 <p><em>Jeremy Coyle</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3"><code>tmle3</code> <code>R</code> package</a>.</p>
-<div id="learning-objectives-4" class="section level2">
+<div id="learn-tmle" class="section level2">
 <h2>
-<span class="header-section-number">7.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-4"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learn-tmle"><i class="fas fa-link"></i></a>
 </h2>
+<p>By the end of this chapter, you will be able to</p>
 <ol style="list-style-type: decimal">
-<li>Understand why we use TMLE for effect estimation</li>
-<li>Use <code>tmle3</code> to estimate an Average Treatment Effect (ATE)</li>
-<li>Understand <code>tmle3</code> “Specs”</li>
-<li>Fit <code>tmle3</code> for a custom set of parameters</li>
-<li>Use the delta method to estimate transformations of parameters</li>
+<li>Understand why we use TMLE for effect estimation.</li>
+<li>Use <code>tmle3</code> to estimate an Average Treatment Effect (ATE).</li>
+<li>Understand how to use <code>tmle3</code> “Specs” objects.</li>
+<li>Fit <code>tmle3</code> for a custom set of target parameters.</li>
+<li>Use the delta method to estimate transformations of target parameters.</li>
 </ol>
 </div>
-<div id="introduction-3" class="section level2">
+<div id="tmle-intro" class="section level2">
 <h2>
-<span class="header-section-number">7.2</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.2</span> Introduction<a class="anchor" aria-label="anchor" href="#tmle-intro"><i class="fas fa-link"></i></a>
 </h2>
 <p>In the previous chapter on <code>sl3</code> we learned how to estimate a regression
 function like <span class="math inline">\(\mathbb{E}[Y \mid X]\)</span> from data. That’s an important first step
 in learning from data, but how can we use this predictive model to estimate
 statistical and causal effects?</p>
-<p>Going back to the roadmap in Chapter 1, suppose we’d like to estimate the effect
-of a treatment variable <span class="math inline">\(A\)</span> on an outcome <span class="math inline">\(Y\)</span>. As discussed, one potential
-parameter that characterizes that effect is the Average Treatment Effect (ATE),
-defined as <span class="math inline">\(\psi_0 = \mathbb{E}_W[E[Y \mid A=1,W] - \mathbb{E}[Y \mid A=0,W]]\)</span>
-and interpreted as the difference in mean outcome under when treatment <span class="math inline">\(A=1\)</span> and
-<span class="math inline">\(A=0\)</span>, averaging over the distribution of covariates <span class="math inline">\(W\)</span>. We’ll illustrate
-several potential estimators for this parameter, and motivate the use of TMLE,
-using the following example data:</p>
+<p>Going back to <a href="intro.html#intro">the roadmap for targeted learning</a>, suppose we’d like to
+estimate the effect of a treatment variable <span class="math inline">\(A\)</span> on an outcome <span class="math inline">\(Y\)</span>. As discussed,
+one potential parameter that characterizes that effect is the Average Treatment
+Effect (ATE), defined as <span class="math inline">\(\psi_0 = \mathbb{E}_W[\mathbb{E}[Y \mid A=1,W] - \mathbb{E}[Y \mid A=0,W]]\)</span> and interpreted as the difference in mean outcome
+under when treatment <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span>, averaging over the distribution of
+covariates <span class="math inline">\(W\)</span>. We’ll illustrate several potential estimators for this
+parameter, and motivate the use of the TMLE (targeted maximum likelihood
+estimation; targeted minimum loss-based estimation) framework, using the
+following example data:</p>
 <div class="inline-figure"><img src="img/misc/tmle_sim/schematic_1_truedgd.png" width="80%" style="display: block; margin: auto;"></div>
 <p>The small ticks on the right indicate the mean outcomes (averaging over <span class="math inline">\(W\)</span>)
 under <span class="math inline">\(A=1\)</span> and <span class="math inline">\(A=0\)</span> respectively, so their difference is the quantity we’d
@@ -94,22 +96,27 @@ like to estimate.</p>
 <p>While we hope to motivate the application of TMLE in this chapter, we refer the
 interested reader to the two Targeted Learning books and associated works for
 full technical details.</p>
-<div id="substitution-estimators" class="section level3">
-<h3>
-<span class="header-section-number">7.2.1</span> Substitution Estimators<a class="anchor" aria-label="anchor" href="#substitution-estimators"><i class="fas fa-link"></i></a>
-</h3>
+</div>
+<div id="substitution-est" class="section level2">
+<h2>
+<span class="header-section-number">7.3</span> Substitution Estimators<a class="anchor" aria-label="anchor" href="#substitution-est"><i class="fas fa-link"></i></a>
+</h2>
 <p>We can use <code>sl3</code> to fit a Super Learner or other regression model to estimate
-the function <span class="math inline">\(\mathbb{E}_0[Y \mid A,W]\)</span>. We refer to this function as
-<span class="math inline">\(\bar{Q}_0(A,W)\)</span> and our estimate of it as <span class="math inline">\(\bar{Q}_n(A,W)\)</span>. We can then
-directly “plug-in” that estimate to obtain an estimate of the ATE:
-<span class="math inline">\(\hat{\psi}_n=\frac{1}{n}\sum(\bar{Q}_n(1,W)-\bar{Q}_n(0,W))\)</span>. This kind of
-estimator is called a plug-in or substitution estimator, as we substitute our
-estimate <span class="math inline">\(Q_n(A,W)\)</span> of the function <span class="math inline">\(Q_0(A,W)\)</span> for the function itself.</p>
+the outcome regression function <span class="math inline">\(\mathbb{E}_0[Y \mid A,W]\)</span>, which we often refer
+to as <span class="math inline">\(\overline{Q}_0(A,W)\)</span> and whose estimate we denote <span class="math inline">\(\overline{Q}_n(A,W)\)</span>.
+To construct an estimate of the ATE <span class="math inline">\(\psi_n\)</span>, we need only “plug-in” the
+estimates of <span class="math inline">\(\overline{Q}_n(A,W)\)</span>, evaluated at the two intervention contrasts,
+to the corresponding ATE “plug-in” formula:
+<span class="math inline">\(\psi_n = \frac{1}{n}\sum(\overline{Q}_n(1,W)-\overline{Q}_n(0,W))\)</span>. This kind
+of estimator is called a <em>plug-in</em> or <em>substitution</em> estimator, since accurate
+estimates <span class="math inline">\(\psi_n\)</span> of the parameter <span class="math inline">\(\psi_0\)</span> may be obtained by substituting
+estimates <span class="math inline">\(\overline{Q}_n(A,W)\)</span> for the relevant regression functions
+<span class="math inline">\(\overline{Q}_0(A,W)\)</span> themselves.</p>
 <p>Applying <code>sl3</code> to estimate the outcome regression in our example, we can see
-that it fits the data quite well:</p>
+that the ensemble machine learning predictions fit the data quite well:</p>
 <div class="inline-figure"><img src="img/misc/tmle_sim/schematic_2b_sllik.png" width="80%" style="display: block; margin: auto;"></div>
 <p>The solid lines indicate the <code>sl3</code> estimate of the regression function, with the
-dotted lines indicating the <code>tmle3</code> update described below.</p>
+dotted lines indicating the <code>tmle3</code> updates <a href="tmle3.html#tmle-updates">(described below)</a>.</p>
 <p>While substitution estimators are intuitive, naively using this approach with a
 Super Learner estimate of <span class="math inline">\(\bar{Q}_0(A,W)\)</span> has several limitations. First, Super
 Learner is selecting learner weights to minimize risk across the entire
@@ -126,58 +133,68 @@ dashed vertical line) more accurately than GLM. However, it is still less
 accurate than TMLE, and valid inference is not possible. In contrast, TMLE
 achieves a less biased estimator and valid inference.</p>
 </div>
-</div>
 <div id="tmle" class="section level2">
 <h2>
-<span class="header-section-number">7.3</span> TMLE<a class="anchor" aria-label="anchor" href="#tmle"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.4</span> Targeted Maximum Likelihood Estimation<a class="anchor" aria-label="anchor" href="#tmle"><i class="fas fa-link"></i></a>
 </h2>
-<p>TMLE takes an initial estimate <span class="math inline">\(\bar{Q}_n(A,W)\)</span> as well as an estimate of the
-propensity score <span class="math inline">\(g_n(A \mid W) = p(A \mid W)\)</span> and produces an updated estimate
-<span class="math inline">\(\bar{Q}^{\star}_n(A,W)\)</span> that is “targeted” to the parameter of interest. TMLE
-keeps the benefits of substitution estimators (it is one), but augments the
-original estimates to correct for bias and also results in an asymptotically
-linear (and thus normally-distributed) estimator with consistent Wald-style
-confidence intervals.</p>
-<p>There are different types of TMLE, sometimes for the same set of parameters,
-but below is an example of the algorithm for estimating the ATE.
-<span class="math inline">\(\bar{Q}^{\star}_n(A,W)\)</span> is the TMLE-augmented estimate
-<span class="math inline">\(f(\bar{Q}^{\star}_n(A,W)) = f(\bar{Q}_n(A,W)) + \epsilon_n \cdot h_n(A,W)\)</span>,
-where <span class="math inline">\(f(\cdot)\)</span> is the appropriate link function (e.g., logit), <span class="math inline">\(\epsilon_n\)</span> is
-an estimated coefficient and <span class="math inline">\(h_n(A,W)\)</span> is a “clever covariate”. In this case,
-<span class="math inline">\(h_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A, W)}\)</span>, with <span class="math inline">\(g_n(A, W) = \mathbb{P}(A=1 \mid W)\)</span> being the estimated (also by SL) propensity score, so
-the estimator depends both on initial SL fit of the outcome regression
-(<span class="math inline">\(\bar{Q}_n\)</span>) and an SL fit of the propensity score (<span class="math inline">\(g_n\)</span>).</p>
-<p>There are further robust augmentations that are used in <code>tlverse</code>, such as an
-added layer of cross-validation to avoid over-fitting bias (CV-TMLE), and so
-called methods that can more robustly estimated several parameters
-simultaneously (e.g., the points on a survival curve).</p>
-<div id="inference" class="section level3">
+<p>TMLE takes an initial estimate <span class="math inline">\(\overline{Q}_n(A,W)\)</span> as well as an estimate of
+the propensity score <span class="math inline">\(g_n(A \mid W) = \mathbb{P}(A = 1 \mid W)\)</span> and produces an
+updated estimate <span class="math inline">\(\overline{Q}^{\star}_n(A,W)\)</span> that is “targeted” to the
+parameter of interest. TMLE keeps the benefits of substitution estimators (it is
+one), but augments the original, potentially erratic estimates to <em>correct for
+bias</em> while also resulting in an <em>asymptotically linear</em> (and thus normally
+distributed) estimator that accommodates inference via asymptotically consistent
+Wald-style confidence intervals.</p>
+<div id="tmle-updates" class="section level3">
 <h3>
-<span class="header-section-number">7.3.1</span> Inference<a class="anchor" aria-label="anchor" href="#inference"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.4.1</span> TMLE Updates<a class="anchor" aria-label="anchor" href="#tmle-updates"><i class="fas fa-link"></i></a>
 </h3>
-<p>Because TMLE yields an <strong>asymptotically linear</strong>, estimator, obtaining inference
-is trivial. Each TMLE is associated with an <strong>influence function</strong> that
-describes its asymptotic distribution, and Wald-style inference can be obtained
-by plugging into this function our estimates <span class="math inline">\(\bar{Q}^{\star}_n\)</span> and <span class="math inline">\(g_n\)</span> and
-taking the sample standard error.</p>
+<p>There are different types of TMLEs (and, sometimes, multiple for the same set of
+target parameters) – below, we give an example of the algorithm for TML
+estimation of the ATE. <span class="math inline">\(\overline{Q}^{\star}_n(A,W)\)</span> is the TMLE-augmented
+estimate <span class="math inline">\(f(\overline{Q}^{\star}_n(A,W)) = f(\overline{Q}_n(A,W)) + \epsilon \cdot H_n(A,W)\)</span>, where <span class="math inline">\(f(\cdot)\)</span> is the appropriate link function (e.g.,
+<span class="math inline">\(\text{logit}(x) = \log\left(\frac{x}{1 - x}\right)\)</span>), and an estimate
+<span class="math inline">\(\epsilon_n\)</span> of the coefficient <span class="math inline">\(\epsilon\)</span> of the “clever covariate” <span class="math inline">\(H_n(A,W)\)</span>
+is computed. The form of the covariate <span class="math inline">\(H_n(A,W)\)</span> differs across target
+parameters; in this case of the ATE, it is <span class="math inline">\(H_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A, W)}\)</span>, with <span class="math inline">\(g_n(A,W) = \mathbb{P}(A=1 \mid W)\)</span> being the
+estimated propensity score, so the estimator depends both on the initial fit (by
+<code>sl3</code>) of the outcome regression (<span class="math inline">\(\overline{Q}_n\)</span>) and of the propensity score
+(<span class="math inline">\(g_n\)</span>).</p>
+<p>There are several robust augmentations that are used across the <code>tlverse</code>,
+including the use of an additional layer of cross-validation to avoid
+over-fitting bias (i.e., CV-TMLE) as well as approaches for more consistently
+estimating several parameters simultaneously (e.g., the points on a survival
+curve).</p>
+</div>
+<div id="tmle-infer" class="section level3">
+<h3>
+<span class="header-section-number">7.4.2</span> Statistical Inference<a class="anchor" aria-label="anchor" href="#tmle-infer"><i class="fas fa-link"></i></a>
+</h3>
+<p>Since TMLE yields an <strong>asymptotically linear</strong> estimator, obtaining statistical
+inference is very convenient. Each TML estimator has a corresponding
+<strong>(efficient) influence function</strong> (often, “EIF”, for short) that describes the
+asymptotic distribution of the estimator. By using the estimated EIF, Wald-style
+inference (asymptotically correct confidence intervals) can be constructed
+simply by plugging into the form of the EIF our initial estimates
+<span class="math inline">\(\overline{Q}^{\star}_n\)</span> and <span class="math inline">\(g_n\)</span>, then computing the sample standard error.</p>
 <p>The following sections describe both a simple and more detailed way of
 specifying and estimating a TMLE in the <code>tlverse</code>. In designing <code>tmle3</code>, we
 sought to replicate as closely as possible the very general estimation framework
 of TMLE, and so each theoretical object relevant to TMLE is encoded in a
-corresponding software object. First, we will present the simple application of
-<code>tmle3</code> to the WASH Benefits example, and then go on to describe the underlying
-objects in more detail.</p>
+corresponding software object/method. First, we will present the simple
+application of <code>tmle3</code> to the WASH Benefits example, and then go on to describe
+the underlying objects in greater detail.</p>
 </div>
 </div>
 <div id="easy-bake-example-tmle3-for-ate" class="section level2">
 <h2>
-<span class="header-section-number">7.4</span> Easy-Bake Example: <code>tmle3</code> for ATE<a class="anchor" aria-label="anchor" href="#easy-bake-example-tmle3-for-ate"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5</span> Easy-Bake Example: <code>tmle3</code> for ATE<a class="anchor" aria-label="anchor" href="#easy-bake-example-tmle3-for-ate"><i class="fas fa-link"></i></a>
 </h2>
 <p>We’ll illustrate the most basic use of TMLE using the WASH Benefits data
-introduced earlier and estimating an Average Treatment Effect (ATE).</p>
+introduced earlier and estimating an average treatment effect.</p>
 <div id="load-the-data" class="section level3">
 <h3>
-<span class="header-section-number">7.4.1</span> Load the Data<a class="anchor" aria-label="anchor" href="#load-the-data"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.1</span> Load the Data<a class="anchor" aria-label="anchor" href="#load-the-data"><i class="fas fa-link"></i></a>
 </h3>
 <p>We’ll use the same WASH Benefits data as the earlier chapters:</p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
@@ -195,7 +212,7 @@ introduced earlier and estimating an Average Treatment Effect (ATE).</p>
 </div>
 <div id="define-the-variable-roles" class="section level3">
 <h3>
-<span class="header-section-number">7.4.2</span> Define the variable roles<a class="anchor" aria-label="anchor" href="#define-the-variable-roles"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.2</span> Define the variable roles<a class="anchor" aria-label="anchor" href="#define-the-variable-roles"><i class="fas fa-link"></i></a>
 </h3>
 <p>We’ll use the common <span class="math inline">\(W\)</span> (covariates), <span class="math inline">\(A\)</span> (treatment/intervention), <span class="math inline">\(Y\)</span>
 (outcome) data structure. <code>tmle3</code> needs to know what variables in the dataset
@@ -219,17 +236,20 @@ Acyclic Graph (DAG), a way of displaying causal relationships between variables.
 </div>
 <div id="handle-missingness" class="section level3">
 <h3>
-<span class="header-section-number">7.4.3</span> Handle Missingness<a class="anchor" aria-label="anchor" href="#handle-missingness"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.3</span> Handle Missingness<a class="anchor" aria-label="anchor" href="#handle-missingness"><i class="fas fa-link"></i></a>
 </h3>
 <p>Currently, missingness in <code>tmle3</code> is handled in a fairly simple way:</p>
 <ul>
-<li>Missing covariates are median (for continuous) or mode (for discrete)
-imputed, and additional covariates indicating imputation are generated</li>
-<li>Observations missing treatment variable are excluded.</li>
+<li>Missing covariates are median- (for continuous) or mode- (for discrete)
+imputed, and additional covariates indicating imputation are generated, just
+as described in <a href="sl3.html#sl3">the <code>sl3</code> chapter</a>.</li>
+<li>Missing treatment variables are excluded – such observations are dropped.</li>
+<li>Missing outcomes are efficiently handled by the automatic calculation (and
+incorporation into estimators) of <em>inverse probability of censoring weights</em>
+(IPCW); this is also known as IPCW-TMLE and may be thought of as a joint
+intervention to remove missingness and is analogous to the procedure used with
+classical inverse probability weighted estimators.</li>
 </ul>
-<p>We implemented IPCW-TMLE to more efficiently handle missingness in the outcome
-variable, and we plan to implement an IPCW-TMLE to handle missingness in the
-treatment variable as well.</p>
 <p>These steps are implemented in the <code>process_missing</code> function in <code>tmle3</code>:</p>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">processed</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/process_missing.html">process_missing</a></span><span class="op">(</span><span class="va">washb_data</span>, <span class="va">node_list</span><span class="op">)</span>
@@ -238,7 +258,7 @@ treatment variable as well.</p>
 </div>
 <div id="create-a-spec-object" class="section level3">
 <h3>
-<span class="header-section-number">7.4.4</span> Create a “Spec” Object<a class="anchor" aria-label="anchor" href="#create-a-spec-object"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.4</span> Create a “Spec” Object<a class="anchor" aria-label="anchor" href="#create-a-spec-object"><i class="fas fa-link"></i></a>
 </h3>
 <p><code>tmle3</code> is general, and allows most components of the TMLE procedure to be
 specified in a modular way. However, most end-users will not be interested in
@@ -255,7 +275,7 @@ internals of <code>tmle3</code>.</p>
 </div>
 <div id="define-the-learners" class="section level3">
 <h3>
-<span class="header-section-number">7.4.5</span> Define the learners<a class="anchor" aria-label="anchor" href="#define-the-learners"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.5</span> Define the learners<a class="anchor" aria-label="anchor" href="#define-the-learners"><i class="fas fa-link"></i></a>
 </h3>
 <p>Currently, the only other thing a user must define are the <code>sl3</code> learners used
 to estimate the relevant factors of the likelihood: Q and g.</p>
@@ -286,7 +306,7 @@ we plan to include reasonable defaults learners.</p>
 </div>
 <div id="fit-the-tmle" class="section level3">
 <h3>
-<span class="header-section-number">7.4.6</span> Fit the TMLE<a class="anchor" aria-label="anchor" href="#fit-the-tmle"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.6</span> Fit the TMLE<a class="anchor" aria-label="anchor" href="#fit-the-tmle"><i class="fas fa-link"></i></a>
 </h3>
 <p>We now have everything we need to fit the tmle using <code>tmle3</code>:</p>
 <div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
@@ -300,7 +320,7 @@ we plan to include reasonable defaults learners.</p>
 </div>
 <div id="evaluate-the-estimates" class="section level3">
 <h3>
-<span class="header-section-number">7.4.7</span> Evaluate the Estimates<a class="anchor" aria-label="anchor" href="#evaluate-the-estimates"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.5.7</span> Evaluate the Estimates<a class="anchor" aria-label="anchor" href="#evaluate-the-estimates"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can see the summary results by printing the fit object. Alternatively, we
 can extra results from the summary by indexing into it:</p>
@@ -312,17 +332,17 @@ can extra results from the summary by indexing into it:</p>
 </div>
 <div id="tmle3-components" class="section level2">
 <h2>
-<span class="header-section-number">7.5</span> <code>tmle3</code> Components<a class="anchor" aria-label="anchor" href="#tmle3-components"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6</span> <code>tmle3</code> Components<a class="anchor" aria-label="anchor" href="#tmle3-components"><i class="fas fa-link"></i></a>
 </h2>
 <p>Now that we’ve successfully used a spec to obtain a TML estimate, let’s look
 under the hood at the components. The spec has a number of functions that
 generate the objects necessary to define and fit a TMLE.</p>
 <div id="tmle3_task" class="section level3">
 <h3>
-<span class="header-section-number">7.5.1</span> <code>tmle3_task</code><a class="anchor" aria-label="anchor" href="#tmle3_task"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6.1</span> <code>tmle3_task</code><a class="anchor" aria-label="anchor" href="#tmle3_task"><i class="fas fa-link"></i></a>
 </h3>
 <p>First is, a <code>tmle3_Task</code>, analogous to an <code>sl3_Task</code>, containing the data we’re
-fitting the TMLE to, as well as an NP-SEM generated from the <code>node_list</code>
+fitting the TMLE to, as well as an NPSEM generated from the <code>node_list</code>
 defined above, describing the variables and their relationships.</p>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_task</span> <span class="op">&lt;-</span> <span class="va">ate_spec</span><span class="op">$</span><span class="fu">make_tmle_task</span><span class="op">(</span><span class="va">washb_data</span>, <span class="va">node_list</span><span class="op">)</span></code></pre></div>
@@ -345,7 +365,7 @@ defined above, describing the variables and their relationships.</p>
 </div>
 <div id="initial-likelihood" class="section level3">
 <h3>
-<span class="header-section-number">7.5.2</span> Initial Likelihood<a class="anchor" aria-label="anchor" href="#initial-likelihood"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6.2</span> Initial Likelihood<a class="anchor" aria-label="anchor" href="#initial-likelihood"><i class="fas fa-link"></i></a>
 </h3>
 <p>Next, is an object representing the likelihood, factorized according to the
 NPSEM described above:</p>
@@ -382,12 +402,12 @@ estimates for each observation:</p>
 </div>
 <div id="targeted-likelihood-updater" class="section level3">
 <h3>
-<span class="header-section-number">7.5.3</span> Targeted Likelihood (updater)<a class="anchor" aria-label="anchor" href="#targeted-likelihood-updater"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6.3</span> Targeted Likelihood (updater)<a class="anchor" aria-label="anchor" href="#targeted-likelihood-updater"><i class="fas fa-link"></i></a>
 </h3>
 <p>We also need to define a “Targeted Likelihood” object. This is a special type
 of likelihood that is able to be updated using an <code>tmle3_Update</code> object. This
-object defines the update strategy (e.g. submodel, loss function, CV-TMLE or
-not, etc).</p>
+object defines the update strategy (e.g., submodel, loss function, CV-TMLE or
+not).</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">targeted_likelihood</span> <span class="op">&lt;-</span> <span class="va"><a href="http://tlverse.org/tmle3/reference/Targeted_Likelihood.html">Targeted_Likelihood</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">initial_likelihood</span><span class="op">)</span></code></pre></div>
 <p>When constructing the targeted likelihood, you can specify different update
@@ -402,7 +422,7 @@ follows:</p>
 </div>
 <div id="parameter-mapping" class="section level3">
 <h3>
-<span class="header-section-number">7.5.4</span> Parameter Mapping<a class="anchor" aria-label="anchor" href="#parameter-mapping"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6.4</span> Parameter Mapping<a class="anchor" aria-label="anchor" href="#parameter-mapping"><i class="fas fa-link"></i></a>
 </h3>
 <p>Finally, we need to define the parameters of interest. Here, the spec defines a
 single parameter, the ATE. In the next section, we’ll see how to add additional
@@ -415,7 +435,7 @@ parameters.</p>
 </div>
 <div id="putting-it-all-together" class="section level3">
 <h3>
-<span class="header-section-number">7.5.5</span> Putting it all together<a class="anchor" aria-label="anchor" href="#putting-it-all-together"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.6.5</span> Putting it all together<a class="anchor" aria-label="anchor" href="#putting-it-all-together"><i class="fas fa-link"></i></a>
 </h3>
 <p>Having used the spec to manually generate all these components, we can now
 manually fit a <code>tmle3</code>:</p>
@@ -435,7 +455,7 @@ manually fit a <code>tmle3</code>:</p>
 </div>
 <div id="fitting-tmle3-with-multiple-parameters" class="section level2">
 <h2>
-<span class="header-section-number">7.6</span> Fitting <code>tmle3</code> with multiple parameters<a class="anchor" aria-label="anchor" href="#fitting-tmle3-with-multiple-parameters"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.7</span> Fitting <code>tmle3</code> with multiple parameters<a class="anchor" aria-label="anchor" href="#fitting-tmle3-with-multiple-parameters"><i class="fas fa-link"></i></a>
 </h2>
 <p>Above, we fit a <code>tmle3</code> with just one parameter. <code>tmle3</code> also supports fitting
 multiple parameters simultaneously. To illustrate this, we’ll use the
@@ -471,7 +491,7 @@ as the old one was targeted to the ATE. However, we can recycle the initial
 likelihood we fit above, saving us a super learner step.</p>
 <div id="delta-method" class="section level3">
 <h3>
-<span class="header-section-number">7.6.1</span> Delta Method<a class="anchor" aria-label="anchor" href="#delta-method"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.7.1</span> Delta Method<a class="anchor" aria-label="anchor" href="#delta-method"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can also define parameters based on Delta Method Transformations of other
 parameters. For instance, we can estimate a ATE using the delta method and two
@@ -489,7 +509,7 @@ Risks, and Population Attributable Risks</p>
 </div>
 <div id="fit" class="section level3">
 <h3>
-<span class="header-section-number">7.6.2</span> Fit<a class="anchor" aria-label="anchor" href="#fit"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.7.2</span> Fit<a class="anchor" aria-label="anchor" href="#fit"><i class="fas fa-link"></i></a>
 </h3>
 <p>We can now fit a TMLE simultaneously for all TSM parameters, as well as the
 above defined ATE parameter</p>
@@ -534,11 +554,11 @@ above defined ATE parameter</p>
 </div>
 <div id="exercises-1" class="section level2">
 <h2>
-<span class="header-section-number">7.7</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.8</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
 </h2>
 <div id="tmle3-ex1" class="section level3">
 <h3>
-<span class="header-section-number">7.7.1</span> Estimation of the ATE with <code>tmle3</code><a class="anchor" aria-label="anchor" href="#tmle3-ex1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.8.1</span> Estimation of the ATE with <code>tmle3</code><a class="anchor" aria-label="anchor" href="#tmle3-ex1"><i class="fas fa-link"></i></a>
 </h3>
 <p>Follow the steps below to estimate an average treatment effect using data from
 the Collaborative Perinatal Project (CPP), available in the <code>sl3</code> package. To
@@ -559,15 +579,13 @@ age.</p>
 <!--
 We're interested in using this simplified data to estimate an Average Treatment
 Effect (ATE):
-
-$$\Psi(P_0) = E_0(E_0[Y|A=1,W]-E_0[Y|A=0,W])$$
-
+$\Psi(P_0)=\mathbb{E}_0(\mathbb{E}_0[Y \mid A=1,W]-\mathbb{E}_0[Y \mid A=0,W])$
 
 The purely statistical (non-causal) parameter can be interpreted as the average
 of the difference in means across the strata for $W$, and only requires the
 positivity assumption, that the conditional treatment assignment probabilities
-are positive for each possible $w: P_0(A=1 \mid W=w) > 0$ and
-$P_0(A=0 \mid W=w) > 0$ for each possible $w$.
+are positive for each possible $w$: $\mathbb{P}_0(A=1 \mid W=w) > 0$ and
+$\mathbb{P}_0(A=0 \mid W=w) > 0$ for each possible $w$.
 
 To interpret this parameter as causal, specifically the causal risk difference
 $E_0Y_1-E_0Y_0$, then we would also need to make the randomization assumption
@@ -593,7 +611,8 @@ Include the following baseline covariates in <span class="math inline">\(W\)</sp
 above.</li>
 <li>Define a <code>tmle3_Spec</code> object for the ATE, <code><a href="http://tlverse.org/tmle3/reference/tmle_ATE.html">tmle_ATE()</a></code>.</li>
 <li>Using the same base learning libraries defined above, specify <code>sl3</code> base
-learners for estimation of <span class="math inline">\(Q = E(Y \mid A,Y)\)</span> and <span class="math inline">\(g=P(A \mid W)\)</span>.</li>
+learners for estimation of <span class="math inline">\(\overline{Q}_0 = \mathbb{E}_0(Y \mid A,Y)\)</span> and
+<span class="math inline">\(g_0 = \mathbb{P}(A = 1 \mid W)\)</span>.</li>
 <li>Define the metalearner like below.</li>
 </ol>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
@@ -603,23 +622,24 @@ learners for estimation of <span class="math inline">\(Q = E(Y \mid A,Y)\)</span
   learner_function <span class="op">=</span> <span class="va">metalearner_logistic_binomial</span>
 <span class="op">)</span></code></pre></div>
 <ol start="5" style="list-style-type: decimal">
-<li>Define one super learner for estimating <span class="math inline">\(Q\)</span> and another for estimating <span class="math inline">\(g\)</span>.
-Use the metalearner above for both <span class="math inline">\(Q\)</span> and <span class="math inline">\(g\)</span> super learners.</li>
-<li>Create a list of the two super learners defined in Step 5 and call this
-object <code>learner_list</code>. The list names should be <code>A</code> (defining the super
-learner for estimating <span class="math inline">\(g\)</span>) and <code>Y</code> (defining the super learner for
-estimating <span class="math inline">\(Q\)</span>).</li>
-<li>Fit the tmle with the <code>tmle3</code> function by specifying (1) the <code>tmle3_Spec</code>,
+<li>Define one super learner for estimating <span class="math inline">\(\overline{Q}_0\)</span> and another for
+estimating <span class="math inline">\(g_0\)</span>. Use the metalearner above for both super learners.</li>
+<li>Create a list of the two super learners defined in the step above and call
+this object <code>learner_list</code>. The list names should be <code>A</code> (defining the super
+learner for estimation of <span class="math inline">\(g_0\)</span>) and <code>Y</code> (defining the super learner for
+estimation of <span class="math inline">\(\overline{Q}_0\)</span>).</li>
+<li>Fit the TMLE with the <code>tmle3</code> function by specifying (1) the <code>tmle3_Spec</code>,
 which we defined in Step 2; (2) the data; (3) the list of nodes, which we
-specified in Step 1; and (4) the list of super learners for estimating <span class="math inline">\(g\)</span>
-and <span class="math inline">\(Q\)</span>, which we defined in Step 6. <em>Note</em>: Like before, you will need to
-make a data copy to deal with <code>data.table</code> weirdness
-(<code>cpp2 &lt;- data.table::copy(cpp)</code>) and use <code>cpp2</code> as the data.</li>
+specified in Step 1; and (4) the list of super learners for estimation of
+<span class="math inline">\(g_0\)</span> and <span class="math inline">\(\overline{Q}_0\)</span>, which we defined in Step 6. <em>Note</em>: Like before,
+you will need to explicitly make a copy of the data (to work around
+<code>data.table</code> optimizations), e.g., (<code>cpp2 &lt;- data.table::copy(cpp)</code>), then
+use the <code>cpp2</code> data going forward.</li>
 </ol>
 </div>
 <div id="tmle3-ex2" class="section level3">
 <h3>
-<span class="header-section-number">7.7.2</span> Estimation of Strata-Specific ATEs with <code>tmle3</code><a class="anchor" aria-label="anchor" href="#tmle3-ex2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.8.2</span> Estimation of Strata-Specific ATEs with <code>tmle3</code><a class="anchor" aria-label="anchor" href="#tmle3-ex2"><i class="fas fa-link"></i></a>
 </h3>
 <p>For this exercise, we will work with a random sample of 5,000 patients who
 participated in the International Stroke Trial (IST). This data is described in
@@ -643,10 +663,10 @@ covariates was created.</p>
 recurrent ischemic stroke. Even though the missingness mechanism on <span class="math inline">\(Y\)</span>,
 <span class="math inline">\(\Delta\)</span>, does not need to be specified in the node list, it does still need
 to be accounted for in the TMLE. In other words, for this estimation problem,
-<span class="math inline">\(\Delta\)</span> is a relevant factor of the likelihood in addition to <span class="math inline">\(Q\)</span>, <span class="math inline">\(g\)</span>.
-Thus, when defining the list of <code>sl3</code> learners for each likelihood factor, be
-sure to include a list of learners for estimation of <span class="math inline">\(\Delta\)</span>, say
-<code>sl_Delta</code>, and specify something like
+<span class="math inline">\(\Delta\)</span> is a relevant factor of the likelihood. Thus, when defining the
+list of <code>sl3</code> learners for each likelihood factor, be sure to include a list
+of learners for estimation of <span class="math inline">\(\Delta\)</span>, say <code>sl_Delta</code>, and specify this in
+the learner list, like so
 <code>learner_list &lt;- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)</code>.</li>
 <li>Recall that this RCT was conducted internationally. Suposse there is concern
 that the dose of asprin may have varied across geographical regions, and an
@@ -664,14 +684,14 @@ strata specific ATEs according to geographical region (<code>REGION</code>).</li
 </div>
 <div id="summary" class="section level2">
 <h2>
-<span class="header-section-number">7.8</span> Summary<a class="anchor" aria-label="anchor" href="#summary"><i class="fas fa-link"></i></a>
+<span class="header-section-number">7.9</span> Summary<a class="anchor" aria-label="anchor" href="#summary"><i class="fas fa-link"></i></a>
 </h2>
-<p><code>tmle3</code> is a general purpose framework for generating TML estimates. The
-easiest way to use it is to use a predefined spec, allowing you to just fill in
-the blanks for the data, variable roles, and <code>sl3</code> learners. However, digging
-under the hood allows users to specify a wide range of TMLEs. In the next
-sections, we’ll see how this framework can be used to estimate advanced
-parameters such as optimal treatments and shift interventions.</p>
+<p><code>tmle3</code> is a general purpose framework for generating TML estimates. The easiest
+way to use it is to use a predefined spec, allowing you to just fill in the
+blanks for the data, variable roles, and <code>sl3</code> learners. However, digging under
+the hood allows users to specify a wide range of TMLEs. In the next sections,
+we’ll see how this framework can be used to estimate advanced parameters such as
+optimal treatments and stochastic shift interventions.</p>
 
 </div>
 </div>
@@ -682,46 +702,48 @@ parameters such as optimal treatments and shift interventions.</p>
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#tmle3"><span class="header-section-number">7</span> The TMLE Framework</a></li>
-<li><a class="nav-link" href="#learning-objectives-4"><span class="header-section-number">7.1</span> Learning Objectives</a></li>
+<li><a class="nav-link" href="#learn-tmle"><span class="header-section-number">7.1</span> Learning Objectives</a></li>
+<li><a class="nav-link" href="#tmle-intro"><span class="header-section-number">7.2</span> Introduction</a></li>
+<li><a class="nav-link" href="#substitution-est"><span class="header-section-number">7.3</span> Substitution Estimators</a></li>
 <li>
-<a class="nav-link" href="#introduction-3"><span class="header-section-number">7.2</span> Introduction</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#substitution-estimators"><span class="header-section-number">7.2.1</span> Substitution Estimators</a></li></ul>
-</li>
-<li>
-<a class="nav-link" href="#tmle"><span class="header-section-number">7.3</span> TMLE</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#inference"><span class="header-section-number">7.3.1</span> Inference</a></li></ul>
-</li>
-<li>
-<a class="nav-link" href="#easy-bake-example-tmle3-for-ate"><span class="header-section-number">7.4</span> Easy-Bake Example: tmle3 for ATE</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#load-the-data"><span class="header-section-number">7.4.1</span> Load the Data</a></li>
-<li><a class="nav-link" href="#define-the-variable-roles"><span class="header-section-number">7.4.2</span> Define the variable roles</a></li>
-<li><a class="nav-link" href="#handle-missingness"><span class="header-section-number">7.4.3</span> Handle Missingness</a></li>
-<li><a class="nav-link" href="#create-a-spec-object"><span class="header-section-number">7.4.4</span> Create a “Spec” Object</a></li>
-<li><a class="nav-link" href="#define-the-learners"><span class="header-section-number">7.4.5</span> Define the learners</a></li>
-<li><a class="nav-link" href="#fit-the-tmle"><span class="header-section-number">7.4.6</span> Fit the TMLE</a></li>
-<li><a class="nav-link" href="#evaluate-the-estimates"><span class="header-section-number">7.4.7</span> Evaluate the Estimates</a></li>
+<a class="nav-link" href="#tmle"><span class="header-section-number">7.4</span> Targeted Maximum Likelihood Estimation</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#tmle-updates"><span class="header-section-number">7.4.1</span> TMLE Updates</a></li>
+<li><a class="nav-link" href="#tmle-infer"><span class="header-section-number">7.4.2</span> Statistical Inference</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#tmle3-components"><span class="header-section-number">7.5</span> tmle3 Components</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#tmle3_task"><span class="header-section-number">7.5.1</span> tmle3_task</a></li>
-<li><a class="nav-link" href="#initial-likelihood"><span class="header-section-number">7.5.2</span> Initial Likelihood</a></li>
-<li><a class="nav-link" href="#targeted-likelihood-updater"><span class="header-section-number">7.5.3</span> Targeted Likelihood (updater)</a></li>
-<li><a class="nav-link" href="#parameter-mapping"><span class="header-section-number">7.5.4</span> Parameter Mapping</a></li>
-<li><a class="nav-link" href="#putting-it-all-together"><span class="header-section-number">7.5.5</span> Putting it all together</a></li>
+<a class="nav-link" href="#easy-bake-example-tmle3-for-ate"><span class="header-section-number">7.5</span> Easy-Bake Example: tmle3 for ATE</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#load-the-data"><span class="header-section-number">7.5.1</span> Load the Data</a></li>
+<li><a class="nav-link" href="#define-the-variable-roles"><span class="header-section-number">7.5.2</span> Define the variable roles</a></li>
+<li><a class="nav-link" href="#handle-missingness"><span class="header-section-number">7.5.3</span> Handle Missingness</a></li>
+<li><a class="nav-link" href="#create-a-spec-object"><span class="header-section-number">7.5.4</span> Create a “Spec” Object</a></li>
+<li><a class="nav-link" href="#define-the-learners"><span class="header-section-number">7.5.5</span> Define the learners</a></li>
+<li><a class="nav-link" href="#fit-the-tmle"><span class="header-section-number">7.5.6</span> Fit the TMLE</a></li>
+<li><a class="nav-link" href="#evaluate-the-estimates"><span class="header-section-number">7.5.7</span> Evaluate the Estimates</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#fitting-tmle3-with-multiple-parameters"><span class="header-section-number">7.6</span> Fitting tmle3 with multiple parameters</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#delta-method"><span class="header-section-number">7.6.1</span> Delta Method</a></li>
-<li><a class="nav-link" href="#fit"><span class="header-section-number">7.6.2</span> Fit</a></li>
+<a class="nav-link" href="#tmle3-components"><span class="header-section-number">7.6</span> tmle3 Components</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#tmle3_task"><span class="header-section-number">7.6.1</span> tmle3_task</a></li>
+<li><a class="nav-link" href="#initial-likelihood"><span class="header-section-number">7.6.2</span> Initial Likelihood</a></li>
+<li><a class="nav-link" href="#targeted-likelihood-updater"><span class="header-section-number">7.6.3</span> Targeted Likelihood (updater)</a></li>
+<li><a class="nav-link" href="#parameter-mapping"><span class="header-section-number">7.6.4</span> Parameter Mapping</a></li>
+<li><a class="nav-link" href="#putting-it-all-together"><span class="header-section-number">7.6.5</span> Putting it all together</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#exercises-1"><span class="header-section-number">7.7</span> Exercises</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#tmle3-ex1"><span class="header-section-number">7.7.1</span> Estimation of the ATE with tmle3</a></li>
-<li><a class="nav-link" href="#tmle3-ex2"><span class="header-section-number">7.7.2</span> Estimation of Strata-Specific ATEs with tmle3</a></li>
+<a class="nav-link" href="#fitting-tmle3-with-multiple-parameters"><span class="header-section-number">7.7</span> Fitting tmle3 with multiple parameters</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#delta-method"><span class="header-section-number">7.7.1</span> Delta Method</a></li>
+<li><a class="nav-link" href="#fit"><span class="header-section-number">7.7.2</span> Fit</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#summary"><span class="header-section-number">7.8</span> Summary</a></li>
+<li>
+<a class="nav-link" href="#exercises-1"><span class="header-section-number">7.8</span> Exercises</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#tmle3-ex1"><span class="header-section-number">7.8.1</span> Estimation of the ATE with tmle3</a></li>
+<li><a class="nav-link" href="#tmle3-ex2"><span class="header-section-number">7.8.2</span> Estimation of Strata-Specific ATEs with tmle3</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#summary"><span class="header-section-number">7.9</span> Summary</a></li>
 </ul>
 
       <div class="book-extra">
@@ -739,7 +761,7 @@ parameters such as optimal treatments and shift interventions.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 11, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 12, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
