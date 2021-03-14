@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-03-12
+Updated: 2021-03-14
 
 ## Learning Objectives
 
@@ -1069,11 +1069,6 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 # fit the TML estimator
 fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
 fit
-#> A tmle3_Fit that took 1 step(s)
-#>    type         param init_est tmle_est       se    lower    upper
-#> 1:  TSM E[Y_{A=NULL}] -0.55674 -0.47855 0.045161 -0.56707 -0.39004
-#>    psi_transformed lower_transformed upper_transformed
-#> 1:        -0.47855          -0.56707          -0.39004
 ```
 
 ---

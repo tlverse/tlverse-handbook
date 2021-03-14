@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-03-12
+Updated: 2021-03-14
 
 ## Learning Objectives
 
@@ -432,9 +432,9 @@ tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 #> A tmle3_Fit that took 1 step(s)
 #>    type         param init_est tmle_est       se   lower   upper
-#> 1:  TSM E[Y_{A=NULL}]  0.76199  0.76263 0.021966 0.71958 0.80568
+#> 1:  TSM E[Y_{A=NULL}]  0.76199   0.7626 0.021965 0.71955 0.80565
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.76263           0.71958           0.80568
+#> 1:          0.7626           0.71955           0.80565
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -592,15 +592,15 @@ tmle_fit
 #>          type          param init_est tmle_est        se   lower   upper
 #> 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
 #> 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
-#> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80029 0.0183487 0.76433 0.83625
-#> 4: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
-#> 5: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
+#> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80031 0.0183466 0.76435 0.83627
+#> 4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
+#> 5: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
 #>    psi_transformed lower_transformed upper_transformed
 #> 1:         0.56184           0.51749           0.60618
 #> 2:         0.69748           0.65240           0.74255
-#> 3:         0.80029           0.76433           0.83625
-#> 4:         0.68653           0.64760           0.72547
-#> 5:         0.11923           0.10137           0.13709
+#> 3:         0.80031           0.76435           0.83627
+#> 4:         0.68654           0.64761           0.72548
+#> 5:         0.11924           0.10138           0.13709
 ```
 
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
@@ -672,11 +672,11 @@ $\text{EIF}_{\beta}(O)$.
 ```r
 tmle_fit$summary[4:5, ]
 #>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69063  0.68653 0.0198658 0.64760 0.72547
-#> 2: MSM_linear     MSM(slope)  0.13367  0.11923 0.0091122 0.10137 0.13709
+#> 1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
+#> 2: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.68653           0.64760           0.72547
-#> 2:         0.11923           0.10137           0.13709
+#> 1:         0.68654           0.64761           0.72548
+#> 2:         0.11924           0.10138           0.13709
 ```
 
 #### Directly Targeting the MSM Parameter $\beta$
@@ -713,17 +713,17 @@ tmle_msm_spec <- tmle_vimshift_msm(
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
-#> Iter: 2 fn: 533.0247	 Pars:  0.42823 0.44441 0.12736
+#> Iter: 1 fn: 536.5917	 Pars:  0.33422 0.55591 0.10986
+#> Iter: 2 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
 #> solnp--> Completed in 2 iterations
 tmle_msm_fit
 #> A tmle3_Fit that took 1 step(s)
-#>          type          param init_est tmle_est       se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69052  0.69085 0.020071 0.65151 0.73019
-#> 2: MSM_linear     MSM(slope)  0.13300  0.13291 0.008957 0.11536 0.15047
+#>          type          param init_est tmle_est        se   lower   upper
+#> 1: MSM_linear MSM(intercept)  0.69029  0.69005 0.0200303 0.65079 0.72931
+#> 2: MSM_linear     MSM(slope)  0.13238  0.13222 0.0091809 0.11423 0.15021
 #>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.69085           0.65151           0.73019
-#> 2:         0.13291           0.11536           0.15047
+#> 1:         0.69005           0.65079           0.72931
+#> 2:         0.13222           0.11423           0.15021
 ```
 
 ### Example with the WASH Benefits Data

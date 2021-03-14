@@ -118,8 +118,8 @@ that the ensemble machine learning predictions fit the data quite well:</p>
 <p>The solid lines indicate the <code>sl3</code> estimate of the regression function, with the
 dotted lines indicating the <code>tmle3</code> updates <a href="tmle3.html#tmle-updates">(described below)</a>.</p>
 <p>While substitution estimators are intuitive, naively using this approach with a
-Super Learner estimate of <span class="math inline">\(\bar{Q}_0(A,W)\)</span> has several limitations. First, Super
-Learner is selecting learner weights to minimize risk across the entire
+Super Learner estimate of <span class="math inline">\(\overline{Q}_0(A,W)\)</span> has several limitations. First,
+Super Learner is selecting learner weights to minimize risk across the entire
 regression function, instead of “targeting” the ATE parameter we hope to
 estimate, leading to biased estimation. That is, <code>sl3</code> is trying to do well on
 the full regression curve on the left, instead of focusing on the small ticks on
@@ -153,13 +153,12 @@ Wald-style confidence intervals.</p>
 target parameters) – below, we give an example of the algorithm for TML
 estimation of the ATE. <span class="math inline">\(\overline{Q}^{\star}_n(A,W)\)</span> is the TMLE-augmented
 estimate <span class="math inline">\(f(\overline{Q}^{\star}_n(A,W)) = f(\overline{Q}_n(A,W)) + \epsilon \cdot H_n(A,W)\)</span>, where <span class="math inline">\(f(\cdot)\)</span> is the appropriate link function (e.g.,
-<span class="math inline">\(\text{logit}(x) = \log\left(\frac{x}{1 - x}\right)\)</span>), and an estimate
-<span class="math inline">\(\epsilon_n\)</span> of the coefficient <span class="math inline">\(\epsilon\)</span> of the “clever covariate” <span class="math inline">\(H_n(A,W)\)</span>
-is computed. The form of the covariate <span class="math inline">\(H_n(A,W)\)</span> differs across target
-parameters; in this case of the ATE, it is <span class="math inline">\(H_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A, W)}\)</span>, with <span class="math inline">\(g_n(A,W) = \mathbb{P}(A=1 \mid W)\)</span> being the
-estimated propensity score, so the estimator depends both on the initial fit (by
-<code>sl3</code>) of the outcome regression (<span class="math inline">\(\overline{Q}_n\)</span>) and of the propensity score
-(<span class="math inline">\(g_n\)</span>).</p>
+<span class="math inline">\(\text{logit}(x) = \log(x / (1 - x))\)</span>), and an estimate <span class="math inline">\(\epsilon_n\)</span> of the
+coefficient <span class="math inline">\(\epsilon\)</span> of the “clever covariate” <span class="math inline">\(H_n(A,W)\)</span> is computed. The
+form of the covariate <span class="math inline">\(H_n(A,W)\)</span> differs across target parameters; in this case
+of the ATE, it is <span class="math inline">\(H_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A, W)}\)</span>, with <span class="math inline">\(g_n(A,W) = \mathbb{P}(A=1 \mid W)\)</span> being the estimated propensity
+score, so the estimator depends both on the initial fit (by <code>sl3</code>) of the
+outcome regression (<span class="math inline">\(\overline{Q}_n\)</span>) and of the propensity score (<span class="math inline">\(g_n\)</span>).</p>
 <p>There are several robust augmentations that are used across the <code>tlverse</code>,
 including the use of an additional layer of cross-validation to avoid
 over-fitting bias (i.e., CV-TMLE) as well as approaches for more consistently
@@ -176,7 +175,7 @@ inference is very convenient. Each TML estimator has a corresponding
 asymptotic distribution of the estimator. By using the estimated EIF, Wald-style
 inference (asymptotically correct confidence intervals) can be constructed
 simply by plugging into the form of the EIF our initial estimates
-<span class="math inline">\(\overline{Q}^{\star}_n\)</span> and <span class="math inline">\(g_n\)</span>, then computing the sample standard error.</p>
+<span class="math inline">\(\overline{Q}_n\)</span> and <span class="math inline">\(g_n\)</span>, then computing the sample standard error.</p>
 <p>The following sections describe both a simple and more detailed way of
 specifying and estimating a TMLE in the <code>tlverse</code>. In designing <code>tmle3</code>, we
 sought to replicate as closely as possible the very general estimation framework
@@ -261,10 +260,10 @@ classical inverse probability weighted estimators.</li>
 <span class="header-section-number">7.5.4</span> Create a “Spec” Object<a class="anchor" aria-label="anchor" href="#create-a-spec-object"><i class="fas fa-link"></i></a>
 </h3>
 <p><code>tmle3</code> is general, and allows most components of the TMLE procedure to be
-specified in a modular way. However, most end-users will not be interested in
+specified in a modular way. However, most users will not be interested in
 manually specifying all of these components. Therefore, <code>tmle3</code> implements a
 <code>tmle3_Spec</code> object that bundles a set of components into a <em>specification</em>
-(“Spec”) that, with minimal additional detail, can be run by an end-user.</p>
+(“Spec”) that, with minimal additional detail, can be run to fit a TMLE.</p>
 <p>We’ll start with using one of the specs, and then work our way down into the
 internals of <code>tmle3</code>.</p>
 <div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
@@ -313,10 +312,10 @@ we plan to include reasonable defaults learners.</p>
 <code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">ate_spec</span>, <span class="va">washb_data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type                                    param   init_est tmle_est      se</span>
-<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0035831 0.010337 0.05064</span>
+<span class="co">#&gt;    type                                    param  init_est tmle_est       se</span>
+<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.005231  0.00812 0.050679</span>
 <span class="co">#&gt;        lower   upper psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1: -0.088915 0.10959        0.010337         -0.088915           0.10959</span></code></pre></div>
+<span class="co">#&gt; 1: -0.091208 0.10745         0.00812         -0.091208           0.10745</span></code></pre></div>
 </div>
 <div id="evaluate-the-estimates" class="section level3">
 <h3>
@@ -327,7 +326,7 @@ can extra results from the summary by indexing into it:</p>
 <div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">tmle_fit</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">psi_transformed</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">estimates</span><span class="op">)</span>
-<span class="co">#&gt; [1] 0.010337</span></code></pre></div>
+<span class="co">#&gt; [1] 0.00812</span></code></pre></div>
 </div>
 </div>
 <div id="tmle3-components" class="section level2">
@@ -387,17 +386,17 @@ estimates for each observation:</p>
 <div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">initial_likelihood</span><span class="op">$</span><span class="fu">get_likelihoods</span><span class="op">(</span><span class="va">tmle_task</span><span class="op">)</span>
 <span class="co">#&gt;                W       A        Y</span>
-<span class="co">#&gt;    1: 0.00021299 0.35119 -0.35564</span>
-<span class="co">#&gt;    2: 0.00021299 0.36392 -0.92990</span>
-<span class="co">#&gt;    3: 0.00021299 0.34124 -0.80184</span>
-<span class="co">#&gt;    4: 0.00021299 0.34758 -0.91770</span>
-<span class="co">#&gt;    5: 0.00021299 0.34353 -0.61402</span>
+<span class="co">#&gt;    1: 0.00021299 0.34925 -0.35834</span>
+<span class="co">#&gt;    2: 0.00021299 0.36117 -0.93261</span>
+<span class="co">#&gt;    3: 0.00021299 0.34740 -0.80873</span>
+<span class="co">#&gt;    4: 0.00021299 0.34248 -0.94020</span>
+<span class="co">#&gt;    5: 0.00021299 0.34134 -0.57866</span>
 <span class="co">#&gt;   ---                            </span>
-<span class="co">#&gt; 4691: 0.00021299 0.23773 -0.57275</span>
-<span class="co">#&gt; 4692: 0.00021299 0.22197 -0.23114</span>
-<span class="co">#&gt; 4693: 0.00021299 0.22567 -0.80089</span>
-<span class="co">#&gt; 4694: 0.00021299 0.28334 -0.89036</span>
-<span class="co">#&gt; 4695: 0.00021299 0.19391 -1.06870</span></code></pre></div>
+<span class="co">#&gt; 4691: 0.00021299 0.23375 -0.58997</span>
+<span class="co">#&gt; 4692: 0.00021299 0.23366 -0.22769</span>
+<span class="co">#&gt; 4693: 0.00021299 0.22660 -0.74235</span>
+<span class="co">#&gt; 4694: 0.00021299 0.28944 -0.91796</span>
+<span class="co">#&gt; 4695: 0.00021299 0.19533 -1.03878</span></code></pre></div>
 <!-- TODO: make helper to get learners out of fit objects -->
 </div>
 <div id="targeted-likelihood-updater" class="section level3">
@@ -447,9 +446,9 @@ manually fit a <code>tmle3</code>:</p>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit_manual</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
 <span class="co">#&gt;    type                                    param   init_est tmle_est       se</span>
-<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0050134 0.013088 0.050723</span>
-<span class="co">#&gt;        lower  upper psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1: -0.086327 0.1125        0.013088         -0.086327            0.1125</span></code></pre></div>
+<span class="co">#&gt; 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0045451  0.01174 0.050807</span>
+<span class="co">#&gt;       lower   upper psi_transformed lower_transformed upper_transformed</span>
+<span class="co">#&gt; 1: -0.08784 0.11132         0.01174          -0.08784           0.11132</span></code></pre></div>
 <p>The result is equivalent to fitting using the <code>tmle3</code> function as above.</p>
 </div>
 </div>
@@ -523,33 +522,33 @@ above defined ATE parameter</p>
 
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit_multiparam</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type                                       param   init_est tmle_est</span>
-<span class="co">#&gt; 1:  TSM                            E[Y_{A=Control}] -0.5961253 -0.62053</span>
-<span class="co">#&gt; 2:  TSM                        E[Y_{A=Handwashing}] -0.6168261 -0.65898</span>
-<span class="co">#&gt; 3:  TSM                          E[Y_{A=Nutrition}] -0.6109573 -0.60538</span>
-<span class="co">#&gt; 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.6011387 -0.60735</span>
-<span class="co">#&gt; 5:  TSM                         E[Y_{A=Sanitation}] -0.5877457 -0.58053</span>
-<span class="co">#&gt; 6:  TSM                                E[Y_{A=WSH}] -0.5195720 -0.44788</span>
-<span class="co">#&gt; 7:  TSM                              E[Y_{A=Water}] -0.5652293 -0.53685</span>
-<span class="co">#&gt; 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}] -0.0050134  0.01318</span>
+<span class="co">#&gt;    type                                       param   init_est  tmle_est</span>
+<span class="co">#&gt; 1:  TSM                            E[Y_{A=Control}] -0.5959678 -0.620830</span>
+<span class="co">#&gt; 2:  TSM                        E[Y_{A=Handwashing}] -0.6188184 -0.660230</span>
+<span class="co">#&gt; 3:  TSM                          E[Y_{A=Nutrition}] -0.6111402 -0.606586</span>
+<span class="co">#&gt; 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.6005128 -0.608949</span>
+<span class="co">#&gt; 5:  TSM                         E[Y_{A=Sanitation}] -0.5857464 -0.578472</span>
+<span class="co">#&gt; 6:  TSM                                E[Y_{A=WSH}] -0.5205610 -0.448252</span>
+<span class="co">#&gt; 7:  TSM                              E[Y_{A=Water}] -0.5657364 -0.537709</span>
+<span class="co">#&gt; 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}] -0.0045451  0.011881</span>
 <span class="co">#&gt;          se     lower    upper psi_transformed lower_transformed</span>
-<span class="co">#&gt; 1: 0.029842 -0.679020 -0.56204        -0.62053         -0.679020</span>
-<span class="co">#&gt; 2: 0.041960 -0.741218 -0.57674        -0.65898         -0.741218</span>
-<span class="co">#&gt; 3: 0.042067 -0.687834 -0.52293        -0.60538         -0.687834</span>
-<span class="co">#&gt; 4: 0.041236 -0.688173 -0.52653        -0.60735         -0.688173</span>
-<span class="co">#&gt; 5: 0.042322 -0.663485 -0.49758        -0.58053         -0.663485</span>
-<span class="co">#&gt; 6: 0.045677 -0.537408 -0.35836        -0.44788         -0.537408</span>
-<span class="co">#&gt; 7: 0.039059 -0.613405 -0.46030        -0.53685         -0.613405</span>
-<span class="co">#&gt; 8: 0.050718 -0.086226  0.11259         0.01318         -0.086226</span>
+<span class="co">#&gt; 1: 0.029901 -0.679435 -0.56223       -0.620830         -0.679435</span>
+<span class="co">#&gt; 2: 0.041719 -0.741998 -0.57846       -0.660230         -0.741998</span>
+<span class="co">#&gt; 3: 0.042047 -0.688996 -0.52418       -0.606586         -0.688996</span>
+<span class="co">#&gt; 4: 0.041285 -0.689867 -0.52803       -0.608949         -0.689867</span>
+<span class="co">#&gt; 5: 0.042396 -0.661566 -0.49538       -0.578472         -0.661566</span>
+<span class="co">#&gt; 6: 0.045506 -0.537442 -0.35906       -0.448252         -0.537442</span>
+<span class="co">#&gt; 7: 0.039253 -0.614644 -0.46077       -0.537709         -0.614644</span>
+<span class="co">#&gt; 8: 0.050801 -0.087688  0.11145        0.011881         -0.087688</span>
 <span class="co">#&gt;    upper_transformed</span>
-<span class="co">#&gt; 1:          -0.56204</span>
-<span class="co">#&gt; 2:          -0.57674</span>
-<span class="co">#&gt; 3:          -0.52293</span>
-<span class="co">#&gt; 4:          -0.52653</span>
-<span class="co">#&gt; 5:          -0.49758</span>
-<span class="co">#&gt; 6:          -0.35836</span>
-<span class="co">#&gt; 7:          -0.46030</span>
-<span class="co">#&gt; 8:           0.11259</span></code></pre></div>
+<span class="co">#&gt; 1:          -0.56223</span>
+<span class="co">#&gt; 2:          -0.57846</span>
+<span class="co">#&gt; 3:          -0.52418</span>
+<span class="co">#&gt; 4:          -0.52803</span>
+<span class="co">#&gt; 5:          -0.49538</span>
+<span class="co">#&gt; 6:          -0.35906</span>
+<span class="co">#&gt; 7:          -0.46077</span>
+<span class="co">#&gt; 8:           0.11145</span></code></pre></div>
 </div>
 </div>
 <div id="exercises-1" class="section level2">
@@ -761,7 +760,7 @@ optimal treatments and stochastic shift interventions.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 12, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 14, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
