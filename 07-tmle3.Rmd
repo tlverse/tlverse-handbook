@@ -69,8 +69,8 @@ The solid lines indicate the `sl3` estimate of the regression function, with the
 dotted lines indicating the `tmle3` updates [(described below)](#tmle-updates).
 
 While substitution estimators are intuitive, naively using this approach with a
-Super Learner estimate of $\bar{Q}_0(A,W)$ has several limitations. First, Super
-Learner is selecting learner weights to minimize risk across the entire
+Super Learner estimate of $\overline{Q}_0(A,W)$ has several limitations. First,
+Super Learner is selecting learner weights to minimize risk across the entire
 regression function, instead of "targeting" the ATE parameter we hope to
 estimate, leading to biased estimation. That is, `sl3` is trying to do well on
 the full regression curve on the left, instead of focusing on the small ticks on
@@ -107,14 +107,13 @@ target parameters) -- below, we give an example of the algorithm for TML
 estimation of the ATE.  $\overline{Q}^{\star}_n(A,W)$ is the TMLE-augmented
 estimate $f(\overline{Q}^{\star}_n(A,W)) = f(\overline{Q}_n(A,W)) + \epsilon
 \cdot H_n(A,W)$, where $f(\cdot)$ is the appropriate link function (e.g.,
-$\text{logit}(x) = \log\left(\frac{x}{1 - x}\right)$), and an estimate
-$\epsilon_n$ of the coefficient $\epsilon$ of the "clever covariate" $H_n(A,W)$
-is computed. The form of the covariate $H_n(A,W)$ differs across target
-parameters; in this case of the ATE, it is $H_n(A,W) = \frac{A}{g_n(A \mid W)} -
-\frac{1-A}{1-g_n(A, W)}$, with $g_n(A,W) = \mathbb{P}(A=1 \mid W)$ being the
-estimated propensity score, so the estimator depends both on the initial fit (by
-`sl3`) of the outcome regression ($\overline{Q}_n$) and of the propensity score
-($g_n$).
+$\text{logit}(x) = \log(x / (1 - x))$), and an estimate $\epsilon_n$ of the
+coefficient $\epsilon$ of the "clever covariate" $H_n(A,W)$ is computed. The
+form of the covariate $H_n(A,W)$ differs across target parameters; in this case
+of the ATE, it is $H_n(A,W) = \frac{A}{g_n(A \mid W)} - \frac{1-A}{1-g_n(A,
+W)}$, with $g_n(A,W) = \mathbb{P}(A=1 \mid W)$ being the estimated propensity
+score, so the estimator depends both on the initial fit (by `sl3`) of the
+outcome regression ($\overline{Q}_n$) and of the propensity score ($g_n$).
 
 There are several robust augmentations that are used across the `tlverse`,
 including the use of an additional layer of cross-validation to avoid
@@ -130,7 +129,7 @@ inference is very convenient. Each TML estimator has a corresponding
 asymptotic distribution of the estimator. By using the estimated EIF, Wald-style
 inference (asymptotically correct confidence intervals) can be constructed
 simply by plugging into the form of the EIF our initial estimates
-$\overline{Q}^{\star}_n$ and $g_n$, then computing the sample standard error.
+$\overline{Q}_n$ and $g_n$, then computing the sample standard error.
 
 The following sections describe both a simple and more detailed way of
 specifying and estimating a TMLE in the `tlverse`. In designing `tmle3`, we
@@ -212,10 +211,10 @@ node_list <- processed$node_list
 ### Create a "Spec" Object
 
 `tmle3` is general, and allows most components of the TMLE procedure to be
-specified in a modular way. However, most end-users will not be interested in
+specified in a modular way. However, most users will not be interested in
 manually specifying all of these components. Therefore, `tmle3` implements a
 `tmle3_Spec` object that bundles a set of components into a _specification_
-("Spec") that, with minimal additional detail, can be run by an end-user.
+("Spec") that, with minimal additional detail, can be run to fit a TMLE.
 
 We'll start with using one of the specs, and then work our way down into the
 internals of `tmle3`.
