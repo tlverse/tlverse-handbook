@@ -60,3 +60,4 @@ if (knitr::is_latex_output()) {
 } else {
   skim(nhefs_data)
 }
+

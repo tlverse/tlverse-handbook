@@ -169,3 +169,4 @@ learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
 ## ----fit_tmle_wrapper_washb_shift, message=FALSE, warning=FALSE, eval=FALSE----
 ## washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
 ## washb_tmle_fit
+

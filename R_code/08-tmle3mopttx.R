@@ -297,14 +297,15 @@ b_learner <- create_mv_learners(learners = learners)
 learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
 
 
-## ----spec_init_WASH-----------------------------------------------------------
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("momedu", "floor", "asset_refrig"), type = "blip2",
-  learners = learner_list, maximize = TRUE, complex = TRUE,
-  realistic = FALSE
-)
+## ----spec_init_WASH, eval=FALSE-----------------------------------------------
+## # initialize a tmle specification
+## tmle_spec <- tmle3_mopttx_blip_revere(
+##   V = c("momedu", "floor", "asset_refrig"), type = "blip2",
+##   learners = learner_list, maximize = TRUE, complex = TRUE,
+##   realistic = FALSE
+## )
+## 
+## # fit the TML estimator
+## fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
+## fit
 
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
-fit
