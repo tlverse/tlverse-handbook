@@ -112,25 +112,32 @@ short of a window. To fix this, you need to tell R how to use GitHub as your
 user (you'll need a GitHub user account). Follow these two steps:
 
 1. Type `usethis::browse_github_pat()` in your R console, which will direct
-   you to GitHub's page to create a New Personal Access Token.
-2. Create a Personal Access Token simply by clicking "Generate token" at the
-   bottom of the page.
-3. Copy your Personal Access Token, a long string of lowercase letters and
-   numbers.
+   you to GitHub's page to create a New Personal Access Token (PAT).
+2. Create a PAT simply by clicking "Generate token" at the bottom of the page.
+3. Copy your PAT, a long string of lowercase letters and numbers.
 4. Type `usethis::edit_r_environ()` in your R console, which will open your
-   `.Renviron` file in the source window of RStudio. If you are not able to
-   access your `.Renviron` file with this command, then try inputting
-   `Sys.setenv(GITHUB_PAT = )` with your Personal Access Token inserted as a
-   string after the equals symbol; and if this does not error, then skip to
-   step 8.
-5. In your `.Renviron` file, type `GITHUB_PAT=` and then paste your Personal
-   Access Token after the equals symbol with no space.
+   `.Renviron` file in the source window of RStudio. 
+   
+    a. If your `.Renviron` file does not pop-up after calling 
+       `usethis::edit_r_environ()`; then try inputting 
+       `Sys.setenv(GITHUB_PAT = "yourPAT")`, replacing your PAT with inside the 
+       quotes. If this does not error, then skip to step 8.
+       
+5. In your `.Renviron` file, type `GITHUB_PAT=` and then paste your PAT after 
+   the equals symbol with no space.
 6. In your `.Renviron` file, press the enter key to ensure that your `.Renviron`
-   ends with a newline.
-7. Save your `.Renviron` file.
-8. Restart R for changes to take effect. You can restart R via the drop-down
-   menu on the "Session" tab. The "Session" tab is at the top of the RStudio
-   interface.
+   ends with a new line.
+7. Save your `.Renviron` file. The example below shows how this syntax should 
+   look.
+   
 
+```r
+GITHUB_PAT=yourPAT
+
+```
+8. Restart R. You can restart R via the drop-down menu on RStudio's "Session" 
+   tab, which is located at the top of the RStudio interface. You have to 
+   restart R for the changes to take effect!
+   
 After following these steps, you should be able to successfully install the
 package which threw the error above.

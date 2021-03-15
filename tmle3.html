@@ -196,7 +196,7 @@ introduced earlier and estimating an average treatment effect.</p>
 <span class="header-section-number">7.5.1</span> Load the Data<a class="anchor" aria-label="anchor" href="#load-the-data"><i class="fas fa-link"></i></a>
 </h3>
 <p>We’ll use the same WASH Benefits data as the earlier chapters:</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3">tmle3</a></span><span class="op">)</span>
@@ -218,7 +218,7 @@ introduced earlier and estimating an average treatment effect.</p>
 correspond to each of these roles. We use a list of character vectors to tell
 it. We call this a “Node List” as it corresponds to the nodes in a Directed
 Acyclic Graph (DAG), a way of displaying causal relationships between variables.</p>
-<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">node_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
     <span class="st">"month"</span>, <span class="st">"aged"</span>, <span class="st">"sex"</span>, <span class="st">"momage"</span>, <span class="st">"momedu"</span>,
@@ -250,7 +250,7 @@ intervention to remove missingness and is analogous to the procedure used with
 classical inverse probability weighted estimators.</li>
 </ul>
 <p>These steps are implemented in the <code>process_missing</code> function in <code>tmle3</code>:</p>
-<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">processed</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/process_missing.html">process_missing</a></span><span class="op">(</span><span class="va">washb_data</span>, <span class="va">node_list</span><span class="op">)</span>
 <span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="va">processed</span><span class="op">$</span><span class="va">data</span>
 <span class="va">node_list</span> <span class="op">&lt;-</span> <span class="va">processed</span><span class="op">$</span><span class="va">node_list</span></code></pre></div>
@@ -266,7 +266,7 @@ manually specifying all of these components. Therefore, <code>tmle3</code> imple
 (“Spec”) that, with minimal additional detail, can be run to fit a TMLE.</p>
 <p>We’ll start with using one of the specs, and then work our way down into the
 internals of <code>tmle3</code>.</p>
-<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ate_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle_ATE.html">tmle_ATE</a></span><span class="op">(</span>
   treatment_level <span class="op">=</span> <span class="st">"Nutrition + WSH"</span>,
   control_level <span class="op">=</span> <span class="st">"Control"</span>
@@ -280,7 +280,7 @@ internals of <code>tmle3</code>.</p>
 to estimate the relevant factors of the likelihood: Q and g.</p>
 <p>This takes the form of a list of <code>sl3</code> learners, one for each likelihood factor
 to be estimated with <code>sl3</code>:</p>
-<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># choose base learners</span>
 <span class="va">lrnr_mean</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_mean</span><span class="op">)</span>
 <span class="va">lrnr_rf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_ranger</span><span class="op">)</span>
@@ -308,7 +308,7 @@ we plan to include reasonable defaults learners.</p>
 <span class="header-section-number">7.5.6</span> Fit the TMLE<a class="anchor" aria-label="anchor" href="#fit-the-tmle"><i class="fas fa-link"></i></a>
 </h3>
 <p>We now have everything we need to fit the tmle using <code>tmle3</code>:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">ate_spec</span>, <span class="va">washb_data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_fit</span><span class="op">)</span>
 <span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
@@ -323,7 +323,7 @@ we plan to include reasonable defaults learners.</p>
 </h3>
 <p>We can see the summary results by printing the fit object. Alternatively, we
 can extra results from the summary by indexing into it:</p>
-<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">estimates</span> <span class="op">&lt;-</span> <span class="va">tmle_fit</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">psi_transformed</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">estimates</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0.00812</span></code></pre></div>
@@ -343,9 +343,9 @@ generate the objects necessary to define and fit a TMLE.</p>
 <p>First is, a <code>tmle3_Task</code>, analogous to an <code>sl3_Task</code>, containing the data we’re
 fitting the TMLE to, as well as an NPSEM generated from the <code>node_list</code>
 defined above, describing the variables and their relationships.</p>
-<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmle_task</span> <span class="op">&lt;-</span> <span class="va">ate_spec</span><span class="op">$</span><span class="fu">make_tmle_task</span><span class="op">(</span><span class="va">washb_data</span>, <span class="va">node_list</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tmle_task</span> <span class="op">&lt;-</span> <span class="va">ate_spec</span><span class="op">$</span><span class="fu">make_tmle_task</span><span class="op">(</span><span class="va">washb_data</span>, <span class="va">node_list</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_task</span><span class="op">$</span><span class="va">npsem</span>
 <span class="co">#&gt; $W</span>
 <span class="co">#&gt; tmle3_Node: W</span>
@@ -368,7 +368,7 @@ defined above, describing the variables and their relationships.</p>
 </h3>
 <p>Next, is an object representing the likelihood, factorized according to the
 NPSEM described above:</p>
-<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">initial_likelihood</span> <span class="op">&lt;-</span> <span class="va">ate_spec</span><span class="op">$</span><span class="fu">make_initial_likelihood</span><span class="op">(</span>
   <span class="va">tmle_task</span>,
   <span class="va">learner_list</span>
@@ -383,7 +383,7 @@ distributions of <span class="math inline">\(A\)</span> and <span class="math in
 the <code>learner_list</code>) above.</p>
 <p>We can use this in tandem with the <code>tmle_task</code> object to obtain likelihood
 estimates for each observation:</p>
-<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">initial_likelihood</span><span class="op">$</span><span class="fu">get_likelihoods</span><span class="op">(</span><span class="va">tmle_task</span><span class="op">)</span>
 <span class="co">#&gt;                W       A        Y</span>
 <span class="co">#&gt;    1: 0.00021299 0.34925 -0.35834</span>
@@ -407,13 +407,13 @@ estimates for each observation:</p>
 of likelihood that is able to be updated using an <code>tmle3_Update</code> object. This
 object defines the update strategy (e.g., submodel, loss function, CV-TMLE or
 not).</p>
-<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">targeted_likelihood</span> <span class="op">&lt;-</span> <span class="va"><a href="http://tlverse.org/tmle3/reference/Targeted_Likelihood.html">Targeted_Likelihood</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">initial_likelihood</span><span class="op">)</span></code></pre></div>
 <p>When constructing the targeted likelihood, you can specify different update
 options. See the documentation for <code>tmle3_Update</code> for details of the different
 options. For example, you can disable CV-TMLE (the default in <code>tmle3</code>) as
 follows:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">targeted_likelihood_no_cv</span> <span class="op">&lt;-</span>
   <span class="va"><a href="http://tlverse.org/tmle3/reference/Targeted_Likelihood.html">Targeted_Likelihood</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">initial_likelihood</span>,
     updater <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>cvtmle <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
@@ -426,7 +426,7 @@ follows:</p>
 <p>Finally, we need to define the parameters of interest. Here, the spec defines a
 single parameter, the ATE. In the next section, we’ll see how to add additional
 parameters.</p>
-<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_params</span> <span class="op">&lt;-</span> <span class="va">ate_spec</span><span class="op">$</span><span class="fu">make_params</span><span class="op">(</span><span class="va">tmle_task</span>, <span class="va">targeted_likelihood</span><span class="op">)</span>
 <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/print.html">print</a></span><span class="op">(</span><span class="va">tmle_params</span><span class="op">)</span>
 <span class="co">#&gt; [[1]]</span>
@@ -438,7 +438,7 @@ parameters.</p>
 </h3>
 <p>Having used the spec to manually generate all these components, we can now
 manually fit a <code>tmle3</code>:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_fit_manual</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3_Fit.html">fit_tmle3</a></span><span class="op">(</span>
   <span class="va">tmle_task</span>, <span class="va">targeted_likelihood</span>, <span class="va">tmle_params</span>,
   <span class="va">targeted_likelihood</span><span class="op">$</span><span class="va">updater</span>
@@ -459,7 +459,7 @@ manually fit a <code>tmle3</code>:</p>
 <p>Above, we fit a <code>tmle3</code> with just one parameter. <code>tmle3</code> also supports fitting
 multiple parameters simultaneously. To illustrate this, we’ll use the
 <code>tmle_TSM_all</code> spec:</p>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tsm_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle_TSM_all.html">tmle_TSM_all</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">targeted_likelihood</span> <span class="op">&lt;-</span> <span class="va"><a href="http://tlverse.org/tmle3/reference/Targeted_Likelihood.html">Targeted_Likelihood</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="va">initial_likelihood</span><span class="op">)</span>
 <span class="va">all_tsm_params</span> <span class="op">&lt;-</span> <span class="va">tsm_spec</span><span class="op">$</span><span class="fu">make_params</span><span class="op">(</span><span class="va">tmle_task</span>, <span class="va">targeted_likelihood</span><span class="op">)</span>
@@ -495,7 +495,7 @@ likelihood we fit above, saving us a super learner step.</p>
 <p>We can also define parameters based on Delta Method Transformations of other
 parameters. For instance, we can estimate a ATE using the delta method and two
 of the above TSM parameters:</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ate_param</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/define_param.html">define_param</a></span><span class="op">(</span>
   <span class="va">Param_delta</span>, <span class="va">targeted_likelihood</span>,
   <span class="va">delta_param_ATE</span>,
@@ -512,7 +512,7 @@ Risks, and Population Attributable Risks</p>
 </h3>
 <p>We can now fit a TMLE simultaneously for all TSM parameters, as well as the
 above defined ATE parameter</p>
-<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">all_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">all_tsm_params</span>, <span class="va">ate_param</span><span class="op">)</span>
 
 <span class="va">tmle_fit_multiparam</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3_Fit.html">fit_tmle3</a></span><span class="op">(</span>
@@ -565,7 +565,7 @@ simplify this example, we define a binary intervention variable, <code>parity01<
 an indicator of having one or more children before the current child and a
 binary outcome, <code>haz01</code> – an indicator of having an above average height for
 age.</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load the data set</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">cpp</span><span class="op">)</span>
 <span class="va">cpp</span> <span class="op">&lt;-</span> <span class="va">cpp</span> <span class="op">%&gt;%</span>
@@ -607,14 +607,17 @@ but also tailored to have robust finite sample performance.
 <li>Define the variable roles <span class="math inline">\((W,A,Y)\)</span> by creating a list of these nodes.
 Include the following baseline covariates in <span class="math inline">\(W\)</span>: <code>apgar1</code>, <code>apgar5</code>,
 <code>gagebrth</code>, <code>mage</code>, <code>meducyrs</code>, <code>sexn</code>. Both <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are specified
-above.</li>
+above. The missingness in the data (specifically, the missingness in the
+columns that are specified in the node list) will need to be taking care of.
+The <code>process_missing</code> function can be used to accomplish this, like the
+<code>washb_data</code> example above.</li>
 <li>Define a <code>tmle3_Spec</code> object for the ATE, <code><a href="http://tlverse.org/tmle3/reference/tmle_ATE.html">tmle_ATE()</a></code>.</li>
 <li>Using the same base learning libraries defined above, specify <code>sl3</code> base
 learners for estimation of <span class="math inline">\(\overline{Q}_0 = \mathbb{E}_0(Y \mid A,Y)\)</span> and
 <span class="math inline">\(g_0 = \mathbb{P}(A = 1 \mid W)\)</span>.</li>
 <li>Define the metalearner like below.</li>
 </ol>
-<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">metalearner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span>
   <span class="va">Lrnr_solnp</span>,
   loss_function <span class="op">=</span> <span class="va">loss_loglik_binomial</span>,
@@ -672,7 +675,7 @@ that the dose of asprin may have varied across geographical regions, and an
 average across all geographical regions may not be warranted. Calculate the
 strata specific ATEs according to geographical region (<code>REGION</code>).</li>
 </ol>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ist_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
     <span class="st">"https://raw.githubusercontent.com/tlverse/deming2019-workshop/"</span>,
@@ -760,7 +763,7 @@ optimal treatments and stochastic shift interventions.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 14, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 15, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

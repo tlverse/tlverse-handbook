@@ -582,7 +582,10 @@ but also tailored to have robust finite sample performance.
 1. Define the variable roles $(W,A,Y)$ by creating a list of these nodes.
    Include the following baseline covariates in $W$: `apgar1`, `apgar5`,
    `gagebrth`, `mage`, `meducyrs`, `sexn`. Both $A$ and $Y$ are specified
-   above.
+   above. The missingness in the data (specifically, the missingness in the 
+   columns that are specified in the node list) will need to be taking care of.
+   The `process_missing` function can be used to accomplish this, like the 
+   `washb_data` example above.
 2. Define a `tmle3_Spec` object for the ATE, `tmle_ATE()`.
 3. Using the same base learning libraries defined above, specify `sl3` base
    learners for estimation of $\overline{Q}_0 = \mathbb{E}_0(Y \mid A,Y)$ and
