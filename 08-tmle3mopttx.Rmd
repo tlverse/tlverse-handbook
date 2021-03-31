@@ -9,20 +9,24 @@ Updated: `r Sys.Date()`
 
 ## Learning Objectives
 
-1. Differentiate dynamic and optimal dynamic treatment regimes from static
+1. Differentiate dynamic and optimal dynamic treatment interventions from static
    interventions.
-2. Understand the benefits and challenges associated with using
-   optimal individualized treatment regimes in practice.
+2. Explain the benefits, and challenges, associated with using optimal
+   individualized treatment regimes in practice.
 3. Contrast the impact of implementing an optimal individualized treatment
-   in the population with static and dynamic regimes.
+   regime in the population with the impact of implementing static and dynamic
+   treatment regimes in the population.
 4. Estimate causal effects under optimal individualized treatment regimes with
    the `tmle3mopttx` `R` package.
-5. Contrast the population impact of implementing optimal individualized
-   treatment based on sub-optimal rules.
-6. Construct realistic optimal individualized treatments that respect real data
-   and subject-matter knowledge limitations on interventions.
-7. Understand and implement variable importance analysis defined in
-   terms of optimal individualized treatment interventions.
+5. Assess the mean under optimal individualized treatment with resource
+   constraints.
+6. Implement optimal individualized treatment rules based on sub-optimal
+   rules, or "simple" rules, and recognize the practical benefit of these rules.
+7. Construct "realistic" optimal individualized treatment regimes that respect
+   real data and subject-matter knowledge limitations on interventions by
+   only considering interventions that are supported by the data.
+8. Measure variable importance as defined in terms of the optimal individualized
+   treatment interventions.
 
 ## Introduction to Optimal Individualized Interventions
 
@@ -51,8 +55,8 @@ knitr::include_graphics(path = "img/image/DynamicA_Illustration.png")
 One opts to administer the intervention to individuals who will profit from it instead,
 instead of assigning treatment on a population level. But how do we know which
 intervention works for which patient? This aim motivates a different type of
-intervention, as opposed to the static exposures we might be used to. In
-particular, in this chapter we learn about dynamic or individualized
+intervention, as opposed to the static exposures we described in previous chapters. In
+particular, in this chapter we learn about dynamic or "individualized"
 interventions that tailor the treatment decision based on the collected
 covariates. Formally, dynamic treatments represent interventions that at each
 treatment-decision stage are allowed to respond to the currently available
@@ -65,7 +69,7 @@ mean outcome under an ITR is the value of the ITR [@neyman1990; @robins1986;
 outcome, where for each individual we have access to some set of measured
 covariates. This means, for example, that we can learn for which individual
 characteristics assigning treatment increases the probability of a beneficial
-outcome for each individual. An ITR with the maximal value is referred to as an
+outcome. An ITR with the maximal value is referred to as an
 optimal ITR or the __optimal individualized treatment__. Consequently, the value
 of an optimal ITR is termed the optimal value, or the __mean under the optimal
 individualized treatment__.
@@ -106,23 +110,32 @@ Note that we treat $W$ as vector-valued, representing all of our collected
 baseline covariates. Therefore, for a single random individual $i$, we have that
 their observed data is $O_i$: with corresponding baseline covariates $W_i$,
 treatment $A_i$, and final outcome $Y_i$. We say that $O \sim P_0$, or that all
-data was drawn from some probability distribution $P_0$. We emphasize that we
-make no assumptions about the distribution of $P_0$, so that $P_0 \in
-\mathcal{M}$, where $\mathcal{M}$ is the fully nonparametric model. As
-previously mentioned, this means that we make no assumptions on the relationship
-between $Y$ and $A$ and $W$, but might be able to say something about the
-relationship of $A$ and $W$, as is the case of a randomized trial. We can assume
-a nonparametric structural equation model (NPSEM) to describe generation of $O$,
-as described by @pearl2009causality. Specifically, we have that:
+data was drawn from some true probability distribution $P_0$. Let $\mathcal{M}$ 
+denote a statistical model, with $P_0 \in \mathcal{M}$. We emphasize that we
+make no assumptions about the distribution of $P_0$, hence $\mathcal{M}$ is a 
+fully nonparametric model. As previously mentioned, this means that we make no 
+assumptions on the relationship between variables, but might be able 
+to say something about the relationship of $A$ and $W$, as is the case of a randomized trial.
+As in previous chapters, we denote $P_n$ as the empirical distribution which 
+gives each observation weight $\frac{1}{n}$. 
+
+We use the nonparametric structural equation model (NPSEM) in order to
+define the process that gives rise to the observed (endogenous) and 
+not observed (exogenous) variables, as described by @pearl2009causality.
+In particular, we denote $U=(U_W,U_A,U_Y)$ as the exogenous random variables, 
+and $O=(W,A,Y)$ as endogenous variables we observe. The joint distribution of
+exogenous and endogenous random variables in $\mathcal{M}^F$ (defined by the NPSEM)
+is $P_{U,X}$. We can define the relationships between variables with the 
+following structural equations:
 \begin{align*}\label{eqn:npsem}
   W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
 \end{align*}
-where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified or partially
-specified functions. In particular, NPSEM parameterizes $P_0$ in terms of the
-distribution of random variables $O$ and $U$, where $U=(U_W,U_A,U_Y)$ are the
-exogenous random variables. We can define counterfactuals $Y_{d(W)}$ defined by
-a modified system in which the equation for $A$ is replaced by the rule $d(W)$,
-dependent on covariates $W$.
+where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified functions. Note that 
+in the case of a randomized trial, we can write the above NPSEM as
+\begin{align*}\label{eqn:npsem_rt}
+  W &= f_W(U_W) \\ A &= U_A \\ Y &= f_Y(A, W, U_Y),
+\end{align*}
+indicating no dependence of treatment on baseline covariates. 
 
 The likelihood of the data admits a factorization, implied by the time ordering
 of $O$. We denote the density of $O$ as $p_0$, corresponding to the distribution
@@ -136,12 +149,14 @@ respect to some dominating measure $\mu_Y$, $p_{A,0}$ is the conditional density
 of $A$ given $W$ with respect to dominating measure $\mu_A$, and $p_{W,0}$ is
 the density of $W$ with respect to dominating measure $\mu_W$. Consequently, we
 define $P_{Y,0}(Y|A,W)=Q_{Y,0}(Y|A,W)$, $P_{A,0}(A|W)=g_0(A|W)$ and
-$P_{W,0}(W)=Q_{W,0}(W)$ as the corresponding conditional distributions of $Y$,
-$A$ and $W$. For notational simplicity, we define $\bar{Q}_{Y,0}(A,W) \equiv
-E_0[Y|A,W]$ as the conditional expectation of $Y$ given $(A,W)$.
+$P_{W,0}(W)=Q_{W,0}(W)$ as the corresponding conditional distribution of $Y$ given 
+$(A,W)$, treatment mechanism $A$ given $W$, and distribution of baseline covariates. 
+For notational simplicity, we also define 
+$\bar{Q}_{Y,0}(A,W) \equiv E_0[Y|A,W]$ as the conditional expectation of $Y$ given $(A,W)$.
 
-In addition, we denote $V$ as $V \in W$, defining a subset of the baseline
-covariates the optimal individualized rule depends on. Note that $V$ could be
+Lastly, we define $V$ as a subset of the baseline
+covariates the optimal individualized rule depends on, where $V \in W$.
+Note that $V$ could be
 all of $W$, or an empty set, depending on the subject matter knowledge. In
 particular, a researcher might want to consider known effect modifiers available
 at the time of treatment decision as possible $V$ covariates. Defining $V$
@@ -151,61 +166,75 @@ under the sub-optimal rule.
 
 ## Defining the Causal Effect of an Optimal Individualized Intervention
 
-Consider dynamic treatment rules $V \rightarrow d(V) \in \{a_1, \cdots,
-a_{n_A} \} \times \{1\}$, for assigning treatment $A$ based on $V \in W$. As
-mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM (\ref{eqn:npsem}). Our modified system
-then takes the following form:
+Consider dynamic treatment rules $d$ in the set of all possible rules $\mathcal{D}$.  
+Then, $d$ is a function that takes as input $V$ and outputs a treatment decision, 
+$V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}$. We will use 
+dynamic treatment rules, and the corresponding treatment decision, to describe
+an intervention on the treatment mechanism and the corresponding outcome under
+a dynamic treatment rule. 
+
+As mentioned in the previous section, causal effects are defined in terms of
+hypothetical interventions on the NPSEM (\ref{eqn:npsem}). We can define 
+counterfactuals $Y_{d(V)}$ defined by
+a modified system in which the equation for $A$ is replaced by the rule $d(V)$,
+dependent on covariates $V$. Our modified system then takes the following form:
 \begin{align*}\label{eqn:npsem_causal}
   W &= f_W(U_W) \\ A &= d(V) \\ Y_{d(V)} &= f_Y(d(V), W, U_Y),
 \end{align*}
 
 where the dynamic treatment regime may be viewed as an intervention in which
-$A$ is set equal to a value based on a hypothetical regime $d(V)$, and
-$Y_{d(V)}$ is the corresponding outcome under $d(V)$. We denote the distribution
-of the counterfactual quantities as $P_{0,d(V)}$.
+$A$ is set equal to a value based on a hypothetical regime $d(V)$, possibly 
+contrary to the fact, and $Y_{d(V)}$ is the corresponding outcome under $d(V)$. 
+We denote the distribution of the counterfactual quantities as $P_{0,d(V)}$.
 
-The goal of any causal analysis motivated by such dynamic, or optimal
-individualized intervention, is to estimate a parameter defined as the
-counterfactual mean of the outcome with respect to the modified intervention
-distribution (either dynamic or optimal dynamic). We are primarily interested in
-the value of an individualized rule, $E_0[Y_{d(V)}]$. The optimal rule is the
-rule with the maximal value: $$d_{opt}(V) \equiv \text{argmax}_{d(V) \in
-\mathcal{D}} E_0[Y_{d(V)}]$$ where $\mathcal{D}$ represents the set of possible
-rules, $d$, implied by $V$. We note that, in case the problem at hand requires
+The goal of any causal analysis motivated by such dynamic interventions is to estimate a 
+parameter defined as the counterfactual mean of the outcome with respect to the modified 
+intervention distribution. That is, subject's outcome if, possibly contrary to the fact, 
+the subject received treatment that would have been assigned by rule $d(V)$. We can consider
+different treatment rules, all in the set $\mathcal{D}$:
+
+1. The true rule, $d_0$, and the corresponding causal parameter $E_{U,X}[Y_{d_0(V)}]$;
+
+2. The estimated rule, $d_n$, and the corresponding causal parameter $E_{U,X}[Y_{d_n(V)}]$.
+
+In this chapter, we will focus on the estimated rule $d_n$, and the corresponding 
+data-adaptive parameter. 
+
+The optimal individualized rule is the rule with the maximal value: 
+$$d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}} E_{P_{U,X}}[Y_{d(V)}]$$. 
+
+We note that, in case the problem at hand requires
 minimizing the mean of an outcome, our optimal individualized rule will be the
-rule with the minimal value instead. Finally, our target parameter can be
-expressed as
-$$\psi_0 := E_0[Y_{d_{opt}(V)}].$$
+rule with the minimal value instead. Our causal target parameter of interest
+is the expected outcome under the estimated optimal individualized rule:
 
-The optimal individualized rule, as well as the value of a rule, are causal
-parameters based on the unobserved counterfactuals. In order for the causal
+$$\Psi_{d_{n, \text{opt}}(V)}(P_{U,X}) := E_{P_{U,X}}[Y_{d_{n, \text{opt}}(V)}].$$
+
+### Identification and Statistical Estimand
+
+The optimal individualized rule, as well as the value of a optimal individualized rule, 
+are causal parameters based on the unobserved counterfactuals. In order for the causal
 quantities to be estimated from the observed data, they need to be identified
 with statistical parameters. This step of the roadmap requires me make few
 assumptions:
 
-1. _Consistency_: $Y^{d(v_i)}_i = Y_i$ in the event $A_i = d(v_i)$,
-   for $i = 1, \ldots, n$.
-2. _Stable unit value treatment assumption (SUTVA)_: $Y^{d(v_i)}_i$ does
-   not depend on $d(v_j)$ for $i = 1, \ldots, n$ and $j \neq i$, or lack
-   of interference.
-3. _Strong ignorability_: $A \perp \!\!\! \perp  Y^{d(v)} \mid W$, for all $a
+1. _Strong ignorability_: $A \perp \!\!\! \perp  Y^{d_n(v)} \mid W$, for all $a
    \in \mathcal{A}$.
-4. _Positivity (or overlap)_: $P_0(\min_{a \in \mathcal{A}} g_0(a|W) > 0)=1$
+2. _Positivity (or overlap)_: $P_0(\min_{a \in \mathcal{A}} g_0(a|W) > 0)=1$
 
 Under the above causal assumptions, we can identify $P_{0,d}$ with observed data
 using the G-computation formula:
 
-$$P_{0,d_{opt}}(O) = Q_{Y,0}(Y|A=d_{opt}(V),W)g_0(A=d_{opt}(V)|W)Q_{W,0}(W).$$
+$$P_{0,d_{n, \text{opt}}}(O) = Q_{Y,0}(Y|A=d_{n,\text{opt}}(V),W)g_0(A=d_{n,\text{opt}}(V)|W)Q_{W,0}(W).$$
 The value of an individualized rule can now be expressed as
 
-$$E_0[Y_{d(V)}] = E_{0,W}[\bar{Q}_{Y,0}(A=d(V),W)],$$
+$$E_0[Y_{d_n(V)}] = E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],$$
 
 which, under causal assumptions, can is interpreted as the mean outcome if
 (possibly contrary to fact), treatment was assigned according to the rule.
 Finally, the statistical counterpart to the causal parameter of interest is
 defined as
-$$\psi_0 = E_{0,W}[\bar{Q}_{Y,0}(A=d_{opt}(V),W)].$$
+$$\psi_0 = E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].$$
 
 Inference for the optimal value has been shown to be difficult at exceptional
 laws, defined as probability distributions for which treatment is neither
@@ -243,7 +272,7 @@ the blip function as:
 $$\bar{Q}_0(V) \equiv E_0[Y_1-Y_0|V] \equiv E_0[\bar{Q}_{Y,0}(1,W) -
 \bar{Q}_{Y,0}(0,W) | V],$$
 or the average treatment effect within a stratum of $V$. The note that the
-optimal individualized rule can now be derived as $d_{opt}(V) =
+optimal individualized rule can now be derived as $d_{n,\text{opt}}(V) =
 I(\bar{Q}_{0}(V) > 0)$.
 
 The package `tmle3mopttx` relies on using the Super Learner to estimate the blip
@@ -287,7 +316,7 @@ We estimate the blip function, $\bar{Q}_{0,a}(V)$, by regressing
 $D_{\bar{Q}_Y,g}(O)$ on $V$ using the specified `sl3` library of learners and an
 appropriate loss function.
 
-3. Our estimated rule is $d(V) = \text{argmax}_{a \in \mathcal{A}}
+3. Our estimated rule corresponds to $\text{argmax}_{a \in \mathcal{A}}
    \bar{Q}_{0,a}(V)$.
 4. We obtain inference for the mean outcome under the estimated optimal rule
    using CV-TMLE.
@@ -327,12 +356,12 @@ We implement three different pseudo-blips in `tmle3mopttx`.
 Just like in the binary case, pseudo-blips are estimated by regressing contrasts
 composed using the A-IPW transform on $V$.
 
-### Note on Inference
+### Note on Inference and data-adaptive parameter
 
 In a randomized trial, statistical inference relies on the second-order
 difference between the estimator of the optimal individualized treatment and the
 optimal individualized treatment itself to be asymptotically negligible. This is
-a reasonable condition if we consider rules that depend on small number of
+a reasonable condition if we consider rules that depend on a small number of
 covariates, or if we are willing to make smoothness assumptions. Alternatively,
 we can consider TMLEs and statistical inference for data-adaptive target
 parameters defined in terms of an estimate of the optimal individualized
