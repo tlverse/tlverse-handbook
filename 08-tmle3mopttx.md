@@ -958,151 +958,72 @@ The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.
 
-## Real World Data and `tmle3mopttx`
-
-Finally, we cement everything we learned so far with a real data application.
-As in the previous sections, we will be using the WASH Benefits data,
-corresponding to the Effect of water quality, sanitation, hand washing, and
-nutritional interventions on child development in rural Bangladesh trial.
-The main aim of the cluster-randomized controlled trial was to assess the
-impact of six intervention groups, including:
-
-1. chlorinated drinking water
-
-2. improved sanitation
-
-3. handwashing with soap
-
-4. combined water, sanitation, and handwashing
-
-5. improved nutrition through counselling and provision of lipid-based nutrient
-   supplements
-
-6. combined water, sanitation, handwashing, and nutrition.
-
-We aim to estimate the optimal ITR and the corresponding value under the optimal
-ITR for the main intervention in WASH Benefits data.
-
-To start, let's load the data, convert all columns to be of class `numeric`,
-and take a quick look at it:
-
-
-```r
-washb_data <- fread(
-  paste0(
-    "https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
-    "wash-benefits/washb_data.csv"
-  ),
-  stringsAsFactors = TRUE
-)
-washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
-head(washb_data, 3)
-#>      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
-#> 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
-#> 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
-#> 3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10
-#>    watmin elec floor walls roof asset_wardrobe asset_table asset_chair
-#> 1:      0    1     0     1    1              0           1           1
-#> 2:      0    1     0     1    1              0           1           0
-#> 3:      0    0     0     1    1              0           0           1
-#>    asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto
-#> 1:          1            0        1            0          0          0
-#> 2:          1            1        0            0          0          0
-#> 3:          0            1        0            0          0          0
-#>    asset_sewmach asset_mobile
-#> 1:             0            1
-#> 2:             0            1
-#> 3:             0            1
-```
-
-As before, we specify the NPSEM via the `node_list` object. Our outcome of
-interest is the weight-for-height Z-score which we seek to maximize, whereas our
-treatment is the six intervention groups aimed at improving living conditions.
-All the other collected baseline covariates correspond to $W$.
-
-
-```r
-node_list <- list(
-  W = names(washb_data)[!(names(washb_data) %in% c("whz", "tr"))],
-  A = "tr",
-  Y = "whz"
-)
-```
-
-We pick few potential effect modifiers, including mother's education, current
-living conditions (floor), and possession of material items including the
-refrigerator. We concentrate of these covariates as they might be indicative of
-the socio-economic status of individuals involved in the trial.
-
-
-```r
-table(washb_data$momedu)
-#> 
-#>    1    2    3 
-#>  733 1441 2503
-table(washb_data$floor)
-#> 
-#>    0    1 
-#> 4177  500
-table(washb_data$asset_refrig)
-#> 
-#>    0    1 
-#> 4305  372
-summary(washb_data$whz)
-#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  -4.670  -1.280  -0.600  -0.586   0.080   4.970
-```
-
-
-```r
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_mean <- Lrnr_mean$new()
-
-## Define the Q learner, which is just a regular learner:
-Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean),
-  metalearner = Lrnr_nnls$new()
-)
-
-# Define the g learner, which is a multinomial learner:
-# specify the appropriate loss of the multinomial learner:
-mn_metalearner <- make_learner(Lrnr_solnp,
-  loss_function = loss_loglik_multinomial,
-  learner_function =
-    metalearner_linear_multinomial
-)
-g_learner <- make_learner(
-  Lrnr_sl,
-  list(lrn_xgboost_100, lrn_mean),
-  mn_metalearner
-)
-
-# Define the Blip learner, which is a multivariate learner:
-learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean)
-b_learner <- create_mv_learners(learners = learners)
-
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
-```
-
-
-```r
-# initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
-  V = c("momedu", "floor", "asset_refrig"), type = "blip2",
-  learners = learner_list, maximize = TRUE, complex = TRUE,
-  realistic = FALSE
-)
-
-# fit the TML estimator
-fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
-fit
-```
-
 ---
 
 ## Exercises
+
+### Real World Data and `tmle3mopttx`
+
+Finally, we cement everything we learned so far with a real data application.
+
+As in the previous sections, we will be using the WASH Benefits data,
+corresponding to the effect of water quality, sanitation, hand washing, and
+nutritional interventions on child development in rural Bangladesh.
+
+The main aim of the cluster-randomized controlled trial was to assess the
+impact of six intervention groups, including:
+
+1. control;
+
+2. hand-washing with soap;
+
+3. improved nutrition through counselling and provision of lipid-based nutrient supplements;
+
+4. combined water, sanitation, hand-washing, and nutrition;
+
+5. improved sanitation;
+
+6. combined water, sanitation, and hand-washing;
+
+7. chlorinated drinking water.
+
+We aim to estimate the optimal ITR and the corresponding value under the optimal ITR
+for the main intervention in WASH Benefits data.
+
+Our outcome of interest is the weight-for-height Z-score, whereas our primary treatment is
+the six intervention groups aimed at improving living conditions.
+
+Questions:
+
+1. Define $V$ as mother's education (`momedu`), current living conditions (`floor`),
+   and possession of material items including the refrigerator (`asset_refrig`).
+   Why do you think we use these covariates as $V$? Do we want to minimize or maximize the outcome? 
+   Which blip type should we use?
+   
+2. Load the WASH Benefits data, and define the appropriate nodes for treatment and outcome. 
+   Use all the rest of the covariates as $W$ except for `momheight` for now. Construct an 
+   appropriate `sl3` library for $A$, $Y$ and $B$.
+
+3. Based on the $V$ defined in the previous question, estimate the mean under the ITR for
+   the main randomized intervention used in the WASH Benefits trial
+   with weight-for-height Z-score as the outcome. What's the TMLE value of the optimal ITR?
+   How does it change from the initial estimate? Which intervention is the most dominant?
+   Why do you think that is?
+
+4. Using the same formulation as in questions 1 and 2, estimate the realistic optimal ITR
+   and the corresponding value of the realistic ITR. Did the results change? Which intervention
+   is the most dominant under realistic rules? Why do you think that is? 
+   
+5. Consider simpler rules for the WASH benefits data example. What set of rules
+   are picked? 
+   
+6. Change the treatment to a binary variable (`asset_sewmach`), and estimate the
+   value under the ITR in this setting under a $60\%$ resource constraint. 
+   What do the results indicate?    
+   
+7. Change the treatment once again, now to mother's education (`momedu`), and estimate the
+   value under the ITR in this setting. What do the results indicate? Can
+   we intervene on such a variable?
 
 ### Review of Key Concepts
 
@@ -1127,20 +1048,6 @@ fit
 5. Using the same simulation, perform a variable importance analysis using
    Q-learning. How do the results change and why?
 
-### The Ideas in Action
-
-1. Using the WASH benefits data, extract the optimal ITR for exact individual.
-   Which intervention is the most dominant? Why do you think that is?
-
-2. Consider simpler rules for the WASH benefits data example. What set of rules
-   are picked?
-
-3. Using the WASH benefits data, estimate the realistic optimal ITR and the
-   corresponding value of the realistic ITR. Did the results change?
-
-4. Change the treatment to Mother's education (momedu), and estimate the
-   value under the ITR in this setting. What do the results indicate? Can
-   we intervene on such a variable?
 
 ### Advanced Topics
 

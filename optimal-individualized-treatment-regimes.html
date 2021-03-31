@@ -951,137 +951,66 @@ effect).</p>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
-</div>
-</div>
-<div id="real-world-data-and-tmle3mopttx" class="section level2">
-<h2>
-<span class="header-section-number">8.10</span> Real World Data and <code>tmle3mopttx</code><a class="anchor" aria-label="anchor" href="#real-world-data-and-tmle3mopttx"><i class="fas fa-link"></i></a>
-</h2>
-<p>Finally, we cement everything we learned so far with a real data application.
-As in the previous sections, we will be using the WASH Benefits data,
-corresponding to the Effect of water quality, sanitation, hand washing, and
-nutritional interventions on child development in rural Bangladesh trial.
-The main aim of the cluster-randomized controlled trial was to assess the
-impact of six intervention groups, including:</p>
-<ol style="list-style-type: decimal">
-<li><p>chlorinated drinking water</p></li>
-<li><p>improved sanitation</p></li>
-<li><p>handwashing with soap</p></li>
-<li><p>combined water, sanitation, and handwashing</p></li>
-<li><p>improved nutrition through counselling and provision of lipid-based nutrient
-supplements</p></li>
-<li><p>combined water, sanitation, handwashing, and nutrition.</p></li>
-</ol>
-<p>We aim to estimate the optimal ITR and the corresponding value under the optimal
-ITR for the main intervention in WASH Benefits data.</p>
-<p>To start, let’s load the data, convert all columns to be of class <code>numeric</code>,
-and take a quick look at it:</p>
-<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
-    <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
-    <span class="st">"wash-benefits/washb_data.csv"</span>
-  <span class="op">)</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="va">washb_data</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">momage</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">as.numeric</span><span class="op">)</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">washb_data</span>, <span class="fl">3</span><span class="op">)</span>
-<span class="co">#&gt;      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp</span>
-<span class="co">#&gt; 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11</span>
-<span class="co">#&gt; 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4</span>
-<span class="co">#&gt; 3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10</span>
-<span class="co">#&gt;    watmin elec floor walls roof asset_wardrobe asset_table asset_chair</span>
-<span class="co">#&gt; 1:      0    1     0     1    1              0           1           1</span>
-<span class="co">#&gt; 2:      0    1     0     1    1              0           1           0</span>
-<span class="co">#&gt; 3:      0    0     0     1    1              0           0           1</span>
-<span class="co">#&gt;    asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto</span>
-<span class="co">#&gt; 1:          1            0        1            0          0          0</span>
-<span class="co">#&gt; 2:          1            1        0            0          0          0</span>
-<span class="co">#&gt; 3:          0            1        0            0          0          0</span>
-<span class="co">#&gt;    asset_sewmach asset_mobile</span>
-<span class="co">#&gt; 1:             0            1</span>
-<span class="co">#&gt; 2:             0            1</span>
-<span class="co">#&gt; 3:             0            1</span></code></pre></div>
-<p>As before, we specify the NPSEM via the <code>node_list</code> object. Our outcome of
-interest is the weight-for-height Z-score which we seek to maximize, whereas our
-treatment is the six intervention groups aimed at improving living conditions.
-All the other collected baseline covariates correspond to <span class="math inline">\(W\)</span>.</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">node_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">)</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">)</span> <span class="op">%in%</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"whz"</span>, <span class="st">"tr"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,
-  A <span class="op">=</span> <span class="st">"tr"</span>,
-  Y <span class="op">=</span> <span class="st">"whz"</span>
-<span class="op">)</span></code></pre></div>
-<p>We pick few potential effect modifiers, including mother’s education, current
-living conditions (floor), and possession of material items including the
-refrigerator. We concentrate of these covariates as they might be indicative of
-the socio-economic status of individuals involved in the trial.</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">$</span><span class="va">momedu</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    1    2    3 </span>
-<span class="co">#&gt;  733 1441 2503</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">$</span><span class="va">floor</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    0    1 </span>
-<span class="co">#&gt; 4177  500</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">$</span><span class="va">asset_refrig</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;    0    1 </span>
-<span class="co">#&gt; 4305  372</span>
-<span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">$</span><span class="va">whz</span><span class="op">)</span>
-<span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span>
-<span class="co">#&gt;  -4.670  -1.280  -0.600  -0.586   0.080   4.970</span></code></pre></div>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Initialize few of the learners:</span>
-<span class="va">lrn_xgboost_50</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
-<span class="va">lrn_xgboost_100</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
-<span class="va">lrn_mean</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_mean.html">Lrnr_mean</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
-
-<span class="co">## Define the Q learner, which is just a regular learner:</span>
-<span class="va">Q_learner</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_mean</span><span class="op">)</span>,
-  metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
-<span class="op">)</span>
-
-<span class="co"># Define the g learner, which is a multinomial learner:</span>
-<span class="co"># specify the appropriate loss of the multinomial learner:</span>
-<span class="va">mn_metalearner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_solnp</span>,
-  loss_function <span class="op">=</span> <span class="va">loss_loglik_multinomial</span>,
-  learner_function <span class="op">=</span>
-    <span class="va">metalearner_linear_multinomial</span>
-<span class="op">)</span>
-<span class="va">g_learner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span>
-  <span class="va">Lrnr_sl</span>,
-  <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrn_xgboost_100</span>, <span class="va">lrn_mean</span><span class="op">)</span>,
-  <span class="va">mn_metalearner</span>
-<span class="op">)</span>
-
-<span class="co"># Define the Blip learner, which is a multivariate learner:</span>
-<span class="va">learners</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_mean</span><span class="op">)</span>
-<span class="va">b_learner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/create_mv_learners.html">create_mv_learners</a></span><span class="op">(</span>learners <span class="op">=</span> <span class="va">learners</span><span class="op">)</span>
-
-<span class="va">learner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="va">Q_learner</span>, A <span class="op">=</span> <span class="va">g_learner</span>, B <span class="op">=</span> <span class="va">b_learner</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
-<span class="va">tmle_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_blip_revere.html">tmle3_mopttx_blip_revere</a></span><span class="op">(</span>
-  V <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"momedu"</span>, <span class="st">"floor"</span>, <span class="st">"asset_refrig"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"blip2"</span>,
-  learners <span class="op">=</span> <span class="va">learner_list</span>, maximize <span class="op">=</span> <span class="cn">TRUE</span>, complex <span class="op">=</span> <span class="cn">TRUE</span>,
-  realistic <span class="op">=</span> <span class="cn">FALSE</span>
-<span class="op">)</span>
-
-<span class="co"># fit the TML estimator</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, data <span class="op">=</span> <span class="va">washb_data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">fit</span></code></pre></div>
 <hr>
+</div>
 </div>
 <div id="exercises-2" class="section level2">
 <h2>
-<span class="header-section-number">8.11</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.10</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-2"><i class="fas fa-link"></i></a>
 </h2>
+<div id="real-world-data-and-tmle3mopttx" class="section level3">
+<h3>
+<span class="header-section-number">8.10.1</span> Real World Data and <code>tmle3mopttx</code><a class="anchor" aria-label="anchor" href="#real-world-data-and-tmle3mopttx"><i class="fas fa-link"></i></a>
+</h3>
+<p>Finally, we cement everything we learned so far with a real data application.</p>
+<p>As in the previous sections, we will be using the WASH Benefits data,
+corresponding to the effect of water quality, sanitation, hand washing, and
+nutritional interventions on child development in rural Bangladesh.</p>
+<p>The main aim of the cluster-randomized controlled trial was to assess the
+impact of six intervention groups, including:</p>
+<ol style="list-style-type: decimal">
+<li><p>control;</p></li>
+<li><p>hand-washing with soap;</p></li>
+<li><p>improved nutrition through counselling and provision of lipid-based nutrient supplements;</p></li>
+<li><p>combined water, sanitation, hand-washing, and nutrition;</p></li>
+<li><p>improved sanitation;</p></li>
+<li><p>combined water, sanitation, and hand-washing;</p></li>
+<li><p>chlorinated drinking water.</p></li>
+</ol>
+<p>We aim to estimate the optimal ITR and the corresponding value under the optimal ITR
+for the main intervention in WASH Benefits data.</p>
+<p>Our outcome of interest is the weight-for-height Z-score, whereas our primary treatment is
+the six intervention groups aimed at improving living conditions.</p>
+<p>Questions:</p>
+<ol style="list-style-type: decimal">
+<li><p>Define <span class="math inline">\(V\)</span> as mother’s education (<code>momedu</code>), current living conditions (<code>floor</code>),
+and possession of material items including the refrigerator (<code>asset_refrig</code>).
+Why do you think we use these covariates as <span class="math inline">\(V\)</span>? Do we want to minimize or maximize the outcome?
+Which blip type should we use?</p></li>
+<li><p>Load the WASH Benefits data, and define the appropriate nodes for treatment and outcome.
+Use all the rest of the covariates as <span class="math inline">\(W\)</span> except for <code>momheight</code> for now. Construct an
+appropriate <code>sl3</code> library for <span class="math inline">\(A\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(B\)</span>.</p></li>
+<li><p>Based on the <span class="math inline">\(V\)</span> defined in the previous question, estimate the mean under the ITR for
+the main randomized intervention used in the WASH Benefits trial
+with weight-for-height Z-score as the outcome. What’s the TMLE value of the optimal ITR?
+How does it change from the initial estimate? Which intervention is the most dominant?
+Why do you think that is?</p></li>
+<li><p>Using the same formulation as in questions 1 and 2, estimate the realistic optimal ITR
+and the corresponding value of the realistic ITR. Did the results change? Which intervention
+is the most dominant under realistic rules? Why do you think that is?</p></li>
+<li><p>Consider simpler rules for the WASH benefits data example. What set of rules
+are picked?</p></li>
+<li><p>Change the treatment to a binary variable (<code>asset_sewmach</code>), and estimate the
+value under the ITR in this setting under a <span class="math inline">\(60\%\)</span> resource constraint.
+What do the results indicate?</p></li>
+<li><p>Change the treatment once again, now to mother’s education (<code>momedu</code>), and estimate the
+value under the ITR in this setting. What do the results indicate? Can
+we intervene on such a variable?</p></li>
+</ol>
+</div>
 <div id="review-of-key-concepts-1" class="section level3">
 <h3>
-<span class="header-section-number">8.11.1</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.10.2</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-1"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>What is the difference between dynamic and optimal individualized regimes?</p></li>
@@ -1102,25 +1031,9 @@ changed?</p></li>
 Q-learning. How do the results change and why?</p></li>
 </ol>
 </div>
-<div id="the-ideas-in-action-1" class="section level3">
-<h3>
-<span class="header-section-number">8.11.2</span> The Ideas in Action<a class="anchor" aria-label="anchor" href="#the-ideas-in-action-1"><i class="fas fa-link"></i></a>
-</h3>
-<ol style="list-style-type: decimal">
-<li><p>Using the WASH benefits data, extract the optimal ITR for exact individual.
-Which intervention is the most dominant? Why do you think that is?</p></li>
-<li><p>Consider simpler rules for the WASH benefits data example. What set of rules
-are picked?</p></li>
-<li><p>Using the WASH benefits data, estimate the realistic optimal ITR and the
-corresponding value of the realistic ITR. Did the results change?</p></li>
-<li><p>Change the treatment to Mother’s education (momedu), and estimate the
-value under the ITR in this setting. What do the results indicate? Can
-we intervene on such a variable?</p></li>
-</ol>
-</div>
 <div id="advanced-topics-1" class="section level3">
 <h3>
-<span class="header-section-number">8.11.3</span> Advanced Topics<a class="anchor" aria-label="anchor" href="#advanced-topics-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">8.10.3</span> Advanced Topics<a class="anchor" aria-label="anchor" href="#advanced-topics-1"><i class="fas fa-link"></i></a>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>How can we extend the current approach to include exceptional laws?</p></li>
@@ -1182,12 +1095,11 @@ we intervene on such a variable?</p></li>
 <li><a class="nav-link" href="#variable-importance-using-targeted-estimation-of-the-value-of-the-itr"><span class="header-section-number">8.9.2</span> Variable Importance using Targeted Estimation of the value of the ITR</a></li>
 </ul>
 </li>
-<li><a class="nav-link" href="#real-world-data-and-tmle3mopttx"><span class="header-section-number">8.10</span> Real World Data and tmle3mopttx</a></li>
 <li>
-<a class="nav-link" href="#exercises-2"><span class="header-section-number">8.11</span> Exercises</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#review-of-key-concepts-1"><span class="header-section-number">8.11.1</span> Review of Key Concepts</a></li>
-<li><a class="nav-link" href="#the-ideas-in-action-1"><span class="header-section-number">8.11.2</span> The Ideas in Action</a></li>
-<li><a class="nav-link" href="#advanced-topics-1"><span class="header-section-number">8.11.3</span> Advanced Topics</a></li>
+<a class="nav-link" href="#exercises-2"><span class="header-section-number">8.10</span> Exercises</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#real-world-data-and-tmle3mopttx"><span class="header-section-number">8.10.1</span> Real World Data and tmle3mopttx</a></li>
+<li><a class="nav-link" href="#review-of-key-concepts-1"><span class="header-section-number">8.10.2</span> Review of Key Concepts</a></li>
+<li><a class="nav-link" href="#advanced-topics-1"><span class="header-section-number">8.10.3</span> Advanced Topics</a></li>
 </ul>
 </li>
 </ul>
