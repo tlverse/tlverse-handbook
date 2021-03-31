@@ -1053,9 +1053,7 @@ Questions:
 
 1. How can we extend the current approach to include exceptional laws?
 
-2. How can we extend the current approach to incorporate resource constraints?
-
-3. How can we extend the current approach to continuous interventions?
+2. How can we extend the current approach to continuous interventions?
 
 <!--
 ## Appendix
