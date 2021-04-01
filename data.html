@@ -10,8 +10,7 @@
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9002/tabs.js"></script><script src="libs/bs3compat-0.2.4.9002/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script><link href="libs/vis-4.20.1/vis.css" rel="stylesheet">
-<script src="libs/vis-4.20.1/vis.min.js"></script><script src="libs/visNetwork-binding-2.0.9/visNetwork.js"></script><script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
 <body data-spy="scroll" data-target="#toc">
 
@@ -92,43 +91,26 @@ NCT01590095.</p>
     <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
     <span class="st">"wash-benefits/washb_data.csv"</span>
   <span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 28</span>
-<span class="co">#&gt;     whz tr     fracode month  aged sex    momage momedu momheight hfiacat  Nlt18</span>
-<span class="co">#&gt;   &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;</span>
-<span class="co">#&gt; 1  0    Contr… N05265      9   268 male       30 Prima…      146. Food Se…     3</span>
-<span class="co">#&gt; 2 -1.16 Contr… N05265      9   286 male       25 Prima…      149. Moderat…     2</span>
-<span class="co">#&gt; 3 -1.05 Contr… N08002      9   264 male       25 Prima…      152. Food Se…     1</span>
-<span class="co">#&gt; 4 -1.26 Contr… N08002      9   252 female     28 Prima…      140. Food Se…     3</span>
-<span class="co">#&gt; 5 -0.59 Contr… N06531      9   336 female     19 Secon…      151. Food Se…     2</span>
-<span class="co">#&gt; # … with 1 more row, and 17 more variables: Ncomp &lt;dbl&gt;, watmin &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   elec &lt;dbl&gt;, floor &lt;dbl&gt;, walls &lt;dbl&gt;, roof &lt;dbl&gt;, asset_wardrobe &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   asset_table &lt;dbl&gt;, asset_chair &lt;dbl&gt;, asset_khat &lt;dbl&gt;, asset_chouki &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   asset_tv &lt;dbl&gt;, asset_refrig &lt;dbl&gt;, asset_bike &lt;dbl&gt;, asset_moto &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   asset_sewmach &lt;dbl&gt;, asset_mobile &lt;dbl&gt;</span></code></pre></div>
-<p>For the purposes of this handbook, we start by treating the data as independent and
-identically distributed (i.i.d.) random draws from a very large target
+<span class="op">)</span></code></pre></div>
+<p>For the purposes of this handbook, we start by treating the data as independent
+and identically distributed (i.i.d.) random draws from a very large target
 population. We could, with available options, account for the clustering of the
 data (within sampled geographic units), but, for simplification, we avoid these
 details in the handbook, although modifications of our methodology for biased
-samples, repeated measures, etc., are available.</p>
-<p>We have 28 variables measured, of which 1 variable is set to be the outcome of
-interest. This outcome, <span class="math inline">\(Y\)</span>, is the weight-for-height Z-score (<code>whz</code> in <code>dat</code>);
-the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized treatment group (<code>tr</code> in
-<code>dat</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists simply of <em>everything else</em>. This
-results in our observed data structure being <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</p>
+samples, repeated measures, and related complications, are available.</p>
+<p>We have 28 variables measured, of which a single variable is set to
+be the outcome of interest. This outcome, <span class="math inline">\(Y\)</span>, is the weight-for-height Z-score
+(<code>whz</code> in <code>dat</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized treatment
+group (<code>tr</code> in <code>dat</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists simply of
+<em>everything else</em>. This results in our observed data structure being <span class="math inline">\(n\)</span> i.i.d.
+copies of <span class="math inline">\(O_i = (W_i, A_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</p>
 <p>Using the <a href="https://CRAN.R-project.org/package=skimr"><code>skimr</code> package</a>, we can
 quickly summarize the variables measured in the WASH Benefits data set:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/skimr/">skimr</a></span><span class="op">)</span>
 <span class="co"># optionally disable sparkline graphs for PDF output</span>
-<span class="va">skim_no_sparks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim_with.html">skim_with</a></span><span class="op">(</span>
-  numeric <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/sfl.html">sfl</a></span><span class="op">(</span>hist <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
-  ts <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/sfl.html">sfl</a></span><span class="op">(</span>line_graph <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-<span class="op">)</span>
 <span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
   <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">dat</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
@@ -584,28 +566,14 @@ in this example data, we ensure that we have subjects with a missing outcome.</p
     <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/"</span>,
     <span class="st">"data/ist_sample.csv"</span>
   <span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">ist</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 26</span>
-<span class="co">#&gt;   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP</span>
-<span class="co">#&gt;    &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  &lt;chr&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1     46 F      F        85 N      N       N     N       Y      N       150</span>
-<span class="co">#&gt; 2     33 F      M        71 Y      Y       Y     Y       N      Y       180</span>
-<span class="co">#&gt; 3      6 D      M        88 N      Y       N     N       N      N       140</span>
-<span class="co">#&gt; 4      8 F      F        68 Y      N       Y     Y       N      N       118</span>
-<span class="co">#&gt; 5     13 F      M        60 N      N       Y     N       N      N       140</span>
-<span class="co">#&gt; # … with 1 more row, and 15 more variables: RDEF1 &lt;chr&gt;, RDEF2 &lt;chr&gt;,</span>
-<span class="co">#&gt; #   RDEF3 &lt;chr&gt;, RDEF4 &lt;chr&gt;, RDEF5 &lt;chr&gt;, RDEF6 &lt;chr&gt;, RDEF7 &lt;chr&gt;,</span>
-<span class="co">#&gt; #   RDEF8 &lt;chr&gt;, STYPE &lt;chr&gt;, RXHEP &lt;chr&gt;, REGION &lt;chr&gt;,</span>
-<span class="co">#&gt; #   MISSING_RATRIAL_RASP3 &lt;dbl&gt;, MISSING_RHEP24 &lt;dbl&gt;, RXASP &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   DRSISC &lt;dbl&gt;</span></code></pre></div>
-<p>We have 26 variables measured, and the outcome of interest, <span class="math inline">\(Y\)</span>, indicates
-recurrent ischemic stroke within 14 days after randomization (<code>DRSISC</code> in
-<code>ist</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized aspirin vs. no aspirin
-treatment allocation (<code>RXASP</code> in <code>ist</code>); and the adjustment set, <span class="math inline">\(W\)</span>, consists
-of all other variables measured at baseline. In this data, the outcome is
-occasionally missing, but there is no need to create a variable indicating this
-missingness (such as <span class="math inline">\(\Delta\)</span>) for analyses in the <code>tlverse</code>, since it is
+<span class="op">)</span></code></pre></div>
+<p>We have 26 variables measured, and the outcome of interest, <span class="math inline">\(Y\)</span>,
+indicates recurrent ischemic stroke within 14 days after randomization (<code>DRSISC</code>
+in <code>ist</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized aspirin vs. no
+aspirin treatment allocation (<code>RXASP</code> in <code>ist</code>); and the adjustment set, <span class="math inline">\(W\)</span>,
+consists of all other variables measured at baseline. In this data, the outcome
+is occasionally missing, but there is no need to create a variable indicating
+this missingness (such as <span class="math inline">\(\Delta\)</span>) for analyses in the <code>tlverse</code>, since it is
 automatically detected when <code>NA</code> are present in the outcome. This observed data
 structure can be denoted as <span class="math inline">\(n\)</span> i.i.d. copies of <span class="math inline">\(O_i = (W_i, A_i, \Delta_i, \Delta Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>, where <span class="math inline">\(\Delta\)</span> denotes the binary
 indicator that the outcome is observed.</p>
@@ -613,7 +581,7 @@ indicator that the outcome is observed.</p>
 with <code>skimr</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">ist</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">ist</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
   <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">ist</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
@@ -986,33 +954,11 @@ Data I Epidemiologic Follow-up Study. More coming soon.</p>
     <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-handbook/master/"</span>,
     <span class="st">"data/NHEFS.csv"</span>
   <span class="op">)</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 6 x 64</span>
-<span class="co">#&gt;    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income</span>
-<span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1   233     0     0    NA    NA    NA   175    96     0    42     1     19</span>
-<span class="co">#&gt; 2   235     0     0    NA    NA    NA   123    80     0    36     0     18</span>
-<span class="co">#&gt; 3   244     0     0    NA    NA    NA   115    75     1    56     1     15</span>
-<span class="co">#&gt; 4   245     0     1    85     2    14   148    78     0    68     1     15</span>
-<span class="co">#&gt; 5   252     0     0    NA    NA    NA   118    77     0    40     0     18</span>
-<span class="co">#&gt; # … with 1 more row, and 52 more variables: marital &lt;dbl&gt;, school &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   education &lt;dbl&gt;, ht &lt;dbl&gt;, wt71 &lt;dbl&gt;, wt82 &lt;dbl&gt;, wt82_71 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   birthplace &lt;dbl&gt;, smokeintensity &lt;dbl&gt;, smkintensity82_71 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   smokeyrs &lt;dbl&gt;, asthma &lt;dbl&gt;, bronch &lt;dbl&gt;, tb &lt;dbl&gt;, hf &lt;dbl&gt;, hbp &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   pepticulcer &lt;dbl&gt;, colitis &lt;dbl&gt;, hepatitis &lt;dbl&gt;, chroniccough &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   hayfever &lt;dbl&gt;, diabetes &lt;dbl&gt;, polio &lt;dbl&gt;, tumor &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   nervousbreak &lt;dbl&gt;, alcoholpy &lt;dbl&gt;, alcoholfreq &lt;dbl&gt;, alcoholtype &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   alcoholhowmuch &lt;dbl&gt;, pica &lt;dbl&gt;, headache &lt;dbl&gt;, otherpain &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   weakheart &lt;dbl&gt;, allergies &lt;dbl&gt;, nerves &lt;dbl&gt;, lackpep &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   hbpmed &lt;dbl&gt;, boweltrouble &lt;dbl&gt;, wtloss &lt;dbl&gt;, infection &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   active &lt;dbl&gt;, exercise &lt;dbl&gt;, birthcontrol &lt;dbl&gt;, pregnancies &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   cholesterol &lt;dbl&gt;, hightax82 &lt;dbl&gt;, price71 &lt;dbl&gt;, price82 &lt;dbl&gt;,</span>
-<span class="co">#&gt; #   tax71 &lt;dbl&gt;, tax82 &lt;dbl&gt;, price71_82 &lt;dbl&gt;, tax71_82 &lt;dbl&gt;</span></code></pre></div>
+<span class="op">)</span></code></pre></div>
 <p>A snapshot of the data set is shown below:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span><span class="op">)</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu">skim_no_sparks</span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span>, format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span>
 <span class="op">}</span> <span class="kw">else</span> <span class="op">{</span>
   <span class="fu"><a href="https://docs.ropensci.org/skimr/reference/skim.html">skim</a></span><span class="op">(</span><span class="va">nhefs_data</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
@@ -1932,7 +1878,7 @@ Data I Epidemiologic Follow-up Study. More coming soon.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 31, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 01, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
-Updated: 2021-03-31
+Updated: 2021-04-01
 
 ## Learning Objectives
 
@@ -209,12 +209,6 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
-
-washb_data <- washb_data[1:30, ]
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
 ```
 
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
@@ -433,6 +427,8 @@ head(washb_data) %>%
   </tr>
 </tbody>
 </table></div>
+
+Above is a look at the first 30 of the data.
 
 ### Cross-validation for i.i.d. data
 
@@ -1040,12 +1036,9 @@ washb_data <- washb_data %>%
 
 outcome <- "whz"
 covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
-
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
 ```
+
+Here's a look at the data:
 
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
  <thead>

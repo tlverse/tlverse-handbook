@@ -36,34 +36,20 @@ dat <- read_csv(
     "wash-benefits/washb_data.csv"
   )
 )
-head(dat)
-#> # A tibble: 6 x 28
-#>     whz tr     fracode month  aged sex    momage momedu momheight hfiacat  Nlt18
-#>   <dbl> <chr>  <chr>   <dbl> <dbl> <chr>   <dbl> <chr>      <dbl> <chr>    <dbl>
-#> 1  0    Contr… N05265      9   268 male       30 Prima…      146. Food Se…     3
-#> 2 -1.16 Contr… N05265      9   286 male       25 Prima…      149. Moderat…     2
-#> 3 -1.05 Contr… N08002      9   264 male       25 Prima…      152. Food Se…     1
-#> 4 -1.26 Contr… N08002      9   252 female     28 Prima…      140. Food Se…     3
-#> 5 -0.59 Contr… N06531      9   336 female     19 Secon…      151. Food Se…     2
-#> # … with 1 more row, and 17 more variables: Ncomp <dbl>, watmin <dbl>,
-#> #   elec <dbl>, floor <dbl>, walls <dbl>, roof <dbl>, asset_wardrobe <dbl>,
-#> #   asset_table <dbl>, asset_chair <dbl>, asset_khat <dbl>, asset_chouki <dbl>,
-#> #   asset_tv <dbl>, asset_refrig <dbl>, asset_bike <dbl>, asset_moto <dbl>,
-#> #   asset_sewmach <dbl>, asset_mobile <dbl>
 ```
-For the purposes of this handbook, we start by treating the data as independent and
-identically distributed (i.i.d.) random draws from a very large target
+For the purposes of this handbook, we start by treating the data as independent
+and identically distributed (i.i.d.) random draws from a very large target
 population. We could, with available options, account for the clustering of the
 data (within sampled geographic units), but, for simplification, we avoid these
 details in the handbook, although modifications of our methodology for biased
-samples, repeated measures, etc., are available.
+samples, repeated measures, and related complications, are available.
 
-We have 28 variables measured, of which 1 variable is set to be the outcome of
-interest. This outcome, $Y$, is the weight-for-height Z-score (`whz` in `dat`);
-the treatment of interest, $A$, is the randomized treatment group (`tr` in
-`dat`); and the adjustment set, $W$, consists simply of *everything else*. This
-results in our observed data structure being $n$ i.i.d. copies of $O_i = (W_i,
-A_i, Y_i)$, for $i = 1, \ldots, n$.
+We have 28 variables measured, of which a single variable is set to
+be the outcome of interest. This outcome, $Y$, is the weight-for-height Z-score
+(`whz` in `dat`); the treatment of interest, $A$, is the randomized treatment
+group (`tr` in `dat`); and the adjustment set, $W$, consists simply of
+*everything else*. This results in our observed data structure being $n$ i.i.d.
+copies of $O_i = (W_i, A_i, Y_i)$, for $i = 1, \ldots, n$.
 
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
@@ -72,12 +58,8 @@ quickly summarize the variables measured in the WASH Benefits data set:
 ```r
 library(skimr)
 # optionally disable sparkline graphs for PDF output
-skim_no_sparks <- skim_with(
-  numeric = sfl(hist = NULL),
-  ts = sfl(line_graph = NULL)
-)
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(dat))
+  knitr::kable(skim_no_sparks(dat), format = "latex")
 } else {
   skim(dat)
 }
@@ -167,29 +149,15 @@ ist <- read_csv(
     "data/ist_sample.csv"
   )
 )
-head(ist)
-#> # A tibble: 6 x 26
-#>   RDELAY RCONSC SEX     AGE RSLEEP RATRIAL RCT   RVISINF RHEP24 RASP3  RSBP
-#>    <dbl> <chr>  <chr> <dbl> <chr>  <chr>   <chr> <chr>   <chr>  <chr> <dbl>
-#> 1     46 F      F        85 N      N       N     N       Y      N       150
-#> 2     33 F      M        71 Y      Y       Y     Y       N      Y       180
-#> 3      6 D      M        88 N      Y       N     N       N      N       140
-#> 4      8 F      F        68 Y      N       Y     Y       N      N       118
-#> 5     13 F      M        60 N      N       Y     N       N      N       140
-#> # … with 1 more row, and 15 more variables: RDEF1 <chr>, RDEF2 <chr>,
-#> #   RDEF3 <chr>, RDEF4 <chr>, RDEF5 <chr>, RDEF6 <chr>, RDEF7 <chr>,
-#> #   RDEF8 <chr>, STYPE <chr>, RXHEP <chr>, REGION <chr>,
-#> #   MISSING_RATRIAL_RASP3 <dbl>, MISSING_RHEP24 <dbl>, RXASP <dbl>,
-#> #   DRSISC <dbl>
 ```
 
-We have 26 variables measured, and the outcome of interest, $Y$, indicates
-recurrent ischemic stroke within 14 days after randomization (`DRSISC` in
-`ist`); the treatment of interest, $A$, is the randomized aspirin vs. no aspirin
-treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$, consists
-of all other variables measured at baseline. In this data, the outcome is
-occasionally missing, but there is no need to create a variable indicating this
-missingness (such as $\Delta$) for analyses in the `tlverse`, since it is
+We have 26 variables measured, and the outcome of interest, $Y$,
+indicates recurrent ischemic stroke within 14 days after randomization (`DRSISC`
+in `ist`); the treatment of interest, $A$, is the randomized aspirin vs. no
+aspirin treatment allocation (`RXASP` in `ist`); and the adjustment set, $W$,
+consists of all other variables measured at baseline. In this data, the outcome
+is occasionally missing, but there is no need to create a variable indicating
+this missingness (such as $\Delta$) for analyses in the `tlverse`, since it is
 automatically detected when `NA` are present in the outcome. This observed data
 structure can be denoted as $n$ i.i.d. copies of $O_i = (W_i, A_i, \Delta_i,
 \Delta Y_i)$, for $i = 1, \ldots, n$, where $\Delta$ denotes the binary
@@ -201,7 +169,7 @@ with `skimr`:
 
 ```r
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(ist))
+  knitr::kable(skim_no_sparks(ist), format = "latex")
 } else {
   skim(ist)
 }
@@ -274,28 +242,6 @@ nhefs_data <- read_csv(
     "data/NHEFS.csv"
   )
 )
-head(nhefs_data)
-#> # A tibble: 6 x 64
-#>    seqn  qsmk death yrdth modth dadth   sbp   dbp   sex   age  race income
-#>   <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>  <dbl>
-#> 1   233     0     0    NA    NA    NA   175    96     0    42     1     19
-#> 2   235     0     0    NA    NA    NA   123    80     0    36     0     18
-#> 3   244     0     0    NA    NA    NA   115    75     1    56     1     15
-#> 4   245     0     1    85     2    14   148    78     0    68     1     15
-#> 5   252     0     0    NA    NA    NA   118    77     0    40     0     18
-#> # … with 1 more row, and 52 more variables: marital <dbl>, school <dbl>,
-#> #   education <dbl>, ht <dbl>, wt71 <dbl>, wt82 <dbl>, wt82_71 <dbl>,
-#> #   birthplace <dbl>, smokeintensity <dbl>, smkintensity82_71 <dbl>,
-#> #   smokeyrs <dbl>, asthma <dbl>, bronch <dbl>, tb <dbl>, hf <dbl>, hbp <dbl>,
-#> #   pepticulcer <dbl>, colitis <dbl>, hepatitis <dbl>, chroniccough <dbl>,
-#> #   hayfever <dbl>, diabetes <dbl>, polio <dbl>, tumor <dbl>,
-#> #   nervousbreak <dbl>, alcoholpy <dbl>, alcoholfreq <dbl>, alcoholtype <dbl>,
-#> #   alcoholhowmuch <dbl>, pica <dbl>, headache <dbl>, otherpain <dbl>,
-#> #   weakheart <dbl>, allergies <dbl>, nerves <dbl>, lackpep <dbl>,
-#> #   hbpmed <dbl>, boweltrouble <dbl>, wtloss <dbl>, infection <dbl>,
-#> #   active <dbl>, exercise <dbl>, birthcontrol <dbl>, pregnancies <dbl>,
-#> #   cholesterol <dbl>, hightax82 <dbl>, price71 <dbl>, price82 <dbl>,
-#> #   tax71 <dbl>, tax82 <dbl>, price71_82 <dbl>, tax71_82 <dbl>
 ```
 
 A snapshot of the data set is shown below:
@@ -303,7 +249,7 @@ A snapshot of the data set is shown below:
 
 ```r
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(nhefs_data))
+  knitr::kable(skim_no_sparks(nhefs_data), format = "latex")
 } else {
   skim(nhefs_data)
 }
