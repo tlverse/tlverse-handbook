@@ -36,7 +36,7 @@ phase and is available to facilitate input from the community. To view or
 contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
-
+<!--
 
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
@@ -47,7 +47,7 @@ repository](https://github.com/tlverse/tlverse-handbook).
 <p style="clear: both;">
 <br>
 
-
+-->
 
 ## Outline {#outline}
 
@@ -173,7 +173,7 @@ and precision medicine.
 # Acknowledgements {-}
 -->
 
-
+<!--
 
 ## Reproduciblity with the `tlverse` {#repro}
 
@@ -219,7 +219,7 @@ following packages:
 |tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@5ba5f65) |
 |tmle3shift   |0.2.0      |Github (tlverse/tmle3shift\@43f6fc0)  |
 
-
+-->
 
 ## Learning resources {#learn}
 

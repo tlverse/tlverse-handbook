@@ -243,7 +243,9 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-<img src="02-roadmap_files/figure-html/simple-DAG-1.png" width="80%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.8\linewidth]{02-roadmap_files/figure-latex/simple-DAG-1} \end{center}
 
 While directed acyclic graphs (DAGs) like above provide a convenient means by
 which to visualize causal relations between variables, the same causal relations

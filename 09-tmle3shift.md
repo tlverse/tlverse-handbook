@@ -248,16 +248,20 @@ give a recipe:
      \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
    \end{equation*}
 
-
+<!--
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-<div class="figure" style="text-align: center">
-<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
-</div>
+\begin{figure}
 
+{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
+}
+
+\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
+\end{figure}
+
+-->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
@@ -430,7 +434,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 tmle_fit
@@ -588,7 +592,7 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
+#> Iter: 1 fn: 534.0196	 Pars:  0.40783 0.35788 0.23429
 #> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
 #> solnp--> Completed in 2 iterations
 tmle_fit
@@ -717,7 +721,7 @@ tmle_msm_spec <- tmle_vimshift_msm(
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 536.5917	 Pars:  0.33422 0.55591 0.10986
+#> Iter: 1 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
 #> Iter: 2 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
 #> solnp--> Completed in 2 iterations
 tmle_msm_fit
