@@ -592,7 +592,7 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
+#> Iter: 1 fn: 534.0196	 Pars:  0.40783 0.35788 0.23429
 #> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
 #> solnp--> Completed in 2 iterations
 tmle_fit
