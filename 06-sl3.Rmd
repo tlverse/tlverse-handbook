@@ -330,10 +330,20 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+```
+
+A quick look at the data:
+
+```{r sl3_washb_example_table1, echo=FALSE}
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 ```
 
 ### 1. Define the machine learning task {-}
@@ -728,7 +738,7 @@ point of this figure: we can see there are 10 realizations of the stack which
 represent the 10 cross-validation folds and there is a separate hold-out
 (top branch of the figure) that will not be used to fit the Super Learner.
 
-```{r make-sl-plot}
+```{r make-sl-plot, eval=FALSE}
 dt_sl <- delayed_learner_train(sl, washb_task)
 plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 ```
@@ -763,7 +773,6 @@ For fun, we will also include the cross-validated predictions from most popular
 learner on the block, main terms linear regression.
 
 ```{r, plot-predvobs-woohoo, eval=FALSE}
-
 # df_plot <- data.frame(Observed = washb_data[["whz"]], Predicted = sl_preds,
 #                        count = seq(1:nrow(washb_data))
 
@@ -815,10 +824,20 @@ washb_task_new <- make_sl3_Task(
 CVsl <- CV_lrnr_sl(
   lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
 )
-CVsl %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+```
+
+Let's take a look at a table summarizing the performance:
+
+```{r CVsl_table}
+if (knitr::is_latex_output()) {
+  CVsl %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  CVsl %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 ```
 <!-- Explain summary!!!! -->
 
@@ -853,10 +872,18 @@ Let's explore the `sl3` variable importance measurements for the `washb` data.
 
 ```{r varimp}
 washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
-washb_varimp %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+```
+
+```{r varimp_table}
+if (knitr::is_latex_output()) {
+  washb_varimp %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  washb_varimp %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 ```
 
 ```{r varimp-plot}
@@ -885,12 +912,20 @@ db_data <- url(
   )
 )
 chspred <- read_csv(file = db_data, col_names = TRUE)
+```
 
-# take a quick peek
-head(chspred) %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+Let's take a quick peek at the data:
+
+```{r sl3_chspred_example_table, echo=FALSE}
+if (knitr::is_latex_output()) {
+  head(chspred) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(chspred) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 ```
 
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and

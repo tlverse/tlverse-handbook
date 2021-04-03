@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 # global options
 options(
   digits = 5,
-  #scipen = 999,
+  # scipen = 999,
   dplyr.print_min = 5,
   dplyr.print_max = 5,
   crayon.enabled = FALSE,
@@ -35,12 +35,20 @@ options(
 # overwrite options by output type
 if (knitr:::is_html_output()) {
   options(width = 80)
+  options(digits = 4)
 }
 if (knitr:::is_latex_output()) {
   knitr::opts_chunk$set(width = 67)
   options(width = 67)
   options(cli.unicode = TRUE)
+  options(digits = 4)
 }
+
+# helper for simpler skimr tables
+skim_no_sparks <- skimr::skim_with(
+  numeric = skimr::sfl(hist = NULL),
+  ts = skimr::sfl(line_graph = NULL)
+)
 
 # automatically create a bib database for R packages
 knitr::write_bib(c(
@@ -55,10 +63,10 @@ theme_transparent <- function(...) {
 
   # modify with transparencies
   trans_rect <- ggplot2::element_rect(fill = "transparent", colour = NA)
-  ret$panel.background  <- trans_rect
-  ret$plot.background   <- trans_rect
+  ret$panel.background <- trans_rect
+  ret$plot.background <- trans_rect
   ret$legend.background <- trans_rect
-  ret$legend.key        <- trans_rect
+  ret$legend.key <- trans_rect
 
   # always have legend below
   ret$legend.position <- "bottom"

@@ -208,13 +208,23 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
-
-washb_data <- washb_data[1:30, ]
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
 ```
+
+```{r origami_washb_example_table1, echo=FALSE}
+n_samp <- 30
+washb_data <- washb_data[seq_len(n_samp), ]
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
+```
+
+Above is a look at the first `r n_samp` of the data.
 
 ### Cross-validation for i.i.d. data
 
@@ -652,11 +662,20 @@ washb_data <- washb_data %>%
 
 outcome <- "whz"
 covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
+```
 
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+Here's a look at the data:
+
+```{r origami_washb_example_table2, echo=FALSE}
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 ```
 
 We can see the covariates used in the prediction:

@@ -15,7 +15,7 @@ git clone -b gh-pages \
   https://${GITHUB_PAT}@github.com/${TRAVIS_REPO_SLUG}.git \
   book-output
 cd book-output
-cp -r ../_book/* ./
+cp -r ../_handbook/* ./
 
 # stage, commit, push copied files to branch gh-pages
 if [ "${TRAVIS_PULL_REQUEST}" = "false" ]
