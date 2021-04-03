@@ -59,7 +59,7 @@
 <p><em>Nima Hejazi</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>
 by <em>Nima Hejazi, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-02</p>
+<p>Updated: 2021-04-03</p>
 <div id="learning-objectives-5" class="section level2">
 <h2>
 <span class="header-section-number">9.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-5"><i class="fas fa-link"></i></a>
@@ -123,21 +123,20 @@ interventions are conceptually simple.</p>
 covariates (e.g., age, sex, education level), <span class="math inline">\(A\)</span> an intervention variable of
 interest (e.g., nutritional supplements), and <span class="math inline">\(Y\)</span> an outcome of interest (e.g.,
 disease status). Though it need not be the case, let <span class="math inline">\(A\)</span> be continuous-valued,
-i.e. <span class="math inline">\(A \in \mathbb{R}\)</span>. Let <span class="math inline">\(O_i \sim \mathcal{P} \in \mathcal{M}\)</span>, where
-<span class="math inline">\(\mathcal{M}\)</span> is the nonparametric statistical model defined as the set of
-continuous densities on <span class="math inline">\(O\)</span> with respect to some dominating measure. To
-formalize the definition of stochastic interventions and their corresponding
-causal effects, we introduce a nonparametric structural equation model (NPSEM),
-based on <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>, to define how the system changes under posited
-interventions:
-<span class="math display">\[\begin{align*}\label{eqn:npsem}
+i.e. <span class="math inline">\(A \in \R\)</span>. Let <span class="math inline">\(O_i \sim \mathcal{P} \in \M\)</span>, where <span class="math inline">\(\M\)</span> is the
+nonparametric statistical model defined as the set of continuous densities on
+<span class="math inline">\(O\)</span> with respect to some dominating measure. To formalize the definition of
+stochastic interventions and their corresponding causal effects, we introduce a
+nonparametric structural equation model (NPSEM), based on <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>,
+to define how the system changes under posited interventions:
+<span class="math display">\[\begin{align*}\label{eqn:npsem_shift}
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y),
 \end{align*}\]</span>
 where the set of structural equations provide a mechanistic model by which the
 observed data <span class="math inline">\(O\)</span> is assumed to have been generated. There are several standard
 assumptions embedded in the NPSEM – specifically, a temporal ordering that
-supposes that <span class="math inline">\(Y\)</span> occurs after <span class="math inline">\(A\)</span>, which occurs after <span class="math inline">\(W\)</span>; each variable
-(i.e., <span class="math inline">\(\{W, A, Y\}\)</span>) is assumed to have been generated from its corresponding
+supposes that <span class="math inline">\(Y\)</span> occurs after <span class="math inline">\(A\)</span>, which occurs after <span class="math inline">\(W\)</span>; each variable (i.e.,
+<span class="math inline">\(\{W, A, Y\}\)</span>) is assumed to have been generated from its corresponding
 deterministic function (i.e., <span class="math inline">\(\{f_W, f_A, f_Y\}\)</span>) of the observed variables
 that precede it temporally, as well as an exogenous variable, denoted by <span class="math inline">\(U\)</span>;
 lastly, each exogenous variable is assumed to contain all unobserved causes of
@@ -152,15 +151,15 @@ on a particular observation <span class="math inline">\(o\)</span> may be a writ
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with respect
 to some dominating measure, <span class="math inline">\(q_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(q_{0, W}\)</span> is the density of
-<span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\nu\)</span>. Further, for ease of notation,
-let <span class="math inline">\(Q(A, W) = \mathbb{E}[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = \mathbb{P}(A \mid W)\)</span>,
-and <span class="math inline">\(q_W\)</span> the marginal distribution of <span class="math inline">\(W\)</span>. These components of the likelihood
-will be essential in developing an understanding of the manner in which
-stochastic treatment regimes pertrub a system and how a corresponding causal
-effect may be evaluated. Importantly, the NPSEM parameterizes <span class="math inline">\(p_0^O\)</span> in terms
-of the distribution of random variables <span class="math inline">\((O, U)\)</span> modeled by the system of
-equations. In turn, this implies a model for the distribution of counterfactual
-random variables generated by interventions on the data-generating process.</p>
+<span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\nu\)</span>. Further, for ease of notation, let
+<span class="math inline">\(Q(A, W) = \E[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = \P(A \mid W)\)</span>, and <span class="math inline">\(q_W\)</span> the
+marginal distribution of <span class="math inline">\(W\)</span>. These components of the likelihood will be
+essential in developing an understanding of the manner in which stochastic
+treatment regimes pertrub a system and how a corresponding causal effect may be
+evaluated. Importantly, the NPSEM parameterizes <span class="math inline">\(p_0^O\)</span> in terms of the
+distribution of random variables <span class="math inline">\((O, U)\)</span> modeled by the system of equations. In
+turn, this implies a model for the distribution of counterfactual random
+variables generated by interventions on the data-generating process.</p>
 </div>
 <div id="defining-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
@@ -217,16 +216,16 @@ of stochastic interventions was first introduced by <span class="citation">Díaz
 been further discussed in <span class="citation">Haneuse and Rotnitzky (<a href="references.html#ref-haneuse2013estimation">2013</a>)</span>, <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2018stochastic">2018</a>)</span>, and
 <span class="citation">Hejazi et al. (<a href="references.html#ref-hejazi2020efficient">2020</a>)</span>. Note that this intervention may be written in a manner
 consistent with the first class of stochastic treatment regimes discussed as
-well – that is, as per <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span>, <span class="math inline">\(\mathbb{P}_{\delta}(g_0)(A = a \mid W) = g_0(a - \delta(W) \mid W)\)</span>.</p>
+well – that is, as per <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span>, <span class="math inline">\(\P_{\delta}(g_0)(A = a \mid W) = g_0(a - \delta(W) \mid W)\)</span>.</p>
 <p>The goal of any causal analysis motivated by such a stochastic intervention is
 to estimate a parameter defined as the counterfactual mean of the outcome with
 respect to the stochastically modified intervention distribution. In
-particular, the target causal estimand of our analysis is <span class="math inline">\(\psi_{0, \delta} := \mathbb{E}_{P_0^{\delta}}\{Y_{d(A,W)}\}\)</span>, the mean of the counterfactual
+particular, the target causal estimand of our analysis is <span class="math inline">\(\psi_{0, \delta} \coloneqq \E_{P_0^{\delta}}\{Y_{d(A,W)}\}\)</span>, the mean of the counterfactual
 outcome variable <span class="math inline">\(Y_{d(A, W)}\)</span>. In prior work, <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> showed that
-the causal quantity of interest <span class="math inline">\(\mathbb{E}_0 \{Y_{d(A, W)}\}\)</span> is identified by
+the causal quantity of interest <span class="math inline">\(\E_0 \{Y_{d(A, W)}\}\)</span> is identified by
 a functional of the distribution of <span class="math inline">\(O\)</span>:
 <span class="math display">\[\begin{align*}\label{eqn:identification2012}
-  \psi_{0,d} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \mathbb{E}_{P_0}
+  \psi_{0,d} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \cdot \\ &amp;q_{0, A}^O(a \mid W = w) \cdot
    q_{0, W}^O(w) d\mu(a)d\nu(w).
 \end{align*}\]</span>
@@ -235,14 +234,13 @@ parameter in  matches exactly the counterfactual
 outcome <span class="math inline">\(\psi_{0, \delta}\)</span> under such an intervention, allowing for the causal
 effect to be learned from the observed data <span class="math inline">\(O\)</span>. <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> provide a
 derivation based on the efficient influence function (EIF) in the nonparametric
-model <span class="math inline">\(\mathcal{M}\)</span> and develop several estimators of this quantity, including
-substitution, inverse probability weighted (IPW), augmented inverse probability
-weighted (AIPW), and targeted maximum likelihood (TML) estimators, allowing for
-semiparametric-efficient estimation and inference on the quantity of interest.
-As per <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2018stochastic">2018</a>)</span>, the statistical target parameter may also be
-denoted <span class="math inline">\(\Psi(P_0) = \mathbb{E}_{P_0}{\overline{Q}(d(A, W), W)}\)</span>, where
-<span class="math inline">\(\overline{Q}(d(A, W), W)\)</span> is the counterfactual outcome value of a given
-individual under the stochastic intervention distribution.</p>
+model <span class="math inline">\(\M\)</span> and develop several estimators of this quantity, including
+substitution, inverse probability weighted (IPW), one-step (OS) and targeted
+maximum likelihood (TML) estimators, allowing for semiparametric-efficient
+estimation and inference on the quantity of interest. As per
+<span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2018stochastic">2018</a>)</span>, the statistical target parameter may also be denoted
+<span class="math inline">\(\Psi(P_0) = \E_{P_0}{\overline{Q}(d(A, W), W)}\)</span>, where <span class="math inline">\(\overline{Q}(d(A, W), W)\)</span> is the counterfactual outcome value of a given individual under the
+stochastic intervention distribution.</p>
 <p>Although the focus of this work is neither the establishment of identification
 results nor the development of theoretical details, we review the necessary
 identification details for the counterfactual mean under a stochastic
@@ -266,7 +264,7 @@ support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldot
 </ol>
 <p>With the identification assumptions satisfied, <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> and
 <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2018stochastic">2018</a>)</span> provide an efficient influence function with respect to
-the nonparametric model <span class="math inline">\(\mathcal{M}\)</span> as
+the nonparametric model <span class="math inline">\(\M\)</span> as
 <span class="math display">\[\begin{equation*}\label{eqn:eif}
   D(P_0)(x) = H(a, w)({y - \overline{Q}(a, w)}) +
   \overline{Q}(d(a, w), w) - \Psi(P_0),
@@ -329,7 +327,7 @@ FIGURE 5.1: How a counterfactual outcome changes as the natural treatment distri
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3shift">tmle3shift</a></span><span class="op">)</span></code></pre></div>
 <p>We need to estimate two components of the likelihood in order to construct a TML
 estimator. The first of these components is the outcome regression, <span class="math inline">\(\hat{Q}_n\)</span>,
-which is a simple regression of the form <span class="math inline">\(\mathbb{E}[Y \mid A,W]\)</span>. An estimate
+which is a simple regression of the form <span class="math inline">\(\E[Y \mid A,W]\)</span>. An estimate
 for such a quantity may be constructed using the Super Learner algorithm. We
 construct the components of an <code>sl3</code>-style Super Learner for a regression below,
 using a small variety of parametric and nonparametric regression techniques:</p>
@@ -462,7 +460,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 534.2313  Pars:  0.43334 0.38684 0.17982</span>
+<span class="co">#&gt; Iter: 1 fn: 534.2313  Pars:  0.43334 0.38683 0.17983</span>
 <span class="co">#&gt; Iter: 2 fn: 534.2312  Pars:  0.43334 0.38684 0.17982</span>
 <span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
 <span class="va">tmle_fit</span>
@@ -730,7 +728,7 @@ appears above):</p>
 <span class="co"># fit the TML estimator and examine the results</span>
 <span class="va">tmle_msm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_msm_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 536.5917  Pars:  0.33422 0.55591 0.10986</span>
+<span class="co">#&gt; Iter: 1 fn: 536.5917  Pars:  0.33423 0.55591 0.10986</span>
 <span class="co">#&gt; Iter: 2 fn: 536.5917  Pars:  0.33423 0.55591 0.10986</span>
 <span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
 <span class="va">tmle_msm_fit</span>
@@ -977,7 +975,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 02, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 03, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

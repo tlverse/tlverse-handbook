@@ -59,7 +59,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-02</p>
+<p>Updated: 2021-04-03</p>
 <div id="learning-objectives-4" class="section level2">
 <h2>
 <span class="header-section-number">8.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-4"><i class="fas fa-link"></i></a>
@@ -171,24 +171,24 @@ data was drawn from some true probability distribution <span class="math inline"
 denote a statistical model, with <span class="math inline">\(P_0 \in \mathcal{M}\)</span>. We emphasize that we
 make no assumptions about the distribution of <span class="math inline">\(P_0\)</span>, hence <span class="math inline">\(\mathcal{M}\)</span> is a
 fully nonparametric model. As previously mentioned, this means that we make no
-assumptions on the relationship between variables, but might be able
-to say something about the relationship of <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>, as is the case of a randomized trial.
-As in previous chapters, we denote <span class="math inline">\(P_n\)</span> as the empirical distribution which
-gives each observation weight <span class="math inline">\(\frac{1}{n}\)</span>.</p>
-<p>We use the nonparametric structural equation model (NPSEM) in order to
-define the process that gives rise to the observed (endogenous) and
-not observed (exogenous) variables, as described by <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>.
-In particular, we denote <span class="math inline">\(U=(U_W,U_A,U_Y)\)</span> as the exogenous random variables,
-and <span class="math inline">\(O=(W,A,Y)\)</span> as endogenous variables we observe. The joint distribution of
-exogenous and endogenous random variables in <span class="math inline">\(\mathcal{M}^F\)</span> (defined by the NPSEM)
-is <span class="math inline">\(P_{U,X}\)</span>. We can define the relationships between variables with the
-following structural equations:
-<span class="math display">\[\begin{align*}\label{eqn:npsem}
+assumptions on the relationship between variables, but might be able to say
+something about the relationship of <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>, as is the case of a randomized
+trial. As in previous chapters, we denote <span class="math inline">\(P_n\)</span> as the empirical distribution
+which gives each observation weight <span class="math inline">\(1/n\)</span>.</p>
+<p>We use the nonparametric structural equation model (NPSEM) in order to define
+the process that gives rise to the observed (endogenous) and not observed
+(exogenous) variables, as described by <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>. In particular, we
+denote <span class="math inline">\(U=(U_W,U_A,U_Y)\)</span> as the exogenous random variables, and <span class="math inline">\(O=(W,A,Y)\)</span> as
+endogenous variables we observe. The joint distribution of exogenous and
+endogenous random variables in <span class="math inline">\(\mathcal{M}^F\)</span> (defined by the NPSEM) is
+<span class="math inline">\(P_{U,X}\)</span>. We can define the relationships between variables with the following
+structural equations:
+<span class="math display">\[\begin{align*}\label{eqn:npsem_mopttx}
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y),
 \end{align*}\]</span>
 where the collection <span class="math inline">\(f=(f_W,f_A,f_Y)\)</span> denotes unspecified functions. Note that
 in the case of a randomized trial, we can write the above NPSEM as
-<span class="math display">\[\begin{align*}\label{eqn:npsem_rt}
+<span class="math display">\[\begin{align*}\label{eqn:npsem_rt_mopttx}
   W &amp;= f_W(U_W) \\ A &amp;= U_A \\ Y &amp;= f_Y(A, W, U_Y),
 \end{align*}\]</span>
 indicating no dependence of treatment on baseline covariates.</p>
@@ -196,94 +196,98 @@ indicating no dependence of treatment on baseline covariates.</p>
 of <span class="math inline">\(O\)</span>. We denote the density of <span class="math inline">\(O\)</span> as <span class="math inline">\(p_0\)</span>, corresponding to the distribution
 <span class="math inline">\(P_0\)</span> and dominating measure <span class="math inline">\(\mu\)</span>.
 <span class="math display">\[\begin{equation*}\label{eqn:likelihood_factorization}
-  p_0(O) = p_{Y,0}(Y|A,W) p_{A,0}(A|W) p_{W,0}(W) = q_{Y,0}(Y|A,W) q_{A,0}(A|W)
-    q_{W,0}(W),
+  p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
+    q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
 \end{equation*}\]</span>
 where <span class="math inline">\(p_{Y,0}(Y|A,W)\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with
 respect to some dominating measure <span class="math inline">\(\mu_Y\)</span>, <span class="math inline">\(p_{A,0}\)</span> is the conditional density
 of <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_A\)</span>, and <span class="math inline">\(p_{W,0}\)</span> is
 the density of <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_W\)</span>. Consequently, we
-define <span class="math inline">\(P_{Y,0}(Y|A,W)=Q_{Y,0}(Y|A,W)\)</span>, <span class="math inline">\(P_{A,0}(A|W)=g_0(A|W)\)</span> and
-<span class="math inline">\(P_{W,0}(W)=Q_{W,0}(W)\)</span> as the corresponding conditional distribution of <span class="math inline">\(Y\)</span> given
-<span class="math inline">\((A,W)\)</span>, treatment mechanism <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span>, and distribution of baseline covariates.
-For notational simplicity, we also define
-<span class="math inline">\(\bar{Q}_{Y,0}(A,W) \equiv E_0[Y|A,W]\)</span> as the conditional expectation of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>.</p>
-<p>Lastly, we define <span class="math inline">\(V\)</span> as a subset of the baseline
-covariates the optimal individualized rule depends on, where <span class="math inline">\(V \in W\)</span>.
-Note that <span class="math inline">\(V\)</span> could be
-all of <span class="math inline">\(W\)</span>, or an empty set, depending on the subject matter knowledge. In
-particular, a researcher might want to consider known effect modifiers available
-at the time of treatment decision as possible <span class="math inline">\(V\)</span> covariates. Defining <span class="math inline">\(V\)</span>
-allows us to consider possibly sub-optimal rules that are easier to estimate,
-and thereby allows for statistical inference for the counterfactual mean outcome
-under the sub-optimal rule.</p>
+define <span class="math inline">\(P_{Y,0}(Y \mid A, W) = Q_{Y,0}(Y \mid A,W)\)</span>, <span class="math inline">\(P_{A,0}(A \mid W) = g_0(A \mid W)\)</span> and <span class="math inline">\(P_{W,0}(W)=Q_{W,0}(W)\)</span> as the corresponding conditional
+distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>, treatment mechanism <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span>, and
+distribution of baseline covariates. For notational simplicity, we also define
+<span class="math inline">\(\bar{Q}_{Y,0}(A,W) \equiv \E_0[Y \mid A,W]\)</span> as the conditional expectation of
+<span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>.</p>
+<p>Lastly, we define <span class="math inline">\(V\)</span> as a subset of the baseline covariates the optimal
+individualized rule depends on, where <span class="math inline">\(V \in W\)</span>. Note that <span class="math inline">\(V\)</span> could be all of
+<span class="math inline">\(W\)</span>, or an empty set, depending on the subject matter knowledge. In particular,
+a researcher might want to consider known effect modifiers available at the time
+of treatment decision as possible <span class="math inline">\(V\)</span> covariates. Defining <span class="math inline">\(V\)</span> allows us to
+consider possibly sub-optimal rules that are easier to estimate, and thereby
+allows for statistical inference for the counterfactual mean outcome under the
+sub-optimal rule.</p>
 </div>
 <div id="defining-the-causal-effect-of-an-optimal-individualized-intervention" class="section level2">
 <h2>
 <span class="header-section-number">8.4</span> Defining the Causal Effect of an Optimal Individualized Intervention<a class="anchor" aria-label="anchor" href="#defining-the-causal-effect-of-an-optimal-individualized-intervention"><i class="fas fa-link"></i></a>
 </h2>
-<p>Consider dynamic treatment rules <span class="math inline">\(d\)</span> in the set of all possible rules <span class="math inline">\(\mathcal{D}\)</span>.<br>
-Then, <span class="math inline">\(d\)</span> is a function that takes as input <span class="math inline">\(V\)</span> and outputs a treatment decision,
-<span class="math inline">\(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}\)</span>. We will use
-dynamic treatment rules, and the corresponding treatment decision, to describe
-an intervention on the treatment mechanism and the corresponding outcome under
-a dynamic treatment rule.</p>
+<p>Consider dynamic treatment rules <span class="math inline">\(d\)</span> in the set of all possible rules
+<span class="math inline">\(\mathcal{D}\)</span>. Then, <span class="math inline">\(d\)</span> is a function that takes as input <span class="math inline">\(V\)</span> and outputs a
+treatment decision, <span class="math inline">\(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}\)</span>. We will use dynamic treatment rules, and the corresponding treatment
+decision, to describe an intervention on the treatment mechanism and the
+corresponding outcome under a dynamic treatment rule.</p>
 <p>As mentioned in the previous section, causal effects are defined in terms of
 hypothetical interventions on the NPSEM (). We can define
-counterfactuals <span class="math inline">\(Y_{d(V)}\)</span> defined by
-a modified system in which the equation for <span class="math inline">\(A\)</span> is replaced by the rule <span class="math inline">\(d(V)\)</span>,
-dependent on covariates <span class="math inline">\(V\)</span>. Our modified system then takes the following form:
-<span class="math display">\[\begin{align*}\label{eqn:npsem_causal}
+counterfactuals <span class="math inline">\(Y_{d(V)}\)</span> defined by a modified system in which the equation
+for <span class="math inline">\(A\)</span> is replaced by the rule <span class="math inline">\(d(V)\)</span>, dependent on covariates <span class="math inline">\(V\)</span>. Our
+modified system then takes the following form:
+<span class="math display">\[\begin{align*}\label{eqn:npsem_causal_mopttx}
   W &amp;= f_W(U_W) \\ A &amp;= d(V) \\ Y_{d(V)} &amp;= f_Y(d(V), W, U_Y),
-\end{align*}\]</span></p>
-<p>where the dynamic treatment regime may be viewed as an intervention in which
-<span class="math inline">\(A\)</span> is set equal to a value based on a hypothetical regime <span class="math inline">\(d(V)\)</span>, possibly
-contrary to the fact, and <span class="math inline">\(Y_{d(V)}\)</span> is the corresponding outcome under <span class="math inline">\(d(V)\)</span>.
-We denote the distribution of the counterfactual quantities as <span class="math inline">\(P_{0,d(V)}\)</span>.</p>
-<p>The goal of any causal analysis motivated by such dynamic interventions is to estimate a
-parameter defined as the counterfactual mean of the outcome with respect to the modified
-intervention distribution. That is, subject’s outcome if, possibly contrary to the fact,
-the subject received treatment that would have been assigned by rule <span class="math inline">\(d(V)\)</span>. We can consider
-different treatment rules, all in the set <span class="math inline">\(\mathcal{D}\)</span>:</p>
+\end{align*}\]</span>
+where the dynamic treatment regime may be viewed as an intervention in which <span class="math inline">\(A\)</span>
+is set equal to a value based on a hypothetical regime <span class="math inline">\(d(V)\)</span>, possibly contrary
+to the fact, and <span class="math inline">\(Y_{d(V)}\)</span> is the corresponding outcome under <span class="math inline">\(d(V)\)</span>. We
+denote the distribution of the counterfactual quantities as <span class="math inline">\(P_{0,d(V)}\)</span>.</p>
+<p>The goal of any causal analysis motivated by such dynamic interventions is to
+estimate a parameter defined as the counterfactual mean of the outcome with
+respect to the modified intervention distribution. That is, subject’s outcome
+if, possibly contrary to the fact, the subject received treatment that would
+have been assigned by rule <span class="math inline">\(d(V)\)</span>. We can consider different treatment rules,
+all in the set <span class="math inline">\(\mathcal{D}\)</span>:</p>
 <ol style="list-style-type: decimal">
-<li><p>The true rule, <span class="math inline">\(d_0\)</span>, and the corresponding causal parameter <span class="math inline">\(E_{U,X}[Y_{d_0(V)}]\)</span>;</p></li>
-<li><p>The estimated rule, <span class="math inline">\(d_n\)</span>, and the corresponding causal parameter <span class="math inline">\(E_{U,X}[Y_{d_n(V)}]\)</span>.</p></li>
+<li><p>The true rule, <span class="math inline">\(d_0\)</span>, and the corresponding causal parameter
+<span class="math inline">\(\E_{U,X}[Y_{d_0(V)}]\)</span>;</p></li>
+<li><p>The estimated rule, <span class="math inline">\(d_n\)</span>, and the corresponding causal parameter
+<span class="math inline">\(\E_{U,X}[Y_{d_n(V)}]\)</span>.</p></li>
 </ol>
-<p>In this chapter, we will focus on the estimated rule <span class="math inline">\(d_n\)</span>, and the corresponding
-data-adaptive parameter.</p>
+<p>In this chapter, we will focus on the estimated rule <span class="math inline">\(d_n\)</span>, and the
+corresponding data-adaptive parameter.</p>
 <p>The optimal individualized rule is the rule with the maximal value:
-<span class="math display">\[d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}} E_{P_{U,X}}[Y_{d(V)}]\]</span>.</p>
-<p>We note that, in case the problem at hand requires
-minimizing the mean of an outcome, our optimal individualized rule will be the
-rule with the minimal value instead. Our causal target parameter of interest
-is the expected outcome under the estimated optimal individualized rule:</p>
-<p><span class="math display">\[\Psi_{d_{n, \text{opt}}(V)}(P_{U,X}) := E_{P_{U,X}}[Y_{d_{n, \text{opt}}(V)}].\]</span></p>
+<span class="math display">\[d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
+\E_{P_{U,X}}[Y_{d(V)}]\]</span>.</p>
+<p>We note that, in case the problem at hand requires minimizing the mean of an
+outcome, our optimal individualized rule will be the rule with the minimal value
+instead. Our causal target parameter of interest is the expected outcome under
+the estimated optimal individualized rule:</p>
+<p><span class="math display">\[\Psi_{d_{n, \text{opt}}(V)}(P_{U,X}) \coloneqq \E_{P_{U,X}}[Y_{d_{n,
+\text{opt}}(V)}].\]</span></p>
 <div id="identification-and-statistical-estimand" class="section level3">
 <h3>
 <span class="header-section-number">8.4.1</span> Identification and Statistical Estimand<a class="anchor" aria-label="anchor" href="#identification-and-statistical-estimand"><i class="fas fa-link"></i></a>
 </h3>
-<p>The optimal individualized rule, as well as the value of a optimal individualized rule,
-are causal parameters based on the unobserved counterfactuals. In order for the causal
-quantities to be estimated from the observed data, they need to be identified
-with statistical parameters. This step of the roadmap requires me make few
-assumptions:</p>
+<p>The optimal individualized rule, as well as the value of a optimal
+individualized rule, are causal parameters based on the unobserved
+counterfactuals. In order for the causal quantities to be estimated from the
+observed data, they need to be identified with statistical parameters. This step
+of the roadmap requires me make few assumptions:</p>
 <ol style="list-style-type: decimal">
 <li>
-<em>Strong ignorability</em>: <span class="math inline">\(A \perp \!\!\! \perp Y^{d_n(v)} \mid W\)</span>, for all <span class="math inline">\(a \in \mathcal{A}\)</span>.</li>
+<em>Strong ignorability</em>: <span class="math inline">\(A \indep Y^{d_n(v)} \mid W\)</span>, for all <span class="math inline">\(a \in \mathcal{A}\)</span>.</li>
 <li>
-<em>Positivity (or overlap)</em>: <span class="math inline">\(P_0(\min_{a \in \mathcal{A}} g_0(a|W) &gt; 0)=1\)</span>
+<em>Positivity (or overlap)</em>: <span class="math inline">\(P_0(\min_{a \in \mathcal{A}} g_0(a \mid W) &gt; 0) = 1\)</span>
 </li>
 </ol>
 <p>Under the above causal assumptions, we can identify <span class="math inline">\(P_{0,d}\)</span> with observed data
 using the G-computation formula:</p>
-<p><span class="math display">\[P_{0,d_{n, \text{opt}}}(O) = Q_{Y,0}(Y|A=d_{n,\text{opt}}(V),W)g_0(A=d_{n,\text{opt}}(V)|W)Q_{W,0}(W).\]</span>
+<p><span class="math display">\[P_{0,d_{n, \text{opt}}}(O) = Q_{Y,0}(Y \mid A=d_{n,\text{opt}}(V),W)
+g_0(A=d_{n,\text{opt}}(V) \mid W)Q_{W,0}(W).\]</span>
 The value of an individualized rule can now be expressed as</p>
-<p><span class="math display">\[E_0[Y_{d_n(V)}] = E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],\]</span></p>
+<p><span class="math display">\[\E_0[Y_{d_n(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],\]</span></p>
 <p>which, under causal assumptions, can is interpreted as the mean outcome if
 (possibly contrary to fact), treatment was assigned according to the rule.
 Finally, the statistical counterpart to the causal parameter of interest is
 defined as
-<span class="math display">\[\psi_0 = E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].\]</span></p>
+<span class="math display">\[\psi_0 = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].\]</span></p>
 <p>Inference for the optimal value has been shown to be difficult at exceptional
 laws, defined as probability distributions for which treatment is neither
 beneficial nor harmful. Inference is similarly difficult in finite samples if
@@ -317,10 +321,10 @@ which the stratum specific average treatment effect, the blip function, is
 positive and does not assign treatment to individuals for which this quantity is
 negative. Therefore for a binary treatment, under causal assumptions, we define
 the blip function as:
-<span class="math display">\[\bar{Q}_0(V) \equiv E_0[Y_1-Y_0|V] \equiv E_0[\bar{Q}_{Y,0}(1,W) -
-\bar{Q}_{Y,0}(0,W) | V],\]</span>
+<span class="math display">\[\bar{Q}_0(V) \equiv \E_0[Y_1-Y_0 \mid V] \equiv \E_0[\bar{Q}_{Y,0}(1,W) -
+\bar{Q}_{Y,0}(0,W) \mid V],\]</span>
 or the average treatment effect within a stratum of <span class="math inline">\(V\)</span>. The note that the
-optimal individualized rule can now be derived as <span class="math inline">\(d_{n,\text{opt}}(V) = I(\bar{Q}_{0}(V) &gt; 0)\)</span>.</p>
+optimal individualized rule can now be derived as <span class="math inline">\(d_{n,\text{opt}}(V) = \mathbb{I}(\bar{Q}_{0}(V) &gt; 0)\)</span>.</p>
 <p>The package <code>tmle3mopttx</code> relies on using the Super Learner to estimate the blip
 function, as it easily extends to more general categorical treatment. With that
 in mind, the loss function utilized for learning the optimal individualized rule
@@ -338,22 +342,21 @@ advantages of each approach.</p>
 estimate of the blip function, we follow the below steps in order to obtain
 value of the ITR:</p>
 <ol style="list-style-type: decimal">
-<li>Estimate <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> and <span class="math inline">\(g_0(A|W)\)</span> using <code>sl3</code>. We denote such
-estimates as <span class="math inline">\(\bar{Q}_{Y,n}(A,W)\)</span> and <span class="math inline">\(g_n(A|W)\)</span>.</li>
+<li>Estimate <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> and <span class="math inline">\(g_0(A \mid W)\)</span> using <code>sl3</code>. We denote such
+estimates as <span class="math inline">\(\bar{Q}_{Y,n}(A,W)\)</span> and <span class="math inline">\(g_n(A \mid W)\)</span>.</li>
 <li>Apply the doubly robust Augmented-Inverse Probability Weighted (A-IPW)
 transform to our outcome, where we define:
-<span class="math display">\[D_{\bar{Q}_Y,g,a}(O) \equiv \frac{I(A=a)}{g(A|W)} (Y-\bar{Q}_Y(A,W)) +
-  \bar{Q}_Y(A=a,W)\]</span>
+<span class="math display">\[D_{\bar{Q}_Y,g,a}(O) \equiv \frac{\mathbb{I}(A=a)}{g(A \mid W)} (Y -
+\bar{Q}_Y(A,W)) + \bar{Q}_Y(A=a,W)\]</span>
 </li>
 </ol>
 <p>Note that under the randomization and positivity assumptions we have that
-<span class="math inline">\(E[D_{\bar{Q}_Y,g,a}(O) | V] = E[Y_a |V]\)</span>. We emphasize the double robust nature
-of the A-IPW transform- consistency of <span class="math inline">\(E[Y_a |V]\)</span> will depend on correct
-estimation of either <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> or <span class="math inline">\(g_0(A|W)\)</span>. As such, in a
-randomized trial, we are guaranteed a consistent estimate of <span class="math inline">\(E[Y_a |V]\)</span> even if
-we get <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> wrong!</p>
+<span class="math inline">\(\E[D_{\bar{Q}_Y,g,a}(O) \mid V] = \E[Y_a \mid V]\)</span>. We emphasize the double
+robust nature of the A-IPW transform-consistency of <span class="math inline">\(\E[Y_a \mid V]\)</span> will depend
+on correct estimation of either <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> or <span class="math inline">\(g_0(A \mid W)\)</span>. As
+such, in a randomized trial, we are guaranteed a consistent estimate of <span class="math inline">\(\E[Y_a \mid V]\)</span> even if we get <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> wrong!</p>
 <p>Using this transform, we can define the following contrast:
-<span class="math inline">\(D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y,g,a=1}(O) - D_{\bar{Q}_Y,g,a=0}(O)\)</span></p>
+<span class="math inline">\(D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O)\)</span></p>
 <p>We estimate the blip function, <span class="math inline">\(\bar{Q}_{0,a}(V)\)</span>, by regressing
 <span class="math inline">\(D_{\bar{Q}_Y,g}(O)\)</span> on <span class="math inline">\(V\)</span> using the specified <code>sl3</code> library of learners and an
 appropriate loss function.</p>
@@ -379,20 +382,20 @@ categories, <span class="math inline">\(n_A\)</span>. As such, we define it as:
 <li><p><em>Blip1</em> corresponds to choosing a reference category of treatment, and
 defining the blip for all other categories relative to the specified
 reference. Hence we have that:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-ref}(V) \equiv E_0(Y_a-Y_0|V)\]</span> where <span class="math inline">\(Y_0\)</span> is the
-specified reference category with <span class="math inline">\(A=0\)</span>. Note that, for the case of binary
-treatment, this strategy reduces to the approach described for the binary
-setup.</p></li>
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-ref}(V) \equiv \E_0(Y_a-Y_0 \mid V)\]</span> where <span class="math inline">\(Y_0\)</span> is
+the specified reference category with <span class="math inline">\(A=0\)</span>. Note that, for the case of
+binary treatment, this strategy reduces to the approach described for the
+binary setup.</p></li>
 <li><p><em>Blip2</em> approach corresponds to defining the blip relative to the average of
 all categories. As such, we can define <span class="math inline">\(\bar{Q}_{0,a}^{pblip-avg}(V)\)</span> as:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-avg}(V) \equiv E_0(Y_a- \frac{1}{n_A} \sum_{a \in
-  \mathcal{A}} Y_a|V)\]</span>
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
+  \mathcal{A}} Y_a \mid V)\]</span>
 In the case where subject-matter knowledge regarding which reference category
 to use is not available, blip2 might be a viable option.</p></li>
 <li><p><em>Blip3</em> reflects an extension of Blip2, where the average is now a weighted
 average:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv E_0(Y_a- \frac{1}{n_A} \sum_{a \in
-  \mathcal{A}} Y_{a} P(A=a|V) |V)\]</span></p></li>
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
+  \mathcal{A}} Y_{a} P(A=a \mid V) \mid V)\]</span></p></li>
 </ol>
 <p>Just like in the binary case, pseudo-blips are estimated by regressing contrasts
 composed using the A-IPW transform on <span class="math inline">\(V\)</span>.</p>
@@ -684,11 +687,11 @@ to estimate.</p>
 <span class="va">b_learner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/create_mv_learners.html">create_mv_learners</a></span><span class="op">(</span>learners <span class="op">=</span> <span class="va">learners</span><span class="op">)</span></code></pre></div>
 <p>As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression, propensity score, and
-the blip function. Note that we need to estimate <span class="math inline">\(g_0(A|W)\)</span> for a categorical
-<span class="math inline">\(A\)</span> – therefore, we use the multinomial Super Learner option available within
-the <code>sl3</code> package with learners that can address multi-class classification
-problems. In order to see which learners can be used to estimate <span class="math inline">\(g_0(A|W)\)</span> in
-<code>sl3</code>, we run the following:</p>
+the blip function. Note that we need to estimate <span class="math inline">\(g_0(A \mid W)\)</span> for a
+categorical <span class="math inline">\(A\)</span> – therefore, we use the multinomial Super Learner option
+available within the <code>sl3</code> package with learners that can address multi-class
+classification problems. In order to see which learners can be used to estimate
+<span class="math inline">\(g_0(A \mid W)\)</span> in <code>sl3</code>, we run the following:</p>
 <div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># See which learners support multi-class classification:</span>
 <span class="fu"><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"categorical"</span><span class="op">)</span><span class="op">)</span>
@@ -970,41 +973,44 @@ impact of six intervention groups, including:</p>
 <ol style="list-style-type: decimal">
 <li><p>control;</p></li>
 <li><p>hand-washing with soap;</p></li>
-<li><p>improved nutrition through counselling and provision of lipid-based nutrient supplements;</p></li>
+<li><p>improved nutrition through counseling and provision of lipid-based nutrient
+supplements;</p></li>
 <li><p>combined water, sanitation, hand-washing, and nutrition;</p></li>
 <li><p>improved sanitation;</p></li>
 <li><p>combined water, sanitation, and hand-washing;</p></li>
 <li><p>chlorinated drinking water.</p></li>
 </ol>
-<p>We aim to estimate the optimal ITR and the corresponding value under the optimal ITR
-for the main intervention in WASH Benefits data.</p>
-<p>Our outcome of interest is the weight-for-height Z-score, whereas our primary treatment is
-the six intervention groups aimed at improving living conditions.</p>
+<p>We aim to estimate the optimal ITR and the corresponding value under the optimal
+ITR for the main intervention in WASH Benefits data.</p>
+<p>Our outcome of interest is the weight-for-height Z-score, whereas our primary
+treatment is the six intervention groups aimed at improving living conditions.</p>
 <p>Questions:</p>
 <ol style="list-style-type: decimal">
 <li><p>Define <span class="math inline">\(V\)</span> as mother’s education (<code>momedu</code>), current living conditions (<code>floor</code>),
 and possession of material items including the refrigerator (<code>asset_refrig</code>).
-Why do you think we use these covariates as <span class="math inline">\(V\)</span>? Do we want to minimize or maximize the outcome?
-Which blip type should we use?</p></li>
-<li><p>Load the WASH Benefits data, and define the appropriate nodes for treatment and outcome.
-Use all the rest of the covariates as <span class="math inline">\(W\)</span> except for <code>momheight</code> for now. Construct an
-appropriate <code>sl3</code> library for <span class="math inline">\(A\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(B\)</span>.</p></li>
-<li><p>Based on the <span class="math inline">\(V\)</span> defined in the previous question, estimate the mean under the ITR for
-the main randomized intervention used in the WASH Benefits trial
-with weight-for-height Z-score as the outcome. What’s the TMLE value of the optimal ITR?
-How does it change from the initial estimate? Which intervention is the most dominant?
-Why do you think that is?</p></li>
-<li><p>Using the same formulation as in questions 1 and 2, estimate the realistic optimal ITR
-and the corresponding value of the realistic ITR. Did the results change? Which intervention
-is the most dominant under realistic rules? Why do you think that is?</p></li>
+Why do you think we use these covariates as <span class="math inline">\(V\)</span>? Do we want to minimize or
+maximize the outcome? Which blip type should we use?</p></li>
+<li><p>Load the WASH Benefits data, and define the appropriate nodes for treatment
+and outcome. Use all the rest of the covariates as <span class="math inline">\(W\)</span> except for
+<code>momheight</code> for now. Construct an appropriate <code>sl3</code> library for <span class="math inline">\(A\)</span>, <span class="math inline">\(Y\)</span> and
+<span class="math inline">\(B\)</span>.</p></li>
+<li><p>Based on the <span class="math inline">\(V\)</span> defined in the previous question, estimate the mean under
+the ITR for the main randomized intervention used in the WASH Benefits trial
+with weight-for-height Z-score as the outcome. What’s the TMLE value of the
+optimal ITR? How does it change from the initial estimate? Which
+intervention is the most dominant? Why do you think that is?</p></li>
+<li><p>Using the same formulation as in questions 1 and 2, estimate the realistic
+optimal ITR and the corresponding value of the realistic ITR. Did the results
+change? Which intervention is the most dominant under realistic rules? Why do
+you think that is?</p></li>
 <li><p>Consider simpler rules for the WASH benefits data example. What set of rules
 are picked?</p></li>
 <li><p>Change the treatment to a binary variable (<code>asset_sewmach</code>), and estimate the
-value under the ITR in this setting under a <span class="math inline">\(60\%\)</span> resource constraint.
-What do the results indicate?</p></li>
-<li><p>Change the treatment once again, now to mother’s education (<code>momedu</code>), and estimate the
-value under the ITR in this setting. What do the results indicate? Can
-we intervene on such a variable?</p></li>
+value under the ITR in this setting under a <span class="math inline">\(60\%\)</span> resource constraint. What
+do the results indicate?</p></li>
+<li><p>Change the treatment once again, now to mother’s education (<code>momedu</code>), and
+estimate the value under the ITR in this setting. What do the results
+indicate? Can we intervene on such a variable?</p></li>
 </ol>
 </div>
 <div id="review-of-key-concepts-1" class="section level3">
@@ -1117,7 +1123,7 @@ Q-learning. How do the results change and why?</p></li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 02, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 03, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
