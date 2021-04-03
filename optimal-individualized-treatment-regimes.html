@@ -10,9 +10,109 @@
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9002/tabs.js"></script><script src="libs/bs3compat-0.2.4.9002/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+<p>
+    \usepackage{booktabs}
+  \usepackage[inline]{enumitem}
+  \usepackage{float}
+  \usepackage{graphicx}
+  \usepackage[round]{natbib}
+  \usepackage{geometry}
+  \usepackage{tikz}
+  \usepackage[english]{babel}
+  \usepackage{longtable}
+  \usepackage{color}
+  \usepackage{mathtools,bm,amssymb,amsmath,amsthm}
+  \usepackage{multirow}
+  \usepackage[titletoc,title]{appendix}
+  \usepackage{authblk}
+  \usepackage{setspace}
+  \usepackage{dsfont}
+  \PassOptionsToPackage{utf8}{inputenc}
+  %\usepackage[utf8x]{inputenc}
+  \usepackage[OT1]{fontenc}
+  \usepackage[bf,singlelinecheck=off]{caption}
+  \usepackage{refcount}
+  \usepackage{framed,color}
+  \definecolor{shadecolor}{RGB}{248,248,248}
+  \urlstyle{tt}
+  
+  \renewcommand{\textfraction}{0.05}
+  \renewcommand{\topfraction}{0.8}
+  \renewcommand{\bottomfraction}{0.8}
+  \renewcommand{\floatpagefraction}{0.75}
+  
+  \usepackage{makeidx}
+  \makeindex
+  
+  \usepackage{amsthm}
+  \makeatletter
+  \def\thm@space@setup{%
+    \thm@preskip=8pt plus 2pt minus 4pt
+    \thm@postskip=\thm@preskip
+  }
+  \makeatother
+  
+  \newtheorem*{remark}{Remark}
+  \newtheorem{theorem}{Theorem}
+  \AtEndDocument{\refstepcounter{theorem}\label{finalthm}}
+  {
+    \theoremstyle{definition}
+    \newtheorem{assumption}{}
+  }
+  {
+    \theoremstyle{definition}
+    \newtheorem{assumptioniden}{}
+  }
+  {
+    \theoremstyle{definition}
+    \newtheorem{example}{Example}[section]
+  }
+  \DeclareMathOperator{\opt}{opt}
+  \DeclareMathOperator{\dr}{IF}
+  \newcommand{\hopt}{\hat h_{\opt}}
+  \newcommand{\supp}{\mathop{\mathrm{supp}}}
+  \renewcommand\theassumptioniden{{A}\arabic{assumptioniden}}
+  \renewcommand\theassumption{{C}\arabic{assumption}}
+  \renewcommand\theexample{\arabic{example}}
+  
+  \newtheorem{lemma}{Lemma}
+  \newtheorem{coro}{Corollary}
+  \newtheorem{definition}{Definition}
+  \DeclareMathOperator{\expit}{expit}
+  \DeclareMathOperator{\bern}{Bern}
+  \DeclareMathOperator{\logit}{logit}
+  \DeclareMathOperator{\var}{Var}
+  \DeclareMathOperator{\Rem}{Rem}
+  \newcommand{\pt}{\mbox{$p_0$}}
+  \newcommand{\Pt}{\mbox{$P_0$}}
+  \newcommand{\pl}{\parallel}
+  \newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+  \newcommand{\rs}{R}
+  \newcommand{\ds}{D^\dag}
+  \newcommand{\dd}{\mathrm{d}}
+  \newcommand{\Pn}{\mathbb{P}_{n}}
+  \newcommand{\mut}{\mu_0}
+  \newcommand{\thetasub}{\hat\theta_{\mbox{\scriptsize sub}}(\delta)}
+  \newcommand{\thetare}{\hat\theta_{\mbox{\scriptsize re}}(\delta)}
+  \newcommand{\thetatmle}{\hat\theta_{\mbox{\scriptsize tmle}}(\delta)}
+  \newcommand{\thetaaipw}{\hat\theta(\delta)}
+  \newcommand{\hgd}{\hat g_\delta}
+  \newcommand{\one}{\mathds{1}}
+  \renewcommand{\P}{\mathbb{P}}
+  \newcommand{\R}{\mathbb{R}}
+  \renewcommand{\rmdefault}{ptm}
+  \newcommand{\E}{\mathbb{E}}
+  \newcommand{\M}{\mathcal{M}}
+  \newcommand{\1}{\mathbbm{1}}
+  \newcommand{\prob}{\mathbb{P}}
+  \renewenvironment{proof}{{\it Proof }}{\qed \\}
+  \DeclareMathOperator*{\argmin}{\arg\!\min}
+  \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+  
+  \frontmatter
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --></p>
 
 <div class="container-fluid">
 <div class="row">
@@ -183,22 +283,25 @@ endogenous variables we observe. The joint distribution of exogenous and
 endogenous random variables in <span class="math inline">\(\mathcal{M}^F\)</span> (defined by the NPSEM) is
 <span class="math inline">\(P_{U,X}\)</span>. We can define the relationships between variables with the following
 structural equations:
-<span class="math display">\[\begin{align*}\label{eqn:npsem_mopttx}
+<span class="math display">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y),
-\end{align*}\]</span>
+  (\#eqn:npsem_mopttx)
+\end{align}\]</span>
 where the collection <span class="math inline">\(f=(f_W,f_A,f_Y)\)</span> denotes unspecified functions. Note that
 in the case of a randomized trial, we can write the above NPSEM as
-<span class="math display">\[\begin{align*}\label{eqn:npsem_rt_mopttx}
+<span class="math display">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= U_A \\ Y &amp;= f_Y(A, W, U_Y),
-\end{align*}\]</span>
+  (\#eqn:npsem_rt_mopttx)
+\end{align}\]</span>
 indicating no dependence of treatment on baseline covariates.</p>
 <p>The likelihood of the data admits a factorization, implied by the time ordering
-of <span class="math inline">\(O\)</span>. We denote the density of <span class="math inline">\(O\)</span> as <span class="math inline">\(p_0\)</span>, corresponding to the distribution
-<span class="math inline">\(P_0\)</span> and dominating measure <span class="math inline">\(\mu\)</span>.
-<span class="math display">\[\begin{equation*}\label{eqn:likelihood_factorization}
+of <span class="math inline">\(O\)</span>. We denote the density of <span class="math inline">\(O\)</span> as <span class="math inline">\(p_0\)</span>, corresponding to the
+distribution <span class="math inline">\(P_0\)</span> and dominating measure <span class="math inline">\(\mu\)</span>.
+<span class="math display">\[\begin{equation}
   p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
     q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
-\end{equation*}\]</span>
+  (\#eqn:likelihood_factorization)
+\end{equation}\]</span>
 where <span class="math inline">\(p_{Y,0}(Y|A,W)\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with
 respect to some dominating measure <span class="math inline">\(\mu_Y\)</span>, <span class="math inline">\(p_{A,0}\)</span> is the conditional density
 of <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_A\)</span>, and <span class="math inline">\(p_{W,0}\)</span> is
@@ -227,13 +330,14 @@ treatment decision, <span class="math inline">\(V \rightarrow d(V) \in \{a_1, \c
 decision, to describe an intervention on the treatment mechanism and the
 corresponding outcome under a dynamic treatment rule.</p>
 <p>As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM (). We can define
+hypothetical interventions on the NPSEM @ref(eqn:npsem_mopttx). We can define
 counterfactuals <span class="math inline">\(Y_{d(V)}\)</span> defined by a modified system in which the equation
 for <span class="math inline">\(A\)</span> is replaced by the rule <span class="math inline">\(d(V)\)</span>, dependent on covariates <span class="math inline">\(V\)</span>. Our
 modified system then takes the following form:
-<span class="math display">\[\begin{align*}\label{eqn:npsem_causal_mopttx}
+<span class="math display">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= d(V) \\ Y_{d(V)} &amp;= f_Y(d(V), W, U_Y),
-\end{align*}\]</span>
+  (\#eqn:npsem_causal_mopttx)
+\end{align}\]</span>
 where the dynamic treatment regime may be viewed as an intervention in which <span class="math inline">\(A\)</span>
 is set equal to a value based on a hypothetical regime <span class="math inline">\(d(V)\)</span>, possibly contrary
 to the fact, and <span class="math inline">\(Y_{d(V)}\)</span> is the corresponding outcome under <span class="math inline">\(d(V)\)</span>. We
@@ -295,7 +399,7 @@ the treatment effect is very small in all strata, even though valid asymptotic
 estimators exist in this setting. With that in mind, we address the estimation
 problem under the assumption of non-exceptional laws in effect.</p>
 <p>Many methods for learning the optimal rule from data have been developed
-<span class="citation">(Murphy <a href="references.html#ref-murphy2003">2003</a>, <span class="citation">@robins2004</span>, <span class="citation">@laber2012</span>, <span class="citation">@kosorok2012</span>, <span class="citation">@moodie2013</span>)</span>. In this
+<span class="citation">(Murphy <a href="references.html#ref-murphy2003">2003</a>; Robins <a href="references.html#ref-robins2004">2004</a>; Zhang et al. <a href="references.html#ref-laber2012">2016</a>; Zhao et al. <a href="references.html#ref-kosorok2012">2012</a>; Chakraborty and Moodie <a href="references.html#ref-moodie2013">2013</a>)</span>. In this
 chapter, we focus on the methods discussed in <span class="citation">Luedtke and van der Laan (<a href="references.html#ref-luedtke2016super">2016</a>)</span> and
 <span class="citation">van der Laan and Luedtke (<a href="references.html#ref-vanderLaanLuedtke15">2015</a>)</span>. Note however, that <code>tmle3mopttx</code> also supports the widely
 used Q-learning approach, where the optimal individualized rule is based on the

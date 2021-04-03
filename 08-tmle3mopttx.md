@@ -132,23 +132,26 @@ endogenous variables we observe. The joint distribution of exogenous and
 endogenous random variables in $\mathcal{M}^F$ (defined by the NPSEM) is
 $P_{U,X}$. We can define the relationships between variables with the following
 structural equations:
-\begin{align*}\label{eqn:npsem_mopttx}
+\begin{align}
   W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
-\end{align*}
+  (\#eqn:npsem_mopttx)
+\end{align}
 where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified functions. Note that
 in the case of a randomized trial, we can write the above NPSEM as
-\begin{align*}\label{eqn:npsem_rt_mopttx}
+\begin{align}
   W &= f_W(U_W) \\ A &= U_A \\ Y &= f_Y(A, W, U_Y),
-\end{align*}
+  (\#eqn:npsem_rt_mopttx)
+\end{align}
 indicating no dependence of treatment on baseline covariates.
 
 The likelihood of the data admits a factorization, implied by the time ordering
-of $O$. We denote the density of $O$ as $p_0$, corresponding to the distribution
-$P_0$ and dominating measure $\mu$.
-\begin{equation*}\label{eqn:likelihood_factorization}
+of $O$. We denote the density of $O$ as $p_0$, corresponding to the
+distribution $P_0$ and dominating measure $\mu$.
+\begin{equation}
   p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
     q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
-\end{equation*}
+  (\#eqn:likelihood_factorization)
+\end{equation}
 where $p_{Y,0}(Y|A,W)$ is the conditional density of $Y$ given $(A, W)$ with
 respect to some dominating measure $\mu_Y$, $p_{A,0}$ is the conditional density
 of $A$ given $W$ with respect to dominating measure $\mu_A$, and $p_{W,0}$ is
@@ -172,20 +175,21 @@ sub-optimal rule.
 ## Defining the Causal Effect of an Optimal Individualized Intervention
 
 Consider dynamic treatment rules $d$ in the set of all possible rules
-$\mathcal{D}$.  Then, $d$ is a function that takes as input $V$ and outputs a
+$\mathcal{D}$. Then, $d$ is a function that takes as input $V$ and outputs a
 treatment decision, $V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times
 \{1\}$. We will use dynamic treatment rules, and the corresponding treatment
 decision, to describe an intervention on the treatment mechanism and the
 corresponding outcome under a dynamic treatment rule.
 
 As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM (\ref{eqn:npsem_mopttx}). We can define
+hypothetical interventions on the NPSEM \@ref(eqn:npsem_mopttx). We can define
 counterfactuals $Y_{d(V)}$ defined by a modified system in which the equation
 for $A$ is replaced by the rule $d(V)$, dependent on covariates $V$. Our
 modified system then takes the following form:
-\begin{align*}\label{eqn:npsem_causal_mopttx}
+\begin{align}
   W &= f_W(U_W) \\ A &= d(V) \\ Y_{d(V)} &= f_Y(d(V), W, U_Y),
-\end{align*}
+  (\#eqn:npsem_causal_mopttx)
+\end{align}
 where the dynamic treatment regime may be viewed as an intervention in which $A$
 is set equal to a value based on a hypothetical regime $d(V)$, possibly contrary
 to the fact, and $Y_{d(V)}$ is the corresponding outcome under $d(V)$. We
@@ -255,7 +259,7 @@ estimators exist in this setting. With that in mind, we address the estimation
 problem under the assumption of non-exceptional laws in effect.
 
 Many methods for learning the optimal rule from data have been developed
-[@murphy2003, @robins2004, @laber2012, @kosorok2012, @moodie2013]. In this
+[@murphy2003; @robins2004; @laber2012; @kosorok2012; @moodie2013]. In this
 chapter, we focus on the methods discussed in @luedtke2016super and
 @vanderLaanLuedtke15. Note however, that `tmle3mopttx` also supports the widely
 used Q-learning approach, where the optimal individualized rule is based on the

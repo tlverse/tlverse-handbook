@@ -10,9 +10,109 @@
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4.9002/tabs.js"></script><script src="libs/bs3compat-0.2.4.9002/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS -->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+<p>
+    \usepackage{booktabs}
+  \usepackage[inline]{enumitem}
+  \usepackage{float}
+  \usepackage{graphicx}
+  \usepackage[round]{natbib}
+  \usepackage{geometry}
+  \usepackage{tikz}
+  \usepackage[english]{babel}
+  \usepackage{longtable}
+  \usepackage{color}
+  \usepackage{mathtools,bm,amssymb,amsmath,amsthm}
+  \usepackage{multirow}
+  \usepackage[titletoc,title]{appendix}
+  \usepackage{authblk}
+  \usepackage{setspace}
+  \usepackage{dsfont}
+  \PassOptionsToPackage{utf8}{inputenc}
+  %\usepackage[utf8x]{inputenc}
+  \usepackage[OT1]{fontenc}
+  \usepackage[bf,singlelinecheck=off]{caption}
+  \usepackage{refcount}
+  \usepackage{framed,color}
+  \definecolor{shadecolor}{RGB}{248,248,248}
+  \urlstyle{tt}
+  
+  \renewcommand{\textfraction}{0.05}
+  \renewcommand{\topfraction}{0.8}
+  \renewcommand{\bottomfraction}{0.8}
+  \renewcommand{\floatpagefraction}{0.75}
+  
+  \usepackage{makeidx}
+  \makeindex
+  
+  \usepackage{amsthm}
+  \makeatletter
+  \def\thm@space@setup{%
+    \thm@preskip=8pt plus 2pt minus 4pt
+    \thm@postskip=\thm@preskip
+  }
+  \makeatother
+  
+  \newtheorem*{remark}{Remark}
+  \newtheorem{theorem}{Theorem}
+  \AtEndDocument{\refstepcounter{theorem}\label{finalthm}}
+  {
+    \theoremstyle{definition}
+    \newtheorem{assumption}{}
+  }
+  {
+    \theoremstyle{definition}
+    \newtheorem{assumptioniden}{}
+  }
+  {
+    \theoremstyle{definition}
+    \newtheorem{example}{Example}[section]
+  }
+  \DeclareMathOperator{\opt}{opt}
+  \DeclareMathOperator{\dr}{IF}
+  \newcommand{\hopt}{\hat h_{\opt}}
+  \newcommand{\supp}{\mathop{\mathrm{supp}}}
+  \renewcommand\theassumptioniden{{A}\arabic{assumptioniden}}
+  \renewcommand\theassumption{{C}\arabic{assumption}}
+  \renewcommand\theexample{\arabic{example}}
+  
+  \newtheorem{lemma}{Lemma}
+  \newtheorem{coro}{Corollary}
+  \newtheorem{definition}{Definition}
+  \DeclareMathOperator{\expit}{expit}
+  \DeclareMathOperator{\bern}{Bern}
+  \DeclareMathOperator{\logit}{logit}
+  \DeclareMathOperator{\var}{Var}
+  \DeclareMathOperator{\Rem}{Rem}
+  \newcommand{\pt}{\mbox{$p_0$}}
+  \newcommand{\Pt}{\mbox{$P_0$}}
+  \newcommand{\pl}{\parallel}
+  \newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+  \newcommand{\rs}{R}
+  \newcommand{\ds}{D^\dag}
+  \newcommand{\dd}{\mathrm{d}}
+  \newcommand{\Pn}{\mathbb{P}_{n}}
+  \newcommand{\mut}{\mu_0}
+  \newcommand{\thetasub}{\hat\theta_{\mbox{\scriptsize sub}}(\delta)}
+  \newcommand{\thetare}{\hat\theta_{\mbox{\scriptsize re}}(\delta)}
+  \newcommand{\thetatmle}{\hat\theta_{\mbox{\scriptsize tmle}}(\delta)}
+  \newcommand{\thetaaipw}{\hat\theta(\delta)}
+  \newcommand{\hgd}{\hat g_\delta}
+  \newcommand{\one}{\mathds{1}}
+  \renewcommand{\P}{\mathbb{P}}
+  \newcommand{\R}{\mathbb{R}}
+  \renewcommand{\rmdefault}{ptm}
+  \newcommand{\E}{\mathbb{E}}
+  \newcommand{\M}{\mathcal{M}}
+  \newcommand{\1}{\mathbbm{1}}
+  \newcommand{\prob}{\mathbb{P}}
+  \renewenvironment{proof}{{\it Proof }}{\qed \\}
+  \DeclareMathOperator*{\argmin}{\arg\!\min}
+  \DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+  
+  \frontmatter
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --></p>
 
 <div class="container-fluid">
 <div class="row">
@@ -129,9 +229,10 @@ nonparametric statistical model defined as the set of continuous densities on
 stochastic interventions and their corresponding causal effects, we introduce a
 nonparametric structural equation model (NPSEM), based on <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>,
 to define how the system changes under posited interventions:
-<span class="math display">\[\begin{align*}\label{eqn:npsem_shift}
+<span class="math display">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y),
-\end{align*}\]</span>
+  (\#eqn:npsem_shift)
+\end{align}\]</span>
 where the set of structural equations provide a mechanistic model by which the
 observed data <span class="math inline">\(O\)</span> is assumed to have been generated. There are several standard
 assumptions embedded in the NPSEM – specifically, a temporal ordering that
@@ -144,10 +245,11 @@ the corresponding observed variable.</p>
 <p>The likelihood of the data <span class="math inline">\(O\)</span> admits a factorization, wherein, for <span class="math inline">\(p_0^O\)</span>,
 the density of <span class="math inline">\(O\)</span> with respect to the product measure, the density evaluated
 on a particular observation <span class="math inline">\(o\)</span> may be a written
-<span class="math display">\[\begin{equation*}\label{eqn:likelihood_factorization}
+<span class="math display">\[\begin{equation}
   p_0^O(x) = q^O_{0,Y}(y \mid A = a, W = w) q^O_{0,A}(a \mid W = w)
   q^O_{0,W}(w),
-\end{equation*}\]</span>
+  (\#eqn:likelihood_factorization)
+\end{equation}\]</span>
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with respect
 to some dominating measure, <span class="math inline">\(q_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(q_{0, W}\)</span> is the density of
@@ -166,7 +268,7 @@ variables generated by interventions on the data-generating process.</p>
 <span class="header-section-number">9.4</span> Defining the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#defining-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <p>As causal effects are defined in terms of hypothetical interventions on the
-NPSEM (), we may consider stochastic interventions in two
+NPSEM @ref(eqn:npsem_shift), we may consider stochastic interventions in two
 equivalent ways: (1) where the equation <span class="math inline">\(f_A\)</span>, giving rise to <span class="math inline">\(A\)</span>, is replaced
 by a probabilistic mechanism <span class="math inline">\(g_{\delta}(A \mid W)\)</span> that differs from the
 original <span class="math inline">\(g(A \mid W)\)</span>, or (2) where the observed value <span class="math inline">\(A\)</span> is replaced by a
@@ -196,12 +298,13 @@ conditional on <span class="math inline">\(W = w\)</span> has support in the int
 minimum observed number of pills taken <span class="math inline">\(A\)</span> for an individual with covariates
 <span class="math inline">\(W = w\)</span> is <span class="math inline">\(l(w)\)</span>; similarly, the maximum is <span class="math inline">\(u(w)\)</span>. Then, a simple stochastic
 intervention, based on a shift <span class="math inline">\(\delta\)</span>, may be defined
-<span class="math display">\[\begin{equation}\label{eqn:shift}
+<span class="math display">\[\begin{equation}
   d(a, w) =
   \begin{cases}
     a - \delta &amp; \text{if } a &gt; l(w) + \delta \\
     a &amp; \text{if } a \leq l(w) + \delta,
   \end{cases}
+  (\#eqn:shift)
 \end{equation}\]</span>
 where <span class="math inline">\(0 \leq \delta \leq u(w)\)</span> is an arbitrary pre-specified value that
 defines the degree to which the observed value <span class="math inline">\(A\)</span> is to be shifted, where
@@ -224,13 +327,14 @@ particular, the target causal estimand of our analysis is <span class="math inli
 outcome variable <span class="math inline">\(Y_{d(A, W)}\)</span>. In prior work, <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> showed that
 the causal quantity of interest <span class="math inline">\(\E_0 \{Y_{d(A, W)}\}\)</span> is identified by
 a functional of the distribution of <span class="math inline">\(O\)</span>:
-<span class="math display">\[\begin{align*}\label{eqn:identification2012}
+<span class="math display">\[\begin{align}
   \psi_{0,d} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \cdot \\ &amp;q_{0, A}^O(a \mid W = w) \cdot
    q_{0, W}^O(w) d\mu(a)d\nu(w).
-\end{align*}\]</span>
+  (\#eqn:identification2012)
+\end{align}\]</span>
 If the identification conditions may be assumed to hold, then the statistical
-parameter in  matches exactly the counterfactual
+parameter in <a href="#eqn:identification2012"><strong>??</strong></a> matches exactly the counterfactual
 outcome <span class="math inline">\(\psi_{0, \delta}\)</span> under such an intervention, allowing for the causal
 effect to be learned from the observed data <span class="math inline">\(O\)</span>. <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> provide a
 derivation based on the efficient influence function (EIF) in the nonparametric
@@ -259,25 +363,29 @@ not depend on <span class="math inline">\(d(a_j, w_j)\)</span> for <span class="
 of interference <span class="citation">(Rubin <a href="references.html#ref-rubin1978bayesian">1978</a>, <a href="references.html#ref-rubin1980randomization">1980</a>)</span>.</li>
 <li>
 <em>Strong ignorability</em>: <span class="math inline">\(A_i \indep Y^{d(a_i, w_i)}_i \mid W_i\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.</li>
-<li>Positivity (or overlap)_: <span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the
+<li>
+<em>Positivity (or overlap)</em>: <span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the
 support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</li>
 </ol>
 <p>With the identification assumptions satisfied, <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> and
 <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2018stochastic">2018</a>)</span> provide an efficient influence function with respect to
 the nonparametric model <span class="math inline">\(\M\)</span> as
-<span class="math display">\[\begin{equation*}\label{eqn:eif}
+<span class="math display">\[\begin{equation}
   D(P_0)(x) = H(a, w)({y - \overline{Q}(a, w)}) +
   \overline{Q}(d(a, w), w) - \Psi(P_0),
-\end{equation*}\]</span>
+  (\#eqn:eif_shift)
+\end{equation}\]</span>
 where the auxiliary covariate <span class="math inline">\(H(a,w)\)</span> may be expressed
-<span class="math display">\[\begin{equation*}\label{eqn:aux_covar_full}
+<span class="math display">\[\begin{equation}
   H(a,w) = \mathbb{I}(a + \delta &lt; u(w)) \frac{g_0(a - \delta \mid w)}
   {g_0(a \mid w)} + \mathbb{I}(a + \delta \geq u(w)),
-\end{equation*}\]</span>
+  (\#eqn:aux_covar_full_shift)
+\end{equation}\]</span>
 which may be reduced to
-<span class="math display">\[\begin{equation*}\label{eqn:aux_covar_simple}
+<span class="math display">\[\begin{equation}
   H(a,w) = \frac{g_0(a - \delta \mid w)}{g_0(a \mid w)} + 1
-\end{equation*}\]</span>
+  (\#eqn:aux_covar_simple_shift)
+\end{equation}\]</span>
 in the case that the treatment is within the limits that arise from conditioning
 on <span class="math inline">\(W\)</span>, i.e., for <span class="math inline">\(A_i \in (u(w) - \delta, u(w))\)</span>.</p>
 <p>The efficient influence function allows the construction of a
@@ -296,10 +404,11 @@ or an alternative regression model incorporating weights.</li>
 <li>Compute TML estimator <span class="math inline">\(\Psi_n\)</span> of the target parameter, defining update
 <span class="math inline">\(\overline{Q}_n^{\star}\)</span> of the initial estimate
 <span class="math inline">\(\overline{Q}_{n, \epsilon_n}\)</span>:
-<span class="math display">\[\begin{equation*}\label{eqn:tmle}
+<span class="math display">\[\begin{equation}
   \Psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
   \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
-\end{equation*}\]</span>
+  (\#eqn:tmle)
+\end{equation}\]</span>
 </li>
 </ol>
 </div>
@@ -460,7 +569,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 <div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 534.2313  Pars:  0.43334 0.38683 0.17983</span>
+<span class="co">#&gt; Iter: 1 fn: 534.2313  Pars:  0.43334 0.38684 0.17982</span>
 <span class="co">#&gt; Iter: 2 fn: 534.2312  Pars:  0.43334 0.38684 0.17982</span>
 <span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
 <span class="va">tmle_fit</span>
@@ -506,7 +615,7 @@ straightforward manner:</p>
 <p><span class="math display">\[\psi_n \pm z_{\alpha} \cdot \frac{\sigma_n}{\sqrt{n}},\]</span>
 where <span class="math inline">\(\sigma_n^2\)</span> is an estimator of <span class="math inline">\(V(D(P_0))\)</span>. The estimator <span class="math inline">\(\sigma_n^2\)</span>
 may be obtained using the bootstrap or computed directly via the following</p>
-<p><span class="math display">\[\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^*, g_n)(O_i)\]</span></p>
+<p><span class="math display">\[\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)\]</span></p>
 <p>Having now re-examined these facts, let’s simply examine the results of
 computing our TML estimator:</p>
 </div>
@@ -563,6 +672,7 @@ provides the functions <code>shift_additive_bounded</code> and
       \delta, &amp; C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
+  (\#eqn:shift_simple)
 \end{equation}\]</span>
 which corresponds to an intervention in which the natural value of treatment
 of a given observational unit is shifted by a value <span class="math inline">\(\delta\)</span> in the case that
@@ -910,15 +1020,15 @@ that it is asymptotically normal (as given above), and that it is locally
 efficient. This allows us to build Wald-type confidence intervals, where
 $\sigma_n^2$ is an estimator of $V(D(P_0))$. The estimator $\sigma_n^2$
 may be obtained using the bootstrap or computed directly via
-$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^*, g_n)(O_i)$
+$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$
 
 We obtain semiparametric-efficient estimation and robust inference in the
 nonparametric model $\M$ by solving the efficient influence function.
 
-1. If $D(\bar{Q}_n^*, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm.
-2. The size of the class of functions $\bar{Q}_n^*$ and $g_n$ is bounded
+1. If $D(\bar{Q}_n^{\star}, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm.
+2. The size of the class of functions $\bar{Q}_n^{\star}$ and $g_n$ is bounded
    (technically, $\exists \mathcal{F}$ st
-   $D(\bar{Q}_n^*, g_n) \in \mathcal{F}$ whp, where $\mathcal{F}$ is a
+   $D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}$ whp, where $\mathcal{F}$ is a
    Donsker class)
 -->
 </div>
