@@ -134,13 +134,13 @@ $P_{U,X}$. We can define the relationships between variables with the following
 structural equations:
 \begin{align}
   W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
-  (\#eqn:npsem_mopttx)
+  (\#eq:npsem-mopttx)
 \end{align}
 where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified functions. Note that
 in the case of a randomized trial, we can write the above NPSEM as
 \begin{align}
   W &= f_W(U_W) \\ A &= U_A \\ Y &= f_Y(A, W, U_Y),
-  (\#eqn:npsem_rt_mopttx)
+  (\#eq:npsem-rt-mopttx)
 \end{align}
 indicating no dependence of treatment on baseline covariates.
 
@@ -150,7 +150,7 @@ distribution $P_0$ and dominating measure $\mu$.
 \begin{equation}
   p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
     q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
-  (\#eqn:likelihood_factorization)
+  (\#eq:likelihood-factorization)
 \end{equation}
 where $p_{Y,0}(Y|A,W)$ is the conditional density of $Y$ given $(A, W)$ with
 respect to some dominating measure $\mu_Y$, $p_{A,0}$ is the conditional density
@@ -182,13 +182,13 @@ decision, to describe an intervention on the treatment mechanism and the
 corresponding outcome under a dynamic treatment rule.
 
 As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM \@ref(eqn:npsem_mopttx). We can define
+hypothetical interventions on the NPSEM \@ref(eq:npsem-mopttx). We can define
 counterfactuals $Y_{d(V)}$ defined by a modified system in which the equation
 for $A$ is replaced by the rule $d(V)$, dependent on covariates $V$. Our
 modified system then takes the following form:
 \begin{align}
   W &= f_W(U_W) \\ A &= d(V) \\ Y_{d(V)} &= f_Y(d(V), W, U_Y),
-  (\#eqn:npsem_causal_mopttx)
+  (\#eq:npsem-causal-mopttx)
 \end{align}
 where the dynamic treatment regime may be viewed as an intervention in which $A$
 is set equal to a value based on a hypothetical regime $d(V)$, possibly contrary
@@ -412,7 +412,7 @@ aim of precision medicine: allocating the available treatment by tailoring it to
 the individual characteristics of the patient, with the goal of optimizing the
 final outcome.
 
-## Evaluating the Causal Effect of an OIT with Binary Treatment
+## Evaluating the Causal Effect of an OIT with Binary Treatment {#oit-eval-bin}
 
 Finally, we demonstrate how to evaluate the mean outcome under the optimal
 individualized treatment using `tmle3mopptx`. To start, let's load the packages
@@ -594,7 +594,7 @@ fit
 We can see that the estimate of $psi_0$ is $0.56$, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.
 
-## Evaluating the Causal Effect of an optimal ITR with Categorical Treatment
+## Evaluating the Causal Effect of an optimal ITR with Categorical Treatment {#oit-eval-cat}
 
 In this section, we consider how to evaluate the mean outcome under the optimal
 individualized treatment when $A$ has more than two categories. While the
@@ -880,8 +880,8 @@ individualized treatment.
 
 In order to run `tmle3mopttx` variable importance measure, we need to consider
 covariates to be categorical variables. For illustration purpose, we bin
-baseline covariates corresponding to the data-generating distribution described
-in section 5.7.1:
+baseline covariates corresponding to the data-generating distribution
+[described previously](#oit-eval):
 
 
 ```r
@@ -1050,17 +1050,17 @@ Questions:
    from `blip1` to `blip2` when considering categorical treatment? What are some
    of the advantages of each?
 
-3. Look back at the results generated in section 5.7.1, and compare then to the
-   mean under the optimal individualized treatment in section 5.6. Why do you
-   think the estimate if higher under the less complex rule? How does the set of
-   covariates picked by `tmle3mopttx` compare to the baseline covariates the
-   true rule depends on?
+3. Look back at the results generated in the [section on categorical
+   treatments](#oit-eval-cat), and compare then to the mean under the optimal
+   individualized treatment in the [section on binary
+   treatments](#oit-eval-bin). Why do you think the estimate is higher under the
+   less complex rule? How does the set of covariates picked by `tmle3mopttx`
+   compare to the baseline covariates the true rule depends on?
 
 4. Compare the distribution of treatments assigned under the true optimal
-   individualized treatment (section 5.6) and realistic optimal individualized
-   treatment (section 5.7.2). Referring back to the data-generating
-   distribution, why do you think the distribution of allocated treatment
-   changed?
+   individualized treatment and realistic optimal individualized treatment.
+   Referring back to the data-generating distribution, why do you think the
+   distribution of allocated treatment changed?
 
 5. Using the same simulation, perform a variable importance analysis using
    Q-learning. How do the results change and why?

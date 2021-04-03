@@ -55,17 +55,6 @@ Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
 
 
-```r
-library(skimr)
-# optionally disable sparkline graphs for PDF output
-if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(dat), format = "latex")
-} else {
-  skim(dat)
-}
-```
-
-
 \begin{tabular}{l|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
 \hline
 skim\_type & skim\_variable & n\_missing & complete\_rate & character.min & character.max & character.empty & character.n\_unique & character.whitespace & numeric.mean & numeric.sd & numeric.p0 & numeric.p25 & numeric.p50 & numeric.p75 & numeric.p100\\
@@ -175,15 +164,6 @@ Like before, we can summarize the variables measured in the IST sample data set
 with `skimr`:
 
 
-```r
-if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(ist), format = "latex")
-} else {
-  skim(ist)
-}
-```
-
-
 \begin{tabular}{l|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
 \hline
 skim\_type & skim\_variable & n\_missing & complete\_rate & character.min & character.max & character.empty & character.n\_unique & character.whitespace & numeric.mean & numeric.sd & numeric.p0 & numeric.p25 & numeric.p50 & numeric.p75 & numeric.p100\\
@@ -259,15 +239,6 @@ nhefs_data <- read_csv(
 ```
 
 A snapshot of the data set is shown below:
-
-
-```r
-if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(nhefs_data), format = "latex")
-} else {
-  skim(nhefs_data)
-}
-```
 
 
 \begin{tabular}{l|l|r|r|r|r|r|r|r|r|r}

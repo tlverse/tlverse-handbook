@@ -37,7 +37,6 @@ contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
 <!--
-
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
@@ -46,8 +45,10 @@ repository](https://github.com/tlverse/tlverse-handbook).
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
-
 -->
+
+<!--- For HTML Only --->
+
 
 ## Outline {#outline}
 

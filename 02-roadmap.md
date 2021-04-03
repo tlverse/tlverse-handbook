@@ -298,7 +298,7 @@ between the means of the outcome under these two interventions defines a
 parameter that is often called the "average treatment effect" (ATE), denoted
 \begin{equation}
   ATE = \mathbb{E}_X(Y(1)-Y(0)),
-  (\#eqn:ate)
+  (\#eq:ate)
 \end{equation}
 where $\mathbb{E}_X$ is the mean under the theoretical (unobserved) full data
 $X = (W, Y(1), Y(0))$.
@@ -312,7 +312,7 @@ different identifiability assumptions discussed below.
 
 Because we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
 and $Y(1)$ (similarly, the counterfactual outcome when $A=1$), we cannot
-estimate the quantity in Equation \@ref(eqn:ate) directly. Instead, we have to
+estimate the quantity in Equation \@ref(eq:ate) directly. Instead, we have to
 make assumptions under which this quantity may be estimated from the observed
 data $O \sim P_0$ under the data-generating distribution $P_0$. Fortunately,
 given the causal model specified in the NPSEM above, we can, with a handful of
@@ -343,14 +343,14 @@ specifically
 \begin{equation}
   ATE = \mathbb{E}_0(Y(1) - Y(0)) = \mathbb{E}_0
     \left(\mathbb{E}_0[Y \mid A = 1, W] - \mathbb{E}_0[Y \mid A = 0, W]\right).
-  (\#eqn:estimand)
+  (\#eq:estimand)
 \end{equation}
 In words, the ATE is the difference in the predicted outcome values for each
-subject, under the contrast of treatment conditions ($A = 0$ versus $A = 1$), in
-the population, averaged over all observations. Thus, a parameter of a
+subject, under the contrast of treatment conditions ($A = 0$ versus $A = 1$),
+in the population, averaged over all observations. Thus, a parameter of a
 theoretical "full" data distribution can be represented as an estimand of the
 observed data distribution. Significantly, there is nothing about the
-representation in Equation \@ref(eqn:estimand) that requires parameteric
+representation in Equation \@ref(eq:estimand) that requires parameteric
 assumptions; thus, the regressions on the right hand side may be estimated
 freely with machine learning. With different parameters, there will be
 potentially different identifiability assumptions and the resulting estimands
