@@ -36,6 +36,7 @@ phase and is available to facilitate input from the community. To view or
 contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
+<!--- For HTML Only --->
 <!--
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
@@ -46,9 +47,6 @@ repository](https://github.com/tlverse/tlverse-handbook).
 <p style="clear: both;">
 <br>
 -->
-
-<!--- For HTML Only --->
-
 
 ## Outline {#outline}
 
@@ -65,7 +63,7 @@ interest. The (evolving) set of materials includes
 * Introduction to the [`tlverse` software
     ecosystem](https://tlverse.org)
 * Cross-validation with the [`origami`](https://github.com/tlverse/origami)
-    package (_work in progress_)
+    package
 * Ensemble machine learning with the
     [`sl3`](https://github.com/tlverse/sl3) package
 * Targeted learning for causal inference with the
