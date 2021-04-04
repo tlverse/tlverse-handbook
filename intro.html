@@ -16,12 +16,13 @@
   \(\DeclareMathOperator{\expit}{expit}\)
   \(\DeclareMathOperator{\logit}{logit}\)
   \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
+  \(\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}\)
   \(\newcommand{\indep}{\perp\!\!\!\perp}\)
   \(\newcommand{\coloneqq}{\mathrel{=}}\)
   \(\newcommand{\R}{\mathbb{R}}\)
   \(\newcommand{\E}{\mathbb{E}}\)
   \(\newcommand{\M}{\mathcal{M}}\)
-  \(\newcommand{\prob}{\mathbb{P}}\)
+  \(\newcommand{\P}{\mathbb{P}}\)
   \(\newcommand{\I}{\mathbb{I}}\)
   \(\newcommand{\1}{\mathbbm{1}}\)
   </span>
@@ -98,7 +99,7 @@ estimator.</p>
 <p>Following the roadmap is a process of five stages.</p>
 <ol style="list-style-type: decimal">
 <li>Data as a random variable with a probability distribution, <span class="math inline">\(O \sim P_0\)</span>.</li>
-<li>The statistical model <span class="math inline">\(\mathcal{M}\)</span> such that <span class="math inline">\(P_0 \in \mathcal{M}\)</span>.</li>
+<li>The statistical model <span class="math inline">\(\M\)</span> such that <span class="math inline">\(P_0 \in \M\)</span>.</li>
 <li>The statistical target parameter <span class="math inline">\(\Psi\)</span> and estimand <span class="math inline">\(\Psi(P_0)\)</span>.</li>
 <li>The estimator <span class="math inline">\(\hat{\Psi}\)</span> and estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span>.</li>
 <li>A measure of uncertainty for the estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span>.</li>
@@ -130,28 +131,27 @@ true probability measure <span class="math inline">\(P_0\)</span>, allowing us t
 example, we can define the empirical probability measure of a set, <span class="math inline">\(A\)</span>, to be
 the proportion of observations which end up in <span class="math inline">\(A\)</span>. That is,
 <span class="math display">\[\begin{equation*}
-  P_n(A) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(O_i \in A)
+  P_n(A) = \frac{1}{n}\sum_{i=1}^{n} \I(O_i \in A)
 \end{equation*}\]</span></p>
 <p>In order to start learning something, we need to ask <em>“What do we know about the
 probability distribution of the data?”</em> This brings us to Step 2.</p>
 </div>
 </div>
-<div id="the-statistical-model-mathcalm-such-that-p_0-in-mathcalm" class="section level3 unnumbered">
-<h3>(2) The statistical model <span class="math inline">\(\mathcal{M}\)</span> such that <span class="math inline">\(P_0 \in \mathcal{M}\)</span><a class="anchor" aria-label="anchor" href="#the-statistical-model-mathcalm-such-that-p_0-in-mathcalm"><i class="fas fa-link"></i></a>
+<div id="the-statistical-model-m-such-that-p_0-in-m" class="section level3 unnumbered">
+<h3>(2) The statistical model <span class="math inline">\(\M\)</span> such that <span class="math inline">\(P_0 \in \M\)</span><a class="anchor" aria-label="anchor" href="#the-statistical-model-m-such-that-p_0-in-m"><i class="fas fa-link"></i></a>
 </h3>
-<p>The statistical model <span class="math inline">\(\mathcal{M}\)</span> is defined by the question we asked at the
-end of Step 1. It is defined as the set of possible probability
-distributions for our observed data. Often <span class="math inline">\(\mathcal{M}\)</span> is very large (possibly
-infinite-dimensional), to reflect the fact that statistical knowledge is
-limited. In the case that <span class="math inline">\(\mathcal{M}\)</span> is infinite-dimensional, we deem this a
-nonparametric statistical model.</p>
+<p>The statistical model <span class="math inline">\(\M\)</span> is defined by the question we asked at the end of
+Step 1. It is defined as the set of possible probability distributions for our
+observed data. Often <span class="math inline">\(\M\)</span> is very large (possibly infinite-dimensional), to
+reflect the fact that statistical knowledge is limited. In the case that <span class="math inline">\(\M\)</span> is
+infinite-dimensional, we deem this a nonparametric statistical model.</p>
 <p>Alternatively, if the probability distribution of the data at hand is described
 by a finite number of parameters, then the statistical model is parametric. In
 this case, we subscribe to the belief that the random variable <span class="math inline">\(O\)</span> being
 observed has, for example, a normal distribution with mean <span class="math inline">\(\mu\)</span> and variance
 <span class="math inline">\(\sigma^2\)</span>. Formally, a parametric model may be defined
 <span class="math display">\[\begin{equation*}
-  \mathcal{M} = \{P_{\theta} : \theta \in \mathcal{R}^d \}
+  \M = \{P_{\theta} : \theta \in \R^d \}
 \end{equation*}\]</span></p>
 <p>Sadly, the assumption that the data-generating distribution has a specific,
 parametric form is all too common, especially since this is a leap of faith or
@@ -170,24 +170,22 @@ distribution corresponding to the observed data.</p>
 <h3>(3) The statistical target parameter <span class="math inline">\(\Psi\)</span> and estimand <span class="math inline">\(\Psi(P_0)\)</span><a class="anchor" aria-label="anchor" href="#the-statistical-target-parameter-psi-and-estimand-psip_0"><i class="fas fa-link"></i></a>
 </h3>
 <p>The statistical target parameter, <span class="math inline">\(\Psi\)</span>, is defined as a mapping from the
-statistical model, <span class="math inline">\(\mathcal{M}\)</span>, to the parameter space (i.e., a real number)
-<span class="math inline">\(\mathcal{R}\)</span>. That is, <span class="math inline">\(\Psi: \mathcal{M}\rightarrow\mathbb{R}\)</span>. The estimand
-may be seen as a representation of the quantity that we wish to learn from the
-data, the answer to a well-specified (often causal) question of interest. In
-contrast to purely statistical estimands, causal estimands require
-<em>identification from the observed data</em>, based on causal models that include
-several untestable assumptions, described in more detail in the section on
-<a href="intro.html#causal">causal target parameters</a>.</p>
+statistical model, <span class="math inline">\(\M\)</span>, to the parameter space (i.e., a real number) <span class="math inline">\(\R\)</span>. That
+is, <span class="math inline">\(\Psi: \M \rightarrow \R\)</span>. The estimand may be seen as a representation of
+the quantity that we wish to learn from the data, the answer to a well-specified
+(often causal) question of interest. In contrast to purely statistical
+estimands, causal estimands require <em>identification from the observed data</em>,
+based on causal models that include several untestable assumptions, described in
+more detail in the section on <a href="intro.html#causal">causal target parameters</a>.</p>
 <p>For a simple example, consider a data set which contains observations of a
 survival time on every subject, for which our question of interest is “What’s
 the probability that someone lives longer than five years?” We have,
 <span class="math display">\[\begin{equation*}
-  \Psi(P_0) = \mathbb{P}(O &gt; 5)
+  \Psi(P_0) = \P(O &gt; 5)
 \end{equation*}\]</span></p>
 <p>This answer to this question is the <strong>estimand, <span class="math inline">\(\Psi(P_0)\)</span></strong>, which is the
-quantity we’re trying to learn from the data. Once we have defined <span class="math inline">\(O\)</span>,
-<span class="math inline">\(\mathcal{M}\)</span> and <span class="math inline">\(\Psi(P_0)\)</span> we have formally defined the statistical
-estimation problem.</p>
+quantity we’re trying to learn from the data. Once we have defined <span class="math inline">\(O\)</span>, <span class="math inline">\(\M\)</span> and
+<span class="math inline">\(\Psi(P_0)\)</span> we have formally defined the statistical estimation problem.</p>
 </div>
 <div id="the-estimator-hatpsi-and-estimate-hatpsip_n" class="section level3 unnumbered">
 <h3>(4) The estimator <span class="math inline">\(\hat{\Psi}\)</span> and estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span><a class="anchor" aria-label="anchor" href="#the-estimator-hatpsi-and-estimate-hatpsip_n"><i class="fas fa-link"></i></a>
@@ -195,10 +193,11 @@ estimation problem.</p>
 <p>To obtain a good approximation of the estimand, we need an estimator, an <em>a
 priori</em>-specified algorithm defined as a mapping from the set of possible
 empirical distributions, <span class="math inline">\(P_n\)</span>, which live in a non-parametric statistical
-model, <span class="math inline">\(\mathcal{M}_{NP}\)</span> (<span class="math inline">\(P_n \in \mathcal{M}_{NP}\)</span>), to the parameter space
-of the parameter of interest. That is, <span class="math inline">\(\hat{\Psi} : \mathcal{M}_{NP} \rightarrow \mathbb{R}^d\)</span>. The estimator is a function that takes as input
-the observed data, a realization of <span class="math inline">\(P_n\)</span>, and gives as output a value in the
-parameter space, which is the <strong>estimate, <span class="math inline">\(\hat{\Psi}(P_n)\)</span></strong>.</p>
+model, <span class="math inline">\(\M_{NP}\)</span> (<span class="math inline">\(P_n \in \M_{NP}\)</span>), to the parameter space of the parameter of
+interest. That is, <span class="math inline">\(\hat{\Psi} : \M_{NP} \rightarrow \R^d\)</span>. The estimator is a
+function that takes as input the observed data, a realization of <span class="math inline">\(P_n\)</span>, and
+gives as output a value in the parameter space, which is the <strong>estimate,
+<span class="math inline">\(\hat{\Psi}(P_n)\)</span></strong>.</p>
 <p>Where the estimator may be seen as an operator that maps the observed data and
 corresponding empirical distribution to a value in the parameter space, the
 numerical output that produced such a function is the estimate. Thus, it is an
@@ -213,18 +212,18 @@ distribution of our estimator will be necessary. This brings us to Step 5.</p>
 <div id="a-measure-of-uncertainty-for-the-estimate-hatpsip_n" class="section level3 unnumbered">
 <h3>(5) A measure of uncertainty for the estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span><a class="anchor" aria-label="anchor" href="#a-measure-of-uncertainty-for-the-estimate-hatpsip_n"><i class="fas fa-link"></i></a>
 </h3>
-<p>Since the estimator <span class="math inline">\(\hat{\Psi}\)</span> is a function of the empirical
-distribution <span class="math inline">\(P_n\)</span>, the estimator itself is a random variable with a sampling
-distribution. So, if we repeat the experiment of drawing <span class="math inline">\(n\)</span> observations we
-would every time end up with a different realization of our estimate and our
-estimator has a sampling distribution. The sampling distribution of some estimators
-can be theoretically validated to be approximately normally distributed by a
-Central Limit Theorem (CLT).</p>
-<p>A class of <strong>Central Limit Theorems</strong> (CLTs) are statements regarding the
-convergence of the <strong>sampling distribution of an estimator</strong> to a normal
-distribution. In general, we will construct estimators whose limit sampling
-distributions may be shown to be approximately normal distributed as sample size
-increases. For large enough <span class="math inline">\(n\)</span> we have,
+<p>Since the estimator <span class="math inline">\(\hat{\Psi}\)</span> is a function of the empirical distribution
+<span class="math inline">\(P_n\)</span>, the estimator itself is a random variable with a sampling distribution.
+So, if we repeat the experiment of drawing <span class="math inline">\(n\)</span> observations we would every time
+end up with a different realization of our estimate and our estimator has a
+sampling distribution. The sampling distribution of some estimators can be
+theoretically validated to be approximately normally distributed by a Central
+Limit Theorem (CLT).</p>
+<p>A <strong>Central Limit Theorem</strong> (CLTs) is a statement regarding the convergence of
+the <strong>sampling distribution of an estimator</strong> to a normal distribution. In
+general, we will construct estimators whose limit sampling distributions may be
+shown to be approximately normal distributed as sample size increases. For large
+enough <span class="math inline">\(n\)</span> we have,
 <span class="math display">\[\begin{equation*}
   \hat{\Psi}(P_n) \sim N \left(\Psi(P_0), \frac{\sigma^2}{n}\right),
 \end{equation*}\]</span>
@@ -262,17 +261,17 @@ We often have <span class="math inline">\(n\)</span> units of independent identi
 probability distribution <span class="math inline">\(P_0\)</span>, such that <span class="math inline">\(O_1, \ldots, O_n \sim P_0\)</span>. We have
 statistical knowledge about the experiment that generated this data. In other
 words, we make a statement that the true data distribution <span class="math inline">\(P_0\)</span> falls in a
-certain set called a statistical model, <span class="math inline">\(\mathcal{M}\)</span>. Often these sets are very
-large because statistical knowledge is very limited - hence, these statistical
-models are often infinite dimensional models. Our statistical query is, “What
-are we trying to learn from the data?” denoted by the statistical target
-parameter, <span class="math inline">\(\Psi\)</span>, which maps the <span class="math inline">\(P_0\)</span> into the estimand, <span class="math inline">\(\Psi(P_0)\)</span>. At this
-point the statistical estimation problem is formally defined and now we will
-need statistical theory to guide us in the construction of estimators. There’s a
-lot of statistical theory we will review in this course that, in particular,
-relies on the Central Limit Theorem, allowing us to come up with estimators that
-are approximately normally distributed and also allowing us to come with
-statistical inference (i.e., confidence intervals and hypothesis tests).</p>
+certain set called a statistical model, <span class="math inline">\(\M\)</span>. Often these sets are very large
+because statistical knowledge is very limited - hence, these statistical models
+are often infinite dimensional models. Our statistical query is, “What are we
+trying to learn from the data?” denoted by the statistical target parameter,
+<span class="math inline">\(\Psi\)</span>, which maps the <span class="math inline">\(P_0\)</span> into the estimand, <span class="math inline">\(\Psi(P_0)\)</span>. At this point the
+statistical estimation problem is formally defined and now we will need
+statistical theory to guide us in the construction of estimators. There’s a lot
+of statistical theory we will review in this course that, in particular, relies
+on the Central Limit Theorem, allowing us to come up with estimators that are
+approximately normally distributed and also allowing us to come with statistical
+inference (i.e., confidence intervals and hypothesis tests).</p>
 </div>
 <div id="causal" class="section level2">
 <h2>
@@ -361,11 +360,10 @@ often called <em>counterfactuals</em> (since they run contrary-to-fact). The dif
 between the means of the outcome under these two interventions defines a
 parameter that is often called the “average treatment effect” (ATE), denoted
 <span class="math display" id="eq:ate">\[\begin{equation}
-  ATE = \mathbb{E}_X(Y(1)-Y(0)),
+  ATE = \E_X(Y(1) - Y(0)),
   \tag{2.1}
 \end{equation}\]</span>
-where <span class="math inline">\(\mathbb{E}_X\)</span> is the mean under the theoretical (unobserved) full data
-<span class="math inline">\(X = (W, Y(1), Y(0))\)</span>.</p>
+where <span class="math inline">\(\E_X\)</span> is the mean under the theoretical (unobserved) full data <span class="math inline">\(X = (W, Y(1), Y(0))\)</span>.</p>
 <p>Note, we can define much more complicated interventions on NPSEM’s, such as
 interventions based upon rules (themselves based upon covariates), stochastic
 rules, etc. and each results in a different targeted parameter and entails
@@ -396,7 +394,7 @@ for unit <span class="math inline">\(i\)</span> is <span class="math inline">\(Y
 other versions of treatment”;</li>
 <li>It is also necessary that all observed units, across strata defined by <span class="math inline">\(W\)</span>,
 have a bounded (non-deterministic) probability of receiving treatment –
-that is, <span class="math inline">\(0 &lt; \mathbb{P}(A = a \mid W) &lt; 1\)</span> for all <span class="math inline">\(a\)</span> and <span class="math inline">\(W\)</span>). This assumption
+that is, <span class="math inline">\(0 &lt; \P(A = a \mid W) &lt; 1\)</span> for all <span class="math inline">\(a\)</span> and <span class="math inline">\(W\)</span>). This assumption
 is referred to as <em>positivity</em> or <em>overlap</em>.</li>
 </ol>
 <p><em>Remark</em>: Together, (2) and (3), the assumptions of no interference and
@@ -405,8 +403,8 @@ treatment value assumption</em> (SUTVA).</p>
 <p>Given these assumptions, the ATE may be re-written as a function of <span class="math inline">\(P_0\)</span>,
 specifically
 <span class="math display" id="eq:estimand">\[\begin{equation}
-  ATE = \mathbb{E}_0(Y(1) - Y(0)) = \mathbb{E}_0
-    \left(\mathbb{E}_0[Y \mid A = 1, W] - \mathbb{E}_0[Y \mid A = 0, W]\right).
+  ATE = \E_0(Y(1) - Y(0)) = \E_0
+    \left(\E_0[Y \mid A = 1, W] - \E_0[Y \mid A = 0, W]\right).
   \tag{2.2}
 \end{equation}\]</span>
 In words, the ATE is the difference in the predicted outcome values for each
@@ -436,7 +434,7 @@ complex estimands in later sections of this handbook.</p>
 <li>
 <a class="nav-link" href="#roadmap"><span class="header-section-number">2.1</span> The Roadmap</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#data-a-random-variable-with-a-probability-distribution-o-sim-p_0">(1) Data: A random variable with a probability distribution, \(O \sim P_0\)</a></li>
-<li><a class="nav-link" href="#the-statistical-model-mathcalm-such-that-p_0-in-mathcalm">(2) The statistical model \(\mathcal{M}\) such that \(P_0 \in \mathcal{M}\)</a></li>
+<li><a class="nav-link" href="#the-statistical-model-m-such-that-p_0-in-m">(2) The statistical model \(\M\) such that \(P_0 \in \M\)</a></li>
 <li><a class="nav-link" href="#the-statistical-target-parameter-psi-and-estimand-psip_0">(3) The statistical target parameter \(\Psi\) and estimand \(\Psi(P_0)\)</a></li>
 <li><a class="nav-link" href="#the-estimator-hatpsi-and-estimate-hatpsip_n">(4) The estimator \(\hat{\Psi}\) and estimate \(\hat{\Psi}(P_n)\)</a></li>
 <li><a class="nav-link" href="#a-measure-of-uncertainty-for-the-estimate-hatpsip_n">(5) A measure of uncertainty for the estimate \(\hat{\Psi}(P_n)\)</a></li>

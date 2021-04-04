@@ -26,7 +26,7 @@ estimator.
 Following the roadmap is a process of five stages.
 
 1. Data as a random variable with a probability distribution, $O \sim P_0$.
-2. The statistical model $\mathcal{M}$ such that $P_0 \in \mathcal{M}$.
+2. The statistical model $\M$ such that $P_0 \in \M$.
 3. The statistical target parameter $\Psi$ and estimand $\Psi(P_0)$.
 4. The estimator $\hat{\Psi}$ and estimate $\hat{\Psi}(P_n)$.
 5. A measure of uncertainty for the estimate $\hat{\Psi}(P_n)$.
@@ -57,20 +57,19 @@ true probability measure $P_0$, allowing us to learn from our data. For
 example, we can define the empirical probability measure of a set, $A$, to be
 the proportion of observations which end up in $A$. That is,
 \begin{equation*}
-  P_n(A) = \frac{1}{n}\sum_{i=1}^{n} \mathbb{I}(O_i \in A)
+  P_n(A) = \frac{1}{n}\sum_{i=1}^{n} \I(O_i \in A)
 \end{equation*}
 
 In order to start learning something, we need to ask *"What do we know about the
 probability distribution of the data?"* This brings us to Step 2.
 
-### (2) The statistical model $\mathcal{M}$ such that $P_0 \in \mathcal{M}$ {-}
+### (2) The statistical model $\M$ such that $P_0 \in \M$ {-}
 
-The statistical model $\mathcal{M}$ is defined by the question we asked at the
-end of Step 1. It is defined as the set of possible probability
-distributions for our observed data. Often $\mathcal{M}$ is very large (possibly
-infinite-dimensional), to reflect the fact that statistical knowledge is
-limited. In the case that $\mathcal{M}$ is infinite-dimensional, we deem this a
-nonparametric statistical model.
+The statistical model $\M$ is defined by the question we asked at the end of
+Step 1. It is defined as the set of possible probability distributions for our
+observed data. Often $\M$ is very large (possibly infinite-dimensional), to
+reflect the fact that statistical knowledge is limited. In the case that $\M$ is
+infinite-dimensional, we deem this a nonparametric statistical model.
 
 Alternatively, if the probability distribution of the data at hand is described
 by a finite number of parameters, then the statistical model is parametric. In
@@ -78,7 +77,7 @@ this case, we subscribe to the belief that the random variable $O$ being
 observed has, for example, a normal distribution with mean $\mu$ and variance
 $\sigma^2$. Formally, a parametric model may be defined
 \begin{equation*}
-  \mathcal{M} = \{P_{\theta} : \theta \in \mathcal{R}^d \}
+  \M = \{P_{\theta} : \theta \in \R^d \}
 \end{equation*}
 
 Sadly, the assumption that the data-generating distribution has a specific,
@@ -98,37 +97,35 @@ Now, on to Step 3: *"What are we trying to learn from the data?"*
 ### (3) The statistical target parameter $\Psi$ and estimand $\Psi(P_0)$ {-}
 
 The statistical target parameter, $\Psi$, is defined as a mapping from the
-statistical model, $\mathcal{M}$, to the parameter space (i.e., a real number)
-$\mathcal{R}$. That is, $\Psi: \mathcal{M}\rightarrow\mathbb{R}$. The estimand
-may be seen as a representation of the quantity that we wish to learn from the
-data, the answer to a well-specified (often causal) question of interest. In
-contrast to purely statistical estimands, causal estimands require
-_identification from the observed data_, based on causal models that include
-several untestable assumptions, described in more detail in the section on
-[causal target parameters](#causal).
+statistical model, $\M$, to the parameter space (i.e., a real number) $\R$. That
+is, $\Psi: \M \rightarrow \R$. The estimand may be seen as a representation of
+the quantity that we wish to learn from the data, the answer to a well-specified
+(often causal) question of interest. In contrast to purely statistical
+estimands, causal estimands require _identification from the observed data_,
+based on causal models that include several untestable assumptions, described in
+more detail in the section on [causal target parameters](#causal).
 
 For a simple example, consider a data set which contains observations of a
 survival time on every subject, for which our question of interest is "What's
 the probability that someone lives longer than five years?" We have,
 \begin{equation*}
-  \Psi(P_0) = \mathbb{P}(O > 5)
+  \Psi(P_0) = \P(O > 5)
 \end{equation*}
 
 This answer to this question is the **estimand, $\Psi(P_0)$**, which is the
-quantity we're trying to learn from the data. Once we have defined $O$,
-$\mathcal{M}$ and $\Psi(P_0)$ we have formally defined the statistical
-estimation problem.
+quantity we're trying to learn from the data. Once we have defined $O$, $\M$ and
+$\Psi(P_0)$ we have formally defined the statistical estimation problem.
 
 ### (4) The estimator $\hat{\Psi}$ and estimate $\hat{\Psi}(P_n)$ {-}
 
 To obtain a good approximation of the estimand, we need an estimator, an _a
 priori_-specified algorithm defined as a mapping from the set of possible
 empirical distributions, $P_n$, which live in a non-parametric statistical
-model, $\mathcal{M}_{NP}$ ($P_n \in \mathcal{M}_{NP}$), to the parameter space
-of the parameter of interest. That is, $\hat{\Psi} : \mathcal{M}_{NP}
-\rightarrow \mathbb{R}^d$. The estimator is a function that takes as input
-the observed data, a realization of $P_n$, and gives as output a value in the
-parameter space, which is the **estimate, $\hat{\Psi}(P_n)$**.
+model, $\M_{NP}$ ($P_n \in \M_{NP}$), to the parameter space of the parameter of
+interest. That is, $\hat{\Psi} : \M_{NP} \rightarrow \R^d$. The estimator is a
+function that takes as input the observed data, a realization of $P_n$, and
+gives as output a value in the parameter space, which is the **estimate,
+$\hat{\Psi}(P_n)$**.
 
 Where the estimator may be seen as an operator that maps the observed data and
 corresponding empirical distribution to a value in the parameter space, the
@@ -144,19 +141,19 @@ distribution of our estimator will be necessary. This brings us to Step 5.
 
 ### (5) A measure of uncertainty for the estimate $\hat{\Psi}(P_n)$ {-}
 
-Since the estimator $\hat{\Psi}$ is a function of the empirical
-distribution $P_n$, the estimator itself is a random variable with a sampling
-distribution. So, if we repeat the experiment of drawing $n$ observations we
-would every time end up with a different realization of our estimate and our
-estimator has a sampling distribution. The sampling distribution of some estimators
-can be theoretically validated to be approximately normally distributed by a
-Central Limit Theorem (CLT).
+Since the estimator $\hat{\Psi}$ is a function of the empirical distribution
+$P_n$, the estimator itself is a random variable with a sampling distribution.
+So, if we repeat the experiment of drawing $n$ observations we would every time
+end up with a different realization of our estimate and our estimator has a
+sampling distribution. The sampling distribution of some estimators can be
+theoretically validated to be approximately normally distributed by a Central
+Limit Theorem (CLT).
 
-A class of __Central Limit Theorems__ (CLTs) are statements regarding the
-convergence of the __sampling distribution of an estimator__ to a normal
-distribution. In general, we will construct estimators whose limit sampling
-distributions may be shown to be approximately normal distributed as sample size
-increases. For large enough $n$ we have,
+A __Central Limit Theorem__ (CLTs) is a statement regarding the convergence of
+the __sampling distribution of an estimator__ to a normal distribution. In
+general, we will construct estimators whose limit sampling distributions may be
+shown to be approximately normal distributed as sample size increases. For large
+enough $n$ we have,
 \begin{equation*}
   \hat{\Psi}(P_n) \sim N \left(\Psi(P_0), \frac{\sigma^2}{n}\right),
 \end{equation*}
@@ -193,17 +190,17 @@ We often have $n$ units of independent identically distributed units with
 probability distribution $P_0$, such that $O_1, \ldots, O_n \sim P_0$. We have
 statistical knowledge about the experiment that generated this data. In other
 words, we make a statement that the true data distribution $P_0$ falls in a
-certain set called a statistical model, $\mathcal{M}$. Often these sets are very
-large because statistical knowledge is very limited - hence, these statistical
-models are often infinite dimensional models. Our statistical query is, "What
-are we trying to learn from the data?" denoted by the statistical target
-parameter, $\Psi$, which maps the $P_0$ into the estimand, $\Psi(P_0)$. At this
-point the statistical estimation problem is formally defined and now we will
-need statistical theory to guide us in the construction of estimators. There's a
-lot of statistical theory we will review in this course that, in particular,
-relies on the Central Limit Theorem, allowing us to come up with estimators that
-are approximately normally distributed and also allowing us to come with
-statistical inference (i.e., confidence intervals and hypothesis tests).
+certain set called a statistical model, $\M$. Often these sets are very large
+because statistical knowledge is very limited - hence, these statistical models
+are often infinite dimensional models. Our statistical query is, "What are we
+trying to learn from the data?" denoted by the statistical target parameter,
+$\Psi$, which maps the $P_0$ into the estimand, $\Psi(P_0)$. At this point the
+statistical estimation problem is formally defined and now we will need
+statistical theory to guide us in the construction of estimators. There's a lot
+of statistical theory we will review in this course that, in particular, relies
+on the Central Limit Theorem, allowing us to come up with estimators that are
+approximately normally distributed and also allowing us to come with statistical
+inference (i.e., confidence intervals and hypothesis tests).
 
 ## Causal Target Parameters {#causal}
 
@@ -297,11 +294,11 @@ often called _counterfactuals_ (since they run contrary-to-fact). The difference
 between the means of the outcome under these two interventions defines a
 parameter that is often called the "average treatment effect" (ATE), denoted
 \begin{equation}
-  ATE = \mathbb{E}_X(Y(1)-Y(0)),
+  ATE = \E_X(Y(1) - Y(0)),
   (\#eq:ate)
 \end{equation}
-where $\mathbb{E}_X$ is the mean under the theoretical (unobserved) full data
-$X = (W, Y(1), Y(0))$.
+where $\E_X$ is the mean under the theoretical (unobserved) full data $X = (W,
+Y(1), Y(0))$.
 
 Note, we can define much more complicated interventions on NPSEM's, such as
 interventions based upon rules (themselves based upon covariates), stochastic
@@ -331,7 +328,7 @@ assumptions may be summarized as follows.
    other versions of treatment";
 4. It is also necessary that all observed units, across strata defined by $W$,
    have a bounded (non-deterministic) probability of receiving treatment --
-   that is, $0 < \mathbb{P}(A = a \mid W) < 1$ for all $a$ and $W$). This assumption
+   that is, $0 < \P(A = a \mid W) < 1$ for all $a$ and $W$). This assumption
    is referred to as _positivity_ or _overlap_.
 
 _Remark_: Together, (2) and (3), the assumptions of no interference and
@@ -341,8 +338,8 @@ treatment value assumption* (SUTVA).
 Given these assumptions, the ATE may be re-written as a function of $P_0$,
 specifically
 \begin{equation}
-  ATE = \mathbb{E}_0(Y(1) - Y(0)) = \mathbb{E}_0
-    \left(\mathbb{E}_0[Y \mid A = 1, W] - \mathbb{E}_0[Y \mid A = 0, W]\right).
+  ATE = \E_0(Y(1) - Y(0)) = \E_0
+    \left(\E_0[Y \mid A = 1, W] - \E_0[Y \mid A = 0, W]\right).
   (\#eq:estimand)
 \end{equation}
 In words, the ATE is the difference in the predicted outcome values for each
