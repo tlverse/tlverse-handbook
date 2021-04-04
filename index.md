@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "April 03, 2021"
+date: "April 04, 2021"
 documentclass: book
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -193,8 +193,8 @@ following packages:
 
 |package      |version    |source                                |
 |:------------|:----------|:-------------------------------------|
-|bookdown     |0.21.9     |Github (rstudio/bookdown\@df6786e)    |
-|bslib        |0.2.4.9002 |Github (rstudio/bslib\@e9cc4d1)       |
+|bookdown     |0.21.7     |Github (rstudio/bookdown\@f7d0622)    |
+|bslib        |0.2.4.9002 |Github (rstudio/bslib\@62f0bfe)       |
 |dagitty      |0.3-1      |CRAN (R 4.0.2)                        |
 |data.table   |1.14.0     |CRAN (R 4.0.2)                        |
 |delayed      |0.3.0      |CRAN (R 4.0.2)                        |
@@ -210,7 +210,7 @@ following packages:
 |origami      |1.0.3      |CRAN (R 4.0.2)                        |
 |randomForest |4.6-14     |CRAN (R 4.0.2)                        |
 |readr        |1.4.0      |CRAN (R 4.0.2)                        |
-|rmarkdown    |2.7.5      |Github (rstudio/rmarkdown\@c3a709b)   |
+|rmarkdown    |2.7.4      |Github (rstudio/rmarkdown\@a11240d)   |
 |skimr        |2.1.3      |CRAN (R 4.0.2)                        |
 |sl3          |1.4.3      |Github (tlverse/sl3\@9b76e9d)         |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                        |
