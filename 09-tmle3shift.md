@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-04
+Updated: 2021-04-05
 
 ## Learning Objectives
 
@@ -90,7 +90,7 @@ on a particular observation $o$ may be a written
 \begin{equation}
   p_0^O(x) = q^O_{0,Y}(y \mid A = a, W = w) q^O_{0,A}(a \mid W = w)
   q^O_{0,W}(w),
-  (\#eq:likelihood-factorization)
+  (\#eq:likelihood-factorization-shift)
 \end{equation}
 where $q_{0, Y}$ is the conditional density of $Y$ given $(A, W)$ with respect
 to some dominating measure, $q_{0, A}$ is the conditional density of $A$ given

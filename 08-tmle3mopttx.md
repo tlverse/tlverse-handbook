@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-04
+Updated: 2021-04-05
 
 ## Learning Objectives
 
@@ -150,7 +150,7 @@ distribution $P_0$ and dominating measure $\mu$.
 \begin{equation}
   p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
     q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
-  (\#eq:likelihood-factorization)
+  (\#eq:likelihood-factorization-mopttx)
 \end{equation}
 where $p_{Y,0}(Y|A,W)$ is the conditional density of $Y$ given $(A, W)$ with
 respect to some dominating measure $\mu_Y$, $p_{A,0}$ is the conditional density

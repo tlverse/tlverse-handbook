@@ -16,7 +16,6 @@
   \(\DeclareMathOperator{\expit}{expit}\)
   \(\DeclareMathOperator{\logit}{logit}\)
   \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
-  \(\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}\)
   \(\newcommand{\indep}{\perp\!\!\!\perp}\)
   \(\newcommand{\coloneqq}{\mathrel{=}}\)
   \(\newcommand{\R}{\mathbb{R}}\)
@@ -157,10 +156,10 @@ the corresponding observed variable.</p>
 <p>The likelihood of the data <span class="math inline">\(O\)</span> admits a factorization, wherein, for <span class="math inline">\(p_0^O\)</span>,
 the density of <span class="math inline">\(O\)</span> with respect to the product measure, the density evaluated
 on a particular observation <span class="math inline">\(o\)</span> may be a written
-<span class="math display" id="eq:likelihood-factorization">\[\begin{equation}
+<span class="math display" id="eq:likelihood-factorization-shift">\[\begin{equation}
   p_0^O(x) = q^O_{0,Y}(y \mid A = a, W = w) q^O_{0,A}(a \mid W = w)
   q^O_{0,W}(w),
-  \tag{8.3}
+  \tag{9.2}
 \end{equation}\]</span>
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with respect
 to some dominating measure, <span class="math inline">\(q_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
@@ -216,7 +215,7 @@ intervention, based on a shift <span class="math inline">\(\delta\)</span>, may 
     a - \delta &amp; \text{if } a &gt; l(w) + \delta \\
     a &amp; \text{if } a \leq l(w) + \delta,
   \end{cases}
-  \tag{9.2}
+  \tag{9.3}
 \end{equation}\]</span>
 where <span class="math inline">\(0 \leq \delta \leq u(w)\)</span> is an arbitrary pre-specified value that
 defines the degree to which the observed value <span class="math inline">\(A\)</span> is to be shifted, where
@@ -243,10 +242,10 @@ a functional of the distribution of <span class="math inline">\(O\)</span>:
   \psi_{0,d} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \cdot \\ &amp;q_{0, A}^O(a \mid W = w) \cdot
    q_{0, W}^O(w) d\mu(a)d\nu(w).
-  \tag{9.3}
+  \tag{9.4}
 \end{align}\]</span>
 If the identification conditions may be assumed to hold, then the statistical
-parameter in <a href="stochastic-treatment-regimes.html#eq:identification2012">(9.3)</a> matches exactly the counterfactual
+parameter in <a href="stochastic-treatment-regimes.html#eq:identification2012">(9.4)</a> matches exactly the counterfactual
 outcome <span class="math inline">\(\psi_{0, \delta}\)</span> under such an intervention, allowing for the causal
 effect to be learned from the observed data <span class="math inline">\(O\)</span>. <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2012population">2012</a>)</span> provide a
 derivation based on the efficient influence function (EIF) in the nonparametric
@@ -285,18 +284,18 @@ the nonparametric model <span class="math inline">\(\M\)</span> as
 <span class="math display" id="eq:eif-shift">\[\begin{equation}
   D(P_0)(x) = H(a, w)({y - \overline{Q}(a, w)}) +
   \overline{Q}(d(a, w), w) - \Psi(P_0),
-  \tag{9.4}
+  \tag{9.5}
 \end{equation}\]</span>
 where the auxiliary covariate <span class="math inline">\(H(a,w)\)</span> may be expressed
 <span class="math display" id="eq:aux-covar-full-shift">\[\begin{equation}
   H(a,w) = \mathbb{I}(a + \delta &lt; u(w)) \frac{g_0(a - \delta \mid w)}
   {g_0(a \mid w)} + \mathbb{I}(a + \delta \geq u(w)),
-  \tag{9.5}
+  \tag{9.6}
 \end{equation}\]</span>
 which may be reduced to
 <span class="math display" id="eq:aux-covar-simple-shift">\[\begin{equation}
   H(a,w) = \frac{g_0(a - \delta \mid w)}{g_0(a \mid w)} + 1
-  \tag{9.6}
+  \tag{9.7}
 \end{equation}\]</span>
 in the case that the treatment is within the limits that arise from conditioning
 on <span class="math inline">\(W\)</span>, i.e., for <span class="math inline">\(A_i \in (u(w) - \delta, u(w))\)</span>.</p>
@@ -319,7 +318,7 @@ or an alternative regression model incorporating weights.</li>
 <span class="math display" id="eq:tmle">\[\begin{equation}
   \Psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
   \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
-  \tag{9.7}
+  \tag{9.8}
 \end{equation}\]</span>
 </li>
 </ol>
@@ -584,7 +583,7 @@ provides the functions <code>shift_additive_bounded</code> and
       \delta, &amp; C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
-  \tag{9.8}
+  \tag{9.9}
 \end{equation}\]</span>
 which corresponds to an intervention in which the natural value of treatment
 of a given observational unit is shifted by a value <span class="math inline">\(\delta\)</span> in the case that
