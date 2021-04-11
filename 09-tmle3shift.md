@@ -441,7 +441,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 #> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
+#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
 #> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
 #> solnp--> Completed in 2 iterations
 tmle_fit
