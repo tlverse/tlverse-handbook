@@ -2,9 +2,21 @@
 library(methods)
 set.seed(34729)
 
+hook_output = knit_hooks$get('output')
+knit_hooks$set(output = function(x, options) {
+  # this hook is used only when the linewidth option is not NULL
+  if (!is.null(n <- options$linewidth)) {
+    x = knitr:::split_lines(x)
+    # any lines wider than n should be wrapped
+    if (any(nchar(x) > n)) x = strwrap(x, width = n)
+    x = paste(x, collapse = '\n')
+  }
+  hook_output(x, options)
+})
+
 # fixed knitr chunk options
 knitr::opts_chunk$set(
-  comment = "#>",
+  comment = "",
   collapse = TRUE,
   cache = FALSE,
   tidy = FALSE,
@@ -14,10 +26,11 @@ knitr::opts_chunk$set(
   fig.asp = 0.618,
   fig.retina = 0.8,
   fig.show = "hold",
-  dpi = 300,
+  dpi = 600,
   message = FALSE,
   warning = FALSE,
-  echo = TRUE
+  echo = TRUE,
+  linewidth = 80
 )
 
 # global options
