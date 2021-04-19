@@ -210,7 +210,7 @@ following packages:
 |readr        |1.4.0   |CRAN (R 4.0.2)                         |
 |rmarkdown    |2.7     |CRAN (R 4.0.2)                         |
 |skimr        |2.1.3   |CRAN (R 4.0.2)                         |
-|sl3          |1.4.2   |Github (tlverse/sl3\@a119d47)          |
+|sl3          |1.4.3   |Github (tlverse/sl3\@5cddc6c)          |
 |stringr      |1.4.0   |CRAN (R 4.0.2)                         |
 |tibble       |3.1.1   |CRAN (R 4.0.2)                         |
 |tidyr        |1.1.3   |CRAN (R 4.0.2)                         |

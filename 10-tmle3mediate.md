@@ -154,10 +154,10 @@ indirect effects requires the following non-testable causal assumptions:
 2. _Treatment positivity_: For any $a \in \mathcal{A}$ and $w \in
    \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, for $\xi > 0$. This mirrors the
    assumption required for static intervention, discussed previously.
-3. _Mediator positivity_: For any $z \in \mathcal{Z}, $$a \in \mathcal{A}$, and
+3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
    $w \in \mathcal{W}$, $\epsilon < g(a \mid w)$, for $\epsilon > 0$. This only
    requires that the conditional density of the mediators be bounded away from
-   zero for all $(z, a, w)$ in the joint support of $\mathcal{Z} \times
+   zero for all $(z, a, w)$ in their joint support $\mathcal{Z} \times
    \mathcal{A} \times \mathcal{W}$.
 4. _Cross-world counterfactual independence_: For all $a \neq a'$, both
    contained in $\mathcal{A}$ and $z \in \mathcal{Z}$, $Y(a', z)$ is independent
