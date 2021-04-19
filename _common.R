@@ -2,7 +2,7 @@
 library(methods)
 set.seed(34729)
 
-hook_output <- knit_hooks$get("output")
+hook_output <- knitr::knit_hooks$get("output")
 knitr::knit_hooks$set(output = function(x, options) {
   # this hook is used only when the linewidth option is not NULL
   if (!is.null(n <- options$linewidth)) {
