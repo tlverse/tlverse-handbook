@@ -12,6 +12,6 @@ style:
 	Rscript -e "styler::style_dir(filetype = 'rmd')"
 
 code:
-	rm R/*.R
+	rm -f R_code/*.R
 	R CMD BATCH purl.R
 	rm purl.Rout .RData
