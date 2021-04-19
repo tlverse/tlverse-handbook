@@ -38,7 +38,7 @@ _how_ treatments may be effective.
 While the study of mediation analysis may be traced back quite far, the field
 only came into its modern form with the identification and careful study of the
 natural direct and indirect effects [@robins1992identifiability;
-pearl2001direct]. The natural direct effect (NDE) and the natural indirect
+@pearl2001direct]. The natural direct effect (NDE) and the natural indirect
 effect (NIE) are based on a decomposition of the average treatment effect (ATE)
 in the presence of mediators [@vanderweele2015explanation]; requisite
 theory for the construction of efficient estimators of these quantities only
@@ -59,7 +59,7 @@ non-parametric structural equation model (NPSEM):
 \begin{align}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
-  Z &= f_Z(W, A, U_M) \\
+  Z &= f_Z(W, A, U_Z) \\
   Y &= f_Y(W, A, Z, U_Y).
   (\#eq:npsem-mediate)
 \end{align}
@@ -142,22 +142,22 @@ the natural direct effect (NDE) measures the effect of the treatment on the
 outcome _through all other paths_. Identification of the natural direct and
 indirect effects requires the following non-testable causal assumptions:
 
-1. _Exchangeability_: $Y(a, z) \indep (A, Z) \mid W$, which further implies
-   $\E\{Y(a, z) \mid A=a, W=w, Z=z\} = \E\{Y(a, z) \mid W=w\}$. This is a
-   special case of the randomization assumption, extended to observational
+1. _Exchangeability_ (randomization): $Y(a, z) \indep (A, Z) \mid W$, further
+   implying $\E\{Y(a, z) \mid A=a, W=w, Z=z\} = \E\{Y(a, z) \mid W=w\}$. This
+   is a special case of the randomization assumption, extended to observational
    studies with mediators.
 2. _Treatment positivity_: For any $a \in \mathcal{A}$ and $w \in
-   \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, for $\xi > 0$. This mirrors the
+   \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, $\xi > 0$. This mirrors the
    assumption required for static intervention, discussed previously.
 3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
-   $w \in \mathcal{W}$, $\epsilon < g(a \mid w)$, for $\epsilon > 0$. This only
-   requires that the conditional density of the mediators be bounded away from
-   zero for all $(z, a, w)$ in their joint support $\mathcal{Z} \times
+   $w \in \mathcal{W}$, $\epsilon < Q(z \mid a, w)$, for $\epsilon > 0$. This
+   only requires that the conditional density of the mediators be bounded away
+   from zero for all $(z, a, w)$ in their joint support $\mathcal{Z} \times
    \mathcal{A} \times \mathcal{W}$.
 4. _Cross-world counterfactual independence_: For all $a \neq a'$, both
    contained in $\mathcal{A}$ and $z \in \mathcal{Z}$, $Y(a', z)$ is independent
    of $Z(a)$, given $W$. That is, the counterfactual outcome under the treatment
-   contrast $a' \in \mathcal{A}$ and the counterfactual mediator $Z(a) in
+   contrast $a' \in \mathcal{A}$ and the counterfactual mediator $Z(a) \in
    \mathcal{Z}$ (under a different contrast $a \in \mathcal{A}$) are
    independent. Note that the counterfactual outcome and mediator are defined
    under differing contrasts, hence the "cross-world" designation.
@@ -262,7 +262,7 @@ As with the NDE, the re-parameterization trick can be used to estimate $\E(A
 However, in this case, the mediated mean outcome difference, denoted
 $\Psi_Z(Q)$, is instead estimated as follows
 \begin{equation*}
-  \Psi_{NIE}(Q) = \E_{QZ}(\Psi_{NIE, Z}(Q)(1, W) - \Psi_{NIE, Z}(Q)(0, W))
+  \Psi_{NIE}(Q) = \E (\Psi_{NIE, Z}(Q)(1, W) - \Psi_{NIE, Z}(Q)(0, W))
 \end{equation*}
 
 Here, $\bar{Q}_Y(Z, 1, W)$ (the predicted values for $Y$ given $Z$ and $W$ when
