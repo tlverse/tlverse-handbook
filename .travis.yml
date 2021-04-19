@@ -29,6 +29,9 @@ install:
   - Rscript -e "tinytex::tlmgr_install('enumitem')"
   - Rscript -e "tinytex::tlmgr_update()"
   - cd $TRAVIS_BUILD_DIR && Rscript -e "renv::restore()"
+  # this shouldn't be necessary but renv sometimes installs the wrong version
+  # of sl3 (from master) in its attempts to repair the dependency tree
+  - cd $TRAVIS_BUILD_DIR && Rscript -e "renv::install('tlverse/sl3@devel')"
 
 before_script:
   - chmod +x ./_build.sh
