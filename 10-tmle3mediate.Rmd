@@ -373,13 +373,11 @@ We now turn to estimating the natural direct and indirect effects, as well as
 the population intervention direct effect, using the WASH Benefits data,
 introduced in earlier chapters. Let's first load the data:
 
-```{r tmle3mediate-load-data, message=FALSE, warning=FALSE}
+```{r tmle3mediate-load-data}
 library(data.table)
-library(tidyverse)
 library(sl3)
 library(tmle3)
 library(tmle3mediate)
-set.seed(429153)
 
 # download data
 washb_data <- fread(
@@ -423,7 +421,7 @@ node_list <- processed$node_list
 We'll now construct an ensemble learner using a handful of popular machine
 learning algorithms:
 
-```{r tmle3mediate-sl-learners, message=FALSE, warning=FALSE}
+```{r tmle3mediate-sl-learners}
 # SL learners used for continuous data (the nuisance parameter M)
 enet_contin_learner <- Lrnr_glmnet$new(
   alpha = 0.5, family = "gaussian", nfolds = 5
@@ -467,7 +465,7 @@ function, alongside the data, the node list (created above), and a learner list
 indicating which machine learning algorithms to use for estimating the nuisance
 parameters based on $A$ and $Y$.
 
-```{r tmle3mediate-NIE, message=FALSE, warning=FALSE}
+```{r tmle3mediate-NIE}
 tmle_spec_NIE <- tmle_NIE(
   e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
   psi_Z_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE),
@@ -489,7 +487,7 @@ An analogous procedure applies for estimation of the NDE, only replacing the
 Spec object for the NIE with `tmle_spec_NDE` to define learners for the NDE
 nuisance parameters:
 
-```{r tmle3mediate-NDE, message=FALSE, warning=FALSE}
+```{r tmle3mediate-NDE}
 tmle_spec_NDE <- tmle_NDE(
   e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
   psi_Z_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE),
@@ -524,7 +522,7 @@ increasing their relative odds of receiving said treatment. To exemplify our
 approach, we postulate a motivational intervention that _triples the odds_
 (i.e., $\delta = 3$) of receiving the treatment for each individual:
 
-```{r tmle3mediate-pide-decomp, message=FALSE, warning=FALSE}
+```{r tmle3mediate-pide-decomp}
 # set the IPSI multiplicative shift
 delta_ipsi <- 3
 

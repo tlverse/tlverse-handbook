@@ -13,11 +13,19 @@ washb_data <- fread(
   stringsAsFactors = TRUE
 )
 
-washb_data <- washb_data[1:30, ]
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+## ----origami_washb_example_table1, echo=FALSE---------------------------------
+n_samp <- 30
+washb_data <- washb_data[seq_len(n_samp), ]
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----resubstitution-----------------------------------------------------------
@@ -120,10 +128,17 @@ washb_data <- washb_data %>%
 outcome <- "whz"
 covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
 
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+## ----origami_washb_example_table2, echo=FALSE---------------------------------
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----covariates---------------------------------------------------------------
@@ -285,4 +300,3 @@ mses <- cross_validate(
 )
 mses$mse
 colMeans(mses$mse[, c("arima", "arima2")])
-

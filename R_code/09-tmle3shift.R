@@ -170,3 +170,20 @@ learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
 ## washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
 ## washb_tmle_fit
 
+
+## ----shift-action-ex1-sol-----------------------------------------------------
+
+
+## ----shift-action-ex2-sol-----------------------------------------------------
+
+
+## ----shift-action-ex3-sol-----------------------------------------------------
+
+
+## ----shift-review-ex1-sol-----------------------------------------------------
+
+
+## ----shift-review-ex2-sol-----------------------------------------------------
+
+
+## ----shift-review-ex3-sol-----------------------------------------------------
