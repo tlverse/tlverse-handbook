@@ -8,6 +8,7 @@ Duncan, and David McCoy_.
 
 Updated: `r Sys.Date()`
 
+<!--
 ## Learning Objectives
 
 1. TODO
@@ -17,6 +18,7 @@ Updated: `r Sys.Date()`
 5. TODO
 6. TODO
 7. TODO
+-->
 
 ## Introduction to Causal Mediation Analysis
 
@@ -126,9 +128,7 @@ here, the interested reader may consult recent advances in the vast literature
 on causal mediation analysis, among them @diaz2020nonparametric and
 @hejazi2021nonparametric.
 
-## The Natural Direct and Indirect Effects
-
-### Decomposing the Average Treatment Effect
+## Decomposing the Average Treatment Effect
 
 The natural direct and indirect effects arise from a decomposition of the ATE:
 \begin{equation*}
@@ -139,9 +139,40 @@ The natural direct and indirect effects arise from a decomposition of the ATE:
 In particular, the natural indirect effect (NIE) measures the effect of the
 treatment $A \in \{0, 1\}$ on the outcome $Y$ through the mediators $Z$, while
 the natural direct effect (NDE) measures the effect of the treatment on the
-outcome _through all other paths_.
+outcome _through all other paths_. Identification of the natural direct and
+indirect effects requires the following non-testable causal assumptions:
 
-### The Natural Direct Effect
+1. _Exchangeability_: $Y(a, z) \indep (A, Z) \mid W$, which further implies
+   $\E\{Y(a, z) \mid A=a, W=w, Z=z\} = \E\{Y(a, z) \mid W=w\}$. This is a
+   special case of the randomization assumption, extended to observational
+   studies with mediators.
+2. _Treatment positivity_: For any $a \in \mathcal{A}$ and $w \in
+   \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, for $\xi > 0$. This mirrors the
+   assumption required for static intervention, discussed previously.
+3. _Mediator positivity_: For any $z \in \mathcal{Z}, $$a \in \mathcal{A}$, and
+   $w \in \mathcal{W}$, $\epsilon < g(a \mid w)$, for $\epsilon > 0$. This only
+   requires that the conditional density of the mediators be bounded away from
+   zero for all $(z, a, w)$ in the joint support of $\mathcal{Z} \times
+   \mathcal{A} \times \mathcal{W}$.
+4. _Cross-world counterfactual independence_: For all $a \neq a'$, both
+   contained in $\mathcal{A}$ and $z \in \mathcal{Z}$, $Y(a', z)$ is independent
+   of $Z(a)$, given $W$. That is, the counterfactual outcome under the treatment
+   contrast $a' \in \mathcal{A}$ and the counterfactual mediator $Z(a) in
+   \mathcal{Z}$ (under a different contrast $a \in \mathcal{A}$) are
+   independent. Note that the counterfactual outcome and mediator are defined
+   under differing contrasts, hence the "cross-world" designation.
+
+We note that many attempts have been made to weaken the last assumption, that of
+cross-world counterfactual independence, including work by
+@petersen2006estimation and @imai2010identification; however, importantly,
+@robins2010alternative established that this assumption cannot be satisfied in
+randomized experiments. Thus, the natural direct and indirect effects are not
+identifiable in randomized experiments, calling into question their utility.
+Despite this significant limitation, we will turn to considering estimation of
+the statistical functionals corresponding to these effects in observational
+studies.
+
+## The Natural Direct Effect
 
 The NDE is defined as
 \begin{equation*}
@@ -168,9 +199,9 @@ counterfactual quantities $\bar{Q}_Y(Z, 1, W)$ (setting $A = 1$) and, likewise,
 $\bar{Q}_Y(Z, 0, W)$ (setting $A = 0$) can readily be obtained. We denote the
 difference of these counterfactual quantities $\bar{Q}_{\text{diff}}$, i.e.,
 $\bar{Q}_{\text{diff}} = \bar{Q}_Y(Z, 1, W) - \bar{Q}_Y(Z, 0, W)$.
-$\bar{Q}_{\text{diff}}$ represents the difference in the conditional mean of $Y$
-attributable to changes in $A$ while keeping $Z$ and $W$ at their _natural_
-(i.e., observed) values.
+$\bar{Q}_{\text{diff}}$ represents the difference in the conditional mean of
+$Y$ attributable to changes in $A$ while keeping $Z$ and $W$ at their _natural_
+(that is, observed) values.
 
 The estimation procedure treats $\bar{Q}_{\text{diff}}$ itself as a nuisance
 parameter, regressing its estimate $\bar{Q}_{\text{diff}, n}$ on $W$, among
@@ -214,48 +245,46 @@ Underneath the hood, the counterfactual outcome difference
 $\bar{Q}_{\text{diff}}$ and $e(A \mid Z, W)$, the conditional probability of $A$
 given $Z$ and $W$, are used in constructing the auxiliary covariate for TML
 estimation. These nuisance parameters play an important role in the
-bias-correcting _TMLE-update step_.
+bias-correcting update step of the TMLE procedure.
 
-### The Natural Indirect Effect
+## The Natural Indirect Effect
 
-Derivation and estimation of the NIE is analogous to that of the NDE.  The NIE
-is the effect of $A$ on $Y$ _only through the mediator(s) $Z$_.  This quantity
--- known as the (additive) natural indirect effect $\mathbb{E}(Y(Z(1), 1)
-- \mathbb{{E}(Y(Z(0), 1)$ -- corresponds to the difference of the conditional
-expectation of $Y$ given $A = 1$ and $Z(1)$ (the values the mediator would take
-under $A = 1$) and the conditional expectation of $Y$ given $A = 1$ and $Z(0)$
-(the values the mediator would take under $A = 0$).
+Derivation and estimation of the NIE is analogous to that of the NDE. The NIE
+is the effect of $A$ on $Y$ _only through the mediator(s) $Z$_. This quantity
+-- known as the natural indirect effect $\E(Y(Z(1), 1) - \E(Y(Z(0), 1)$ --
+corresponds to the difference of the conditional expectation of $Y$ given $A =
+1$ and $Z(1)$ (the values the mediator would take under $A = 1$) and the
+conditional expectation of $Y$ given $A = 1$ and $Z(0)$ (the values the mediator
+would take under $A = 0$).
 
-As with the NDE, the re-parameterization trick can be used to estimate
-$\mathbb{E}(A \mid Z, W)$, avoiding estimation of a possibly multivariate
-conditional density. However, in this case, the mediated mean outcome
-difference, denoted $\Psi_Z(Q)$, is instead estimated as follows
+As with the NDE, the re-parameterization trick can be used to estimate $\E(A
+\mid Z, W)$, avoiding estimation of a possibly multivariate conditional density.
+However, in this case, the mediated mean outcome difference, denoted
+$\Psi_Z(Q)$, is instead estimated as follows
 \begin{equation*}
-  \Psi_{NIE}(Q) = \mathbb{E}_{QZ}(\Psi_{NIE, Z}(Q)(1, W) -
-    \Psi_{NIE, Z}(Q)(0, W))
+  \Psi_{NIE}(Q) = \E_{QZ}(\Psi_{NIE, Z}(Q)(1, W) - \Psi_{NIE, Z}(Q)(0, W))
 \end{equation*}
 
-Phrased plainly, this uses $\bar{Q}_Y(Z, 1, W)$ (the predicted values for $Y$
-given $Z$ and $W$ when $A = 1$) and regresses this vector on $W$ among the
-treated units (for whom $A = 1$ is observed) to obtain the conditional mean
-$\Psi_{NIE, Z}(Q)(1, W)$. Performing the same procedure, but now regressing
-$\bar{Q}_Y(Z, 1, W)$ on $W$ among the control units (for whom $A = 0$ is
-observed) yields $\Psi_{NIE,Z}(Q)(0, W)$. The difference of these two estimates
-is the NIE and can be thought of as the additive marginal effect of treatment on
-the conditional expectation of $Y$ given $W$, $A = 1$, $Z$ through its effects
-on $Z$. So, in the case of the NIE, our estimate $\psi_n$ is slightly different,
-but the same quantity $e(A \mid Z, W)$ comes into play as the auxiliary
-covariate.
+Here, $\bar{Q}_Y(Z, 1, W)$ (the predicted values for $Y$ given $Z$ and $W$ when
+$A = 1$) is regressed on $W$, among the treated units (for whom $A = 1$ is
+observed) to obtain the conditional mean $\Psi_{NIE, Z}(Q)(1, W)$. Performing
+the same procedure, but now regressing $\bar{Q}_Y(Z, 1, W)$ on $W$ among the
+control units (for whom $A = 0$ is observed) yields $\Psi_{NIE,Z}(Q)(0, W)$. The
+difference of these two estimates is the NIE and can be thought of as the
+additive marginal effect of treatment on the conditional expectation of $Y$
+given $W$, $A = 1$, $Z$ through its effects on $Z$. So, in the case of the NIE,
+our estimate $\psi_n$ is slightly different, but the same quantity $e(A \mid Z,
+W)$ comes into play as the auxiliary covariate.
 
-## The Population Intervention Direct and Indirect Effects
+## The Population Intervention (In)Direct Effects
 
 At times, the natural direct and indirect effects may prove too limiting, as
-these effect definitions are based on _static interventions_ (i.e., setting $A =
-0$ or $A = 1$), which may be unrealistic for real-world interventions. In such
-cases, one may turn instead to the population intervention direct effect (PIDE)
-and the population intervention indirect effect (PIIE), which are based on
-decomposing the effect of the population intervention effect (PIE) of flexible
-stochastic interventions [@diaz2020causal].
+these effect definitions are based on _static interventions_ (i.e., setting
+$A = 0$ or $A = 1$), which may be unrealistic for real-world interventions. In
+such cases, one may turn instead to the population intervention direct effect
+(PIDE) and the population intervention indirect effect (PIIE), which are based
+on decomposing the effect of the population intervention effect (PIE) of
+flexible stochastic interventions [@diaz2020causal].
 
 A particular type of stochastic intervention well-suited to working with binary
 treatments is the _incremental propensity score intervention_ (IPSI), first
@@ -263,19 +292,24 @@ proposed by @kennedy2017nonparametric. Such interventions do not
 deterministically set the treatment level of an observed unit to a fixed
 quantity (i.e., setting $A = 1$), but instead _alter the odds of receiving the
 treatment_ by a fixed amount ($0 \leq \delta \leq \infty$) for each individual.
-In the case of the `mma` dataset, we will proceed by considering an IPSI that
-modulates the odds of participating in a sports team by $\delta = 2$.  Such an
-intervention may be interpreted (hypothetically) as the effect of a school
-program that motivates children to participate in sports teams (e.g., as in an
-encouragement design). To exemplify our approach, we postulate a motivational
-intervention that _doubles the odds_ (i.e., $\delta = 2$) of participating in a
-sports team for each individual:
+In particular, this intervention takes the form
+\begin{equation*}
+  g_{\delta}(1 \mid w) = \frac{\delta g(1 \mid w)}{\delta g(1 \mid w) + 1
+  - g(1\mid w)},
+\end{equation*}
+where the scalar $0 < \delta < \infty$ specifies a _change in the odds of
+receiving treatment_. As described by @diaz2020causal, this stochastic
+intervention is a special case of exponential tilting, a framework that unifies
+post-intervention treatment values that are draws from an altered distribution.
 
-```{r delta_ipsi, message=FALSE, warning=FALSE}
-delta_ipsi <- 2
-```
+Unlike the natural direct and indirect effects, the conditions required for
+identifiability of the population intervention direct and indirect effects are
+more lax. Most importantly, these differences involve a (1) treatment positivity
+assumption that only requires that the counterfactual treatment be in the
+observed support of the treatment $\mathcal{A}$, and (2) no requirement of the
+independence any cross-world counterfactuals.
 
-### Decomposing the Population Intervention Effect
+## Decomposing the Population Intervention Effect
 
 We may decompose the population intervention effect (PIE) in terms of the
 _population intervention direct effect_ (PIDE) and the _population
@@ -303,7 +337,7 @@ appropriate estimators as follows
   mechanisms, as proposed in @kennedy2017nonparametric and implemented in the
   [`npcausal` R package](https://github.com/ehkennedy/npcausal).
 
-### Estimating the Effect Decomposition Term
+## Estimating the Effect Decomposition Term
 
 As described by @diaz2020causal, the statistical functional identifying the
 decomposition term that appears in both the PIDE and PIIE
@@ -331,107 +365,91 @@ resultant estimator is
 which is implemented in `tmle3mediate` (a one-step estimator is also avaialble,
 in the [`medshift` R package](https://github.com/nhejazi/medshift)). We
 demonstrate the use of `tmle3mediate` to obtain $\mathbb{E}\{Y(A_{\delta}, Z)\}$
-via its TML estimator:
+via its TML estimator.
 
+## Evaluating the Direct and Indirect Effects
 
+We now turn to estimating the natural direct and indirect effects, as well as
+the population intervention direct effect, using the WASH Benefits data,
+introduced in earlier chapters. Let's first load the data:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-```{r load_data, message=FALSE, warning=FALSE}
-# preliminaries
-library(dplyr)
-library(tidyr)
+```{r tmle3mediate-load-data, message=FALSE, warning=FALSE}
+library(data.table)
+library(tidyverse)
 library(sl3)
 library(tmle3)
 library(tmle3mediate)
-
-# set a seed
 set.seed(429153)
+
+# download data
+washb_data <- fread(
+  paste0(
+    "https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
+    "wash-benefits/washb_data.csv"
+  ),
+  stringsAsFactors = TRUE
+)
+
+# make intervention node binary
+washb_data[, tr := as.numeric(tr != "Control")]
 ```
 
-For the analysis of this observational dataset, we focus on the effect of
-participating in a sports team (`sports`) on the BMI of children (`bmi`), taking
-several related covariates as mediators (`snack`, `exercises`, `overweigh`) and
-all other collected covariates as potential confounders. Considering an NPSEM,
-we separate the observed variables from the dataset into their corresponding
-nodes as follows:
+We'll next define the baseline covariates $W$, treatment $A$, mediators $Z$,
+and outcome $Y$ nodes of the NPSEM via a "Node List" object:
 
-```{r npsem, message=FALSE, warning=FALSE}
-exposure <- "sports"
-outcome <- "bmi"
-mediators <- c("snack", "exercises", "overweigh")
-covars <- setdiff(colnames(weight_behavior_complete),
-                  c(exposure, outcome, mediators))
+```{r tmle3mediate-node-list}
 node_list <- list(
-  W = covars,
-  A = exposure,
-  Z = mediators,
-  Y = outcome
+  W = c(
+    "momage", "momedu", "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin",
+    "elec", "floor", "walls", "roof"
+  ),
+  A = "tr",
+  Z = c("sex", "month", "aged"),
+  Y = "whz"
 )
 ```
 
 Here the `node_list` encodes the parents of each node -- for example, $Z$ (the
 mediators) have parents $A$ (the treatment) and $W$ (the baseline confounders),
-and $Y$ (the outcome) has parents $Z$, $A$, and $W$.
+and $Y$ (the outcome) has parents $Z$, $A$, and $W$. We'll also handle any
+missingness in the data by invoking `process_missing`:
 
-To use the natural (in)direct effects for mediation analysis, we decompose the
-ATE into its corresponding direct and indirect effect components. Throughout,
-we'll make use of the (semiparametric efficient) TML estimators of
-@zheng2012targeted, which allow for flexible ensemble machine learning to be
-incorporated into the estimation of nuisance parameters. For this, we rely on
-the [`sl3` R package](https://tlverse.org/sl3) [@coyle2020sl3], which provides
-an implementation of machine learning pipelines and the Super Learner algorithm;
-for more on the `sl3` R package, consider consulting [this chapter of the
-`tlverse` handbook](https://tlverse.org/tlverse-handbook/sl3.html). Below, we
-construct an ensemble learner using a handful of popular machine learning
-algorithms:
+```{r tmle3mediate-process_missing}
+processed <- process_missing(washb_data, node_list)
+washb_data <- processed$data
+node_list <- processed$node_list
+```
 
-```{r make_sl_learners, message=FALSE, warning=FALSE}
+We'll now construct an ensemble learner using a handful of popular machine
+learning algorithms:
+
+```{r tmle3mediate-sl-learners, message=FALSE, warning=FALSE}
 # SL learners used for continuous data (the nuisance parameter M)
 enet_contin_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "gaussian", nfolds = 3
+  alpha = 0.5, family = "gaussian", nfolds = 5
 )
 lasso_contin_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "gaussian", nfolds = 3
+  alpha = 1, family = "gaussian", nfolds = 5
 )
 fglm_contin_learner <- Lrnr_glm_fast$new(family = gaussian())
 mean_learner <- Lrnr_mean$new()
 contin_learner_lib <- Stack$new(
   enet_contin_learner, lasso_contin_learner, fglm_contin_learner, mean_learner
 )
-sl_contin_learner <- Lrnr_sl$new(learners = contin_learner_lib,
-                                 metalearner = Lrnr_nnls$new())
+sl_contin_learner <- Lrnr_sl$new(learners = contin_learner_lib)
 
 # SL learners used for binary data (nuisance parameters G and E in this case)
 enet_binary_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "binomial", nfolds = 3
+  alpha = 0.5, family = "binomial", nfolds = 5
 )
 lasso_binary_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "binomial", nfolds = 3
+  alpha = 1, family = "binomial", nfolds = 5
 )
 fglm_binary_learner <- Lrnr_glm_fast$new(family = binomial())
 binary_learner_lib <- Stack$new(
   enet_binary_learner, lasso_binary_learner, fglm_binary_learner, mean_learner
 )
-logistic_metalearner <- make_learner(Lrnr_solnp,
-                                     metalearner_logistic_binomial,
-                                     loss_loglik_binomial)
-sl_binary_learner <- Lrnr_sl$new(learners = binary_learner_lib,
-                                 metalearner = logistic_metalearner)
+sl_binary_learner <- Lrnr_sl$new(learners = binary_learner_lib)
 
 # create list for treatment and outcome mechanism regressions
 learner_list <- list(
@@ -442,24 +460,28 @@ learner_list <- list(
 
 ## Estimating the Natural Indirect Effect
 
-We demonstrate calculation of the NIE using `tmle3mediate` below, starting by
-instantiating a "Spec" object that encodes exactly which learners to use for the
-nuisance parameters $e(A \mid Z, W)$ and $\Psi_Z$. We then pass our Spec object
-to the `tmle3` function, alongside the data, the node list (created above), and
-a learner list indicating which machine learning algorithms to use for
-estimating the nuisance parameters based on $A$ and $Y$.
+We demonstrate calculation of the NIE below, starting by instantiating a "Spec"
+object that encodes exactly which learners to use for the nuisance parameters
+$e(A \mid Z, W)$ and $\Psi_Z$. We then pass our Spec object to the `tmle3`
+function, alongside the data, the node list (created above), and a learner list
+indicating which machine learning algorithms to use for estimating the nuisance
+parameters based on $A$ and $Y$.
 
-```{r NIE, message=FALSE, warning=FALSE}
+```{r tmle3mediate-NIE, message=FALSE, warning=FALSE}
 tmle_spec_NIE <- tmle_NIE(
   e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
   psi_Z_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE),
   max_iter = 1
 )
-weight_behavior_NIE <- tmle3(
-  tmle_spec_NIE, weight_behavior_complete, node_list, learner_list
+washb_NIE <- tmle3(
+  tmle_spec_NIE, washb_data, node_list, learner_list
 )
-weight_behavior_NIE
+washb_NIE
 ```
+
+Based on the output, we conclude that the indirect effect of the treatment
+through the mediators (`r node_list$Z`) is
+`r round(washb_NIE$summary$tmle_est, 5)`.
 
 ## Estimating the Natural Direct Effect
 
@@ -467,23 +489,45 @@ An analogous procedure applies for estimation of the NDE, only replacing the
 Spec object for the NIE with `tmle_spec_NDE` to define learners for the NDE
 nuisance parameters:
 
-```{r NDE, message=FALSE, warning=FALSE}
+```{r tmle3mediate-NDE, message=FALSE, warning=FALSE}
 tmle_spec_NDE <- tmle_NDE(
   e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
   psi_Z_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE),
   max_iter = 1
 )
-weight_behavior_NDE <- tmle3(
-  tmle_spec_NDE, weight_behavior_complete, node_list, learner_list
+washb_NDE <- tmle3(
+  tmle_spec_NDE, washb_data, node_list, learner_list
 )
-weight_behavior_NDE
+washb_NDE
 ```
 
-### PIDE PIIE
+From this, we can draw the conclusion that the direct effect of the treatment
+(through all paths not involving the mediators (`r node_list$Z`)) is
+`r round(washb_NDE$summary$tmle_est, 5)`. Note that, together, the estimates of
+the natural direct and indirect effects approximately recover the _average
+treatment effect_, that is, based on these estimates of the NDE and NIE, the
+ATE is roughly
+`r round(washb_NDE$summary$tmle_est + washb_NIE$summary$tmle_est, 5)`.
 
-TODO
+## Estimating the Population Intervention Direct Effect
 
-```{r efficient_est, message=FALSE, warning=FALSE}
+As previously noted, the assumptions underlying the natural direct and indirect
+effects may be challenging to justify; moreover, the effect definitions
+themselves depend on the application of a static intervention to the treatment,
+sharply limiting their flexibility. When considering binary treatments,
+incremental propensity score shifts provide an alternative class of flexible,
+stochastic interventions. We'll now consider estimating the PIDE with an IPSI
+that modulates the odds of receiving treatment by $\delta = 3$.  Such an
+intervention may be interpreted (hypothetically) as the effect of a design that
+encourages study participants to opt in to receiving the treatment, thus
+increasing their relative odds of receiving said treatment. To exemplify our
+approach, we postulate a motivational intervention that _triples the odds_
+(i.e., $\delta = 3$) of receiving the treatment for each individual:
+
+```{r tmle3mediate-pide-decomp, message=FALSE, warning=FALSE}
+# set the IPSI multiplicative shift
+delta_ipsi <- 3
+
 # instantiate tmle3 spec for stochastic mediation
 tmle_spec_pie_decomp <- tmle_medshift(
   delta = delta_ipsi,
@@ -492,27 +536,28 @@ tmle_spec_pie_decomp <- tmle_medshift(
 )
 
 # compute the TML estimate
-weight_behavior_pie_decomp <- tmle3(
-  tmle_spec_pie_decomp, weight_behavior_complete, node_list, learner_list
+washb_pie_decomp <- tmle3(
+  tmle_spec_pie_decomp, washb_data, node_list, learner_list
 )
-weight_behavior_pie_decomp
+washb_pie_decomp
 ```
 
-## Estimating the Population Intervention Direct Effect
-
-Recall that, based on the decomposition outlined previously, the population
-intervention direct effect may be denoted $\beta_{\text{PIDE}}(\delta) =
-\theta_0(\delta) - \mathbb{E}Y$. Thus, an estimator of the PIDE,
-$\hat{\beta}_{\text{PIDE}}(\delta)$ may be expressed as a composition of
-estimators of its constituent parameters:
+Recall that, based on the decomposition outlined previously, the PIDE may be
+denoted $\beta_{\text{PIDE}}(\delta) = \theta_0(\delta) - \mathbb{E}Y$. Thus, an
+estimator of the PIDE, $\hat{\beta}_{\text{PIDE}}(\delta)$ may be expressed as a
+composition of estimators of its constituent parameters:
 \begin{equation*}
   \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\theta}(\delta) -
   \frac{1}{n} \sum_{i = 1}^n Y_i.
 \end{equation*}
 
-Based on the above, we may construct an estimator of the PIDE using quantities
-already computed. To do this, we need only apply the delta method, available
-from the [`tmle3` package](https://github.com/tlverse/tmle3).
+Based on the above, we may construct an estimator of the PIDE using the already
+estimated decomposition term and the empirical (marginal) mean of the outcome.
+Thus, our estimate of the PIDE is approximately
+`r washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])`.
+Note that this is a straightforward application of the delta method and could
+equivalently be performed using the functionality exposed in the [`tmle3`
+package](https://github.com/tlverse/tmle3).
 
 <!--
 ```{r pide_delta, message=FALSE, warning=FALSE, eval=FALSE}
@@ -525,6 +570,7 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
 ```
 -->
 
+<!--
 ## Exercises
 
 ### Review of Key Concepts
@@ -542,14 +588,7 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
 2. TODO
 
 3. TODO
-
-### Advanced Topics
-
-1. TODO
-
-2. TODO
-
-3. TODO
+-->
 
 <!--
 ## Appendix
