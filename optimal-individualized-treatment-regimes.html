@@ -70,7 +70,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-11</p>
+<p>Updated: 2021-04-19</p>
 <div id="learning-objectives-4" class="section level2">
 <h2>
 <span class="header-section-number">8.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-4"><i class="fas fa-link"></i></a>
@@ -611,15 +611,14 @@ optimal individualized interventions via the <code>realistic</code> specificatio
 <code>TRUE</code>, only treatments supported by the data will be considered, therefore
 alleviating concerns regarding practical positivity issues. We explore all the
 important extensions of <code>tmle3mopttx</code> in later sections.</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type         param init_est tmle_est       se   lower   upper</span>
-<span class="co">#&gt; 1:  TSM E[Y_{A=NULL}]  0.42223  0.56606 0.027015 0.51311 0.61901</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.56606           0.51311           0.61901</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3">fit</a>
+<a class="sourceLine" id="cb92-4" data-line-number="4">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb92-5" data-line-number="5">   type         param init_est tmle_est       se   lower   upper</a>
+<a class="sourceLine" id="cb92-6" data-line-number="6"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.42223</span>  <span class="fl">0.56606</span> <span class="fl">0.027015</span> <span class="fl">0.51311</span> <span class="fl">0.61901</span></a>
+<a class="sourceLine" id="cb92-7" data-line-number="7">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb92-8" data-line-number="8"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.56606</span>           <span class="fl">0.51311</span>           <span class="fl">0.61901</span></a></code></pre></div>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.56\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -707,21 +706,20 @@ categorical <span class="math inline">\(A\)</span> – therefore, we use the mul
 available within the <code>sl3</code> package with learners that can address multi-class
 classification problems. In order to see which learners can be used to estimate
 <span class="math inline">\(g_0(A \mid W)\)</span> in <code>sl3</code>, we run the following:</p>
-<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># See which learners support multi-class classification:</span>
-<span class="fu"><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"categorical"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "Lrnr_bound"                "Lrnr_caret"               </span>
-<span class="co">#&gt;  [3] "Lrnr_cv_selector"          "Lrnr_glmnet"              </span>
-<span class="co">#&gt;  [5] "Lrnr_grf"                  "Lrnr_gru_keras"           </span>
-<span class="co">#&gt;  [7] "Lrnr_h2o_glm"              "Lrnr_h2o_grid"            </span>
-<span class="co">#&gt;  [9] "Lrnr_independent_binomial" "Lrnr_lstm_keras"          </span>
-<span class="co">#&gt; [11] "Lrnr_mean"                 "Lrnr_multivariate"        </span>
-<span class="co">#&gt; [13] "Lrnr_nnet"                 "Lrnr_optim"               </span>
-<span class="co">#&gt; [15] "Lrnr_polspline"            "Lrnr_pooled_hazards"      </span>
-<span class="co">#&gt; [17] "Lrnr_randomForest"         "Lrnr_ranger"              </span>
-<span class="co">#&gt; [19] "Lrnr_rpart"                "Lrnr_screener_correlation"</span>
-<span class="co">#&gt; [21] "Lrnr_solnp"                "Lrnr_svm"                 </span>
-<span class="co">#&gt; [23] "Lrnr_xgboost"</span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1"><span class="co"># See which learners support multi-class classification:</span></a>
+<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="kw">sl3_list_learners</span>(<span class="kw">c</span>(<span class="st">"categorical"</span>))</a>
+<a class="sourceLine" id="cb96-3" data-line-number="3"> [<span class="dv">1</span>] <span class="st">"Lrnr_bound"</span>                <span class="st">"Lrnr_caret"</span>               </a>
+<a class="sourceLine" id="cb96-4" data-line-number="4"> [<span class="dv">3</span>] <span class="st">"Lrnr_cv_selector"</span>          <span class="st">"Lrnr_glmnet"</span>              </a>
+<a class="sourceLine" id="cb96-5" data-line-number="5"> [<span class="dv">5</span>] <span class="st">"Lrnr_grf"</span>                  <span class="st">"Lrnr_gru_keras"</span>           </a>
+<a class="sourceLine" id="cb96-6" data-line-number="6"> [<span class="dv">7</span>] <span class="st">"Lrnr_h2o_glm"</span>              <span class="st">"Lrnr_h2o_grid"</span>            </a>
+<a class="sourceLine" id="cb96-7" data-line-number="7"> [<span class="dv">9</span>] <span class="st">"Lrnr_independent_binomial"</span> <span class="st">"Lrnr_lstm_keras"</span>          </a>
+<a class="sourceLine" id="cb96-8" data-line-number="8">[<span class="dv">11</span>] <span class="st">"Lrnr_mean"</span>                 <span class="st">"Lrnr_multivariate"</span>        </a>
+<a class="sourceLine" id="cb96-9" data-line-number="9">[<span class="dv">13</span>] <span class="st">"Lrnr_nnet"</span>                 <span class="st">"Lrnr_optim"</span>               </a>
+<a class="sourceLine" id="cb96-10" data-line-number="10">[<span class="dv">15</span>] <span class="st">"Lrnr_polspline"</span>            <span class="st">"Lrnr_pooled_hazards"</span>      </a>
+<a class="sourceLine" id="cb96-11" data-line-number="11">[<span class="dv">17</span>] <span class="st">"Lrnr_randomForest"</span>         <span class="st">"Lrnr_ranger"</span>              </a>
+<a class="sourceLine" id="cb96-12" data-line-number="12">[<span class="dv">19</span>] <span class="st">"Lrnr_rpart"</span>                <span class="st">"Lrnr_screener_correlation"</span></a>
+<a class="sourceLine" id="cb96-13" data-line-number="13">[<span class="dv">21</span>] <span class="st">"Lrnr_solnp"</span>                <span class="st">"Lrnr_svm"</span>                 </a>
+<a class="sourceLine" id="cb96-14" data-line-number="14">[<span class="dv">23</span>] <span class="st">"Lrnr_xgboost"</span>             </a></code></pre></div>
 <p>Note that since the corresponding blip will be vector valued, we will have a
 column for each additional level of treatment. As such, we need to create
 multivariate learners with the helper function <code>create_mv_learners</code> that takes a
@@ -743,15 +741,14 @@ ensemble learners into a list object below:</p>
   learners <span class="op">=</span> <span class="va">learner_list</span>, maximize <span class="op">=</span> <span class="cn">TRUE</span>, complex <span class="op">=</span> <span class="cn">TRUE</span>,
   realistic <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type         param init_est tmle_est       se   lower   upper</span>
-<span class="co">#&gt; 1:  TSM E[Y_{A=NULL}]    0.551  0.61063 0.065332 0.48258 0.73867</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.61063           0.48258           0.73867</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb99-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb99-3" data-line-number="3">fit</a>
+<a class="sourceLine" id="cb99-4" data-line-number="4">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb99-5" data-line-number="5">   type         param init_est tmle_est       se   lower   upper</a>
+<a class="sourceLine" id="cb99-6" data-line-number="6"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]    <span class="fl">0.551</span>  <span class="fl">0.61063</span> <span class="fl">0.065332</span> <span class="fl">0.48258</span> <span class="fl">0.73867</span></a>
+<a class="sourceLine" id="cb99-7" data-line-number="7">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb99-8" data-line-number="8"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.61063</span>           <span class="fl">0.48258</span>           <span class="fl">0.73867</span></a></code></pre></div>
 <p>We can see that the estimate of <span class="math inline">\(psi_0\)</span> is <span class="math inline">\(0.60\)</span>, and that the confidence
 interval covers our true mean under the true optimal individualized treatment.</p>
 </div>
@@ -786,15 +783,14 @@ parameter to <code>FALSE</code>:</p>
   learners <span class="op">=</span> <span class="va">learner_list</span>,
   maximize <span class="op">=</span> <span class="cn">TRUE</span>, complex <span class="op">=</span> <span class="cn">FALSE</span>, realistic <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type             param init_est tmle_est       se   lower   upper</span>
-<span class="co">#&gt; 1:  TSM E[Y_{A=W3,W2,W1}]  0.54309  0.61946 0.070471 0.48134 0.75758</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.61946           0.48134           0.75758</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb101-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb101-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb101-3" data-line-number="3">fit</a>
+<a class="sourceLine" id="cb101-4" data-line-number="4">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb101-5" data-line-number="5">   type             param init_est tmle_est       se   lower   upper</a>
+<a class="sourceLine" id="cb101-6" data-line-number="6"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=W3,W2,W1}]  <span class="fl">0.54309</span>  <span class="fl">0.61946</span> <span class="fl">0.070471</span> <span class="fl">0.48134</span> <span class="fl">0.75758</span></a>
+<a class="sourceLine" id="cb101-7" data-line-number="7">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb101-8" data-line-number="8"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.61946</span>           <span class="fl">0.48134</span>           <span class="fl">0.75758</span></a></code></pre></div>
 <p>Therefore even though the user specified all baseline covariates as the basis
 for rule estimation, a simpler rule based on only <span class="math inline">\(W_2\)</span> and <span class="math inline">\(W_1\)</span> is sufficient
 to maximize the mean under the optimal individualized treatment.</p>
@@ -818,21 +814,20 @@ the outcome in question while being supported by the data.</p>
   learners <span class="op">=</span> <span class="va">learner_list</span>,
   maximize <span class="op">=</span> <span class="cn">TRUE</span>, complex <span class="op">=</span> <span class="cn">TRUE</span>, realistic <span class="op">=</span> <span class="cn">TRUE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type         param init_est tmle_est       se   lower   upper</span>
-<span class="co">#&gt; 1:  TSM E[Y_{A=NULL}]  0.54847  0.65455 0.021603 0.61221 0.69689</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.65455           0.61221           0.69689</span>
-
-<span class="co"># How many individuals got assigned each treatment?</span>
-<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">tmle_spec</span><span class="op">$</span><span class="va">return_rule</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;   2   3 </span>
-<span class="co">#&gt; 507 493</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb103-2" data-line-number="2">fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb103-3" data-line-number="3">fit</a>
+<a class="sourceLine" id="cb103-4" data-line-number="4">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb103-5" data-line-number="5">   type         param init_est tmle_est       se   lower   upper</a>
+<a class="sourceLine" id="cb103-6" data-line-number="6"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.54847</span>  <span class="fl">0.65455</span> <span class="fl">0.021603</span> <span class="fl">0.61221</span> <span class="fl">0.69689</span></a>
+<a class="sourceLine" id="cb103-7" data-line-number="7">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb103-8" data-line-number="8"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.65455</span>           <span class="fl">0.61221</span>           <span class="fl">0.69689</span></a>
+<a class="sourceLine" id="cb103-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb103-10" data-line-number="10"><span class="co"># How many individuals got assigned each treatment?</span></a>
+<a class="sourceLine" id="cb103-11" data-line-number="11"><span class="kw">table</span>(tmle_spec<span class="op">$</span>return_rule)</a>
+<a class="sourceLine" id="cb103-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb103-13" data-line-number="13">  <span class="dv">2</span>   <span class="dv">3</span> </a>
+<a class="sourceLine" id="cb103-14" data-line-number="14"><span class="dv">507</span> <span class="dv">493</span> </a></code></pre></div>
 </div>
 <div id="q-learning" class="section level3">
 <h3>
@@ -848,22 +843,21 @@ first need to initialize a specification for the TMLE of our parameter of
 interest. As opposed to the previous section however, we will now use
 <code>tmle3_mopttx_Q</code> instead of <code>tmle3_mopttx_blip_revere</code> in order to indicate that
 we want to use Q-learning instead of TMLE.</p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
-<span class="va">tmle_spec_Q</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_Q.html">tmle3_mopttx_Q</a></span><span class="op">(</span>maximize <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="co"># Define data:</span>
-<span class="va">tmle_task</span> <span class="op">&lt;-</span> <span class="va">tmle_spec_Q</span><span class="op">$</span><span class="fu">make_tmle_task</span><span class="op">(</span><span class="va">data</span>, <span class="va">node_list</span><span class="op">)</span>
-
-<span class="co"># Define likelihood:</span>
-<span class="va">initial_likelihood</span> <span class="op">&lt;-</span> <span class="va">tmle_spec_Q</span><span class="op">$</span><span class="fu">make_initial_likelihood</span><span class="op">(</span>
-  <span class="va">tmle_task</span>,
-  <span class="va">learner_list</span>
-<span class="op">)</span>
-
-<span class="co"># Estimate the parameter:</span>
-<span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/Q_learning.html">Q_learning</a></span><span class="op">(</span><span class="va">tmle_spec_Q</span>, <span class="va">initial_likelihood</span>, <span class="va">tmle_task</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
-<span class="co">#&gt; [1] 0.47964</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb104-2" data-line-number="2">tmle_spec_Q &lt;-<span class="st"> </span><span class="kw">tmle3_mopttx_Q</span>(<span class="dt">maximize =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb104-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb104-4" data-line-number="4"><span class="co"># Define data:</span></a>
+<a class="sourceLine" id="cb104-5" data-line-number="5">tmle_task &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_tmle_task</span>(data, node_list)</a>
+<a class="sourceLine" id="cb104-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb104-7" data-line-number="7"><span class="co"># Define likelihood:</span></a>
+<a class="sourceLine" id="cb104-8" data-line-number="8">initial_likelihood &lt;-<span class="st"> </span>tmle_spec_Q<span class="op">$</span><span class="kw">make_initial_likelihood</span>(</a>
+<a class="sourceLine" id="cb104-9" data-line-number="9">  tmle_task,</a>
+<a class="sourceLine" id="cb104-10" data-line-number="10">  learner_list</a>
+<a class="sourceLine" id="cb104-11" data-line-number="11">)</a>
+<a class="sourceLine" id="cb104-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb104-13" data-line-number="13"><span class="co"># Estimate the parameter:</span></a>
+<a class="sourceLine" id="cb104-14" data-line-number="14"><span class="kw">Q_learning</span>(tmle_spec_Q, initial_likelihood, tmle_task)[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb104-15" data-line-number="15">[<span class="dv">1</span>] <span class="fl">0.47964</span></a></code></pre></div>
 </div>
 </div>
 <div id="variable-importance-analysis-with-oit" class="section level2">
@@ -950,21 +944,20 @@ effect).</p>
   complex <span class="op">=</span> <span class="cn">TRUE</span>,
   realistic <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">vim_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3_vim.html">tmle3_vim</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span>,
-  adjust_for_other_A <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">vim_results</span><span class="op">)</span>
-<span class="co">#&gt;    type                  param    init_est  tmle_est       se     lower</span>
-<span class="co">#&gt; 1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.02858893 -0.145989 0.054757 -0.253311</span>
-<span class="co">#&gt; 2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.00035671  0.088742 0.033090  0.023886</span>
-<span class="co">#&gt;        upper psi_transformed lower_transformed upper_transformed  A           W</span>
-<span class="co">#&gt; 1: -0.038667         0.86417           0.77623           0.96207 W1  W3,W4,W2,A</span>
-<span class="co">#&gt; 2:  0.153598         1.09280           1.02417           1.16602  A W3,W4,W2,W1</span>
-<span class="co">#&gt;     Z_stat      p_nz p_nz_corrected</span>
-<span class="co">#&gt; 1: -2.6661 0.0038367      0.0038367</span>
-<span class="co">#&gt; 2:  2.6818 0.0036614      0.0038367</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1"><span class="co"># fit the TML estimator</span></a>
+<a class="sourceLine" id="cb107-2" data-line-number="2">vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle_spec, data, node_list, learner_list,</a>
+<a class="sourceLine" id="cb107-3" data-line-number="3">  <span class="dt">adjust_for_other_A =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb107-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb107-5" data-line-number="5"><span class="kw">print</span>(vim_results)</a>
+<a class="sourceLine" id="cb107-6" data-line-number="6">   type                  param    init_est  tmle_est       se     lower</a>
+<a class="sourceLine" id="cb107-7" data-line-number="7"><span class="dv">1</span><span class="op">:</span><span class="st">   </span>RR <span class="kw">RR</span>(E[Y_{A=<span class="ot">NULL</span>}]<span class="op">/</span>E[Y]) <span class="fl">-0.02858893</span> <span class="fl">-0.145989</span> <span class="fl">0.054757</span> <span class="fl">-0.253311</span></a>
+<a class="sourceLine" id="cb107-8" data-line-number="8"><span class="dv">2</span><span class="op">:</span><span class="st">   </span>RR <span class="kw">RR</span>(E[Y_{A=<span class="ot">NULL</span>}]<span class="op">/</span>E[Y])  <span class="fl">0.00035671</span>  <span class="fl">0.088742</span> <span class="fl">0.033090</span>  <span class="fl">0.023886</span></a>
+<a class="sourceLine" id="cb107-9" data-line-number="9">       upper psi_transformed lower_transformed upper_transformed  A           W</a>
+<a class="sourceLine" id="cb107-10" data-line-number="10"><span class="dv">1</span><span class="op">:</span><span class="st"> </span><span class="fl">-0.038667</span>         <span class="fl">0.86417</span>           <span class="fl">0.77623</span>           <span class="fl">0.96207</span> W1  W3,W4,W2,A</a>
+<a class="sourceLine" id="cb107-11" data-line-number="11"><span class="dv">2</span><span class="op">:</span><span class="st">  </span><span class="fl">0.153598</span>         <span class="fl">1.09280</span>           <span class="fl">1.02417</span>           <span class="fl">1.16602</span>  A W3,W4,W2,W1</a>
+<a class="sourceLine" id="cb107-12" data-line-number="12">    Z_stat      p_nz p_nz_corrected</a>
+<a class="sourceLine" id="cb107-13" data-line-number="13"><span class="dv">1</span><span class="op">:</span><span class="st"> </span><span class="fl">-2.6661</span> <span class="fl">0.0038367</span>      <span class="fl">0.0038367</span></a>
+<a class="sourceLine" id="cb107-14" data-line-number="14"><span class="dv">2</span><span class="op">:</span><span class="st">  </span><span class="fl">2.6818</span> <span class="fl">0.0036614</span>      <span class="fl">0.0038367</span></a></code></pre></div>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1138,7 +1131,7 @@ Q-learning. How do the results change and why?</p></li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 11, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 19, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

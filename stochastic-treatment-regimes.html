@@ -70,7 +70,7 @@
 <p><em>Nima Hejazi</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>
 by <em>Nima Hejazi, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-11</p>
+<p>Updated: 2021-04-19</p>
 <div id="learning-objectives-5" class="section level2">
 <h2>
 <span class="header-section-number">9.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-5"><i class="fas fa-link"></i></a>
@@ -371,11 +371,10 @@ has received much attention in the literature. To estimate the treatment
 mechanism, we must make use of learning algorithms specifically suited to
 conditional density estimation; a list of such learners may be extracted from
 <code>sl3</code> by using <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners()</a></code>:</p>
-<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners</a></span><span class="op">(</span><span class="st">"density"</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Lrnr_density_discretize"     "Lrnr_density_hse"           </span>
-<span class="co">#&gt; [3] "Lrnr_density_semiparametric" "Lrnr_haldensify"            </span>
-<span class="co">#&gt; [5] "Lrnr_solnp_density"</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1"><span class="kw">sl3_list_learners</span>(<span class="st">"density"</span>)</a>
+<a class="sourceLine" id="cb110-2" data-line-number="2">[<span class="dv">1</span>] <span class="st">"Lrnr_density_discretize"</span>     <span class="st">"Lrnr_density_hse"</span>           </a>
+<a class="sourceLine" id="cb110-3" data-line-number="3">[<span class="dv">3</span>] <span class="st">"Lrnr_density_semiparametric"</span> <span class="st">"Lrnr_haldensify"</span>            </a>
+<a class="sourceLine" id="cb110-4" data-line-number="4">[<span class="dv">5</span>] <span class="st">"Lrnr_solnp_density"</span>         </a></code></pre></div>
 <p>To proceed, we’ll select two of the above learners, <code>Lrnr_haldensify</code> for using
 the highly adaptive lasso for conditional density estimation, based on an
 algorithm given by <span class="citation">Díaz and van der Laan (<a href="references.html#ref-diaz2011super">2011</a>)</span> and implemented in <span class="citation">Hejazi, Benkeser, and van der Laan (<a href="references.html#ref-hejazi2020haldensify">2020</a>)</span>, and
@@ -417,36 +416,35 @@ regression while our <code>g_learner</code> is used in estimating the treatment 
 <h3>
 <span class="header-section-number">9.6.1</span> Example with Simulated Data<a class="anchor" aria-label="anchor" href="#example-with-simulated-data"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># simulate simple data for tmle-shift sketch</span>
-<span class="va">n_obs</span> <span class="op">&lt;-</span> <span class="fl">400</span> <span class="co"># number of observations</span>
-<span class="va">tx_mult</span> <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># multiplier for the effect of W = 1 on the treatment</span>
-
-<span class="co">## baseline covariates -- simple, binary</span>
-<span class="va">W</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">replicate</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n_obs</span>, <span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co">## create treatment based on baseline W</span>
-<span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="va">n_obs</span>, mean <span class="op">=</span> <span class="va">tx_mult</span> <span class="op">*</span> <span class="va">W</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-
-<span class="co">## create outcome as a linear function of A, W + white noise</span>
-<span class="va">Y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html">rbinom</a></span><span class="op">(</span><span class="va">n_obs</span>, <span class="fl">1</span>, prob <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Logistic.html">plogis</a></span><span class="op">(</span><span class="va">A</span> <span class="op">+</span> <span class="va">W</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># organize data and nodes for tmle3</span>
-<span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/data.table.html">data.table</a></span><span class="op">(</span><span class="va">W</span>, <span class="va">A</span>, <span class="va">Y</span><span class="op">)</span>
-<span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/setattr.html">setnames</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"A"</span>, <span class="st">"Y"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">node_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  W <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"W1"</span>, <span class="st">"W2"</span><span class="op">)</span>,
-  A <span class="op">=</span> <span class="st">"A"</span>,
-  Y <span class="op">=</span> <span class="st">"Y"</span>
-<span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt;    W1 W2         A Y</span>
-<span class="co">#&gt; 1:  1  1  0.271651 1</span>
-<span class="co">#&gt; 2:  0  0 -0.663368 1</span>
-<span class="co">#&gt; 3:  0  0  0.113366 0</span>
-<span class="co">#&gt; 4:  0  1 -0.732558 0</span>
-<span class="co">#&gt; 5:  1  1  0.388835 1</span>
-<span class="co">#&gt; 6:  0  0  0.043986 0</span></code></pre></div>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1"><span class="co"># simulate simple data for tmle-shift sketch</span></a>
+<a class="sourceLine" id="cb113-2" data-line-number="2">n_obs &lt;-<span class="st"> </span><span class="dv">400</span> <span class="co"># number of observations</span></a>
+<a class="sourceLine" id="cb113-3" data-line-number="3">tx_mult &lt;-<span class="st"> </span><span class="dv">2</span> <span class="co"># multiplier for the effect of W = 1 on the treatment</span></a>
+<a class="sourceLine" id="cb113-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb113-5" data-line-number="5">## baseline covariates -- simple, binary</a>
+<a class="sourceLine" id="cb113-6" data-line-number="6">W &lt;-<span class="st"> </span><span class="kw">replicate</span>(<span class="dv">2</span>, <span class="kw">rbinom</span>(n_obs, <span class="dv">1</span>, <span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb113-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb113-8" data-line-number="8">## create treatment based on baseline W</a>
+<a class="sourceLine" id="cb113-9" data-line-number="9">A &lt;-<span class="st"> </span><span class="kw">rnorm</span>(n_obs, <span class="dt">mean =</span> tx_mult <span class="op">*</span><span class="st"> </span>W, <span class="dt">sd =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb113-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb113-11" data-line-number="11">## create outcome as a linear function of A, W + white noise</a>
+<a class="sourceLine" id="cb113-12" data-line-number="12">Y &lt;-<span class="st"> </span><span class="kw">rbinom</span>(n_obs, <span class="dv">1</span>, <span class="dt">prob =</span> <span class="kw">plogis</span>(A <span class="op">+</span><span class="st"> </span>W))</a>
+<a class="sourceLine" id="cb113-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb113-14" data-line-number="14"><span class="co"># organize data and nodes for tmle3</span></a>
+<a class="sourceLine" id="cb113-15" data-line-number="15">data &lt;-<span class="st"> </span><span class="kw">data.table</span>(W, A, Y)</a>
+<a class="sourceLine" id="cb113-16" data-line-number="16"><span class="kw">setnames</span>(data, <span class="kw">c</span>(<span class="st">"W1"</span>, <span class="st">"W2"</span>, <span class="st">"A"</span>, <span class="st">"Y"</span>))</a>
+<a class="sourceLine" id="cb113-17" data-line-number="17">node_list &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb113-18" data-line-number="18">  <span class="dt">W =</span> <span class="kw">c</span>(<span class="st">"W1"</span>, <span class="st">"W2"</span>),</a>
+<a class="sourceLine" id="cb113-19" data-line-number="19">  <span class="dt">A =</span> <span class="st">"A"</span>,</a>
+<a class="sourceLine" id="cb113-20" data-line-number="20">  <span class="dt">Y =</span> <span class="st">"Y"</span></a>
+<a class="sourceLine" id="cb113-21" data-line-number="21">)</a>
+<a class="sourceLine" id="cb113-22" data-line-number="22"><span class="kw">head</span>(data)</a>
+<a class="sourceLine" id="cb113-23" data-line-number="23">   W1 W2         A Y</a>
+<a class="sourceLine" id="cb113-24" data-line-number="24"><span class="dv">1</span><span class="op">:</span><span class="st">  </span><span class="dv">1</span>  <span class="dv">1</span>  <span class="fl">0.271651</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb113-25" data-line-number="25"><span class="dv">2</span><span class="op">:</span><span class="st">  </span><span class="dv">0</span>  <span class="dv">0</span> <span class="fl">-0.663368</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb113-26" data-line-number="26"><span class="dv">3</span><span class="op">:</span><span class="st">  </span><span class="dv">0</span>  <span class="dv">0</span>  <span class="fl">0.113366</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb113-27" data-line-number="27"><span class="dv">4</span><span class="op">:</span><span class="st">  </span><span class="dv">0</span>  <span class="dv">1</span> <span class="fl">-0.732558</span> <span class="dv">0</span></a>
+<a class="sourceLine" id="cb113-28" data-line-number="28"><span class="dv">5</span><span class="op">:</span><span class="st">  </span><span class="dv">1</span>  <span class="dv">1</span>  <span class="fl">0.388835</span> <span class="dv">1</span></a>
+<a class="sourceLine" id="cb113-29" data-line-number="29"><span class="dv">6</span><span class="op">:</span><span class="st">  </span><span class="dv">0</span>  <span class="dv">0</span>  <span class="fl">0.043986</span> <span class="dv">0</span></a></code></pre></div>
 <p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. To formally
 express this fact using the <code>tlverse</code> grammar introduced by the <code>tmle3</code> package,
 we create a single data object and specify the functional relationships between
@@ -477,18 +475,17 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 <h3>
 <span class="header-section-number">9.6.2</span> Targeted Estimation of Stochastic Interventions Effects<a class="anchor" aria-label="anchor" href="#targeted-estimation-of-stochastic-interventions-effects"><i class="fas fa-link"></i></a>
 </h3>
-<div class="sourceCode" id="cb115"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 534.2313  Pars:  0.43334 0.38683 0.17983</span>
-<span class="co">#&gt; Iter: 2 fn: 534.2312  Pars:  0.43334 0.38684 0.17982</span>
-<span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
-<span class="va">tmle_fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;    type         param init_est tmle_est       se   lower   upper</span>
-<span class="co">#&gt; 1:  TSM E[Y_{A=NULL}]  0.76199   0.7626 0.021965 0.71955 0.80565</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:          0.7626           0.71955           0.80565</span></code></pre></div>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb115-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb115-3" data-line-number="3">Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">534.2313</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.43334</span> <span class="fl">0.38684</span> <span class="fl">0.17982</span></a>
+<a class="sourceLine" id="cb115-4" data-line-number="4">Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">534.2312</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.43334</span> <span class="fl">0.38684</span> <span class="fl">0.17982</span></a>
+<a class="sourceLine" id="cb115-5" data-line-number="5">solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</a>
+<a class="sourceLine" id="cb115-6" data-line-number="6">tmle_fit</a>
+<a class="sourceLine" id="cb115-7" data-line-number="7">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb115-8" data-line-number="8">   type         param init_est tmle_est       se   lower   upper</a>
+<a class="sourceLine" id="cb115-9" data-line-number="9"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.76199</span>   <span class="fl">0.7626</span> <span class="fl">0.021965</span> <span class="fl">0.71955</span> <span class="fl">0.80565</span></a>
+<a class="sourceLine" id="cb115-10" data-line-number="10">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb115-11" data-line-number="11"><span class="dv">1</span><span class="op">:</span><span class="st">          </span><span class="fl">0.7626</span>           <span class="fl">0.71955</span>           <span class="fl">0.80565</span></a></code></pre></div>
 <p>The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently displays the
 results from computing our TML estimator.</p>
 </div>
@@ -628,26 +625,25 @@ machinery exposed by the <a href="https://tmle3.tlverse.org/"><code>tmle3</code>
 <p>One may invoke the <code>tmle3</code> wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 534.0196  Pars:  0.40786 0.35781 0.23432</span>
-<span class="co">#&gt; Iter: 2 fn: 534.0196  Pars:  0.40783 0.35787 0.23430</span>
-<span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
-<span class="va">tmle_fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;          type          param init_est tmle_est        se   lower   upper</span>
-<span class="co">#&gt; 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618</span>
-<span class="co">#&gt; 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255</span>
-<span class="co">#&gt; 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80031 0.0183466 0.76435 0.83627</span>
-<span class="co">#&gt; 4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548</span>
-<span class="co">#&gt; 5: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.56184           0.51749           0.60618</span>
-<span class="co">#&gt; 2:         0.69748           0.65240           0.74255</span>
-<span class="co">#&gt; 3:         0.80031           0.76435           0.83627</span>
-<span class="co">#&gt; 4:         0.68654           0.64761           0.72548</span>
-<span class="co">#&gt; 5:         0.11924           0.10138           0.13709</span></code></pre></div>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb117-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb117-3" data-line-number="3">Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">534.0196</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.40786</span> <span class="fl">0.35781</span> <span class="fl">0.23432</span></a>
+<a class="sourceLine" id="cb117-4" data-line-number="4">Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">534.0196</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.40783</span> <span class="fl">0.35787</span> <span class="fl">0.23430</span></a>
+<a class="sourceLine" id="cb117-5" data-line-number="5">solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</a>
+<a class="sourceLine" id="cb117-6" data-line-number="6">tmle_fit</a>
+<a class="sourceLine" id="cb117-7" data-line-number="7">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb117-8" data-line-number="8">         type          param init_est tmle_est        se   lower   upper</a>
+<a class="sourceLine" id="cb117-9" data-line-number="9"><span class="dv">1</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.55351</span>  <span class="fl">0.56184</span> <span class="fl">0.0226250</span> <span class="fl">0.51749</span> <span class="fl">0.60618</span></a>
+<a class="sourceLine" id="cb117-10" data-line-number="10"><span class="dv">2</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.69755</span>  <span class="fl">0.69748</span> <span class="fl">0.0229975</span> <span class="fl">0.65240</span> <span class="fl">0.74255</span></a>
+<a class="sourceLine" id="cb117-11" data-line-number="11"><span class="dv">3</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.82085</span>  <span class="fl">0.80031</span> <span class="fl">0.0183466</span> <span class="fl">0.76435</span> <span class="fl">0.83627</span></a>
+<a class="sourceLine" id="cb117-12" data-line-number="12"><span class="dv">4</span><span class="op">:</span><span class="st"> </span>MSM_linear <span class="kw">MSM</span>(intercept)  <span class="fl">0.69063</span>  <span class="fl">0.68654</span> <span class="fl">0.0198658</span> <span class="fl">0.64761</span> <span class="fl">0.72548</span></a>
+<a class="sourceLine" id="cb117-13" data-line-number="13"><span class="dv">5</span><span class="op">:</span><span class="st"> </span>MSM_linear     <span class="kw">MSM</span>(slope)  <span class="fl">0.13367</span>  <span class="fl">0.11924</span> <span class="fl">0.0091106</span> <span class="fl">0.10138</span> <span class="fl">0.13709</span></a>
+<a class="sourceLine" id="cb117-14" data-line-number="14">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb117-15" data-line-number="15"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.56184</span>           <span class="fl">0.51749</span>           <span class="fl">0.60618</span></a>
+<a class="sourceLine" id="cb117-16" data-line-number="16"><span class="dv">2</span><span class="op">:</span><span class="st">         </span><span class="fl">0.69748</span>           <span class="fl">0.65240</span>           <span class="fl">0.74255</span></a>
+<a class="sourceLine" id="cb117-17" data-line-number="17"><span class="dv">3</span><span class="op">:</span><span class="st">         </span><span class="fl">0.80031</span>           <span class="fl">0.76435</span>           <span class="fl">0.83627</span></a>
+<a class="sourceLine" id="cb117-18" data-line-number="18"><span class="dv">4</span><span class="op">:</span><span class="st">         </span><span class="fl">0.68654</span>           <span class="fl">0.64761</span>           <span class="fl">0.72548</span></a>
+<a class="sourceLine" id="cb117-19" data-line-number="19"><span class="dv">5</span><span class="op">:</span><span class="st">         </span><span class="fl">0.11924</span>           <span class="fl">0.10138</span>           <span class="fl">0.13709</span></a></code></pre></div>
 <p><em>Remark</em>: The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently
 displays the results from computing our TML estimator.</p>
 </div>
@@ -710,14 +706,13 @@ from a working MSM is rather straightforward. To wit, the limiting distribution
 for <span class="math inline">\(m_{\beta}(\delta)\)</span> may be expressed <span class="math display">\[\sqrt{n}(\beta_n - \beta_0) \to N(0,
 \Sigma),\]</span> where <span class="math inline">\(\Sigma\)</span> is the empirical covariance matrix of
 <span class="math inline">\(\text{EIF}_{\beta}(O)\)</span>.</p>
-<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmle_fit</span><span class="op">$</span><span class="va">summary</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span>
-<span class="co">#&gt;          type          param init_est tmle_est        se   lower   upper</span>
-<span class="co">#&gt; 1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548</span>
-<span class="co">#&gt; 2: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.68654           0.64761           0.72548</span>
-<span class="co">#&gt; 2:         0.11924           0.10138           0.13709</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1">tmle_fit<span class="op">$</span>summary[<span class="dv">4</span><span class="op">:</span><span class="dv">5</span>, ]</a>
+<a class="sourceLine" id="cb118-2" data-line-number="2">         type          param init_est tmle_est        se   lower   upper</a>
+<a class="sourceLine" id="cb118-3" data-line-number="3"><span class="dv">1</span><span class="op">:</span><span class="st"> </span>MSM_linear <span class="kw">MSM</span>(intercept)  <span class="fl">0.69063</span>  <span class="fl">0.68654</span> <span class="fl">0.0198658</span> <span class="fl">0.64761</span> <span class="fl">0.72548</span></a>
+<a class="sourceLine" id="cb118-4" data-line-number="4"><span class="dv">2</span><span class="op">:</span><span class="st"> </span>MSM_linear     <span class="kw">MSM</span>(slope)  <span class="fl">0.13367</span>  <span class="fl">0.11924</span> <span class="fl">0.0091106</span> <span class="fl">0.10138</span> <span class="fl">0.13709</span></a>
+<a class="sourceLine" id="cb118-5" data-line-number="5">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb118-6" data-line-number="6"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.68654</span>           <span class="fl">0.64761</span>           <span class="fl">0.72548</span></a>
+<a class="sourceLine" id="cb118-7" data-line-number="7"><span class="dv">2</span><span class="op">:</span><span class="st">         </span><span class="fl">0.11924</span>           <span class="fl">0.10138</span>           <span class="fl">0.13709</span></a></code></pre></div>
 <div id="directly-targeting-the-msm-parameter-beta" class="section level4">
 <h4>
 <span class="header-section-number">9.7.4.1</span> Directly Targeting the MSM Parameter <span class="math inline">\(\beta\)</span><a class="anchor" aria-label="anchor" href="#directly-targeting-the-msm-parameter-beta"><i class="fas fa-link"></i></a>
@@ -739,27 +734,26 @@ H_2(g),\]</span> for all <span class="math inline">\(\delta\)</span>, where <spa
 parameters of the working marginal structural model, we may use the
 <code>tmle_vimshift_msm</code> Spec (instead of the <code>tmle_vimshift_delta</code> Spec that
 appears above):</p>
-<div class="sourceCode" id="cb119"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
-<span class="va">tmle_msm_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/tmle3shift/reference/tmle_vimshift_msm.html">tmle_vimshift_msm</a></span><span class="op">(</span>
-  shift_grid <span class="op">=</span> <span class="va">delta_grid</span>,
-  max_shifted_ratio <span class="op">=</span> <span class="fl">2</span>
-<span class="op">)</span>
-
-<span class="co"># fit the TML estimator and examine the results</span>
-<span class="va">tmle_msm_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_msm_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Iter: 1 fn: 536.5917  Pars:  0.33423 0.55591 0.10986</span>
-<span class="co">#&gt; Iter: 2 fn: 536.5917  Pars:  0.33423 0.55591 0.10986</span>
-<span class="co">#&gt; solnp--&gt; Completed in 2 iterations</span>
-<span class="va">tmle_msm_fit</span>
-<span class="co">#&gt; A tmle3_Fit that took 1 step(s)</span>
-<span class="co">#&gt;          type          param init_est tmle_est        se   lower   upper</span>
-<span class="co">#&gt; 1: MSM_linear MSM(intercept)  0.69029  0.69005 0.0200303 0.65079 0.72931</span>
-<span class="co">#&gt; 2: MSM_linear     MSM(slope)  0.13238  0.13222 0.0091809 0.11423 0.15021</span>
-<span class="co">#&gt;    psi_transformed lower_transformed upper_transformed</span>
-<span class="co">#&gt; 1:         0.69005           0.65079           0.72931</span>
-<span class="co">#&gt; 2:         0.13222           0.11423           0.15021</span></code></pre></div>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1"><span class="co"># initialize a tmle specification</span></a>
+<a class="sourceLine" id="cb119-2" data-line-number="2">tmle_msm_spec &lt;-<span class="st"> </span><span class="kw">tmle_vimshift_msm</span>(</a>
+<a class="sourceLine" id="cb119-3" data-line-number="3">  <span class="dt">shift_grid =</span> delta_grid,</a>
+<a class="sourceLine" id="cb119-4" data-line-number="4">  <span class="dt">max_shifted_ratio =</span> <span class="dv">2</span></a>
+<a class="sourceLine" id="cb119-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb119-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb119-7" data-line-number="7"><span class="co"># fit the TML estimator and examine the results</span></a>
+<a class="sourceLine" id="cb119-8" data-line-number="8">tmle_msm_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_msm_spec, data, node_list, learner_list)</a>
+<a class="sourceLine" id="cb119-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb119-10" data-line-number="10">Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">536.5917</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.33423</span> <span class="fl">0.55591</span> <span class="fl">0.10986</span></a>
+<a class="sourceLine" id="cb119-11" data-line-number="11">Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">536.5917</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.33423</span> <span class="fl">0.55591</span> <span class="fl">0.10986</span></a>
+<a class="sourceLine" id="cb119-12" data-line-number="12">solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</a>
+<a class="sourceLine" id="cb119-13" data-line-number="13">tmle_msm_fit</a>
+<a class="sourceLine" id="cb119-14" data-line-number="14">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
+<a class="sourceLine" id="cb119-15" data-line-number="15">         type          param init_est tmle_est        se   lower   upper</a>
+<a class="sourceLine" id="cb119-16" data-line-number="16"><span class="dv">1</span><span class="op">:</span><span class="st"> </span>MSM_linear <span class="kw">MSM</span>(intercept)  <span class="fl">0.69029</span>  <span class="fl">0.69005</span> <span class="fl">0.0200303</span> <span class="fl">0.65079</span> <span class="fl">0.72931</span></a>
+<a class="sourceLine" id="cb119-17" data-line-number="17"><span class="dv">2</span><span class="op">:</span><span class="st"> </span>MSM_linear     <span class="kw">MSM</span>(slope)  <span class="fl">0.13238</span>  <span class="fl">0.13222</span> <span class="fl">0.0091809</span> <span class="fl">0.11423</span> <span class="fl">0.15021</span></a>
+<a class="sourceLine" id="cb119-18" data-line-number="18">   psi_transformed lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb119-19" data-line-number="19"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.69005</span>           <span class="fl">0.65079</span>           <span class="fl">0.72931</span></a>
+<a class="sourceLine" id="cb119-20" data-line-number="20"><span class="dv">2</span><span class="op">:</span><span class="st">         </span><span class="fl">0.13222</span>           <span class="fl">0.11423</span>           <span class="fl">0.15021</span></a></code></pre></div>
 </div>
 </div>
 <div id="example-with-the-wash-benefits-data" class="section level3">
@@ -769,32 +763,31 @@ appears above):</p>
 <p>To complete our walk through, let’s turn to using stochastic interventions to
 investigate the data from the WASH Benefits trial. To start, let’s load the
 data, convert all columns to be of class <code>numeric</code>, and take a quick look at it</p>
-<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
-    <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,
-    <span class="st">"wash-benefits/washb_data.csv"</span>
-  <span class="op">)</span>,
-  stringsAsFactors <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-<span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="va">washb_data</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">momage</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">.SD</span>, <span class="va">as.numeric</span><span class="op">)</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">washb_data</span>, <span class="fl">3</span><span class="op">)</span>
-<span class="co">#&gt;      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp</span>
-<span class="co">#&gt; 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11</span>
-<span class="co">#&gt; 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4</span>
-<span class="co">#&gt; 3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10</span>
-<span class="co">#&gt;    watmin elec floor walls roof asset_wardrobe asset_table asset_chair</span>
-<span class="co">#&gt; 1:      0    1     0     1    1              0           1           1</span>
-<span class="co">#&gt; 2:      0    1     0     1    1              0           1           0</span>
-<span class="co">#&gt; 3:      0    0     0     1    1              0           0           1</span>
-<span class="co">#&gt;    asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto</span>
-<span class="co">#&gt; 1:          1            0        1            0          0          0</span>
-<span class="co">#&gt; 2:          1            1        0            0          0          0</span>
-<span class="co">#&gt; 3:          0            1        0            0          0          0</span>
-<span class="co">#&gt;    asset_sewmach asset_mobile</span>
-<span class="co">#&gt; 1:             0            1</span>
-<span class="co">#&gt; 2:             0            1</span>
-<span class="co">#&gt; 3:             0            1</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1">washb_data &lt;-<span class="st"> </span><span class="kw">fread</span>(</a>
+<a class="sourceLine" id="cb120-2" data-line-number="2">  <span class="kw">paste0</span>(</a>
+<a class="sourceLine" id="cb120-3" data-line-number="3">    <span class="st">"https://raw.githubusercontent.com/tlverse/tlverse-data/master/"</span>,</a>
+<a class="sourceLine" id="cb120-4" data-line-number="4">    <span class="st">"wash-benefits/washb_data.csv"</span></a>
+<a class="sourceLine" id="cb120-5" data-line-number="5">  ),</a>
+<a class="sourceLine" id="cb120-6" data-line-number="6">  <span class="dt">stringsAsFactors =</span> <span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb120-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb120-8" data-line-number="8">washb_data &lt;-<span class="st"> </span>washb_data[<span class="op">!</span><span class="kw">is.na</span>(momage), <span class="kw">lapply</span>(.SD, as.numeric)]</a>
+<a class="sourceLine" id="cb120-9" data-line-number="9"><span class="kw">head</span>(washb_data, <span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb120-10" data-line-number="10">     whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp</a>
+<a class="sourceLine" id="cb120-11" data-line-number="11"><span class="dv">1</span><span class="op">:</span><span class="st">  </span><span class="fl">0.00</span>  <span class="dv">1</span>       <span class="dv">4</span>     <span class="dv">9</span>  <span class="dv">268</span>   <span class="dv">2</span>     <span class="dv">30</span>      <span class="dv">2</span>    <span class="fl">146.40</span>       <span class="dv">1</span>     <span class="dv">3</span>    <span class="dv">11</span></a>
+<a class="sourceLine" id="cb120-12" data-line-number="12"><span class="dv">2</span><span class="op">:</span><span class="st"> </span><span class="fl">-1.16</span>  <span class="dv">1</span>       <span class="dv">4</span>     <span class="dv">9</span>  <span class="dv">286</span>   <span class="dv">2</span>     <span class="dv">25</span>      <span class="dv">2</span>    <span class="fl">148.75</span>       <span class="dv">3</span>     <span class="dv">2</span>     <span class="dv">4</span></a>
+<a class="sourceLine" id="cb120-13" data-line-number="13"><span class="dv">3</span><span class="op">:</span><span class="st"> </span><span class="fl">-1.05</span>  <span class="dv">1</span>      <span class="dv">20</span>     <span class="dv">9</span>  <span class="dv">264</span>   <span class="dv">2</span>     <span class="dv">25</span>      <span class="dv">2</span>    <span class="fl">152.15</span>       <span class="dv">1</span>     <span class="dv">1</span>    <span class="dv">10</span></a>
+<a class="sourceLine" id="cb120-14" data-line-number="14">   watmin elec floor walls roof asset_wardrobe asset_table asset_chair</a>
+<a class="sourceLine" id="cb120-15" data-line-number="15"><span class="dv">1</span><span class="op">:</span><span class="st">      </span><span class="dv">0</span>    <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">1</span>    <span class="dv">1</span>              <span class="dv">0</span>           <span class="dv">1</span>           <span class="dv">1</span></a>
+<a class="sourceLine" id="cb120-16" data-line-number="16"><span class="dv">2</span><span class="op">:</span><span class="st">      </span><span class="dv">0</span>    <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">1</span>    <span class="dv">1</span>              <span class="dv">0</span>           <span class="dv">1</span>           <span class="dv">0</span></a>
+<a class="sourceLine" id="cb120-17" data-line-number="17"><span class="dv">3</span><span class="op">:</span><span class="st">      </span><span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>    <span class="dv">1</span>              <span class="dv">0</span>           <span class="dv">0</span>           <span class="dv">1</span></a>
+<a class="sourceLine" id="cb120-18" data-line-number="18">   asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto</a>
+<a class="sourceLine" id="cb120-19" data-line-number="19"><span class="dv">1</span><span class="op">:</span><span class="st">          </span><span class="dv">1</span>            <span class="dv">0</span>        <span class="dv">1</span>            <span class="dv">0</span>          <span class="dv">0</span>          <span class="dv">0</span></a>
+<a class="sourceLine" id="cb120-20" data-line-number="20"><span class="dv">2</span><span class="op">:</span><span class="st">          </span><span class="dv">1</span>            <span class="dv">1</span>        <span class="dv">0</span>            <span class="dv">0</span>          <span class="dv">0</span>          <span class="dv">0</span></a>
+<a class="sourceLine" id="cb120-21" data-line-number="21"><span class="dv">3</span><span class="op">:</span><span class="st">          </span><span class="dv">0</span>            <span class="dv">1</span>        <span class="dv">0</span>            <span class="dv">0</span>          <span class="dv">0</span>          <span class="dv">0</span></a>
+<a class="sourceLine" id="cb120-22" data-line-number="22">   asset_sewmach asset_mobile</a>
+<a class="sourceLine" id="cb120-23" data-line-number="23"><span class="dv">1</span><span class="op">:</span><span class="st">             </span><span class="dv">0</span>            <span class="dv">1</span></a>
+<a class="sourceLine" id="cb120-24" data-line-number="24"><span class="dv">2</span><span class="op">:</span><span class="st">             </span><span class="dv">0</span>            <span class="dv">1</span></a>
+<a class="sourceLine" id="cb120-25" data-line-number="25"><span class="dv">3</span><span class="op">:</span><span class="st">             </span><span class="dv">0</span>            <span class="dv">1</span></a></code></pre></div>
 <p>Next, we specify our NPSEM via the <code>node_list</code> object. For our example analysis,
 we’ll consider the outcome to be the weight-for-height Z-score (as in previous
 chapters), the intervention of interest to be the mother’s age at time of
@@ -996,7 +989,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 11, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 19, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

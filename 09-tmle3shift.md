@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-11
+Updated: 2021-04-19
 
 ## Learning Objectives
 
@@ -317,9 +317,9 @@ conditional density estimation; a list of such learners may be extracted from
 
 ```r
 sl3_list_learners("density")
-#> [1] "Lrnr_density_discretize"     "Lrnr_density_hse"           
-#> [3] "Lrnr_density_semiparametric" "Lrnr_haldensify"            
-#> [5] "Lrnr_solnp_density"
+[1] "Lrnr_density_discretize"     "Lrnr_density_hse"           
+[3] "Lrnr_density_semiparametric" "Lrnr_haldensify"            
+[5] "Lrnr_solnp_density"         
 ```
 
 To proceed, we'll select two of the above learners, `Lrnr_haldensify` for using
@@ -394,13 +394,13 @@ node_list <- list(
   Y = "Y"
 )
 head(data)
-#>    W1 W2         A Y
-#> 1:  1  1  0.271651 1
-#> 2:  0  0 -0.663368 1
-#> 3:  0  0  0.113366 0
-#> 4:  0  1 -0.732558 0
-#> 5:  1  1  0.388835 1
-#> 6:  0  0  0.043986 0
+   W1 W2         A Y
+1:  1  1  0.271651 1
+2:  0  0 -0.663368 1
+3:  0  0  0.113366 0
+4:  0  1 -0.732558 0
+5:  1  1  0.388835 1
+6:  0  0  0.043986 0
 ```
 
 The above composes our observed data structure $O = (W, A, Y)$. To formally
@@ -440,16 +440,16 @@ object internally (see the `tmle3` documentation for details).
 
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> 
-#> Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38684 0.17982
-#> Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
-#> solnp--> Completed in 2 iterations
+
+Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
+Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
+solnp--> Completed in 2 iterations
 tmle_fit
-#> A tmle3_Fit that took 1 step(s)
-#>    type         param init_est tmle_est       se   lower   upper
-#> 1:  TSM E[Y_{A=NULL}]  0.76199   0.7626 0.021965 0.71955 0.80565
-#>    psi_transformed lower_transformed upper_transformed
-#> 1:          0.7626           0.71955           0.80565
+A tmle3_Fit that took 1 step(s)
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.76199   0.7626 0.021965 0.71955 0.80565
+   psi_transformed lower_transformed upper_transformed
+1:          0.7626           0.71955           0.80565
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -599,24 +599,24 @@ delta) in a single function call:
 
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
-#> 
-#> Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
-#> Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
-#> solnp--> Completed in 2 iterations
+
+Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
+Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
+solnp--> Completed in 2 iterations
 tmle_fit
-#> A tmle3_Fit that took 1 step(s)
-#>          type          param init_est tmle_est        se   lower   upper
-#> 1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
-#> 2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
-#> 3:        TSM  E[Y_{A=NULL}]  0.82085  0.80031 0.0183466 0.76435 0.83627
-#> 4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
-#> 5: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
-#>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.56184           0.51749           0.60618
-#> 2:         0.69748           0.65240           0.74255
-#> 3:         0.80031           0.76435           0.83627
-#> 4:         0.68654           0.64761           0.72548
-#> 5:         0.11924           0.10138           0.13709
+A tmle3_Fit that took 1 step(s)
+         type          param init_est tmle_est        se   lower   upper
+1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
+2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
+3:        TSM  E[Y_{A=NULL}]  0.82085  0.80031 0.0183466 0.76435 0.83627
+4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
+5: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
+   psi_transformed lower_transformed upper_transformed
+1:         0.56184           0.51749           0.60618
+2:         0.69748           0.65240           0.74255
+3:         0.80031           0.76435           0.83627
+4:         0.68654           0.64761           0.72548
+5:         0.11924           0.10138           0.13709
 ```
 
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
@@ -687,12 +687,12 @@ $\text{EIF}_{\beta}(O)$.
 
 ```r
 tmle_fit$summary[4:5, ]
-#>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
-#> 2: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
-#>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.68654           0.64761           0.72548
-#> 2:         0.11924           0.10138           0.13709
+         type          param init_est tmle_est        se   lower   upper
+1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
+2: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
+   psi_transformed lower_transformed upper_transformed
+1:         0.68654           0.64761           0.72548
+2:         0.11924           0.10138           0.13709
 ```
 
 #### Directly Targeting the MSM Parameter $\beta$
@@ -728,18 +728,18 @@ tmle_msm_spec <- tmle_vimshift_msm(
 
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
-#> 
-#> Iter: 1 fn: 536.5917	 Pars:  0.33422 0.55591 0.10986
-#> Iter: 2 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
-#> solnp--> Completed in 2 iterations
+
+Iter: 1 fn: 536.5917	 Pars:  0.33422 0.55591 0.10986
+Iter: 2 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
+solnp--> Completed in 2 iterations
 tmle_msm_fit
-#> A tmle3_Fit that took 1 step(s)
-#>          type          param init_est tmle_est        se   lower   upper
-#> 1: MSM_linear MSM(intercept)  0.69029  0.69005 0.0200303 0.65079 0.72931
-#> 2: MSM_linear     MSM(slope)  0.13238  0.13222 0.0091809 0.11423 0.15021
-#>    psi_transformed lower_transformed upper_transformed
-#> 1:         0.69005           0.65079           0.72931
-#> 2:         0.13222           0.11423           0.15021
+A tmle3_Fit that took 1 step(s)
+         type          param init_est tmle_est        se   lower   upper
+1: MSM_linear MSM(intercept)  0.69029  0.69005 0.0200303 0.65079 0.72931
+2: MSM_linear     MSM(slope)  0.13238  0.13222 0.0091809 0.11423 0.15021
+   psi_transformed lower_transformed upper_transformed
+1:         0.69005           0.65079           0.72931
+2:         0.13222           0.11423           0.15021
 ```
 
 ### Example with the WASH Benefits Data
@@ -759,22 +759,22 @@ washb_data <- fread(
 )
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
-#>      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
-#> 1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
-#> 2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
-#> 3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10
-#>    watmin elec floor walls roof asset_wardrobe asset_table asset_chair
-#> 1:      0    1     0     1    1              0           1           1
-#> 2:      0    1     0     1    1              0           1           0
-#> 3:      0    0     0     1    1              0           0           1
-#>    asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto
-#> 1:          1            0        1            0          0          0
-#> 2:          1            1        0            0          0          0
-#> 3:          0            1        0            0          0          0
-#>    asset_sewmach asset_mobile
-#> 1:             0            1
-#> 2:             0            1
-#> 3:             0            1
+     whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
+1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
+2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
+3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10
+   watmin elec floor walls roof asset_wardrobe asset_table asset_chair
+1:      0    1     0     1    1              0           1           1
+2:      0    1     0     1    1              0           1           0
+3:      0    0     0     1    1              0           0           1
+   asset_khat asset_chouki asset_tv asset_refrig asset_bike asset_moto
+1:          1            0        1            0          0          0
+2:          1            1        0            0          0          0
+3:          0            1        0            0          0          0
+   asset_sewmach asset_mobile
+1:             0            1
+2:             0            1
+3:             0            1
 ```
 
 Next, we specify our NPSEM via the `node_list` object. For our example analysis,
@@ -856,20 +856,28 @@ washb_tmle_fit
    mean of mother's age at child's birth (`momage`) under a shift $\delta = 0$.
    What does this counterfactual mean equate to in terms of the observed data?
 
+
+
 2. Using a grid of values of the shift parameter $\delta$ (e.g., $\{-1, 0,
    +1\}$), repeat the analysis on the variable chosen in the preceding question,
    summarizing the trend for this sequence of shifts using a marginal structural
    model.
+
+
 
 3. Repeat the preceding analysis, using the same grid of shifts, but instead
    directly targeting the parameters of the marginal structural model. Interpret
    the results -- that is, what does the slope of the marginal structural model
    tell us about the trend across the chosen sequence of shifts?
 
+
+
 ### Review of Key Concepts
 
 1. Describe two (equivalent) ways in which the causal effects of stochastic
    interventions may be interpreted.
+
+
 
 2. How does the marginal structural model we used to summarize the trend along
    the sequence of shifts previously help to contextualize the estimated effect
@@ -877,8 +885,12 @@ washb_tmle_fit
    shifts and the marginal structural model parameters allow us to more richly
    interpret our findings?
 
+
+
 3. What advantages, if any, are there to targeting directly the parameters of a
    marginal structural model?
+
+
 
 <!--
 - @haneuse2013estimation characterization of stochastic interventions as

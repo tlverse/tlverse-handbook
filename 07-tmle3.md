@@ -269,11 +269,11 @@ We now have everything we need to fit the tmle using `tmle3`:
 ```r
 tmle_fit <- tmle3(ate_spec, washb_data, node_list, learner_list)
 print(tmle_fit)
-#> A tmle3_Fit that took 1 step(s)
-#>    type                                    param  init_est tmle_est       se
-#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.005231  0.00812 0.050679
-#>        lower   upper psi_transformed lower_transformed upper_transformed
-#> 1: -0.091208 0.10745         0.00812         -0.091208           0.10745
+A tmle3_Fit that took 1 step(s)
+   type                                    param  init_est tmle_est       se
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.005231  0.00812 0.050679
+       lower   upper psi_transformed lower_transformed upper_transformed
+1: -0.091208 0.10745         0.00812         -0.091208           0.10745
 ```
 
 ### Evaluate the Estimates
@@ -284,7 +284,7 @@ can extra results from the summary by indexing into it:
 ```r
 estimates <- tmle_fit$summary$psi_transformed
 print(estimates)
-#> [1] 0.00812
+[1] 0.00812
 ```
 
 ## `tmle3` Components
@@ -307,20 +307,20 @@ tmle_task <- ate_spec$make_tmle_task(washb_data, node_list)
 
 ```r
 tmle_task$npsem
-#> $W
-#> tmle3_Node: W
-#> 	Variables: month, aged, sex, momedu, hfiacat, Nlt18, Ncomp, watmin, elec, floor, walls, roof, asset_wardrobe, asset_table, asset_chair, asset_khat, asset_chouki, asset_tv, asset_refrig, asset_bike, asset_moto, asset_sewmach, asset_mobile, momage, momheight, delta_momage, delta_momheight
-#> 	Parents: 
-#> 
-#> $A
-#> tmle3_Node: A
-#> 	Variables: tr
-#> 	Parents: W
-#> 
-#> $Y
-#> tmle3_Node: Y
-#> 	Variables: whz
-#> 	Parents: A, W
+$W
+tmle3_Node: W
+	Variables: month, aged, sex, momedu, hfiacat, Nlt18, Ncomp, watmin, elec, floor, walls, roof, asset_wardrobe, asset_table, asset_chair, asset_khat, asset_chouki, asset_tv, asset_refrig, asset_bike, asset_moto, asset_sewmach, asset_mobile, momage, momheight, delta_momage, delta_momheight
+	Parents: 
+
+$A
+tmle3_Node: A
+	Variables: tr
+	Parents: W
+
+$Y
+tmle3_Node: Y
+	Variables: whz
+	Parents: A, W
 ```
 
 ### Initial Likelihood
@@ -335,9 +335,9 @@ initial_likelihood <- ate_spec$make_initial_likelihood(
   learner_list
 )
 print(initial_likelihood)
-#> W: Lf_emp
-#> A: LF_fit
-#> Y: LF_fit
+W: Lf_emp
+A: LF_fit
+Y: LF_fit
 ```
 
 These components of the likelihood indicate how the factors were estimated: the
@@ -350,18 +350,18 @@ estimates for each observation:
 
 ```r
 initial_likelihood$get_likelihoods(tmle_task)
-#>                W       A        Y
-#>    1: 0.00021299 0.34925 -0.35834
-#>    2: 0.00021299 0.36117 -0.93261
-#>    3: 0.00021299 0.34740 -0.80873
-#>    4: 0.00021299 0.34248 -0.94020
-#>    5: 0.00021299 0.34134 -0.57866
-#>   ---                            
-#> 4691: 0.00021299 0.23375 -0.58997
-#> 4692: 0.00021299 0.23366 -0.22769
-#> 4693: 0.00021299 0.22660 -0.74235
-#> 4694: 0.00021299 0.28944 -0.91796
-#> 4695: 0.00021299 0.19533 -1.03878
+               W       A        Y
+   1: 0.00021299 0.34925 -0.35834
+   2: 0.00021299 0.36117 -0.93261
+   3: 0.00021299 0.34740 -0.80873
+   4: 0.00021299 0.34248 -0.94020
+   5: 0.00021299 0.34134 -0.57866
+  ---                            
+4691: 0.00021299 0.23375 -0.58997
+4692: 0.00021299 0.23366 -0.22769
+4693: 0.00021299 0.22660 -0.74235
+4694: 0.00021299 0.28944 -0.91796
+4695: 0.00021299 0.19533 -1.03878
 ```
 
 <!-- TODO: make helper to get learners out of fit objects -->
@@ -401,8 +401,8 @@ parameters.
 ```r
 tmle_params <- ate_spec$make_params(tmle_task, targeted_likelihood)
 print(tmle_params)
-#> [[1]]
-#> Param_ATE: ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}]
+[[1]]
+Param_ATE: ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}]
 ```
 
 ### Putting it all together
@@ -417,11 +417,11 @@ tmle_fit_manual <- fit_tmle3(
   targeted_likelihood$updater
 )
 print(tmle_fit_manual)
-#> A tmle3_Fit that took 1 step(s)
-#>    type                                    param   init_est tmle_est       se
-#> 1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0045451  0.01174 0.050807
-#>       lower   upper psi_transformed lower_transformed upper_transformed
-#> 1: -0.08784 0.11132         0.01174          -0.08784           0.11132
+A tmle3_Fit that took 1 step(s)
+   type                                    param   init_est tmle_est       se
+1:  ATE ATE[Y_{A=Nutrition + WSH}-Y_{A=Control}] -0.0045451  0.01174 0.050807
+      lower   upper psi_transformed lower_transformed upper_transformed
+1: -0.08784 0.11132         0.01174          -0.08784           0.11132
 ```
 
 The result is equivalent to fitting using the `tmle3` function as above.
@@ -438,26 +438,26 @@ tsm_spec <- tmle_TSM_all()
 targeted_likelihood <- Targeted_Likelihood$new(initial_likelihood)
 all_tsm_params <- tsm_spec$make_params(tmle_task, targeted_likelihood)
 print(all_tsm_params)
-#> [[1]]
-#> Param_TSM: E[Y_{A=Control}]
-#> 
-#> [[2]]
-#> Param_TSM: E[Y_{A=Handwashing}]
-#> 
-#> [[3]]
-#> Param_TSM: E[Y_{A=Nutrition}]
-#> 
-#> [[4]]
-#> Param_TSM: E[Y_{A=Nutrition + WSH}]
-#> 
-#> [[5]]
-#> Param_TSM: E[Y_{A=Sanitation}]
-#> 
-#> [[6]]
-#> Param_TSM: E[Y_{A=WSH}]
-#> 
-#> [[7]]
-#> Param_TSM: E[Y_{A=Water}]
+[[1]]
+Param_TSM: E[Y_{A=Control}]
+
+[[2]]
+Param_TSM: E[Y_{A=Handwashing}]
+
+[[3]]
+Param_TSM: E[Y_{A=Nutrition}]
+
+[[4]]
+Param_TSM: E[Y_{A=Nutrition + WSH}]
+
+[[5]]
+Param_TSM: E[Y_{A=Sanitation}]
+
+[[6]]
+Param_TSM: E[Y_{A=WSH}]
+
+[[7]]
+Param_TSM: E[Y_{A=Water}]
 ```
 
 This spec generates a Treatment Specific Mean (TSM) for each level of the
@@ -479,7 +479,7 @@ ate_param <- define_param(
   list(all_tsm_params[[1]], all_tsm_params[[4]])
 )
 print(ate_param)
-#> Param_delta: E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]
+Param_delta: E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}]
 ```
 
 This can similarly be used to estimate other derived parameters like Relative
@@ -500,34 +500,34 @@ tmle_fit_multiparam <- fit_tmle3(
 )
 
 print(tmle_fit_multiparam)
-#> A tmle3_Fit that took 1 step(s)
-#>    type                                       param   init_est  tmle_est
-#> 1:  TSM                            E[Y_{A=Control}] -0.5959678 -0.620830
-#> 2:  TSM                        E[Y_{A=Handwashing}] -0.6188184 -0.660230
-#> 3:  TSM                          E[Y_{A=Nutrition}] -0.6111402 -0.606586
-#> 4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.6005128 -0.608949
-#> 5:  TSM                         E[Y_{A=Sanitation}] -0.5857464 -0.578472
-#> 6:  TSM                                E[Y_{A=WSH}] -0.5205610 -0.448252
-#> 7:  TSM                              E[Y_{A=Water}] -0.5657364 -0.537709
-#> 8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}] -0.0045451  0.011881
-#>          se     lower    upper psi_transformed lower_transformed
-#> 1: 0.029901 -0.679435 -0.56223       -0.620830         -0.679435
-#> 2: 0.041719 -0.741998 -0.57846       -0.660230         -0.741998
-#> 3: 0.042047 -0.688996 -0.52418       -0.606586         -0.688996
-#> 4: 0.041285 -0.689867 -0.52803       -0.608949         -0.689867
-#> 5: 0.042396 -0.661566 -0.49538       -0.578472         -0.661566
-#> 6: 0.045506 -0.537442 -0.35906       -0.448252         -0.537442
-#> 7: 0.039253 -0.614644 -0.46077       -0.537709         -0.614644
-#> 8: 0.050801 -0.087688  0.11145        0.011881         -0.087688
-#>    upper_transformed
-#> 1:          -0.56223
-#> 2:          -0.57846
-#> 3:          -0.52418
-#> 4:          -0.52803
-#> 5:          -0.49538
-#> 6:          -0.35906
-#> 7:          -0.46077
-#> 8:           0.11145
+A tmle3_Fit that took 1 step(s)
+   type                                       param   init_est  tmle_est
+1:  TSM                            E[Y_{A=Control}] -0.5959678 -0.620830
+2:  TSM                        E[Y_{A=Handwashing}] -0.6188184 -0.660230
+3:  TSM                          E[Y_{A=Nutrition}] -0.6111402 -0.606586
+4:  TSM                    E[Y_{A=Nutrition + WSH}] -0.6005128 -0.608949
+5:  TSM                         E[Y_{A=Sanitation}] -0.5857464 -0.578472
+6:  TSM                                E[Y_{A=WSH}] -0.5205610 -0.448252
+7:  TSM                              E[Y_{A=Water}] -0.5657364 -0.537709
+8:  ATE E[Y_{A=Nutrition + WSH}] - E[Y_{A=Control}] -0.0045451  0.011881
+         se     lower    upper psi_transformed lower_transformed
+1: 0.029901 -0.679435 -0.56223       -0.620830         -0.679435
+2: 0.041719 -0.741998 -0.57846       -0.660230         -0.741998
+3: 0.042047 -0.688996 -0.52418       -0.606586         -0.688996
+4: 0.041285 -0.689867 -0.52803       -0.608949         -0.689867
+5: 0.042396 -0.661566 -0.49538       -0.578472         -0.661566
+6: 0.045506 -0.537442 -0.35906       -0.448252         -0.537442
+7: 0.039253 -0.614644 -0.46077       -0.537709         -0.614644
+8: 0.050801 -0.087688  0.11145        0.011881         -0.087688
+   upper_transformed
+1:          -0.56223
+2:          -0.57846
+3:          -0.52418
+4:          -0.52803
+5:          -0.49538
+6:          -0.35906
+7:          -0.46077
+8:           0.11145
 ```
 
 ## Exercises
