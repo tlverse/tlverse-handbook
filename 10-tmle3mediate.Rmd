@@ -103,19 +103,18 @@ ggdag(tidy_dag) +
 The likelihood of the data $O$ admits a factorization, wherein, for $p_0^O$,
 the density of $O$ with respect to the product measure, the density evaluated
 on a particular observation $o$ may be a written
-\begin{equation}
-  p_0^O(x) = q^O_{0,Y}(y \mid Z = z A = a, W = w)
-    q^O_{0,Z}(z \mid A = a, W = w)
-    q^O_{0,A}(a \mid W = w)
-    q^O_{0,W}(w),
+\begin{align}
+  p_0^O(x) = &q^O_{0,Y}(y \mid Z = z, A = a, W = w) \cdot \\
+    &q^O_{0,Z}(z \mid A = a, W = w) \cdot \\
+    &q^O_{0,A}(a \mid W = w) \cdot \\
+    &q^O_{0,W}(w),\\
   (\#eq:likelihood-factorization-mediate)
-\end{equation}
+\end{align}
 where $q_{0, Y}$ is the conditional density of $Y$ given $(Z, A, W)$, $q_{0, Z}$
 is the conditional density of $Z$ given $(A, W)$, $q_{0, A}$ is the conditional
-density of $A$ given $W$, and $q_{0, W}$ is the density of $W$. Further, for
-ease of notation, we let $\bar{Q}_Y(Z, A, W) = \E[Y \mid Z, A, W]$,
-$\bar{Q}_Z(A, W) = \P[Z \mid A, W]$ (later re-parametrized to $e(A \mid Z, W) =
-\P(A \mid Z, W)$), $g(A \mid W) = \P(A \mid W)$, and $q_W$ the marginal
+density of $A$ given $W$, and $q_{0, W}$ is the density of $W$. For ease of
+notation, we let $\bar{Q}_Y(Z, A, W) = \E[Y \mid Z, A, W]$, $Q_Z(A, W) =
+P[Z \mid A, W]$, $g(A \mid W) = \P(A \mid W)$, and $q_W$ the marginal
 distribution of $W$.
 
 Finally, note that we have explicitly excluded potential confounders of the
@@ -175,13 +174,13 @@ studies.
 ## The Natural Direct Effect
 
 The NDE is defined as
-\begin{equation*}
-  \Psi_{NDE} = \E[Y(1, Z(0)) - Y(0, Z(0))]
-  \overset{\text{rand.}}{=} \sum_w \sum_z
+\begin{align*}
+  \Psi_{NDE} &= \E[Y(1, Z(0)) - Y(0, Z(0))] \\
+  &\overset{\text{rand.}}{=} \sum_w \sum_z
   [\underbrace{\E(Y \mid A = 1, z, w)}_{\bar{Q}_Y(A = 1, z, w)} -
   \underbrace{\E(Y \mid A = 0, z, w)}_{\bar{Q}_Y(A = 0, z, w)}] \times
   \underbrace{p(z \mid A = 0, w)}_{Q_Z(0, w))} \underbrace{p(w)}_{q_W},
-\end{equation*}
+\end{align*}
 where the likelihood factors $p(z \mid A = 0, w)$ and $p(w)$ (among other
 conditional densities) arise from a factorization of the joint likelihood:
 \begin{equation*}
@@ -226,8 +225,8 @@ term is the ratio of the conditional densities of the mediator under the control
 ($A = 0$) and treatment ($A = 1$) conditions.
 
 This subtle appearance of a ratio of conditional densities is concerning --
-unfortunately, tools to estimate such quantities are sparse in the statistics
-literature, and the problem is still more complicated (and computationally
+tools to estimate such quantities are sparse in the statistics literature,
+unfortunately, and the problem is still more complicated (and computationally
 taxing) when $Z$ is high-dimensional. As only the ratio of these conditional
 densities is required, a convenient re-parametrization may be achieved, that is,
 \begin{equation*}
