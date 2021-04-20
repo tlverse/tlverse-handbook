@@ -421,12 +421,12 @@ We'll now construct an ensemble learner using a handful of popular machine
 learning algorithms:
 
 ```{r tmle3mediate-sl-learners}
-# SL learners used for continuous data (the nuisance parameter M)
+# SL learners used for continuous data (the nuisance parameter Z)
 enet_contin_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "gaussian", nfolds = 5
+  alpha = 0.5, family = "gaussian", nfolds = 3
 )
 lasso_contin_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "gaussian", nfolds = 5
+  alpha = 1, family = "gaussian", nfolds = 3
 )
 fglm_contin_learner <- Lrnr_glm_fast$new(family = gaussian())
 mean_learner <- Lrnr_mean$new()
@@ -437,10 +437,10 @@ sl_contin_learner <- Lrnr_sl$new(learners = contin_learner_lib)
 
 # SL learners used for binary data (nuisance parameters G and E in this case)
 enet_binary_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "binomial", nfolds = 5
+  alpha = 0.5, family = "binomial", nfolds = 3
 )
 lasso_binary_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "binomial", nfolds = 5
+  alpha = 1, family = "binomial", nfolds = 3
 )
 fglm_binary_learner <- Lrnr_glm_fast$new(family = binomial())
 binary_learner_lib <- Stack$new(
@@ -521,7 +521,7 @@ increasing their relative odds of receiving said treatment. To exemplify our
 approach, we postulate a motivational intervention that _triples the odds_
 (i.e., $\delta = 3$) of receiving the treatment for each individual:
 
-```{r tmle3mediate-pide-decomp}
+```{r tmle3mediate-pide-decomp, eval=FALSE}
 # set the IPSI multiplicative shift
 delta_ipsi <- 3
 
@@ -550,11 +550,13 @@ composition of estimators of its constituent parameters:
 
 Based on the above, we may construct an estimator of the PIDE using the already
 estimated decomposition term and the empirical (marginal) mean of the outcome.
+<!--
 Thus, our estimate of the PIDE is approximately
 `r washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])`.
 Note that this is a straightforward application of the delta method and could
 equivalently be performed using the functionality exposed in the [`tmle3`
 package](https://github.com/tlverse/tmle3).
+-->
 
 <!--
 ```{r pide_delta, message=FALSE, warning=FALSE, eval=FALSE}
