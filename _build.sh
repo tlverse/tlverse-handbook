@@ -1,12 +1,12 @@
 #!/bin/bash
 
 echo "Building bookdown $BOOKDOWN_FORMAT"
+Rscript -e "bookdown::clean_book(TRUE)"
+
+# run bookdown conditionally
 if [ "$BOOKDOWN_FORMAT" == "SITE" ]
 then
-    BOOKDOWN_OUTPUT=bookdown_site
+    Rscript -e "bookdown::render_book('index.Rmd', quiet = FALSE)"
 else
-    BOOKDOWN_OUTPUT=pdf_book
+    Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
 fi
-
-Rscript -e "bookdown::clean_book(TRUE)"
-Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::$BOOKDOWN_OUTPUT')"
