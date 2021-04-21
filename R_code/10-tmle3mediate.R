@@ -39,7 +39,8 @@ washb_data <- fread(
   stringsAsFactors = TRUE
 )
 
-# make intervention node binary
+# make intervention node binary and subsample
+washb_data <- washb_data[sample(.N, 600), ]
 washb_data[, tr := as.numeric(tr != "Control")]
 
 
@@ -62,12 +63,12 @@ node_list <- processed$node_list
 
 
 ## ----tmle3mediate-sl-learners-------------------------------------------------
-# SL learners used for continuous data (the nuisance parameter M)
+# SL learners used for continuous data (the nuisance parameter Z)
 enet_contin_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "gaussian", nfolds = 5
+  alpha = 0.5, family = "gaussian", nfolds = 3
 )
 lasso_contin_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "gaussian", nfolds = 5
+  alpha = 1, family = "gaussian", nfolds = 3
 )
 fglm_contin_learner <- Lrnr_glm_fast$new(family = gaussian())
 mean_learner <- Lrnr_mean$new()
@@ -78,10 +79,10 @@ sl_contin_learner <- Lrnr_sl$new(learners = contin_learner_lib)
 
 # SL learners used for binary data (nuisance parameters G and E in this case)
 enet_binary_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "binomial", nfolds = 5
+  alpha = 0.5, family = "binomial", nfolds = 3
 )
 lasso_binary_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "binomial", nfolds = 5
+  alpha = 1, family = "binomial", nfolds = 3
 )
 fglm_binary_learner <- Lrnr_glm_fast$new(family = binomial())
 binary_learner_lib <- Stack$new(
@@ -120,22 +121,25 @@ washb_NDE <- tmle3(
 washb_NDE
 
 
-## ----tmle3mediate-pide-decomp-------------------------------------------------
-# set the IPSI multiplicative shift
-delta_ipsi <- 3
-
-# instantiate tmle3 spec for stochastic mediation
-tmle_spec_pie_decomp <- tmle_medshift(
-  delta = delta_ipsi,
-  e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
-  phi_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE)
-)
-
-# compute the TML estimate
-washb_pie_decomp <- tmle3(
-  tmle_spec_pie_decomp, washb_data, node_list, learner_list
-)
-washb_pie_decomp
+## ----tmle3mediate-pide-decomp, eval=FALSE-------------------------------------
+## # set the IPSI multiplicative shift
+## delta_ipsi <- 3
+##
+## # instantiate tmle3 spec for stochastic mediation
+## tmle_spec_pie_decomp <- tmle_medshift(
+##   delta = delta_ipsi,
+##   e_learners = Lrnr_cv$new(lasso_binary_learner, full_fit = TRUE),
+##   phi_learners = Lrnr_cv$new(lasso_contin_learner, full_fit = TRUE)
+## )
+##
+## # compute the TML estimate
+## washb_pie_decomp <- tmle3(
+##   tmle_spec_pie_decomp, washb_data, node_list, learner_list
+## )
+## washb_pie_decomp
+##
+## # get the PIDE
+## washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])
 
 
 ## ----pide_delta, message=FALSE, warning=FALSE, eval=FALSE---------------------

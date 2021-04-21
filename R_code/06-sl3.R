@@ -122,6 +122,7 @@ lrn_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ##   do.call(Lrnr_svm$new, as.list(tuning_params))
 ## })
 
+
 ## ----extra-lrnr-mindblown-xgboost---------------------------------------------
 grid_params <- list(
   max_depth = c(2, 4, 6),
