@@ -538,6 +538,9 @@ washb_pie_decomp <- tmle3(
   tmle_spec_pie_decomp, washb_data, node_list, learner_list
 )
 washb_pie_decomp
+
+# get the PIDE
+washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])
 ```
 
 Recall that, based on the decomposition outlined previously, the PIDE may be
@@ -549,11 +552,9 @@ composition of estimators of its constituent parameters:
   \frac{1}{n} \sum_{i = 1}^n Y_i.
 \end{equation*}
 
+<!--
 Based on the above, we may construct an estimator of the PIDE using the already
 estimated decomposition term and the empirical (marginal) mean of the outcome.
-<!--
-Thus, our estimate of the PIDE is approximately
-`r washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])`.
 Note that this is a straightforward application of the delta method and could
 equivalently be performed using the functionality exposed in the [`tmle3`
 package](https://github.com/tlverse/tmle3).
