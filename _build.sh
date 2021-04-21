@@ -9,4 +9,4 @@ else
 fi
 
 Rscript -e "bookdown::clean_book(TRUE)"
-Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::$(BOOKDOWN_OUTPUT)')"
+Rscript -e "bookdown::render_book('index.Rmd', 'bookdown::$BOOKDOWN_OUTPUT')"
