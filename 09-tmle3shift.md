@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-19
+Updated: 2021-04-21
 
 ## Learning Objectives
 
@@ -96,10 +96,10 @@ where $q_{0, Y}$ is the conditional density of $Y$ given $(A, W)$ with respect
 to some dominating measure, $q_{0, A}$ is the conditional density of $A$ given
 $W$ with respect to dominating measure $\mu$, and $q_{0, W}$ is the density of
 $W$ with respect to dominating measure $\nu$. Further, for ease of notation, let
-$Q(A, W) = \E[Y \mid A, W]$, $g(A \mid W) = \P(A \mid W)$, and $q_W$ the
-marginal distribution of $W$. These components of the likelihood will be
-essential in developing an understanding of the manner in which stochastic
-treatment regimes pertrub a system and how a corresponding causal effect may be
+$Q(A, W) = \mathbb{E}[Y \mid A, W]$, $g(A \mid W) = \mathbb{P}(A \mid W)$, and
+$q_W$ the marginal distribution of $W$. These components of the likelihood will
+be essential in developing an understanding of the manner in which stochastic
+treatment regimes perturb a system and how a corresponding causal effect may be
 evaluated. Importantly, the NPSEM parameterizes $p_0^O$ in terms of the
 distribution of random variables $(O, U)$ modeled by the system of equations. In
 turn, this implies a model for the distribution of counterfactual random
@@ -255,20 +255,16 @@ give a recipe:
      (\#eq:tmle)
    \end{equation}
 
-<!--
+
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-\begin{figure}
+<div class="figure" style="text-align: center">
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
+</div>
 
-{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
-}
-
-\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
-\end{figure}
-
--->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
@@ -441,15 +437,15 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 534.2313	 Pars:  0.43334 0.38683 0.17983
-Iter: 2 fn: 534.2312	 Pars:  0.43334 0.38684 0.17982
+Iter: 1 fn: 545.9545	 Pars:  0.087153410 0.912839978 0.000006612
+Iter: 2 fn: 545.9545	 Pars:  0.0871534861 0.9128462199 0.0000002941
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
    type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.76199   0.7626 0.021965 0.71955 0.80565
+1:  TSM E[Y_{A=NULL}]  0.76326  0.75924 0.022409 0.71532 0.80316
    psi_transformed lower_transformed upper_transformed
-1:          0.7626           0.71955           0.80565
+1:         0.75924           0.71532           0.80316
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -599,24 +595,7 @@ delta) in a single function call:
 
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
-
-Iter: 1 fn: 534.0196	 Pars:  0.40786 0.35781 0.23432
-Iter: 2 fn: 534.0196	 Pars:  0.40783 0.35787 0.23430
-solnp--> Completed in 2 iterations
 tmle_fit
-A tmle3_Fit that took 1 step(s)
-         type          param init_est tmle_est        se   lower   upper
-1:        TSM  E[Y_{A=NULL}]  0.55351  0.56184 0.0226250 0.51749 0.60618
-2:        TSM  E[Y_{A=NULL}]  0.69755  0.69748 0.0229975 0.65240 0.74255
-3:        TSM  E[Y_{A=NULL}]  0.82085  0.80031 0.0183466 0.76435 0.83627
-4: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
-5: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
-   psi_transformed lower_transformed upper_transformed
-1:         0.56184           0.51749           0.60618
-2:         0.69748           0.65240           0.74255
-3:         0.80031           0.76435           0.83627
-4:         0.68654           0.64761           0.72548
-5:         0.11924           0.10138           0.13709
 ```
 
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
@@ -684,17 +663,6 @@ for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
 \Sigma),$$ where $\Sigma$ is the empirical covariance matrix of
 $\text{EIF}_{\beta}(O)$.
 
-
-```r
-tmle_fit$summary[4:5, ]
-         type          param init_est tmle_est        se   lower   upper
-1: MSM_linear MSM(intercept)  0.69063  0.68654 0.0198658 0.64761 0.72548
-2: MSM_linear     MSM(slope)  0.13367  0.11924 0.0091106 0.10138 0.13709
-   psi_transformed lower_transformed upper_transformed
-1:         0.68654           0.64761           0.72548
-2:         0.11924           0.10138           0.13709
-```
-
 #### Directly Targeting the MSM Parameter $\beta$
 
 Note that in the above, a working MSM is fit to the individual TML estimates of
@@ -728,18 +696,7 @@ tmle_msm_spec <- tmle_vimshift_msm(
 
 # fit the TML estimator and examine the results
 tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
-
-Iter: 1 fn: 536.5917	 Pars:  0.33422 0.55591 0.10986
-Iter: 2 fn: 536.5917	 Pars:  0.33423 0.55591 0.10986
-solnp--> Completed in 2 iterations
 tmle_msm_fit
-A tmle3_Fit that took 1 step(s)
-         type          param init_est tmle_est        se   lower   upper
-1: MSM_linear MSM(intercept)  0.69029  0.69005 0.0200303 0.65079 0.72931
-2: MSM_linear     MSM(slope)  0.13238  0.13222 0.0091809 0.11423 0.15021
-   psi_transformed lower_transformed upper_transformed
-1:         0.69005           0.65079           0.72931
-2:         0.13222           0.11423           0.15021
 ```
 
 ### Example with the WASH Benefits Data

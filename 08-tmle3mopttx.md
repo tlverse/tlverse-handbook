@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-19
+Updated: 2021-04-21
 
 ## Learning Objectives
 
@@ -48,14 +48,10 @@ patient the intervention they are most likely to benefit from, as well as
 improve efficiency by not allocating resources to individuals that do not need
 them, or would not benefit from it.
 
-\begin{figure}
-
-{\centering \includegraphics[width=0.8\linewidth]{img/image/DynamicA_Illustration} 
-
-}
-
-\caption{Dynamic Treatment Regime in a Clinical Setting}(\#fig:unnamed-chunk-1)
-\end{figure}
+<div class="figure" style="text-align: center">
+<img src="img/image/DynamicA_Illustration.png" alt="Dynamic Treatment Regime in a Clinical Setting" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)Dynamic Treatment Regime in a Clinical Setting</p>
+</div>
 
 One opts to administer the intervention to individuals who will profit from it instead,
 instead of assigning treatment on a population level. But how do we know which
@@ -434,8 +430,8 @@ another data-generating distribution where $A$ is categorical. In this example,
 our data generating distribution is of the following form:
 \begin{align*}
   W &\sim \mathcal{N}(\bf{0},I_{3 \times 3})\\
-  P(A=1|W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  P(Y=1|A,W) &= 0.5\text{logit}^{-1}[-5I(A=1)(W_1-0.5)+5I(A=0)(W_1-0.5)] +
+  \P(A=1 \mid W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
+  \P(Y=1 \mid A,W) &= 0.5\text{logit}^{-1}[-5I(A=1)(W_1-0.5)+5I(A=0)(W_1-0.5)] +
      0.5\text{logit}^{-1}(W_2W_3)
 \end{align*}
 
@@ -482,7 +478,7 @@ Super Learner algorithm of @vdl2007super.
 # Define sl3 library and metalearners:
 lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
 lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
+lrn_xgboost_300 <- Lrnr_xgboost$new(nrounds = 300)
 lrn_mean <- Lrnr_mean$new()
 lrn_glm <- Lrnr_glm_fast$new()
 
@@ -490,7 +486,7 @@ lrn_glm <- Lrnr_glm_fast$new()
 Q_learner <- Lrnr_sl$new(
   learners = list(
     lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_500, lrn_mean, lrn_glm
+    lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -505,7 +501,7 @@ g_learner <- Lrnr_sl$new(
 b_learner <- Lrnr_sl$new(
   learners = list(
     lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_500, lrn_mean, lrn_glm
+    lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -608,8 +604,8 @@ First, we load the simulated data. Here, our data generating distribution was
 of the following form:
 \begin{align*}
   W &\sim \mathcal{N}(\bf{0},I_{4 \times 4})\\
-  P(A=a|W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  P(Y=1|A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - 3I(A=2)(2W_1+0.5) +
+  \P(A=a \mid W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
+  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - 3I(A=2)(2W_1+0.5) +
     3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
 \end{align*}
 
@@ -635,22 +631,16 @@ node_list <- list(
 )
 ```
 
-### Constructing Optimal Stacked Regressions with `sl3`
+We'll now create new ensemble learners using the
+`sl3` learners initialized previously:
 
 
 ```r
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
-lrn_mean <- Lrnr_mean$new()
-lrn_glm <- Lrnr_glm_fast$new()
-
 ## Define the Q learner, which is just a regular learner:
 Q_learner <- Lrnr_sl$new(
   learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-    lrn_glm
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300,
+    lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -664,13 +654,13 @@ mn_metalearner <- make_learner(Lrnr_solnp,
 )
 g_learner <- make_learner(
   Lrnr_sl,
-  list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean),
+  list(lrn_xgboost_100, lrn_xgboost_300, lrn_mean),
   mn_metalearner
 )
 
 # Define the Blip learner, which is a multivariate learner:
 learners <- list(
-  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
+  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean,
   lrn_glm
 )
 b_learner <- create_mv_learners(learners = learners)
@@ -692,14 +682,14 @@ sl3_list_learners(c("categorical"))
  [3] "Lrnr_cv_selector"          "Lrnr_glmnet"              
  [5] "Lrnr_grf"                  "Lrnr_gru_keras"           
  [7] "Lrnr_h2o_glm"              "Lrnr_h2o_grid"            
- [9] "Lrnr_independent_binomial" "Lrnr_lstm_keras"          
-[11] "Lrnr_mean"                 "Lrnr_multivariate"        
-[13] "Lrnr_nnet"                 "Lrnr_optim"               
-[15] "Lrnr_polspline"            "Lrnr_pooled_hazards"      
-[17] "Lrnr_randomForest"         "Lrnr_ranger"              
-[19] "Lrnr_rpart"                "Lrnr_screener_correlation"
-[21] "Lrnr_solnp"                "Lrnr_svm"                 
-[23] "Lrnr_xgboost"             
+ [9] "Lrnr_independent_binomial" "Lrnr_lightgbm"            
+[11] "Lrnr_lstm_keras"           "Lrnr_mean"                
+[13] "Lrnr_multivariate"         "Lrnr_nnet"                
+[15] "Lrnr_optim"                "Lrnr_polspline"           
+[17] "Lrnr_pooled_hazards"       "Lrnr_randomForest"        
+[19] "Lrnr_ranger"               "Lrnr_rpart"               
+[21] "Lrnr_screener_correlation" "Lrnr_solnp"               
+[23] "Lrnr_svm"                  "Lrnr_xgboost"             
 ```
 
 Note that since the corresponding blip will be vector valued, we will have a
@@ -735,9 +725,9 @@ fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
    type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]    0.551  0.61063 0.065332 0.48258 0.73867
+1:  TSM E[Y_{A=NULL}]  0.54435  0.61851 0.069083 0.48311 0.75391
    psi_transformed lower_transformed upper_transformed
-1:         0.61063           0.48258           0.73867
+1:         0.61851           0.48311           0.75391
 ```
 
 We can see that the estimate of $psi_0$ is $0.60$, and that the confidence
@@ -780,10 +770,10 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type             param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=W3,W2,W1}]  0.54309  0.61946 0.070471 0.48134 0.75758
+   type                param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{d(V=W3,W2,W1)}]  0.54841  0.55108 0.062027 0.42951 0.67265
    psi_transformed lower_transformed upper_transformed
-1:         0.61946           0.48134           0.75758
+1:         0.55108           0.42951           0.67265
 ```
 
 Therefore even though the user specified all baseline covariates as the basis
@@ -817,16 +807,16 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.54847  0.65455 0.021603 0.61221 0.69689
-   psi_transformed lower_transformed upper_transformed
-1:         0.65455           0.61221           0.69689
+   type         param init_est tmle_est       se   lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.55355  0.65922 0.021419 0.61723 0.7012         0.65922
+   lower_transformed upper_transformed
+1:           0.61723            0.7012
 
 # How many individuals got assigned each treatment?
 table(tmle_spec$return_rule)
 
   2   3 
-507 493 
+502 498 
 ```
 
 ### Q-learning
@@ -834,7 +824,7 @@ table(tmle_spec$return_rule)
 Alternatively, we could estimate the mean under the optimal individualized
 treatment using Q-learning. The optimal rule can be learned through fitting the
 likelihood, and consequently estimating the optimal rule under this fit of the
-likelihood [@Sutton1998, @murphy2003].
+likelihood [@Sutton1998; @murphy2003].
 
 Below we outline how to use `tmle3mopttx` package in order to estimate the mean
 under the ITR using Q-learning. As demonstrated in the previous sections, we
@@ -859,7 +849,6 @@ initial_likelihood <- tmle_spec_Q$make_initial_likelihood(
 
 # Estimate the parameter:
 Q_learning(tmle_spec_Q, initial_likelihood, tmle_task)[1]
-[1] 0.47964
 ```
 
 ## Variable Importance Analysis with OIT
@@ -957,15 +946,6 @@ vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
   adjust_for_other_A = TRUE
 )
 print(vim_results)
-   type                  param    init_est  tmle_est       se     lower
-1:   RR RR(E[Y_{A=NULL}]/E[Y]) -0.02858893 -0.145989 0.054757 -0.253311
-2:   RR RR(E[Y_{A=NULL}]/E[Y])  0.00035671  0.088742 0.033090  0.023886
-       upper psi_transformed lower_transformed upper_transformed  A           W
-1: -0.038667         0.86417           0.77623           0.96207 W1  W3,W4,W2,A
-2:  0.153598         1.09280           1.02417           1.16602  A W3,W4,W2,W1
-    Z_stat      p_nz p_nz_corrected
-1: -2.6661 0.0038367      0.0038367
-2:  2.6818 0.0036614      0.0038367
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list

@@ -6,7 +6,7 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-04-19
+Updated: 2021-04-21
 
 <!--
 ## Learning Objectives
@@ -38,7 +38,7 @@ _how_ treatments may be effective.
 While the study of mediation analysis may be traced back quite far, the field
 only came into its modern form with the identification and careful study of the
 natural direct and indirect effects [@robins1992identifiability;
-pearl2001direct]. The natural direct effect (NDE) and the natural indirect
+@pearl2001direct]. The natural direct effect (NDE) and the natural indirect
 effect (NIE) are based on a decomposition of the average treatment effect (ATE)
 in the presence of mediators [@vanderweele2015explanation]; requisite
 theory for the construction of efficient estimators of these quantities only
@@ -59,7 +59,7 @@ non-parametric structural equation model (NPSEM):
 \begin{align}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
-  Z &= f_Z(W, A, U_M) \\
+  Z &= f_Z(W, A, U_Z) \\
   Y &= f_Y(W, A, Z, U_Y).
   (\#eq:npsem-mediate)
 \end{align}
@@ -101,26 +101,23 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-
-
-\begin{center}\includegraphics[width=0.8\linewidth]{10-tmle3mediate_files/figure-latex/mediation-DAG-1} \end{center}
+<img src="10-tmle3mediate_files/figure-html/mediation-DAG-1.png" width="80%" style="display: block; margin: auto;" />
 
 The likelihood of the data $O$ admits a factorization, wherein, for $p_0^O$,
 the density of $O$ with respect to the product measure, the density evaluated
 on a particular observation $o$ may be a written
-\begin{equation}
-  p_0^O(x) = q^O_{0,Y}(y \mid Z = z A = a, W = w)
-    q^O_{0,Z}(z \mid A = a, W = w)
-    q^O_{0,A}(a \mid W = w)
-    q^O_{0,W}(w),
+\begin{align}
+  p_0^O(x) = &q^O_{0,Y}(y \mid Z = z, A = a, W = w) \cdot \\
+    &q^O_{0,Z}(z \mid A = a, W = w) \cdot \\
+    &q^O_{0,A}(a \mid W = w) \cdot \\
+    &q^O_{0,W}(w),\\
   (\#eq:likelihood-factorization-mediate)
-\end{equation}
+\end{align}
 where $q_{0, Y}$ is the conditional density of $Y$ given $(Z, A, W)$, $q_{0, Z}$
 is the conditional density of $Z$ given $(A, W)$, $q_{0, A}$ is the conditional
-density of $A$ given $W$, and $q_{0, W}$ is the density of $W$. Further, for
-ease of notation, we let $\bar{Q}_Y(Z, A, W) = \E[Y \mid Z, A, W]$,
-$\bar{Q}_Z(A, W) = \P[Z \mid A, W]$ (later re-parametrized to $e(A \mid Z, W) =
-\P(A \mid Z, W)$), $g(A \mid W) = \P(A \mid W)$, and $q_W$ the marginal
+density of $A$ given $W$, and $q_{0, W}$ is the density of $W$. For ease of
+notation, we let $\bar{Q}_Y(Z, A, W) = \E[Y \mid Z, A, W]$, $Q_Z(A, W) =
+P[Z \mid A, W]$, $g(A \mid W) = \P(A \mid W)$, and $q_W$ the marginal
 distribution of $W$.
 
 Finally, note that we have explicitly excluded potential confounders of the
@@ -147,22 +144,22 @@ the natural direct effect (NDE) measures the effect of the treatment on the
 outcome _through all other paths_. Identification of the natural direct and
 indirect effects requires the following non-testable causal assumptions:
 
-1. _Exchangeability_: $Y(a, z) \indep (A, Z) \mid W$, which further implies
-   $\E\{Y(a, z) \mid A=a, W=w, Z=z\} = \E\{Y(a, z) \mid W=w\}$. This is a
-   special case of the randomization assumption, extended to observational
+1. _Exchangeability_ (randomization): $Y(a, z) \indep (A, Z) \mid W$, further
+   implying $\E\{Y(a, z) \mid A=a, W=w, Z=z\} = \E\{Y(a, z) \mid W=w\}$. This
+   is a special case of the randomization assumption, extended to observational
    studies with mediators.
 2. _Treatment positivity_: For any $a \in \mathcal{A}$ and $w \in
-   \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, for $\xi > 0$. This mirrors the
+   \mathcal{W}$, $\xi < g(a \mid w) < 1 - \xi$, $\xi > 0$. This mirrors the
    assumption required for static intervention, discussed previously.
 3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
-   $w \in \mathcal{W}$, $\epsilon < g(a \mid w)$, for $\epsilon > 0$. This only
-   requires that the conditional density of the mediators be bounded away from
-   zero for all $(z, a, w)$ in their joint support $\mathcal{Z} \times
+   $w \in \mathcal{W}$, $\epsilon < Q(z \mid a, w)$, for $\epsilon > 0$. This
+   only requires that the conditional density of the mediators be bounded away
+   from zero for all $(z, a, w)$ in their joint support $\mathcal{Z} \times
    \mathcal{A} \times \mathcal{W}$.
 4. _Cross-world counterfactual independence_: For all $a \neq a'$, both
    contained in $\mathcal{A}$ and $z \in \mathcal{Z}$, $Y(a', z)$ is independent
    of $Z(a)$, given $W$. That is, the counterfactual outcome under the treatment
-   contrast $a' \in \mathcal{A}$ and the counterfactual mediator $Z(a) in
+   contrast $a' \in \mathcal{A}$ and the counterfactual mediator $Z(a) \in
    \mathcal{Z}$ (under a different contrast $a \in \mathcal{A}$) are
    independent. Note that the counterfactual outcome and mediator are defined
    under differing contrasts, hence the "cross-world" designation.
@@ -180,13 +177,13 @@ studies.
 ## The Natural Direct Effect
 
 The NDE is defined as
-\begin{equation*}
-  \Psi_{NDE} = \E[Y(1, Z(0)) - Y(0, Z(0))]
-  \overset{\text{rand.}}{=} \sum_w \sum_z
+\begin{align*}
+  \Psi_{NDE} &= \E[Y(1, Z(0)) - Y(0, Z(0))] \\
+  &\overset{\text{rand.}}{=} \sum_w \sum_z
   [\underbrace{\E(Y \mid A = 1, z, w)}_{\bar{Q}_Y(A = 1, z, w)} -
   \underbrace{\E(Y \mid A = 0, z, w)}_{\bar{Q}_Y(A = 0, z, w)}] \times
   \underbrace{p(z \mid A = 0, w)}_{Q_Z(0, w))} \underbrace{p(w)}_{q_W},
-\end{equation*}
+\end{align*}
 where the likelihood factors $p(z \mid A = 0, w)$ and $p(w)$ (among other
 conditional densities) arise from a factorization of the joint likelihood:
 \begin{equation*}
@@ -231,8 +228,8 @@ term is the ratio of the conditional densities of the mediator under the control
 ($A = 0$) and treatment ($A = 1$) conditions.
 
 This subtle appearance of a ratio of conditional densities is concerning --
-unfortunately, tools to estimate such quantities are sparse in the statistics
-literature, and the problem is still more complicated (and computationally
+tools to estimate such quantities are sparse in the statistics literature,
+unfortunately, and the problem is still more complicated (and computationally
 taxing) when $Z$ is high-dimensional. As only the ratio of these conditional
 densities is required, a convenient re-parametrization may be achieved, that is,
 \begin{equation*}
@@ -267,7 +264,7 @@ As with the NDE, the re-parameterization trick can be used to estimate $\E(A
 However, in this case, the mediated mean outcome difference, denoted
 $\Psi_Z(Q)$, is instead estimated as follows
 \begin{equation*}
-  \Psi_{NIE}(Q) = \E_{QZ}(\Psi_{NIE, Z}(Q)(1, W) - \Psi_{NIE, Z}(Q)(0, W))
+  \Psi_{NIE}(Q) = \E (\Psi_{NIE, Z}(Q)(1, W) - \Psi_{NIE, Z}(Q)(0, W))
 \end{equation*}
 
 Here, $\bar{Q}_Y(Z, 1, W)$ (the predicted values for $Y$ given $Z$ and $W$ when
@@ -394,7 +391,8 @@ washb_data <- fread(
   stringsAsFactors = TRUE
 )
 
-# make intervention node binary
+# make intervention node binary and subsample
+washb_data <- washb_data[sample(.N, 600), ]
 washb_data[, tr := as.numeric(tr != "Control")]
 ```
 
@@ -431,12 +429,12 @@ learning algorithms:
 
 
 ```r
-# SL learners used for continuous data (the nuisance parameter M)
+# SL learners used for continuous data (the nuisance parameter Z)
 enet_contin_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "gaussian", nfolds = 5
+  alpha = 0.5, family = "gaussian", nfolds = 3
 )
 lasso_contin_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "gaussian", nfolds = 5
+  alpha = 1, family = "gaussian", nfolds = 3
 )
 fglm_contin_learner <- Lrnr_glm_fast$new(family = gaussian())
 mean_learner <- Lrnr_mean$new()
@@ -447,10 +445,10 @@ sl_contin_learner <- Lrnr_sl$new(learners = contin_learner_lib)
 
 # SL learners used for binary data (nuisance parameters G and E in this case)
 enet_binary_learner <- Lrnr_glmnet$new(
-  alpha = 0.5, family = "binomial", nfolds = 5
+  alpha = 0.5, family = "binomial", nfolds = 3
 )
 lasso_binary_learner <- Lrnr_glmnet$new(
-  alpha = 1, family = "binomial", nfolds = 5
+  alpha = 1, family = "binomial", nfolds = 3
 )
 fglm_binary_learner <- Lrnr_glm_fast$new(family = binomial())
 binary_learner_lib <- Stack$new(
@@ -486,15 +484,15 @@ washb_NIE <- tmle3(
 )
 washb_NIE
 A tmle3_Fit that took 1 step(s)
-   type                  param  init_est  tmle_est       se     lower    upper
-1:  NIE NIE[Y_{A=1} - Y_{A=0}] 0.0030972 0.0029694 0.015535 -0.027479 0.033418
+   type                  param  init_est  tmle_est      se     lower    upper
+1:  NIE NIE[Y_{A=1} - Y_{A=0}] 0.0011663 0.0010331 0.04461 -0.086401 0.088467
    psi_transformed lower_transformed upper_transformed
-1:       0.0029694         -0.027479          0.033418
+1:       0.0010331         -0.086401          0.088467
 ```
 
 Based on the output, we conclude that the indirect effect of the treatment
 through the mediators (sex, month, aged) is
-0.00297.
+0.00103.
 
 ## Estimating the Natural Direct Effect
 
@@ -514,19 +512,19 @@ washb_NDE <- tmle3(
 )
 washb_NDE
 A tmle3_Fit that took 1 step(s)
-   type                  param init_est tmle_est      se    lower  upper
-1:  NDE NDE[Y_{A=1} - Y_{A=0}] 0.028931 0.028931 0.31693 -0.59223 0.6501
+   type                  param init_est tmle_est       se    lower  upper
+1:  NDE NDE[Y_{A=1} - Y_{A=0}] 0.012981 0.012981 0.085879 -0.15534 0.1813
    psi_transformed lower_transformed upper_transformed
-1:        0.028931          -0.59223            0.6501
+1:        0.012981          -0.15534            0.1813
 ```
 
 From this, we can draw the conclusion that the direct effect of the treatment
 (through all paths not involving the mediators (sex, month, aged)) is
-0.02893. Note that, together, the estimates of
+0.01298. Note that, together, the estimates of
 the natural direct and indirect effects approximately recover the _average
 treatment effect_, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.0319.
+0.01401.
 
 ## Estimating the Population Intervention Direct Effect
 
@@ -560,11 +558,9 @@ washb_pie_decomp <- tmle3(
   tmle_spec_pie_decomp, washb_data, node_list, learner_list
 )
 washb_pie_decomp
-A tmle3_Fit that took 510 step(s)
-   type         param init_est tmle_est       se   lower    upper
-1: PIDE E[Y_{A=NULL}] -0.58163 -0.58385 0.016302 -0.6158 -0.55189
-   psi_transformed lower_transformed upper_transformed
-1:        -0.58385           -0.6158          -0.55189
+
+# get the PIDE
+washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])
 ```
 
 Recall that, based on the decomposition outlined previously, the PIDE may be
@@ -576,13 +572,13 @@ composition of estimators of its constituent parameters:
   \frac{1}{n} \sum_{i = 1}^n Y_i.
 \end{equation*}
 
+<!--
 Based on the above, we may construct an estimator of the PIDE using the already
 estimated decomposition term and the empirical (marginal) mean of the outcome.
-Thus, our estimate of the PIDE is approximately
-0.00223.
 Note that this is a straightforward application of the delta method and could
 equivalently be performed using the functionality exposed in the [`tmle3`
 package](https://github.com/tlverse/tmle3).
+-->
 
 <!--
 
