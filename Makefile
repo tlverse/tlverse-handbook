@@ -2,7 +2,7 @@
 all: style book code
 
 book:
-	sh ./_build.sh
+	bash ./_build.sh
 
 pdf:
 	Rscript -e "bookdown::clean_book(TRUE)"

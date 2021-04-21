@@ -96,10 +96,10 @@ where $q_{0, Y}$ is the conditional density of $Y$ given $(A, W)$ with respect
 to some dominating measure, $q_{0, A}$ is the conditional density of $A$ given
 $W$ with respect to dominating measure $\mu$, and $q_{0, W}$ is the density of
 $W$ with respect to dominating measure $\nu$. Further, for ease of notation, let
-$Q(A, W) = \E[Y \mid A, W]$, $g(A \mid W) = \P(A \mid W)$, and $q_W$ the
-marginal distribution of $W$. These components of the likelihood will be
-essential in developing an understanding of the manner in which stochastic
-treatment regimes pertrub a system and how a corresponding causal effect may be
+$Q(A, W) = \mathbb{E}[Y \mid A, W]$, $g(A \mid W) = \mathbb{P}(A \mid W)$, and
+$q_W$ the marginal distribution of $W$. These components of the likelihood will
+be essential in developing an understanding of the manner in which stochastic
+treatment regimes perturb a system and how a corresponding causal effect may be
 evaluated. Importantly, the NPSEM parameterizes $p_0^O$ in terms of the
 distribution of random variables $(O, U)$ modeled by the system of equations. In
 turn, this implies a model for the distribution of counterfactual random
@@ -564,7 +564,7 @@ One may invoke the `tmle3` wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:
 
-```{r fit_tmle_wrapper_vimshift}
+```{r fit_tmle_wrapper_vimshift, eval=FALSE}
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 tmle_fit
 ```
@@ -634,10 +634,6 @@ for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
 \Sigma),$$ where $\Sigma$ is the empirical covariance matrix of
 $\text{EIF}_{\beta}(O)$.
 
-```{r msm_fit}
-tmle_fit$summary[4:5, ]
-```
-
 #### Directly Targeting the MSM Parameter $\beta$
 
 Note that in the above, a working MSM is fit to the individual TML estimates of
@@ -661,7 +657,7 @@ parameters of the working marginal structural model, we may use the
 `tmle_vimshift_msm` Spec (instead of the `tmle_vimshift_delta` Spec that
 appears above):
 
-```{r vim_targeted_msm_fit}
+```{r vim_targeted_msm_fit, eval=FALSE}
 # initialize a tmle specification
 tmle_msm_spec <- tmle_vimshift_msm(
   shift_grid = delta_grid,
@@ -750,7 +746,7 @@ counterfactual mean of the weight-for-height Z-score under a small grid of
 shifts in the mother's age at child's birth. Just as before, we do this through
 a simple call to our `tmle3` wrapper function:
 
-```{r fit_tmle_wrapper_washb_shift, message=FALSE, warning=FALSE, eval=FALSE}
+```{r fit_tmle_wrapper_washb_shift, eval=FALSE}
 washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
 washb_tmle_fit
 ```

@@ -7,18 +7,13 @@ dat <- read_csv(
     "wash-benefits/washb_data.csv"
   )
 )
-head(dat)
 
 
-## ----skim_washb_data, results="asis"------------------------------------------
+## ----skim_washb_data, results="asis", echo=FALSE------------------------------
 library(skimr)
 # optionally disable sparkline graphs for PDF output
-skim_no_sparks <- skim_with(
-  numeric = sfl(hist = NULL),
-  ts = sfl(line_graph = NULL)
-)
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(dat))
+  knitr::kable(skim_no_sparks(dat), format = "latex")
 } else {
   skim(dat)
 }
@@ -32,12 +27,11 @@ ist <- read_csv(
     "data/ist_sample.csv"
   )
 )
-head(ist)
 
 
-## ----skim_ist_data, results="asis"--------------------------------------------
+## ----skim_ist_data, results="asis", echo=FALSE--------------------------------
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(ist))
+  knitr::kable(skim_no_sparks(ist), format = "latex")
 } else {
   skim(ist)
 }
@@ -51,13 +45,11 @@ nhefs_data <- read_csv(
     "data/NHEFS.csv"
   )
 )
-head(nhefs_data)
 
 
-## ----skim_nhefs_data, results="asis"------------------------------------------
+## ----skim_nhefs_data, results="asis", echo=FALSE------------------------------
 if (knitr::is_latex_output()) {
-  knitr::kable(skim_no_sparks(nhefs_data))
+  knitr::kable(skim_no_sparks(nhefs_data), format = "latex")
 } else {
   skim(nhefs_data)
 }
-

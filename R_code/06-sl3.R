@@ -21,10 +21,18 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
-head(washb_data) %>%
-  kable() %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+
+## ----sl3_washb_example_table1, echo=FALSE-------------------------------------
+if (knitr::is_latex_output()) {
+  head(washb_data) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(washb_data) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----task, warning=TRUE-------------------------------------------------------
@@ -219,9 +227,9 @@ discrete_sl <- Lrnr_sl$new(
 )
 
 
-## ----make-sl-plot-------------------------------------------------------------
-dt_sl <- delayed_learner_train(sl, washb_task)
-plot(dt_sl, color = FALSE, height = "400px", width = "90%")
+## ----make-sl-plot, eval=FALSE-------------------------------------------------
+## dt_sl <- delayed_learner_train(sl, washb_task)
+## plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 
 
 ## ----sl-----------------------------------------------------------------------
@@ -236,13 +244,12 @@ head(sl_preds)
 
 
 ## ---- plot-predvobs-woohoo, eval=FALSE----------------------------------------
-## 
 ## # df_plot <- data.frame(Observed = washb_data[["whz"]], Predicted = sl_preds,
 ## #                        count = seq(1:nrow(washb_data))
-## 
+##
 ## # df_plot_melted <- melt(df_plot, id.vars = "count",
 ## #                         measure.vars = c("Observed", "Predicted"))
-## 
+##
 ## # ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 
 
@@ -260,18 +267,34 @@ washb_task_new <- make_sl3_Task(
 CVsl <- CV_lrnr_sl(
   lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
 )
-CVsl %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+
+## ----CVsl_table---------------------------------------------------------------
+if (knitr::is_latex_output()) {
+  CVsl %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  CVsl %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----varimp-------------------------------------------------------------------
 washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
-washb_varimp %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+
+## ----varimp_table-------------------------------------------------------------
+if (knitr::is_latex_output()) {
+  washb_varimp %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  washb_varimp %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----varimp-plot--------------------------------------------------------------
@@ -292,11 +315,17 @@ db_data <- url(
 )
 chspred <- read_csv(file = db_data, col_names = TRUE)
 
-# take a quick peek
-head(chspred) %>%
-  kable(digits = 4) %>%
-  kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
+
+## ----sl3_chspred_example_table, echo=FALSE------------------------------------
+if (knitr::is_latex_output()) {
+  head(chspred) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  head(chspred) %>%
+    kable() %>%
+    kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
 
 
 ## ----ex-setup2----------------------------------------------------------------
@@ -324,14 +353,14 @@ ist_task_CVsl <- make_sl3_Task(
 ##   "https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv"
 ## )
 ## chspred <- read_csv(file = db_data, col_names = TRUE)
-## 
+##
 ## # make task
 ## chspred_task <- make_sl3_Task(
 ##   data = chspred,
 ##   covariates = head(colnames(chspred), -1),
 ##   outcome = "mi"
 ## )
-## 
+##
 ## # make learners
 ## glm_learner <- Lrnr_glm$new()
 ## lasso_learner <- Lrnr_glmnet$new(alpha = 1)
@@ -344,11 +373,11 @@ ist_task_CVsl <- make_sl3_Task(
 ## ranger_learner <- Lrnr_ranger$new()
 ## svm_learner <- Lrnr_svm$new()
 ## xgb_learner <- Lrnr_xgboost$new()
-## 
+##
 ## # screening
 ## screen_cor <- make_learner(Lrnr_screener_correlation)
 ## glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
-## 
+##
 ## # stack learners together
 ## stack <- make_learner(
 ##   Stack,
@@ -357,17 +386,17 @@ ist_task_CVsl <- make_sl3_Task(
 ##   curated_glm_learner, mean_learner, glm_fast_learner,
 ##   ranger_learner, svm_learner, xgb_learner
 ## )
-## 
+##
 ## # make and train SL
 ## sl <- Lrnr_sl$new(
 ##   learners = stack
 ## )
 ## sl_fit <- sl$train(chspred_task)
 ## sl_fit$print()
-## 
+##
 ## CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_loglik_binomial)
 ## CVsl
-## 
+##
 ## varimp <- importance(sl_fit, type = "permute")
 ## varimp %>%
 ##   importance_plot(
@@ -377,12 +406,12 @@ ist_task_CVsl <- make_sl3_Task(
 
 ## ----ex2-key, eval=FALSE------------------------------------------------------
 ## library(ROCR) # for AUC calculation
-## 
+##
 ## ist_data <- paste0(
 ##   "https://raw.githubusercontent.com/tlverse/",
 ##   "tlverse-handbook/master/data/ist_sample.csv"
 ## ) %>% fread()
-## 
+##
 ## # stack
 ## ist_task <- make_sl3_Task(
 ##   data = ist_data,
@@ -390,7 +419,7 @@ ist_task_CVsl <- make_sl3_Task(
 ##   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
 ##   drop_missing_outcome = TRUE
 ## )
-## 
+##
 ## # learner library
 ## lrn_glm <- Lrnr_glm$new()
 ## lrn_lasso <- Lrnr_glmnet$new(alpha = 1)
@@ -415,17 +444,17 @@ ist_task_CVsl <- make_sl3_Task(
 ## ),
 ## recursive = TRUE
 ## )
-## 
+##
 ## # SL
 ## sl <- Lrnr_sl$new(learners)
 ## sl_fit <- sl$train(ist_task)
-## 
+##
 ## # AUC
 ## preds <- sl_fit$predict()
 ## obs <- c(na.omit(ist_data$DRSISC))
 ## AUC <- performance(prediction(sl_preds, obs), measure = "auc")@y.values[[1]]
 ## plot(performance(prediction(sl_preds, obs), "tpr", "fpr"))
-## 
+##
 ## # CVsl
 ## ist_task_CVsl <- make_sl3_Task(
 ##   data = ist_data,
@@ -440,7 +469,7 @@ ist_task_CVsl <- make_sl3_Task(
 ## )
 ## CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 ## CVsl
-## 
+##
 ## # sl3 variable importance plot
 ## ist_varimp <- importance(sl_fit, type = "permute")
 ## ist_varimp %>%
@@ -451,4 +480,3 @@ ist_task_CVsl <- make_sl3_Task(
 
 ## ----ex3-key, eval=FALSE------------------------------------------------------
 ## # TODO
-
