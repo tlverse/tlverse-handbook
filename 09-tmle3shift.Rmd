@@ -317,12 +317,14 @@ algorithm given by @diaz2011super and implemented in @hejazi2020haldensify, and
 semiparametric location-scale conditional density estimators implemented in the
 [`sl3` package](https://github.com/tlverse/sl3). A Super Learner may be
 constructed by pooling estimates from each of these modified conditional density
-regression techniques.
+regression techniques (note that we exclude the approach based on the
+`haldensify` learner from our Super Learner on account of the computationally
+intensive nature of the approach).
 
 ```{r sl3_lrnrs-gfit-shift}
 # learners used for conditional densities (i.e., generalized propensity score)
 haldensify_lrnr <- Lrnr_haldensify$new(
-  n_bins = c(3, 5),
+  n_bins = c(5, 10, 20),
   lambda_seq = exp(seq(-1, -10, length = 200))
 )
 # semiparametric density estimator based on homoscedastic errors (HOSE)
@@ -337,7 +339,7 @@ hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
 
 # SL for the conditional treatment density
 sl_dens_lrnr <- Lrnr_sl$new(
-  learners = list(haldensify_lrnr, hose_hal_lrnr, hese_rf_glm_lrnr),
+  learners = list(hose_hal_lrnr, hese_rf_glm_lrnr),
   metalearner = Lrnr_solnp_density$new()
 )
 ```
