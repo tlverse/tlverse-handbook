@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "April 21, 2021"
+date: "April 24, 2021"
 documentclass: krantz
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -13,8 +13,8 @@ fontsize: '12pt, krantz2'
 monofontoptions: "Scale=0.7"
 link-citations: yes
 colorlinks: yes
-lot: yes
-lof: yes
+lot: no
+lof: no
 always_allow_html: yes
 url: 'https\://tlverse.org/tlverse-handbook/'
 github-repo: tlverse/tlverse-handbook
@@ -37,7 +37,7 @@ contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
 <!--- For HTML Only --->
-<!--
+
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
@@ -46,7 +46,7 @@ repository](https://github.com/tlverse/tlverse-handbook).
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
--->
+
 
 ## Outline {#outline}
 
@@ -74,7 +74,6 @@ interest. The (evolving) set of materials includes
     [`tmle3shift`](https://github.com/tlverse/tmle3shift) package
 * Causal mediation analysis with the
     [`tmle3mediate`](https://github.com/tlverse/tmle3mediate) package
-    (_work in progress_)
 * _Coda_: [Why we need a statistical
     revolution](https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/)
 
@@ -172,7 +171,7 @@ and precision medicine.
 # Acknowledgements {-}
 -->
 
-<!--
+
 
 ## Reproduciblity with the `tlverse` {#repro}
 
@@ -210,7 +209,7 @@ following packages:
 |readr        |1.4.0   |CRAN (R 4.0.2)                         |
 |rmarkdown    |2.7     |CRAN (R 4.0.2)                         |
 |skimr        |2.1.3   |CRAN (R 4.0.2)                         |
-|sl3          |1.4.3   |Github (tlverse/sl3\@5cddc6c)          |
+|sl3          |1.4.3   |Github (tlverse/sl3\@db8447c)          |
 |stringr      |1.4.0   |CRAN (R 4.0.2)                         |
 |tibble       |3.1.1   |CRAN (R 4.0.2)                         |
 |tidyr        |1.1.3   |CRAN (R 4.0.2)                         |
@@ -219,7 +218,7 @@ following packages:
 |tmle3mopttx  |0.1.0   |Github (tlverse/tmle3mopttx\@c48f9ac)  |
 |tmle3shift   |0.2.0   |Github (tlverse/tmle3shift\@43f6fc0)   |
 
--->
+
 
 ## Learning resources {#learn}
 
