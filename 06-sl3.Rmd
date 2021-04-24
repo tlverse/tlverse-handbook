@@ -52,7 +52,7 @@ By the end of this chapter you will be able to:
 - It works by using cross-validation in a manner which guarantees that the
   resulting fit will be as good as possible, given the learners provided.
 
-## Introduction {-}
+## Introduction
 
 In [Chapter 1](#intro), we introduced the [_Roadmap for Targeted
 Learning_](#roadmap) as a general template to translate real-world data
@@ -98,7 +98,7 @@ samples [@polley2010super]. The SL is proven to be asymptotically as accurate as
 the best possible prediction algorithm in the library [@vdl2003unified;
 @vaart2006oracle].
 
-### Step-by-step overview {-}
+### Step-by-step overview
 
 Consider the scenario in which we have $n$ independent and identically
 distributed observations in the data, and our data structure is not a time
@@ -203,7 +203,7 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 ```
 <!-- ADD REFERENCE + CV-SL FIGURE AND REFERENCE -->
 
-### Theoretical Foundations and Further Reading {-}
+### Theoretical Foundations and Further Reading
 
 - Cross-validation is proven to be optimal for selection among estimators. This
   result was established through the oracle inequality for the cross-validation
@@ -279,7 +279,7 @@ among a family of algorithms were established in @vdl2003unified and extended
 in @vaart2006oracle.
 -->
 
-## `sl3` "Microwave Dinner" Implementation {-}
+## `sl3` "Microwave Dinner" Implementation
 
 We begin by illustrating the core functionality of the SL algorithm as
 implemented in `sl3`.
@@ -299,7 +299,7 @@ weight-for-height z-score `whz` using the available covariate data. More
 information on this dataset, and all other data that we will work with in this
 handbook, is contained in [Chapter 3]{#data}. Let's begin!
 
-### 0. Load the necessary libraries and data {-}
+### Preliminaries: Load the necessary libraries and data {-}
 
 First, we will load the relevant `R` packages, set a seed, and load the data.
 
@@ -345,7 +345,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-### 1. Define the machine learning task {-}
+### Step 1: Define the machine learning task
 
 To define the machine learning **"task"** (predict weight-for-height Z-score
 `whz` using the available covariate data), we need to create an `sl3_Task`
@@ -416,7 +416,7 @@ need to press "tab" twice if you're not in RStudio), you can view all of the
 active and public fields and methods that can be accessed from the `washb_task`
 object.
 
-### 2. Make a Super Learner {-}
+### Step 2: Make a Super Learner
 
 Now that we have defined our machine learning problem with the `sl3_Task`, we
 are ready to **"make"** the Super Learner (SL). This requires specification of
@@ -596,7 +596,7 @@ cv_stack <- Lrnr_cv$new(stack)
 cv_stack
 ```
 
-#### Screening Algorithms for Feature Selection {-}
+#### Screening Algorithms for Feature Selection
 
 We can optionally select a subset of available covariates and pass only those
 variables to the modeling algorithm. The current set of learners that can be
@@ -744,7 +744,7 @@ plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 ```
 --->
 
-### 3. Train the Super Learner on the machine learning task {-}
+### Step 3:  Train the Super Learner on the machine learning task 
 
 The SL algorithm fits a metalearner on the validation-set predictions in a
 cross-validated manner, thereby avoiding overfitting.
@@ -756,7 +756,7 @@ set.seed(4197)
 sl_fit <- sl$train(washb_task)
 ```
 
-### 4. Obtain predicted values {-}
+### Step 4: Obtain predicted values
 
 Now that we have fit the SL, we are ready to calculate the predicted outcome
 for each subject.
@@ -798,7 +798,7 @@ risk, thus making it the cross-validated selector (or the _discrete_ SL). The
 mean risk of the SL is calculated using all of the data, and not a separate
 hold-out, so the SL's mean risk that is reported here is an underestimation.
 
-## Cross-validated Super Learner {-}
+## Cross-validated Super Learner
 
 We can cross-validate the SL to see how well the SL performs on unseen data,
 and obtain an estimate of the cross-validated risk of the SL.
@@ -841,7 +841,7 @@ if (knitr::is_latex_output()) {
 ```
 <!-- Explain summary!!!! -->
 
-## Variable Importance Measures with `sl3` {-}
+## Variable Importance Measures with `sl3`
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, we like it, and so do our
@@ -1233,7 +1233,7 @@ maximum likelihood estimator and the targeted minimum loss-based estimator,
 both referred to as TMLE.
 -->
 
-## Appendix {-}
+## Appendix 
 
 ### Exercise 1 Solution {#sl3ex1-sol}
 
