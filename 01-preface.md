@@ -1,5 +1,13 @@
 # Robust Statistics and Reproducible Science {#robust}
 
+
+test shortbox
+
+
+
+test VT1
+
+
 > "One enemy of robust science is our humanity — our appetite for
 > being right, and our tendency to find patterns in noise, to see supporting
 > evidence for what we already believe is true, and to ignore the facts that do
@@ -14,6 +22,8 @@ reproduced and that report false discoveries [@baker2016there]. Consequences of
 not meeting this need will result in further decline in the rate of scientific
 progression, the reputation of the sciences, and the public’s trust in its
 findings [@munafo2017manifesto; @naturenews2_2015].
+
+
 
 > "The key question we want to answer when seeing the results of any scientific
 > study is whether we can trust the data analysis."
