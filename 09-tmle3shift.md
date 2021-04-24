@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-21
+Updated: 2021-04-24
 
 ## Learning Objectives
 
@@ -96,9 +96,9 @@ where $q_{0, Y}$ is the conditional density of $Y$ given $(A, W)$ with respect
 to some dominating measure, $q_{0, A}$ is the conditional density of $A$ given
 $W$ with respect to dominating measure $\mu$, and $q_{0, W}$ is the density of
 $W$ with respect to dominating measure $\nu$. Further, for ease of notation, let
-$Q(A, W) = \mathbb{E}[Y \mid A, W]$, $g(A \mid W) = \mathbb{P}(A \mid W)$, and
-$q_W$ the marginal distribution of $W$. These components of the likelihood will
-be essential in developing an understanding of the manner in which stochastic
+$Q(A, W) = \E[Y \mid A, W]$, $g(A \mid W) = \P(A \mid W)$, and $q_W$ the
+marginal distribution of $W$. These components of the likelihood will be
+essential in developing an understanding of the manner in which stochastic
 treatment regimes perturb a system and how a corresponding causal effect may be
 evaluated. Importantly, the NPSEM parameterizes $p_0^O$ in terms of the
 distribution of random variables $(O, U)$ modeled by the system of equations. In
@@ -328,13 +328,15 @@ algorithm given by @diaz2011super and implemented in @hejazi2020haldensify, and
 semiparametric location-scale conditional density estimators implemented in the
 [`sl3` package](https://github.com/tlverse/sl3). A Super Learner may be
 constructed by pooling estimates from each of these modified conditional density
-regression techniques.
+regression techniques (note that we exclude the approach based on the
+`haldensify` learner from our Super Learner on account of the computationally
+intensive nature of the approach).
 
 
 ```r
 # learners used for conditional densities (i.e., generalized propensity score)
 haldensify_lrnr <- Lrnr_haldensify$new(
-  n_bins = c(3, 5),
+  n_bins = c(5, 10, 20),
   lambda_seq = exp(seq(-1, -10, length = 200))
 )
 # semiparametric density estimator based on homoscedastic errors (HOSE)
@@ -349,7 +351,7 @@ hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
 
 # SL for the conditional treatment density
 sl_dens_lrnr <- Lrnr_sl$new(
-  learners = list(haldensify_lrnr, hose_hal_lrnr, hese_rf_glm_lrnr),
+  learners = list(hose_hal_lrnr, hese_rf_glm_lrnr),
   metalearner = Lrnr_solnp_density$new()
 )
 ```
@@ -441,15 +443,15 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 545.9545	 Pars:  0.087153410 0.912839978 0.000006612
-Iter: 2 fn: 545.9545	 Pars:  0.0871534861 0.9128462199 0.0000002941
+Iter: 1 fn: 547.5482	 Pars:  0.999997601 0.000002399
+Iter: 2 fn: 547.5482	 Pars:  0.9999991325 0.0000008675
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.76326  0.75924 0.022409 0.71532 0.80316
-   psi_transformed lower_transformed upper_transformed
-1:         0.75924           0.71532           0.80316
+   type         param init_est tmle_est       se   lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.76373  0.75992 0.022795 0.71524 0.8046         0.75992
+   lower_transformed upper_transformed
+1:           0.71524            0.8046
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -813,23 +815,25 @@ washb_tmle_fit
 ### The Ideas in Action
 
 1. Set the `sl3` library of algorithms for the Super Learner to a simple,
-   interpretable library and use this new library to estimate the counterfactual
-   mean of mother's age at child's birth (`momage`) under a shift $\delta = 0$.
-   What does this counterfactual mean equate to in terms of the observed data?
+   interpretable library and use this new library to estimate the
+   counterfactual mean of mother's age at child's birth (`momage`) under a
+   shift $\delta = 0$.  What does this counterfactual mean equate to in terms
+   of the observed data?
 
 
 
 2. Using a grid of values of the shift parameter $\delta$ (e.g., $\{-1, 0,
-   +1\}$), repeat the analysis on the variable chosen in the preceding question,
-   summarizing the trend for this sequence of shifts using a marginal structural
-   model.
+   +1\}$), repeat the analysis on the variable chosen in the preceding
+   question, summarizing the trend for this sequence of shifts using a marginal
+   structural model.
 
 
 
 3. Repeat the preceding analysis, using the same grid of shifts, but instead
-   directly targeting the parameters of the marginal structural model. Interpret
-   the results -- that is, what does the slope of the marginal structural model
-   tell us about the trend across the chosen sequence of shifts?
+   directly targeting the parameters of the marginal structural model.
+   Interpret the results -- that is, what does the slope of the marginal
+   structural model tell us about the trend across the chosen sequence of
+   shifts?
 
 
 

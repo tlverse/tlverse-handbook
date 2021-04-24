@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-21
+Updated: 2021-04-24
 
 ## Learning Objectives
 
@@ -489,8 +489,7 @@ lrn_glm <- Lrnr_glm_fast$new()
 ## Define the Q learner:
 Q_learner <- Lrnr_sl$new(
   learners = list(
-    lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_300, lrn_mean, lrn_glm
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -504,8 +503,7 @@ g_learner <- Lrnr_sl$new(
 ## Define the B learner:
 b_learner <- Lrnr_sl$new(
   learners = list(
-    lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_300, lrn_mean, lrn_glm
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -609,7 +607,8 @@ of the following form:
 \begin{align*}
   W &\sim \mathcal{N}(\bf{0},I_{4 \times 4})\\
   \P(A=a \mid W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - 3I(A=2)(2W_1+0.5) +
+  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) -
+    3I(A=2)(2W_1+0.5) +
     3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
 \end{align*}
 
@@ -643,8 +642,7 @@ We'll now create new ensemble learners using the
 ## Define the Q learner, which is just a regular learner:
 Q_learner <- Lrnr_sl$new(
   learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300,
-    lrn_mean, lrn_glm
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -664,8 +662,7 @@ g_learner <- make_learner(
 
 # Define the Blip learner, which is a multivariate learner:
 learners <- list(
-  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean,
-  lrn_glm
+  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
 )
 b_learner <- create_mv_learners(learners = learners)
 ```

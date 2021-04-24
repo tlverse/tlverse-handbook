@@ -6,19 +6,26 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-04-21
+Updated: 2021-04-24
 
-<!--
 ## Learning Objectives
 
-1. TODO
-2. TODO
-3. TODO
-4. TODO
-5. TODO
-6. TODO
-7. TODO
--->
+1. Appreciate how the presence of a mediating variable in a causal pathway can
+   allow direct and indirect effects of the treatment on the outcome to be
+   defined.
+2. Describe the major differences between direct and indirect causal effects.
+3. Differentiate the joint interventions required to define direct and indirect
+   effects from the static, dynamic, and stochastic interventions that yield
+   the _total_ causal effects previously described.
+4. Describe the assumptions needed for identification of the natural direct and
+   indirect effects, as well as the limitations of these effect definitions.
+5. Estimate the natural direct and indirect effects of a binary treatment using
+   the `tmle3mediate` `R` package.
+6. Differentiate the population intervention direct and indirect effects of
+   stochastic interventions from the natural direct and indirect effects,
+   including differences in the assumptions required for their identification.
+7. Estimate the population intervention direct effect of a binary treatment
+   using the `tmle3mediate` `R` package.
 
 ## Introduction to Causal Mediation Analysis
 
@@ -566,9 +573,9 @@ washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])
 ```
 
 Recall that, based on the decomposition outlined previously, the PIDE may be
-denoted $\beta_{\text{PIDE}}(\delta) = \theta_0(\delta) - \mathbb{E}Y$. Thus, an
-estimator of the PIDE, $\hat{\beta}_{\text{PIDE}}(\delta)$ may be expressed as a
-composition of estimators of its constituent parameters:
+denoted $\beta_{\text{PIDE}}(\delta) = \theta_0(\delta) - \mathbb{E}Y$. Thus,
+an estimator of the PIDE, $\hat{\beta}_{\text{PIDE}}(\delta)$ may be expressed
+as a composition of estimators of its constituent parameters:
 \begin{equation*}
   \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\theta}(\delta) -
   \frac{1}{n} \sum_{i = 1}^n Y_i.
@@ -599,11 +606,15 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
 
 ### Review of Key Concepts
 
-1. Additivity of the natural (in)direct effects and the ATE.
+1. Examine the WASH Benefits dataset and choose a different set of potential
+   mediators of the effect of the treatment on weight-for-height Z-score. Using
+   this newly chosen set of mediators (or single mediator), estimate the
+   natural direct and indirect effects. Provide an interpretation of these
+   estimates.
 
-2. Working with continuous mediators.
+2. Additivity of the natural (in)direct effects and the ATE.
 
-3. TODO
+3. Incremental propensity score interventions.
 
 ### The Ideas in Action
 
