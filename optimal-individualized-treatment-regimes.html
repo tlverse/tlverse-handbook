@@ -71,7 +71,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-21</p>
+<p>Updated: 2021-04-24</p>
 <div id="learning-objectives-4" class="section level2">
 <h2>
 <span class="header-section-number">8.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-4"><i class="fas fa-link"></i></a>
@@ -532,8 +532,7 @@ Super Learner algorithm of <span class="citation">van der Laan, Polley, and Hubb
 <span class="co">## Define the Q learner:</span>
 <span class="va">Q_learner</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>,
-    <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
+    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
   <span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
@@ -547,8 +546,7 @@ Super Learner algorithm of <span class="citation">van der Laan, Polley, and Hubb
 <span class="co">## Define the B learner:</span>
 <span class="va">b_learner</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>,
-    <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
+    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
   <span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
@@ -642,7 +640,8 @@ of the following form:
 <span class="math display">\[\begin{align*}
   W &amp;\sim \mathcal{N}(\bf{0},I_{4 \times 4})\\
   \P(A=a \mid W) &amp;= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - 3I(A=2)(2W_1+0.5) +
+  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) -
+    3I(A=2)(2W_1+0.5) +
     3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
 \end{align*}\]</span></p>
 <p>We can just load the data available as part of the package as follows:</p>
@@ -665,8 +664,7 @@ to estimate.</p>
 <code class="sourceCode R"><span class="co">## Define the Q learner, which is just a regular learner:</span>
 <span class="va">Q_learner</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>,
-    <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
+    <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
   <span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span>
@@ -686,8 +684,7 @@ to estimate.</p>
 
 <span class="co"># Define the Blip learner, which is a multivariate learner:</span>
 <span class="va">learners</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
-  <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>,
-  <span class="va">lrn_glm</span>
+  <span class="va">lrn_xgboost_50</span>, <span class="va">lrn_xgboost_100</span>, <span class="va">lrn_xgboost_300</span>, <span class="va">lrn_mean</span>, <span class="va">lrn_glm</span>
 <span class="op">)</span>
 <span class="va">b_learner</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/create_mv_learners.html">create_mv_learners</a></span><span class="op">(</span>learners <span class="op">=</span> <span class="va">learners</span><span class="op">)</span></code></pre></div>
 <p>As seen above, we generate three different ensemble learners that must be fit,
@@ -1113,7 +1110,7 @@ Q-learning. How do the results change and why?</p></li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 21, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 24, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

@@ -71,7 +71,7 @@
 <p><em>Nima Hejazi</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>
 by <em>Nima Hejazi, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-04-21</p>
+<p>Updated: 2021-04-24</p>
 <div id="learning-objectives-5" class="section level2">
 <h2>
 <span class="header-section-number">9.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-5"><i class="fas fa-link"></i></a>
@@ -166,9 +166,9 @@ where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density o
 to some dominating measure, <span class="math inline">\(q_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(q_{0, W}\)</span> is the density of
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\nu\)</span>. Further, for ease of notation, let
-<span class="math inline">\(Q(A, W) = \mathbb{E}[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = \mathbb{P}(A \mid W)\)</span>, and
-<span class="math inline">\(q_W\)</span> the marginal distribution of <span class="math inline">\(W\)</span>. These components of the likelihood will
-be essential in developing an understanding of the manner in which stochastic
+<span class="math inline">\(Q(A, W) = \E[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = \P(A \mid W)\)</span>, and <span class="math inline">\(q_W\)</span> the
+marginal distribution of <span class="math inline">\(W\)</span>. These components of the likelihood will be
+essential in developing an understanding of the manner in which stochastic
 treatment regimes perturb a system and how a corresponding causal effect may be
 evaluated. Importantly, the NPSEM parameterizes <span class="math inline">\(p_0^O\)</span> in terms of the
 distribution of random variables <span class="math inline">\((O, U)\)</span> modeled by the system of equations. In
@@ -382,11 +382,13 @@ algorithm given by <span class="citation">Díaz and van der Laan (<a href="refer
 semiparametric location-scale conditional density estimators implemented in the
 <a href="https://github.com/tlverse/sl3"><code>sl3</code> package</a>. A Super Learner may be
 constructed by pooling estimates from each of these modified conditional density
-regression techniques.</p>
+regression techniques (note that we exclude the approach based on the
+<code>haldensify</code> learner from our Super Learner on account of the computationally
+intensive nature of the approach).</p>
 <div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># learners used for conditional densities (i.e., generalized propensity score)</span>
 <span class="va">haldensify_lrnr</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_haldensify.html">Lrnr_haldensify</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  n_bins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">5</span><span class="op">)</span>,
+  n_bins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,
   lambda_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">10</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
 <span class="co"># semiparametric density estimator based on homoscedastic errors (HOSE)</span>
@@ -401,7 +403,7 @@ regression techniques.</p>
 
 <span class="co"># SL for the conditional treatment density</span>
 <span class="va">sl_dens_lrnr</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
-  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">haldensify_lrnr</span>, <span class="va">hose_hal_lrnr</span>, <span class="va">hese_rf_glm_lrnr</span><span class="op">)</span>,
+  learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">hose_hal_lrnr</span>, <span class="va">hese_rf_glm_lrnr</span><span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_solnp_density.html">Lrnr_solnp_density</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p>Finally, we construct a <code>learner_list</code> object for use in constructing a TML
@@ -478,15 +480,15 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 </h3>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1">tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</a>
 <a class="sourceLine" id="cb115-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb115-3" data-line-number="3">Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">545.9545</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.087153410</span> <span class="fl">0.912839978</span> <span class="fl">0.000006612</span></a>
-<a class="sourceLine" id="cb115-4" data-line-number="4">Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">545.9545</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.0871534861</span> <span class="fl">0.9128462199</span> <span class="fl">0.0000002941</span></a>
+<a class="sourceLine" id="cb115-3" data-line-number="3">Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">547.5482</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.999997601</span> <span class="fl">0.000002399</span></a>
+<a class="sourceLine" id="cb115-4" data-line-number="4">Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">547.5482</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.9999991325</span> <span class="fl">0.0000008675</span></a>
 <a class="sourceLine" id="cb115-5" data-line-number="5">solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</a>
 <a class="sourceLine" id="cb115-6" data-line-number="6">tmle_fit</a>
 <a class="sourceLine" id="cb115-7" data-line-number="7">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
-<a class="sourceLine" id="cb115-8" data-line-number="8">   type         param init_est tmle_est       se   lower   upper</a>
-<a class="sourceLine" id="cb115-9" data-line-number="9"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.76326</span>  <span class="fl">0.75924</span> <span class="fl">0.022409</span> <span class="fl">0.71532</span> <span class="fl">0.80316</span></a>
-<a class="sourceLine" id="cb115-10" data-line-number="10">   psi_transformed lower_transformed upper_transformed</a>
-<a class="sourceLine" id="cb115-11" data-line-number="11"><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.75924</span>           <span class="fl">0.71532</span>           <span class="fl">0.80316</span></a></code></pre></div>
+<a class="sourceLine" id="cb115-8" data-line-number="8">   type         param init_est tmle_est       se   lower  upper psi_transformed</a>
+<a class="sourceLine" id="cb115-9" data-line-number="9"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>TSM E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.76373</span>  <span class="fl">0.75992</span> <span class="fl">0.022795</span> <span class="fl">0.71524</span> <span class="fl">0.8046</span>         <span class="fl">0.75992</span></a>
+<a class="sourceLine" id="cb115-10" data-line-number="10">   lower_transformed upper_transformed</a>
+<a class="sourceLine" id="cb115-11" data-line-number="11"><span class="dv">1</span><span class="op">:</span><span class="st">           </span><span class="fl">0.71524</span>            <span class="fl">0.8046</span></a></code></pre></div>
 <p>The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently displays the
 results from computing our TML estimator.</p>
 </div>
@@ -819,16 +821,18 @@ a simple call to our <code>tmle3</code> wrapper function:</p>
 </h3>
 <ol style="list-style-type: decimal">
 <li><p>Set the <code>sl3</code> library of algorithms for the Super Learner to a simple,
-interpretable library and use this new library to estimate the counterfactual
-mean of mother’s age at child’s birth (<code>momage</code>) under a shift <span class="math inline">\(\delta = 0\)</span>.
-What does this counterfactual mean equate to in terms of the observed data?</p></li>
-<li><p>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>), repeat the analysis on the variable chosen in the preceding question,
-summarizing the trend for this sequence of shifts using a marginal structural
-model.</p></li>
+interpretable library and use this new library to estimate the
+counterfactual mean of mother’s age at child’s birth (<code>momage</code>) under a
+shift <span class="math inline">\(\delta = 0\)</span>. What does this counterfactual mean equate to in terms
+of the observed data?</p></li>
+<li><p>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>), repeat the analysis on the variable chosen in the preceding
+question, summarizing the trend for this sequence of shifts using a marginal
+structural model.</p></li>
 <li><p>Repeat the preceding analysis, using the same grid of shifts, but instead
-directly targeting the parameters of the marginal structural model. Interpret
-the results – that is, what does the slope of the marginal structural model
-tell us about the trend across the chosen sequence of shifts?</p></li>
+directly targeting the parameters of the marginal structural model.
+Interpret the results – that is, what does the slope of the marginal
+structural model tell us about the trend across the chosen sequence of
+shifts?</p></li>
 </ol>
 </div>
 <div id="review-of-key-concepts-2" class="section level3">
@@ -957,7 +961,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 21, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 24, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

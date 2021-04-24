@@ -255,20 +255,16 @@ give a recipe:
      (\#eq:tmle)
    \end{equation}
 
-<!--
+
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-\begin{figure}
+<div class="figure" style="text-align: center">
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
+</div>
 
-{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
-}
-
-\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
-\end{figure}
-
--->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
