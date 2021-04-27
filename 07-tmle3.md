@@ -32,7 +32,8 @@ parameter, and motivate the use of the TMLE (targeted maximum likelihood
 estimation; targeted minimum loss-based estimation) framework, using the
 following example data:
 
-<img src="img/misc/tmle_sim/schematic_1_truedgd.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_1_truedgd} \end{center}
 
 The small ticks on the right indicate the mean outcomes (averaging over $W$)
 under $A=1$ and $A=0$ respectively, so their difference is the quantity we'd
@@ -59,7 +60,8 @@ $\overline{Q}_0(A,W)$ themselves.
 Applying `sl3` to estimate the outcome regression in our example, we can see
 that the ensemble machine learning predictions fit the data quite well:
 
-<img src="img/misc/tmle_sim/schematic_2b_sllik.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_2b_sllik} \end{center}
 
 The solid lines indicate the `sl3` estimate of the regression function, with the
 dotted lines indicating the `tmle3` updates [(described below)](#tmle-updates).
@@ -76,7 +78,8 @@ asymptotically linear, and therefore inference is not possible.
 We can see these limitations illustrated in the estimates generated for the
 example data:
 
-<img src="img/misc/tmle_sim/schematic_3_effects.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_3_effects} \end{center}
 
 We see that Super Learner, estimates the true parameter value (indicated by the
 dashed vertical line) more accurately than GLM. However, it is still less
@@ -582,13 +585,13 @@ but also tailored to have robust finite sample performance.
 1. Define the variable roles $(W,A,Y)$ by creating a list of these nodes.
    Include the following baseline covariates in $W$: `apgar1`, `apgar5`,
    `gagebrth`, `mage`, `meducyrs`, `sexn`. Both $A$ and $Y$ are specified
-   above. The missingness in the data (specifically, the missingness in the 
+   above. The missingness in the data (specifically, the missingness in the
    columns that are specified in the node list) will need to be taking care of.
-   The `process_missing` function can be used to accomplish this, like the 
+   The `process_missing` function can be used to accomplish this, like the
    `washb_data` example above.
 2. Define a `tmle3_Spec` object for the ATE, `tmle_ATE()`.
 3. Using the same base learning libraries defined above, specify `sl3` base
-   learners for estimation of $\overline{Q}_0 = \mathbb{E}_0(Y \mid A,Y)$ and
+   learners for estimation of $\overline{Q}_0 = \mathbb{E}_0(Y \mid A, W)$ and
    $g_0 = \mathbb{P}(A = 1 \mid W)$.
 4. Define the metalearner like below.
 
@@ -645,7 +648,7 @@ covariates was created.
    of learners for estimation of $\Delta$, say `sl_Delta`, and specify this in
    the learner list, like so
    `learner_list <- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)`.
-2. Recall that this RCT was conducted internationally. Suposse there is concern
+2. Recall that this RCT was conducted internationally. Suppose there is concern
    that the dose of asprin may have varied across geographical regions, and an
    average across all geographical regions may not be warranted. Calculate the
    strata specific ATEs according to geographical region (`REGION`).

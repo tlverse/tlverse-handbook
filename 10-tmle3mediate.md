@@ -6,7 +6,7 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-04-24
+Updated: 2021-04-27
 
 ## Learning Objectives
 
@@ -108,7 +108,9 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-<img src="10-tmle3mediate_files/figure-html/mediation-DAG-1.png" width="80%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.8\linewidth]{10-tmle3mediate_files/figure-latex/mediation-DAG-1} \end{center}
 
 The likelihood of the data $O$ admits a factorization, wherein, for $p_0^O$,
 the density of $O$ with respect to the product measure, the density evaluated
