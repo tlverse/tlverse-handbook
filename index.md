@@ -37,7 +37,7 @@ contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
 <!--- For HTML Only --->
-<!--
+
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
@@ -46,7 +46,7 @@ repository](https://github.com/tlverse/tlverse-handbook).
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
--->
+
 
 ## Outline {#outline}
 
@@ -171,7 +171,7 @@ and precision medicine.
 # Acknowledgements {-}
 -->
 
-<!--
+
 
 ## Reproduciblity with the `tlverse` {#repro}
 
@@ -218,7 +218,7 @@ following packages:
 |tmle3mopttx  |0.1.0   |Github (tlverse/tmle3mopttx\@c48f9ac)  |
 |tmle3shift   |0.2.0   |Github (tlverse/tmle3shift\@43f6fc0)   |
 
--->
+
 
 ## Learning resources {#learn}
 
