@@ -32,7 +32,8 @@ parameter, and motivate the use of the TMLE (targeted maximum likelihood
 estimation; targeted minimum loss-based estimation) framework, using the
 following example data:
 
-<img src="img/misc/tmle_sim/schematic_1_truedgd.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_1_truedgd} \end{center}
 
 The small ticks on the right indicate the mean outcomes (averaging over $W$)
 under $A=1$ and $A=0$ respectively, so their difference is the quantity we'd
@@ -59,7 +60,8 @@ $\overline{Q}_0(A,W)$ themselves.
 Applying `sl3` to estimate the outcome regression in our example, we can see
 that the ensemble machine learning predictions fit the data quite well:
 
-<img src="img/misc/tmle_sim/schematic_2b_sllik.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_2b_sllik} \end{center}
 
 The solid lines indicate the `sl3` estimate of the regression function, with the
 dotted lines indicating the `tmle3` updates [(described below)](#tmle-updates).
@@ -76,7 +78,8 @@ asymptotically linear, and therefore inference is not possible.
 We can see these limitations illustrated in the estimates generated for the
 example data:
 
-<img src="img/misc/tmle_sim/schematic_3_effects.png" width="80%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/misc/tmle_sim/schematic_3_effects} \end{center}
 
 We see that Super Learner, estimates the true parameter value (indicated by the
 dashed vertical line) more accurately than GLM. However, it is still less
@@ -636,7 +639,7 @@ the covariate was imputed. The missingness was identical for `RATRIAL` and
 `RASP3`, which is why only one covariate indicating imputation for these two
 covariates was created.
 
-1. Estimate the average effect of randomized asprin treatment (`RXASP` = 1) on
+1. Estimate the average effect of randomized aspirin treatment (`RXASP` = 1) on
    recurrent ischemic stroke. Even though the missingness mechanism on $Y$,
    $\Delta$, does not need to be specified in the node list, it does still need
    to be accounted for in the TMLE. In other words, for this estimation problem,
@@ -646,7 +649,7 @@ covariates was created.
    the learner list, like so
    `learner_list <- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)`.
 2. Recall that this RCT was conducted internationally. Suppose there is concern
-   that the dose of asprin may have varied across geographical regions, and an
+   that the dose of aspirin may have varied across geographical regions, and an
    average across all geographical regions may not be warranted. Calculate the
    strata specific ATEs according to geographical region (`REGION`).
 
