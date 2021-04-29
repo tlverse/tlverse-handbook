@@ -71,7 +71,7 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-04-28</p>
+<p>Updated: 2021-04-29</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
@@ -146,20 +146,33 @@ initial estimate of the data-generating distribution, or the relevant part of
 this distribution that is needed to evaluate the target parameter. For this
 initial estimation, we use the Super Learner (SL) <span class="citation">(van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super">2007</a>)</span>.</p>
 <p>The SL provides an important step in creating a robust estimator. It is a
-loss-function-based tool that uses cross-validation to obtain the best
-prediction of our target parameter, based on a weighted average of a library of
-machine learning algorithms. The library of machine learning algorithms consists
-of functions (“learners” in the <code>sl3</code> nomenclature) that we think might be
-consistent with the true data-generating distribution. By “consistent with the
-true data-generating distribution”, we mean that the algorithms selected should
-not violate subject-matter knowledge about the experiment that generated the
-data. Also, the library should contain a diversity of algorithms that range from
-parametric regression models to multi-step algorithms involving screening
-covariates, penalizations, optimizing tuning parameters, etc.</p>
+loss function based tool that uses cross-validation to obtain an estimator for
+a desired prediction function (which may be a component of our target estimand),
+based on a weighted combination of a library of machine learning algorithms.
+The library of machine learning algorithms consists of functions (“learners” in
+the <code>sl3</code> nomenclature) that we think might be consistent with the true
+data-generating distribution. Also, the library should contain a diversity of
+algorithms that range from parametric regression models to multi-step algorithms
+involving screening covariates, penalizations, optimizing tuning parameters,
+etc. See flowchart in [ADD REF TO SL GUIDANCE PAPER], which provides a visual
+representation of the sequence of steps for constructing a super learner in
+practice, discussing all arguments and recommending specific inputs. (Maybe
+include flowchart here too, if that’s allowed?)</p>
+<p>We mentioned above that the library should contain functions that are<br>
+“consistent with the true data-generating distribution”. This means that
+the candidate algorithms in the library should not violate subject-matter
+knowledge about the experiment that generated the data. For example, suppose it
+is known that the outcome is strictly positive, and we see that an algorithm is
+producing negative predictions. In this scenario, that algorithm would not be
+consistent with the true data-generating distribution. We could truncate all
+negative predictions to be 0, or slightly greater than 0, which would be fine
+for an algorithm that seldomly produces negative predictions [ADD REF]. (Do
+you recommend this?)</p>
 <p>The ensembling of the collection of algorithms with weights (“metalearning” in
 the <code>sl3</code> nomenclature) has been shown to be adaptive and robust, even in small
-samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>. The SL is proven to be asymptotically as accurate as
-the best possible prediction algorithm in the library <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
+samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>. Asymptotically (i.e., as the sample size goes to
+infinity), the SL is proven to be as accurate as the best possible prediction
+algorithm in the library <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
 <div id="step-by-step-overview" class="section level3">
 <h3>
 <span class="header-section-number">6.1.1</span> Step-by-step overview<a class="anchor" aria-label="anchor" href="#step-by-step-overview"><i class="fas fa-link"></i></a>
@@ -280,8 +293,10 @@ error loss function, thus mean squared error (MSE) is the risk.
 <ul>
 <li>Cross-validation is proven to be optimal for selection among estimators. This
 result was established through the oracle inequality for the cross-validation
-selector among a collection of candidate estimators <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>. The only condition is that loss function is uniformly
-bounded, which is guaranteed in <code>sl3</code>.</li>
+selector among a collection of candidate estimators <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>. The only conditions are that loss function uniformly
+bounded, which is guaranteed in <code>sl3</code>, and that the loss function is <em>valid</em>
+(defined below). (Do we also need for the proportion of validation observation
+times the number of observations to go to infinity?)</li>
 <li>
 <p>We use a <em>loss function</em> <span class="math inline">\(L\)</span> to assign a measure of performance to each
 learner <span class="math inline">\(\psi\)</span> when applied to the data <span class="math inline">\(O\)</span>, and subsequently compare
@@ -291,9 +306,10 @@ to <span class="math inline">\(L(\psi) : (O) \mapsto L(\psi)(O)\)</span>. We use
 <ul>
 <li>It is important to recall that <span class="math inline">\(\psi\)</span> is an estimator of <span class="math inline">\(\psi_0\)</span>, the
 unknown and true parameter value under <span class="math inline">\(P_0\)</span>.</li>
-<li>A valid loss function will have mean/expectation (risk) that is minimized
-at the true value of the parameter <span class="math inline">\(\psi_0\)</span>. Thus, minimizing the expected
-loss will bring an estimator <span class="math inline">\(\psi\)</span> closer to the true <span class="math inline">\(\psi_0\)</span>.</li>
+<li>A <em>valid loss function</em> will have mean/expectation (i.e., risk) that is
+minimized at the true value of the parameter <span class="math inline">\(\psi_0\)</span>. Thus, minimizing
+the expected loss will bring an estimator <span class="math inline">\(\psi\)</span> closer to the true
+<span class="math inline">\(\psi_0\)</span>.</li>
 <li>For example, say we observe a learning data set <span class="math inline">\(O_i=(Y_i,X_i)\)</span>, of
 <span class="math inline">\(i=1, \ldots, n\)</span> independent and identically distributed observations,
 where <span class="math inline">\(Y_i\)</span> is a continuous outcome of interest, <span class="math inline">\(X_i\)</span> is a set of
@@ -305,7 +321,7 @@ the data <span class="math inline">\(P_n\)</span> for the true and unknown distr
 <span class="math inline">\(P_0\)</span>.</li>
 <li>Also, we can use the cross-validated risk to empirically determine the
 relative performance of an estimator (i.e., a candidate learner), and
-perhaps how it’s performance compares to other estimators.</li>
+perhaps, how it’s performance compares to other estimators.</li>
 <li>Once we have tested different estimators on actual data, and looked at
 the performance (e.g., MSE of predictions across all learners), we can
 see which algorithm (or weighted combination) has the lowest risk, and
@@ -1571,7 +1587,7 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
 <a class="sourceLine" id="cb55-76" data-line-number="76"></a>
 <a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012047</span> secs</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012273</span> secs</a>
 <a class="sourceLine" id="cb55-79" data-line-number="79"></a>
 <a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
 <a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01048</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
@@ -3326,20 +3342,20 @@ possess these properties?</p>
 <ul>
 <li>An asymptotically linear estimator converges to the estimand a
 <span class="math inline">\(\frac{1}{\sqrt{n}}\)</span> rate, thereby permitting formal statistical inference
-(i.e., confidence intervals and <span class="math inline">\(p\)</span>-values).</li>
+(i.e., confidence intervals and <span class="math inline">\(p\)</span>-values) [ADD REF].</li>
 <li>Substitution, or plug-in, estimators of the estimand are desirable because
 they respect both the local and global constraints of the statistical model
-(e.g., bounds), and have they have better finite-sample properties.</li>
+(e.g., bounds), and have they have better finite-sample properties[ADD REF].</li>
 <li>
 <p>An efficient estimator is optimal in the sense that it has the lowest
 possible variance, and is thus the most precise. An estimator is efficient
 if and only if is asymptotically linear with influence curve equal to the
-canonical gradient.</p>
+canonical gradient [ADD REF].</p>
 <ul>
 <li>The canonical gradient is a mathematical object that is specific to
 the target estimand, and it provides information on the level of
-difficulty of the estimation problem. Various canonical gradient are
-shown in the chapters that follow.</li>
+difficulty of the estimation problem [ADD REF]. Various canonical
+gradient are shown in the chapters that follow.</li>
 <li>Practitioner’s do not need to know how to calculate a canonical
 gradient in order to understand efficiency and use Targeted Maximum
 Likelihood Estimation (TMLE). Metaphorically, you do not need to be
@@ -3615,7 +3631,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 28, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 29, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
