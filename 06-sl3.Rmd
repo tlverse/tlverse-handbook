@@ -13,7 +13,9 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 
 Updated: `r Sys.Date()`
 
-## Learning Objectives {-}
+`r if (knitr::is_latex_output()) '\\begin{VT1}\n\\VH{Learning Objectives}'`
+
+`r if (knitr::is_html_output()) '## Learning Objectives{-}'`
 
 By the end of this chapter you will be able to:
 
@@ -31,6 +33,8 @@ By the end of this chapter you will be able to:
 7. Interpret the discrete and continuous Super Learner fits.
 8. Rationalize the need to remove bias from the Super Learner to make an
    optimal bias-variance tradeoff for the parameter of interest.
+
+`r if (knitr::is_latex_output()) '\\end{VT1}'`
 
 ## Motivation {-}
 
@@ -81,22 +85,37 @@ this distribution that is needed to evaluate the target parameter. For this
 initial estimation, we use the Super Learner (SL) [@vdl2007super].
 
 The SL provides an important step in creating a robust estimator. It is a
-loss-function-based tool that uses cross-validation to obtain the best
-prediction of our target parameter, based on a weighted average of a library of
-machine learning algorithms. The library of machine learning algorithms consists
-of functions ("learners" in the `sl3` nomenclature) that we think might be
-consistent with the true data-generating distribution. By "consistent with the
-true data-generating distribution", we mean that the algorithms selected should
-not violate subject-matter knowledge about the experiment that generated the
-data. Also, the library should contain a diversity of algorithms that range from
-parametric regression models to multi-step algorithms involving screening
-covariates, penalizations, optimizing tuning parameters, etc.
+loss function based tool that uses cross-validation to obtain an estimator for 
+a desired prediction function (which may be a component of our target estimand), 
+based on a weighted combination of a library of machine learning algorithms. 
+The library of machine learning algorithms consists of functions ("learners" in 
+the `sl3` nomenclature) that we think might be consistent with the true 
+data-generating distribution. Also, the library should contain a diversity of 
+algorithms that range from parametric regression models to multi-step algorithms 
+involving screening covariates, penalizations, optimizing tuning parameters, 
+etc. See flowchart in [ADD REF TO SL GUIDANCE PAPER], which provides a visual 
+representation of the sequence of steps for constructing a super learner in 
+practice, discussing all arguments and recommending specific inputs. (Maybe 
+include flowchart here too, if that's allowed?) 
+
+`r if (knitr::is_latex_output()) '\\begin{shortbox}\n\\Boxhead{Constructing a library that's consistent with the data-generating distribution}'`
+We mentioned above that the library should contain functions that are  
+"consistent with the true data-generating distribution". This means that 
+the candidate algorithms in the library should not violate subject-matter 
+knowledge about the experiment that generated the data. For example, suppose it 
+is known that the outcome is strictly positive, and we see that an algorithm is 
+producing negative predictions. In this scenario, that algorithm would not be 
+consistent with the true data-generating distribution. We could truncate all
+negative predictions to be 0, or slightly greater than 0, which would be fine 
+for an algorithm that seldomly produces negative predictions [ADD REF]. (Do 
+you recommend this?)
+`r if (knitr::is_latex_output()) '\\end{shortbox}'`
 
 The ensembling of the collection of algorithms with weights ("metalearning" in
 the `sl3` nomenclature) has been shown to be adaptive and robust, even in small
-samples [@polley2010super]. The SL is proven to be asymptotically as accurate as
-the best possible prediction algorithm in the library [@vdl2003unified;
-@vaart2006oracle].
+samples [@polley2010super]. Asymptotically (i.e., as the sample size goes to 
+infinity), the SL is proven to be as accurate as the best possible prediction 
+algorithm in the library [@vdl2003unified; @vaart2006oracle]. 
 
 ### Step-by-step overview
 
@@ -208,8 +227,10 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 - Cross-validation is proven to be optimal for selection among estimators. This
   result was established through the oracle inequality for the cross-validation
   selector among a collection of candidate estimators [@vdl2003unified;
-  @vaart2006oracle]. The only condition is that loss function is uniformly
-  bounded, which is guaranteed in `sl3`.
+  @vaart2006oracle]. The only conditions are that loss function uniformly 
+  bounded, which is guaranteed in `sl3`, and that the loss function is *valid*
+  (defined below). (Do we also need for the proportion of validation observation 
+  times the number of observations to go to infinity?)
 - We use a *loss function* $L$ to assign a measure of performance to each
   learner $\psi$ when applied to the data $O$, and subsequently compare
   performance across the learners. More generally, $L$ maps every $\psi \in \R$
@@ -218,9 +239,10 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
 
     + It is important to recall that $\psi$ is an estimator of $\psi_0$, the
       unknown and true parameter value under $P_0$.
-    + A valid loss function will have mean/expectation (risk) that is minimized
-      at the true value of the parameter $\psi_0$. Thus, minimizing the expected
-      loss will bring an estimator $\psi$ closer to the true $\psi_0$.
+    + A *valid loss function* will have mean/expectation (i.e., risk) that is 
+      minimized at the true value of the parameter $\psi_0$. Thus, minimizing 
+      the expected loss will bring an estimator $\psi$ closer to the true 
+      $\psi_0$.
     + For example, say we observe a learning data set $O_i=(Y_i,X_i)$, of
       $i=1, \ldots, n$ independent and identically distributed observations,
       where $Y_i$ is a continuous outcome of interest, $X_i$ is a set of
@@ -234,7 +256,7 @@ knitr::include_graphics("img/misc/SLKaiserNew.pdf")
       $P_0$.
     + Also, we can use the cross-validated risk to empirically determine the
       relative performance of an estimator (i.e., a candidate learner), and
-      perhaps how it's performance compares to other estimators.
+      perhaps, how it's performance compares to other estimators.
     + Once we have tested different estimators on actual data, and looked at
       the performance (e.g., MSE of predictions across all learners), we can
       see which algorithm (or weighted combination) has the lowest risk, and
@@ -1162,19 +1184,19 @@ validation sample is $P_{n,B_n}^1$.
 
   + An asymptotically linear estimator converges to the estimand a
     $\frac{1}{\sqrt{n}}$ rate, thereby permitting formal statistical inference
-    (i.e., confidence intervals and $p$-values).
+    (i.e., confidence intervals and $p$-values) [ADD REF].
   + Substitution, or plug-in, estimators of the estimand are desirable because
     they respect both the local and global constraints of the statistical model
-    (e.g., bounds), and have they have better finite-sample properties.
+    (e.g., bounds), and have they have better finite-sample properties[ADD REF].
   + An efficient estimator is optimal in the sense that it has the lowest
     possible variance, and is thus the most precise. An estimator is efficient
     if and only if is asymptotically linear with influence curve equal to the
-    canonical gradient.
+    canonical gradient [ADD REF].
 
       + The canonical gradient is a mathematical object that is specific to
         the target estimand, and it provides information on the level of
-        difficulty of the estimation problem. Various canonical gradient are
-        shown in the chapters that follow.
+        difficulty of the estimation problem [ADD REF]. Various canonical 
+        gradient are shown in the chapters that follow.
       + Practitioner's do not need to know how to calculate a canonical
         gradient in order to understand efficiency and use Targeted Maximum
         Likelihood Estimation (TMLE). Metaphorically, you do not need to be
