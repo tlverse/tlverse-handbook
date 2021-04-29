@@ -194,7 +194,7 @@
 \providecommand{\subtitle}[1]{}
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{April 28, 2021}
+\date{April 29, 2021}
 
 \begin{document}
 \maketitle
@@ -365,9 +365,15 @@ network) and adaptive sequential designs.
 
 Rachael Phillips is a PhD student in biostatistics, advised by Alan Hubbard and
 Mark van der Laan. She has an MA in Biostatistics, BS in Biology, and BA in
-Mathematics. A student of targeted learning and causal inference; her research
-integrates personalized medicine, human-computer interaction, experimental
-design, and regulatory policy.
+Mathematics. A student of targeted learning and causal inference, Rachael's
+research focuses on statistical estimation and inference in realistic
+statistical models. Her current projects involve personalized online machine
+learning from EHR streaming data of vital signs, automated learning with
+highly adaptive lasso, and causal effect estimation for community-level
+interventions. She is also working on an FDA-funded project led Dr.~Susan
+Gruber, A Targeted Learning Framework for Causal Effect Estimation Using
+Real-World Data. Rachael is an active contributor to the \passthrough{\lstinline!hal9001!} and \passthrough{\lstinline!sl3!}
+R packages in the \passthrough{\lstinline!tlverse!}.
 
 \hypertarget{alan-hubbard}{%
 \subsection*{Alan Hubbard}\label{alan-hubbard}}
@@ -1729,7 +1735,7 @@ numeric & tax71\_82 & 92 & 0.94352 & 0.55261 & 0.15032 & 0.03600 & 0.46100 & 0.5
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
 \hypertarget{learning-objectives-2}{%
 \section{Learning Objectives}\label{learning-objectives-2}}
@@ -3150,40 +3156,31 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
-\hypertarget{learning-objectives-3}{%
-\section*{Learning Objectives}\label{learning-objectives-3}}
+\begin{VT1}
+\VH{Learning Objectives}
+
 
 
 By the end of this chapter you will be able to:
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  Select a loss function that is appropriate for the functional parameter to
-  be estimated.
-\item
-  Assemble an ensemble of learners based on the properties that identify what
-  features they support.
-\item
-  Customize learner tuning parameters to incorporate a diversity of different
-  settings.
-\item
-  Select a subset of available covariates and pass only those variables to the
-  modeling algorithm.
-\item
-  Fit an ensemble with nested cross-validation to obtain an estimate of the
-  performance of the ensemble itself.
-\item
-  Obtain \passthrough{\lstinline!sl3!} variable importance metrics.
-\item
-  Interpret the discrete and continuous Super Learner fits.
-\item
-  Rationalize the need to remove bias from the Super Learner to make an
-  optimal bias-variance tradeoff for the parameter of interest.
-\end{enumerate}
+1. Select a loss function that is appropriate for the functional parameter to
+   be estimated.
+2. Assemble an ensemble of learners based on the properties that identify what
+   features they support.
+3. Customize learner tuning parameters to incorporate a diversity of different
+   settings.
+4. Select a subset of available covariates and pass only those variables to the
+   modeling algorithm.
+5. Fit an ensemble with nested cross-validation to obtain an estimate of the
+   performance of the ensemble itself.
+6. Obtain `sl3` variable importance metrics.
+7. Interpret the discrete and continuous Super Learner fits.
+8. Rationalize the need to remove bias from the Super Learner to make an
+   optimal bias-variance tradeoff for the parameter of interest.
+
+\end{VT1}
 
 \hypertarget{motivation}{%
 \section*{Motivation}\label{motivation}}
@@ -3245,21 +3242,38 @@ this distribution that is needed to evaluate the target parameter. For this
 initial estimation, we use the Super Learner (SL) \citep{vdl2007super}.
 
 The SL provides an important step in creating a robust estimator. It is a
-loss-function-based tool that uses cross-validation to obtain the best
-prediction of our target parameter, based on a weighted average of a library of
-machine learning algorithms. The library of machine learning algorithms consists
-of functions (``learners'' in the \passthrough{\lstinline!sl3!} nomenclature) that we think might be
-consistent with the true data-generating distribution. By ``consistent with the
-true data-generating distribution'', we mean that the algorithms selected should
-not violate subject-matter knowledge about the experiment that generated the
-data. Also, the library should contain a diversity of algorithms that range from
-parametric regression models to multi-step algorithms involving screening
-covariates, penalizations, optimizing tuning parameters, etc.
+loss function based tool that uses cross-validation to obtain an estimator for
+a desired prediction function (which may be a component of our target estimand),
+based on a weighted combination of a library of machine learning algorithms.
+The library of machine learning algorithms consists of functions (``learners'' in
+the \passthrough{\lstinline!sl3!} nomenclature) that we think might be consistent with the true
+data-generating distribution. Also, the library should contain a diversity of
+algorithms that range from parametric regression models to multi-step algorithms
+involving screening covariates, penalizations, optimizing tuning parameters,
+etc. See flowchart in {[}ADD REF TO SL GUIDANCE PAPER{]}, which provides a visual
+representation of the sequence of steps for constructing a super learner in
+practice, discussing all arguments and recommending specific inputs. (Maybe
+include flowchart here too, if that's allowed?)
+
+\begin{shortbox}
+\Boxhead{Constructing a library that is consistent with the data-generating distribution}
+We mentioned above that the library should contain functions that are  
+"consistent with the true data-generating distribution". This means that 
+the candidate algorithms in the library should not violate subject-matter 
+knowledge about the experiment that generated the data. For example, suppose it 
+is known that the outcome is strictly positive, and we see that an algorithm is 
+producing negative predictions. In this scenario, that algorithm would not be 
+consistent with the true data-generating distribution. We could truncate all
+negative predictions to be 0, or slightly greater than 0, which would be fine 
+for an algorithm that seldomly produces negative predictions [ADD REF]. (Do 
+you recommend this?)
+\end{shortbox}
 
 The ensembling of the collection of algorithms with weights (``metalearning'' in
 the \passthrough{\lstinline!sl3!} nomenclature) has been shown to be adaptive and robust, even in small
-samples \citep{polley2010super}. The SL is proven to be asymptotically as accurate as
-the best possible prediction algorithm in the library \citep{vdl2003unified, vaart2006oracle}.
+samples \citep{polley2010super}. Asymptotically (i.e., as the sample size goes to
+infinity), the SL is proven to be as accurate as the best possible prediction
+algorithm in the library \citep{vdl2003unified, vaart2006oracle}.
 
 \hypertarget{step-by-step-overview}{%
 \subsection{Step-by-step overview}\label{step-by-step-overview}}
@@ -3410,8 +3424,10 @@ error loss function, thus mean squared error (MSE) is the risk.
 \item
   Cross-validation is proven to be optimal for selection among estimators. This
   result was established through the oracle inequality for the cross-validation
-  selector among a collection of candidate estimators \citep{vdl2003unified, vaart2006oracle}. The only condition is that loss function is uniformly
-  bounded, which is guaranteed in \passthrough{\lstinline!sl3!}.
+  selector among a collection of candidate estimators \citep{vdl2003unified, vaart2006oracle}. The only conditions are that loss function uniformly
+  bounded, which is guaranteed in \passthrough{\lstinline!sl3!}, and that the loss function is \emph{valid}
+  (defined below). (Do we also need for the proportion of validation observation
+  times the number of observations to go to infinity?)
 \item
   We use a \emph{loss function} \(L\) to assign a measure of performance to each
   learner \(\psi\) when applied to the data \(O\), and subsequently compare
@@ -3425,9 +3441,10 @@ error loss function, thus mean squared error (MSE) is the risk.
     It is important to recall that \(\psi\) is an estimator of \(\psi_0\), the
     unknown and true parameter value under \(P_0\).
   \item
-    A valid loss function will have mean/expectation (risk) that is minimized
-    at the true value of the parameter \(\psi_0\). Thus, minimizing the expected
-    loss will bring an estimator \(\psi\) closer to the true \(\psi_0\).
+    A \emph{valid loss function} will have mean/expectation (i.e., risk) that is
+    minimized at the true value of the parameter \(\psi_0\). Thus, minimizing
+    the expected loss will bring an estimator \(\psi\) closer to the true
+    \(\psi_0\).
   \item
     For example, say we observe a learning data set \(O_i=(Y_i,X_i)\), of
     \(i=1, \ldots, n\) independent and identically distributed observations,
@@ -3442,7 +3459,7 @@ error loss function, thus mean squared error (MSE) is the risk.
   \item
     Also, we can use the cross-validated risk to empirically determine the
     relative performance of an estimator (i.e., a candidate learner), and
-    perhaps how it's performance compares to other estimators.
+    perhaps, how it's performance compares to other estimators.
   \item
     Once we have tested different estimators on actual data, and looked at
     the performance (e.g., MSE of predictions across all learners), we can
@@ -4185,7 +4202,7 @@ $outer.iter
 [1] 1
 
 $elapsed
-Time difference of 0.011935 secs
+Time difference of 0.011863 secs
 
 $vscale
  [1] 1.01048 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
@@ -4660,24 +4677,24 @@ ist_task_CVsl <- make_sl3_Task(
   \item
     An asymptotically linear estimator converges to the estimand a
     \(\frac{1}{\sqrt{n}}\) rate, thereby permitting formal statistical inference
-    (i.e., confidence intervals and \(p\)-values).
+    (i.e., confidence intervals and \(p\)-values) {[}ADD REF{]}.
   \item
     Substitution, or plug-in, estimators of the estimand are desirable because
     they respect both the local and global constraints of the statistical model
-    (e.g., bounds), and have they have better finite-sample properties.
+    (e.g., bounds), and have they have better finite-sample properties{[}ADD REF{]}.
   \item
     An efficient estimator is optimal in the sense that it has the lowest
     possible variance, and is thus the most precise. An estimator is efficient
     if and only if is asymptotically linear with influence curve equal to the
-    canonical gradient.
+    canonical gradient {[}ADD REF{]}.
 
     \begin{itemize}
     \tightlist
     \item
       The canonical gradient is a mathematical object that is specific to
       the target estimand, and it provides information on the level of
-      difficulty of the estimation problem. Various canonical gradient are
-      shown in the chapters that follow.
+      difficulty of the estimation problem {[}ADD REF{]}. Various canonical
+      gradient are shown in the chapters that follow.
     \item
       Practitioner's do not need to know how to calculate a canonical
       gradient in order to understand efficiency and use Targeted Maximum
@@ -5535,10 +5552,10 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
-\hypertarget{learning-objectives-4}{%
-\section{Learning Objectives}\label{learning-objectives-4}}
+\hypertarget{learning-objectives-3}{%
+\section{Learning Objectives}\label{learning-objectives-3}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6647,10 +6664,10 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
-\hypertarget{learning-objectives-5}{%
-\section{Learning Objectives}\label{learning-objectives-5}}
+\hypertarget{learning-objectives-4}{%
+\section{Learning Objectives}\label{learning-objectives-4}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -7513,10 +7530,10 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
-\hypertarget{learning-objectives-6}{%
-\section{Learning Objectives}\label{learning-objectives-6}}
+\hypertarget{learning-objectives-5}{%
+\section{Learning Objectives}\label{learning-objectives-5}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}

@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-04-28
+Updated: 2021-04-29
 
 ## Learning Objectives
 
@@ -48,10 +48,14 @@ patient the intervention they are most likely to benefit from, as well as
 improve efficiency by not allocating resources to individuals that do not need
 them, or would not benefit from it.
 
-<div class="figure" style="text-align: center">
-<img src="img/image/DynamicA_Illustration.png" alt="Dynamic Treatment Regime in a Clinical Setting" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)Dynamic Treatment Regime in a Clinical Setting</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/image/DynamicA_Illustration} 
+
+}
+
+\caption{Dynamic Treatment Regime in a Clinical Setting}(\#fig:unnamed-chunk-1)
+\end{figure}
 
 One opts to administer the intervention to individuals who will profit from it instead,
 instead of assigning treatment on a population level. But how do we know which
