@@ -105,25 +105,21 @@ tmle_spec <- tmle_vimshift_delta(
 )
 
 
-## ----fit_tmle_wrapper_vimshift------------------------------------------------
-tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
-tmle_fit
+## ----fit_tmle_wrapper_vimshift, eval=FALSE------------------------------------
+## tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
+## tmle_fit
 
 
-## ----msm_fit------------------------------------------------------------------
-tmle_fit$summary[4:5, ]
-
-
-## ----vim_targeted_msm_fit-----------------------------------------------------
-# initialize a tmle specification
-tmle_msm_spec <- tmle_vimshift_msm(
-  shift_grid = delta_grid,
-  max_shifted_ratio = 2
-)
-
-# fit the TML estimator and examine the results
-tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
-tmle_msm_fit
+## ----vim_targeted_msm_fit, eval=FALSE-----------------------------------------
+## # initialize a tmle specification
+## tmle_msm_spec <- tmle_vimshift_msm(
+##   shift_grid = delta_grid,
+##   max_shifted_ratio = 2
+## )
+##
+## # fit the TML estimator and examine the results
+## tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
+## tmle_msm_fit
 
 
 ## ----load_washb_data_shift----------------------------------------------------
@@ -166,7 +162,24 @@ cv_hose_hal_lrnr <- Lrnr_cv$new(
 learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
 
 
-## ----fit_tmle_wrapper_washb_shift, message=FALSE, warning=FALSE, eval=FALSE----
+## ----fit_tmle_wrapper_washb_shift, eval=FALSE---------------------------------
 ## washb_tmle_fit <- tmle3(washb_vim_spec, washb_data, node_list, learner_list)
 ## washb_tmle_fit
 
+
+## ----shift-action-ex1-sol, echo=FALSE-----------------------------------------
+
+
+## ----shift-action-ex2-sol, echo=FALSE-----------------------------------------
+
+
+## ----shift-action-ex3-sol, echo=FALSE-----------------------------------------
+
+
+## ----shift-review-ex1-sol, echo=FALSE-----------------------------------------
+
+
+## ----shift-review-ex2-sol, echo=FALSE-----------------------------------------
+
+
+## ----shift-review-ex3-sol, echo=FALSE-----------------------------------------

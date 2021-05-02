@@ -2,51 +2,45 @@ branches:
   only:
     - master
 
-env:
-  global:
-    - RGL_USE_NULL=TRUE
-
 language: r
 sudo: required
-cache: packages
-warnings_are_errors: true
+cran: http://cran.rstudio.com
+latex: false
+pandoc: true
+warnings_are_errors: false
+cache:
+  directories:
+  - $HOME/.local/share/renv
+  - $TRAVIS_BUILD_DIR/renv/library
+  - $HOME/.TinyTeX/
 
-addons:
-  apt:
-    packages:
-      - libgit2-dev
+env:
+  - BOOKDOWN_FORMAT=SITE
+  - BOOKDOWN_FORMAT=PDF
 
 r:
   - release
 
-r_packages:
-  - usethis
-  - sessioninfo
-  - data.table
-  - downlit
-  - delayed
-  - origami
-  - hal9001
+before_install:
+  - sudo apt-get install -y libgit2-dev libxml2-dev libssl-dev
+  - sudo apt-get install -y libcurl4-openssl-dev libmagick++-dev
+  - sudo apt-get install -y texlive-extra-utils ghostscript
 
-r_github_packages:
-  - rstudio/bslib
-  - rstudio/bookdown
-  - r-lib/sessioninfo
-  #- tlverse/delayed@master
-  #- tlverse/origami@master
-  #- tlverse/hal9001@master
-  - tlverse/sl3@devel
-  - tlverse/tmle3@master
-  - tlverse/tmle3mopttx@5ba5f65
-  - tlverse/tmle3shift@master
-  - nhejazi/haldensify@f0de4b5
+install:
+  - cd .. && Rscript -e "install.packages('tinytex')"
+  - Rscript -e "tinytex::install_tinytex()"
+  - export PATH=$HOME/bin:${PATH}
+  - cd $TRAVIS_BUILD_DIR && Rscript -e "renv::restore()"
+  # this shouldn't be necessary but renv sometimes installs the wrong version
+  # of sl3 (from master) in its attempts to repair the dependency tree
+  - cd $TRAVIS_BUILD_DIR && Rscript -e "renv::install('tlverse/sl3@devel')"
 
 before_script:
   - chmod +x ./_build.sh
   - chmod +x ./_deploy.sh
 
 script:
-  - travis_wait 80 ./_build.sh
+  - travis_wait 120 ./_build.sh
   - test $TRAVIS_BRANCH = "master" && ./_deploy.sh
 
 notifications:

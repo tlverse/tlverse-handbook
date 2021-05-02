@@ -2,10 +2,14 @@ bookdown::bs4_book:
   theme:
     primary: "#544154"
   repo: https://github.com/tlverse/tlverse-handbook
+  includes:
+    in_header: html_extras/mathjax_header.html
 
 bookdown::gitbook:
   css: [css/style.css, css/toc.css, css/center.css]
   dev: svg
+  includes:
+    in_header: html_extras/mathjax_header.html
   config:
     toc:
       collapse: section
@@ -17,13 +21,18 @@ bookdown::gitbook:
     sharing: no
 
 bookdown::pdf_book:
-  latex_engine: pdflatex
+  latex_engine: pdflatex #xelatex
   citation_package: natbib
   includes:
     in_header: latex_extras/preamble.tex
     before_body: latex_extras/before_body.tex
     after_body: latex_extras/after_body.tex
   keep_tex: yes
+  dev: "cairo_pdf"
+  link-as-notes: true
   highlight: tango
+  toc_depth: 3
   toc_unnumbered: false
   toc_appendix: true
+  highlight_bw: true
+  pandoc_args: ["--top-level-division=chapter", "--listings"]

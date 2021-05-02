@@ -27,7 +27,7 @@ node_list <- list(
 # Define sl3 library and metalearners:
 lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
 lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
+lrn_xgboost_300 <- Lrnr_xgboost$new(nrounds = 300)
 lrn_mean <- Lrnr_mean$new()
 lrn_glm <- Lrnr_glm_fast$new()
 
@@ -35,7 +35,7 @@ lrn_glm <- Lrnr_glm_fast$new()
 Q_learner <- Lrnr_sl$new(
   learners = list(
     lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_500, lrn_mean, lrn_glm
+    lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -50,7 +50,7 @@ g_learner <- Lrnr_sl$new(
 b_learner <- Lrnr_sl$new(
   learners = list(
     lrn_xgboost_50, lrn_xgboost_100,
-    lrn_xgboost_500, lrn_mean, lrn_glm
+    lrn_xgboost_300, lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -91,18 +91,11 @@ node_list <- list(
 
 
 ## ----sl3_lrnrs-mopttx---------------------------------------------------------
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
-lrn_mean <- Lrnr_mean$new()
-lrn_glm <- Lrnr_glm_fast$new()
-
 ## Define the Q learner, which is just a regular learner:
 Q_learner <- Lrnr_sl$new(
   learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
-    lrn_glm
+    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300,
+    lrn_mean, lrn_glm
   ),
   metalearner = Lrnr_nnls$new()
 )
@@ -116,13 +109,13 @@ mn_metalearner <- make_learner(Lrnr_solnp,
 )
 g_learner <- make_learner(
   Lrnr_sl,
-  list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean),
+  list(lrn_xgboost_100, lrn_xgboost_300, lrn_mean),
   mn_metalearner
 )
 
 # Define the Blip learner, which is a multivariate learner:
 learners <- list(
-  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean,
+  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean,
   lrn_glm
 )
 b_learner <- create_mv_learners(learners = learners)
@@ -186,21 +179,21 @@ fit
 table(tmle_spec$return_rule)
 
 
-## ----spec_init_Qlearning2-----------------------------------------------------
-# initialize a tmle specification
-tmle_spec_Q <- tmle3_mopttx_Q(maximize = TRUE)
-
-# Define data:
-tmle_task <- tmle_spec_Q$make_tmle_task(data, node_list)
-
-# Define likelihood:
-initial_likelihood <- tmle_spec_Q$make_initial_likelihood(
-  tmle_task,
-  learner_list
-)
-
-# Estimate the parameter:
-Q_learning(tmle_spec_Q, initial_likelihood, tmle_task)[1]
+## ----spec_init_Qlearning2, eval=FALSE-----------------------------------------
+## # initialize a tmle specification
+## tmle_spec_Q <- tmle3_mopttx_Q(maximize = TRUE)
+##
+## # Define data:
+## tmle_task <- tmle_spec_Q$make_tmle_task(data, node_list)
+##
+## # Define likelihood:
+## initial_likelihood <- tmle_spec_Q$make_initial_likelihood(
+##   tmle_task,
+##   learner_list
+## )
+##
+## # Estimate the parameter:
+## Q_learning(tmle_spec_Q, initial_likelihood, tmle_task)[1]
 
 
 ## ----data_vim-nodes-mopttx----------------------------------------------------
@@ -230,82 +223,9 @@ tmle_spec <- tmle3_mopttx_vim(
 )
 
 
-## ----mopttx_fit_tmle_auto_vim-------------------------------------------------
-# fit the TML estimator
-vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
-  adjust_for_other_A = TRUE
-)
-print(vim_results)
-
-
-## ----load-washb-data----------------------------------------------------------
-washb_data <- fread(
-  paste0(
-    "https://raw.githubusercontent.com/tlverse/tlverse-data/master/",
-    "wash-benefits/washb_data.csv"
-  ),
-  stringsAsFactors = TRUE
-)
-washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
-head(washb_data, 3)
-
-
-## ----washb-data-npsem-mopttx--------------------------------------------------
-node_list <- list(
-  W = names(washb_data)[!(names(washb_data) %in% c("whz", "tr"))],
-  A = "tr",
-  Y = "whz"
-)
-
-
-## ----summary_WASH-------------------------------------------------------------
-table(washb_data$momedu)
-table(washb_data$floor)
-table(washb_data$asset_refrig)
-summary(washb_data$whz)
-
-
-## ----sl3_lrnrs-WASH-mopttx----------------------------------------------------
-# Initialize few of the learners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_mean <- Lrnr_mean$new()
-
-## Define the Q learner, which is just a regular learner:
-Q_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean),
-  metalearner = Lrnr_nnls$new()
-)
-
-# Define the g learner, which is a multinomial learner:
-# specify the appropriate loss of the multinomial learner:
-mn_metalearner <- make_learner(Lrnr_solnp,
-  loss_function = loss_loglik_multinomial,
-  learner_function =
-    metalearner_linear_multinomial
-)
-g_learner <- make_learner(
-  Lrnr_sl,
-  list(lrn_xgboost_100, lrn_mean),
-  mn_metalearner
-)
-
-# Define the Blip learner, which is a multivariate learner:
-learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_mean)
-b_learner <- create_mv_learners(learners = learners)
-
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
-
-
-## ----spec_init_WASH, eval=FALSE-----------------------------------------------
-## # initialize a tmle specification
-## tmle_spec <- tmle3_mopttx_blip_revere(
-##   V = c("momedu", "floor", "asset_refrig"), type = "blip2",
-##   learners = learner_list, maximize = TRUE, complex = TRUE,
-##   realistic = FALSE
-## )
-## 
+## ----mopttx_fit_tmle_auto_vim, eval=FALSE-------------------------------------
 ## # fit the TML estimator
-## fit <- tmle3(tmle_spec, data = washb_data, node_list, learner_list)
-## fit
-
+## vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
+##   adjust_for_other_A = TRUE
+## )
+## print(vim_results)
