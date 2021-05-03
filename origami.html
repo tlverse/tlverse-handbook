@@ -71,7 +71,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/origami"><code>origami</code> <code>R</code> package</a>
 by <em>Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips</em>.</p>
-<p>Updated: 2021-04-29</p>
+<p>Updated: 2021-05-02</p>
 <div id="learning-objectives-2" class="section level2">
 <h2>
 <span class="header-section-number">5.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-2"><i class="fas fa-link"></i></a>
@@ -114,7 +114,7 @@ goal(s) consist of:</p>
 <ol style="list-style-type: decimal">
 <li>Estimating the performance of different algorithms in order to choose the
 best one.</li>
-<li>Having chosen a winner, try to estimate the true risk of the proposed
+<li>Having chosen a winner, estimate the true risk of the proposed
 statistical learning method.</li>
 </ol>
 <p>In the following, we propose a method to do so using the observed data and
@@ -165,7 +165,7 @@ selection, cross-validation has powerful optimality properties. The asymptotic
 optimality results state that the cross-validated selector performs (in terms of
 risk) asymptotically as well as an optimal oracle selector based on the true,
 unknown data generating distribution. For further details on the theoretical
-results, we suggest <span class="citation">van der Laan, Dudoit, and Keles (<a href="references.html#ref-vdl2004asymptotic">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics">2005</a>)</span> and
+results, we suggest <span class="citation">van der Laan and Dudoit (<a href="references.html#ref-vdl2003unified">2003</a>)</span>, <span class="citation">van der Laan, Dudoit, and Keles (<a href="references.html#ref-vdl2004asymptotic">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics">2005</a>)</span> and
 <span class="citation">Van der Vaart, Dudoit, and Laan (<a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
 <p>In great generality, cross-validation works by partitioning a sample into
 complementary subsets, applying a particular algorithm(s) on a subset (the
@@ -189,7 +189,7 @@ package, and show their use in applied settings.</p>
 can define the <strong>Estimation Roadmap</strong> to guide the estimation process. In
 particular, we have developed a unified loss-based cross-validation methodology
 for estimator construction, selection, and performance assessment in a series of
-articles (e.g., see <span class="citation">van der Laan, Dudoit, and Keles (<a href="references.html#ref-vdl2004asymptotic">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics">2005</a>)</span>,
+articles (e.g., see <span class="citation">van der Laan and Dudoit (<a href="references.html#ref-vdl2003unified">2003</a>)</span>, <span class="citation">van der Laan, Dudoit, and Keles (<a href="references.html#ref-vdl2004asymptotic">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics">2005</a>)</span>,
 <span class="citation">Van der Vaart, Dudoit, and Laan (<a href="references.html#ref-vaart2006oracle">2006</a>)</span>, and <span class="citation">van der Laan, Polley, and Hubbard (<a href="references.html#ref-vdl2007super">2007</a>)</span>) that follow three main steps:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>The loss funtion</strong>:
@@ -212,8 +212,8 @@ conditional density, we could use the negative log-likelihood loss. If instead
 we are interested in the conditional mean with continuous outcome, one could use
 the squared error loss; had the outcome been binary, one could resort to the
 indicator (0-1) loss. The unified loss-based framework also reconciles censored
-and full data estimation methods, as full data estimators are recovered as
-special cases of censored data estimators.</p>
+and full data estimation methods, by generalizing any loss based learning for
+full data into loss based learning for general censored data.</p>
 </div>
 <div id="example-cross-validation-and-prediction" class="section level2">
 <h2>
@@ -230,7 +230,7 @@ in estimating the conditional expectation of the outcome given the covariates,
 <span class="math inline">\(\psi_0(W) = E(Y \mid W)\)</span>. Following the Estimation Roadmap, we chose the
 appropriate loss function, <span class="math inline">\(L\)</span>, such that <span class="math inline">\(\psi_0(W) = \text{argmin}_{\psi} E[L(X,\psi(W))]\)</span>. But how do we know how each <span class="math inline">\(\psi\)</span> is doing? In order to pick
 the optimal estimator among the candidates, and assess the overall performance
-of the resulting estimator, use cross-validation – dividing the available data
+of the resulting estimator, we use cross-validation – dividing the available data
 into the training set and validation set. Observations in the training set are
 used to fit (or train) the estimator, while the validation set is used to assess
 the risk of (or validate) it.</p>
@@ -238,11 +238,11 @@ the risk of (or validate) it.</p>
 vector</strong>, <span class="math inline">\(B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n\)</span>. Note that split
 vector is independent of the empirical distribution, <span class="math inline">\(P_n\)</span>. A realization of
 <span class="math inline">\(B_n\)</span> defines a random split of the data into a training and validation set such
-that if
-<span class="math display">\[B_n(i) = 0, \ \ \text{i sample is in the training set}\]</span>
+that if</p>
+<p><span class="math display">\[B_n(i) = 0, \ \ \text{i sample is in the training set}\]</span>
 <span class="math display">\[B_n(i) = 1, \ \ \text{i sample is in the validation set.}\]</span>
 We can further define <span class="math inline">\(P_{n,B_n}^0\)</span> and <span class="math inline">\(P_{n,B_n}^1\)</span> as the empirical
-distributions of the training and validation sets, respectively. Then <span class="math inline">\(n_0 = \sum_i 1-B_n(i)\)</span> and <span class="math inline">\(n_1 = \sum_i B_n(i)\)</span> denote the number of samples in each
+distributions of the training and validation sets, respectively. Then <span class="math inline">\(n_0 = \sum_i (1-B_n(i))\)</span> and <span class="math inline">\(n_1 = \sum_i B_n(i)\)</span> denote the number of samples in each
 set. The particular distribution of the split vector <span class="math inline">\(B_n\)</span> defines the type of
 cross-validation scheme, tailored to the problem and data set in hand.</p>
 </div>
@@ -251,7 +251,7 @@ cross-validation scheme, tailored to the problem and data set in hand.</p>
 <span class="header-section-number">5.6</span> Cross-validation schemes in <code>origami</code><a class="anchor" aria-label="anchor" href="#cross-validation-schemes-in-origami"><i class="fas fa-link"></i></a>
 </h2>
 <p>As we specified earlier, the particular distribution of the split vector <span class="math inline">\(B_n\)</span>
-defines the type of cross-validation method. In the following, we describe
+defines the type of the cross-validation method. In the following, we describe
 different types of cross-validation schemes available in <code>origami</code> package, and
 show their use in the sequel.</p>
 <div id="wash-benefits-study-example" class="section level3 unnumbered">
@@ -906,11 +906,14 @@ below; we will use the function <code><a href="http://tlverse.org/origami/refere
 allocate to training and validation sets; remember that each row of data is a
 unique i.i.d. sample. Notice the structure of the <code>origami</code> output:</p>
 <ol style="list-style-type: decimal">
-<li>v: the cross-validation fold</li>
-<li>training_set: the indexes of the samples in the training set</li>
-<li>validation_set: the indexes of the samples in the training set.</li>
+<li>
+<strong>v:</strong> the cross-validation fold</li>
+<li>
+<strong>training_set:</strong> the indexes of the samples in the training set</li>
+<li>
+<strong>validation_set:</strong> the indexes of the samples in the training set.</li>
 </ol>
-<p>This structure of the <code>origami</code> output (fold(s)) will persist for each of the
+<p>This structure of the <code>origami</code> output (aka, fold(s)) will persist for each of the
 cross-validation schemes we present in this chapter. Below, we show the fold
 generated by the re-substitution method:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">folds_resubstitution</span>(<span class="kw">nrow</span>(washb_data))</a>
@@ -937,16 +940,18 @@ generated by the re-substitution method:</p>
 dividing the available data into the training set and validation set (holdout
 set). The model is then fitted on the training set, and further evaluated on
 the observations in the validation set. Typically, the data is split into
-<span class="math inline">\(60/40\)</span>, <span class="math inline">\(70/30\)</span> or <span class="math inline">\(80/20\)</span> splits.</p>
+<span class="math inline">\(60/40\)</span>, <span class="math inline">\(70/30\)</span>, <span class="math inline">\(80/20\)</span> or <span class="math inline">\(90/10\)</span> splits.</p>
 <p>The holdout method is intuitive, conceptually easy, and computationally not too
 demanding. However, if we repeat the process of randomly splitting the data into
-the training and validation set, we might get a different validation loss (e.g.,
-MSE). In particular, the loss over the validation sets might be highly
-variable, depending on which samples were included in the training/validation
-split. For classification problems, there is a possibility of an uneven
-distribution of different classes in the training and validation set unless data
-is stratified. Finally, note that we are not using all of the data to train and
-evaluate the performance of the proposed algorithm, which might result in bias.</p>
+the training and validation set, we might get a very different cross-validated
+emprical risk. In particular, the emprical mean of the loss over the validation
+sets might be highly variable, depending on which samples were included in the training/validation split. Overall, the cross-validated emprical risk for the
+holdout method is more variabiable, since in includes variability of the random
+split as well - which is not what we want. For classification problems, there is a
+possibility of an uneven distribution of different classes in the training and validation
+set unless data is stratified. Finally, note that we are not using all of the
+data to train and evaluate the performance of the proposed algorithm, which might
+result in bias.</p>
 </div>
 <div id="leave-one-out" class="section level4">
 <h4>
@@ -2564,7 +2569,7 @@ of the proposed algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on April 29, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 02, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
