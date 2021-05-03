@@ -71,7 +71,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/origami"><code>origami</code> <code>R</code> package</a>
 by <em>Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips</em>.</p>
-<p>Updated: 2021-05-02</p>
+<p>Updated: 2021-05-03</p>
 <div id="learning-objectives-2" class="section level2">
 <h2>
 <span class="header-section-number">5.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-2"><i class="fas fa-link"></i></a>
@@ -1036,11 +1036,11 @@ higher variance. This difference becomes more obvious as <span class="math inlin
 small, as then we increase bias). With V-fold cross-validation, we end up
 averaging output from <span class="math inline">\(v\)</span> fits that are typically less correlated than the
 outputs from leave-one-out fits. Since the mean of many highly correlated
-quantities has higher variance, leave-one-out estimate of the risk will also
+quantities has higher variance, leave-one-out estimate of the risk will
 have higher variance than the estimate based on V-fold cross-validation.</p>
 <p>Let’s see V-fold cross-validation with <code>origami</code> in action! In the next chapter
-we will study the Super Learner, an actual algorithm that we fit and evaluate
-its performance, that uses V-fold as default cross-validation scheme. In order
+we will study the Super Learner — an actual algorithm that we fit and evaluate
+its performance. The Super Learner relies on V-fold cross-validation as default cross-validation scheme. In order
 to set up V-fold CV, we need to call function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold(n, V)</a></code>. Arguments
 for <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold(n, V)</a></code> require the total number of samples to be
 cross-validated, and the number of folds we want to get.</p>
@@ -1085,10 +1085,14 @@ repeated multiple times, generating (at random) new training and validation
 partitions each time.</p>
 <p>Since the partitions are independent across folds, the same sample can appear in
 the validation set multiple times – note that this is a stark difference
-between Monte Carlo and V-fold cross-validation. With Monte Carlo
+between Monte Carlo and V-fold cross-validation. For a given <span class="math inline">\(p\)</span>, Monte Carlo
+cross-validation would be optimal if done infinite times, but this is not
+computationally feasible. With Monte Carlo
 cross-validation, one is able to explore many more available partitions than
 with V-fold cross-validation – resulting in a possibly less variable estimate
-of the risk, at a cost of an increase in bias.</p>
+of the risk, at a cost of an increase in bias. By having many overlapping splits,
+we often also need more splits (and thus more computational time) to achieve
+V-fold performance with only <span class="math inline">\(V\)</span> splits.</p>
 <p>We illustrate the usage of the Monte Carlo cross-validation with <code>origami</code>
 package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_montecarlo(n, V, pvalidation)</a></code>. In order
 to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_montecarlo(n, V, pvalidation)</a></code>, we need:</p>
@@ -1237,11 +1241,11 @@ FIGURE 5.1: Rolling origin CV
 <p>We illustrate the usage of the rolling origin cross-validation with <code>origami</code>
 package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin(n, first_window, validation_size, gap, batch)</a></code>. In order to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin(n, first_window, validation_size, gap, batch)</a></code>, we need:</p>
 <ol style="list-style-type: decimal">
-<li>the total number of time points we want to cross-validate</li>
-<li>the size of the first training set</li>
-<li>the size of the validation set</li>
-<li>the gap between training and validation set</li>
-<li>the size of the update on the training set per each iteration of CV</li>
+<li>the total number of time points we want to cross-validate;</li>
+<li>the size of the first training set;</li>
+<li>the size of the validation set;</li>
+<li>the gap between training and validation set;</li>
+<li>the size of the update on the training set per each iteration of CV.</li>
 </ol>
 <p>Our time-series has <span class="math inline">\(t=144\)</span> time points. Setting the <code>first_window</code> to <span class="math inline">\(50\)</span>,
 <code>validation_size</code> to 10, <code>gap</code> to 5 and <code>batch</code> to 20, we get 4 time-series
@@ -1309,11 +1313,11 @@ FIGURE 5.2: Rolling window CV
 <p>We illustrate the usage of the rolling window cross-validation with <code>origami</code>
 package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window(n, window_size, validation_size, gap, batch)</a></code>. In order to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window(n, window_size, validation_size, gap, batch)</a></code>, we need:</p>
 <ol style="list-style-type: decimal">
-<li>the total number of time points we want to cross-validate</li>
-<li>the size of the training sets</li>
-<li>the size of the validation set</li>
-<li>the gap between training and validation set</li>
-<li>the size of the update on the training set per each iteration of CV</li>
+<li>the total number of time points we want to cross-validate;</li>
+<li>the size of the training sets;</li>
+<li>the size of the validation set;</li>
+<li>the gap between training and validation set;</li>
+<li>the size of the update on the training set per each iteration of CV.</li>
 </ol>
 <p>Setting the <code>window_size</code> to <span class="math inline">\(50\)</span>, <code>validation_size</code> to 10, <code>gap</code> to 5 and
 <code>batch</code> to 20, we also get 4 time-series folds; we show the first two below.</p>
@@ -1392,10 +1396,9 @@ FIGURE 5.4: Rolling window V-fold CV
 </h2>
 <p>Before we dive into more details, let’s take a moment to review some of the
 basic functionality in <code>origami</code> R package. The main function in the <code>origami</code>
-is <code>cross_validate</code>. To start off, the user must define folds and a function
-that operates on each fold. Once these are passed to <code>cross_validate</code>, this
-function will map the fold-specific function across the folds, combining the
-results in a reasonable way. We will see this in action in later sections; for
+is <code>cross_validate</code>. To start off, the user must define the fold structure and a function
+that operates on each fold. Once these are passed to <code>cross_validate</code>, <code>cross_validate</code>
+will apply the same specified function to each fold, and combine the fold-specific results in a meaningful way. We will see this in action in later sections; for
 now, we provide specific details on each each step of this process below.</p>
 <div id="define-folds" class="section level3">
 <h3>
@@ -1419,8 +1422,8 @@ which will receive an individual fold object to operate on. Additional arguments
 can be passed to <code>cv_fun</code> using the <code>...</code> argument to <code>cross_validate</code>. Within
 this function, the convenience functions <code>training</code>, <code>validation</code> and
 <code>fold_index</code> can return the various components of a fold object. If <code>training</code>
-or <code>validation</code> is passed an object, it will index into it in a sensible way.
-For instance, if it is a vector, it will index the vector directly. If it is a
+or <code>validation</code> is passed an object, it will index it in a sensible way.
+For instance, if it is a vector, it will index the vector directly; if it is a
 <code>data.frame</code> or <code>matrix</code>, it will index rows. This allows the user to easily
 partition data into training and validation sets. The fold function must return
 a named list of results containing whatever fold-specific outputs are generated.</p>
@@ -2183,7 +2186,7 @@ try it out:</p>
 <p>We can assess how well the model fits the data by comparing the predictions of
 the linear model to the true outcomes observed in the data set. This is the well
 known (and standard) mean squared error. We can extract that from the <code>lm</code> model
-object like so:</p>
+object as follows:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">(err &lt;-<span class="st"> </span><span class="kw">mean</span>(<span class="kw">resid</span>(lm_mod)<span class="op">^</span><span class="dv">2</span>))</a>
 <a class="sourceLine" id="cb20-2" data-line-number="2">[<span class="dv">1</span>] <span class="fl">0.86568</span></a></code></pre></div>
 <p>The mean squared error is 0.86568. There is an important problem that arises
@@ -2225,10 +2228,10 @@ specific partition of the data (called a “fold”):</p>
   <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>Our <code>cv_lm</code> function is rather simple: we merely split the available data into a
-training and validation sets, using the eponymous functions provided in
-<code>origami</code>, fit the linear model on the training set, and evaluate the model on
-the testing set. This is a simple example of what <code>origami</code> considers to be
-<code>cv_fun</code> – functions for using cross-validation to perform a particular routine
+training and validation sets (using the eponymous functions provided in
+<code>origami</code>) fit the linear model on the training set, and evaluate the model on
+the validation set. This is a simple example of what <code>origami</code> considers to be
+<code>cv_fun</code> — functions for using cross-validation to perform a particular routine
 over an input data set. Having defined such a function, we can simply generate a
 set of partitions using <code>origami</code>’s <code>make_folds</code> function, and apply our <code>cv_lm</code>
 function over the resultant <code>folds</code> object. Below, we replicate the
@@ -2243,7 +2246,7 @@ the functions <code>make_folds</code> and <code>cv_lm</code>.</p>
 <p>We can more honestly evaluate the error by V-fold cross-validation, which
 partitions the data into <span class="math inline">\(v\)</span> subsets, fitting the model on <span class="math inline">\(v - 1\)</span> of the
 subsets and evaluating on the subset that was held out for testing. This is
-repeated such that each subset is used for testing. We can easily apply our
+repeated such that each subset is used for validation. We can easily apply our
 <code>cv_lm</code> function using <code>origami</code>’s <code>cross_validate</code> (n.b., by default this
 performs 10-fold cross-validation):</p>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># cross-validated estimate</span></a>
@@ -2256,7 +2259,7 @@ performs 10-fold cross-validation):</p>
 <a class="sourceLine" id="cb23-8" data-line-number="8">[<span class="dv">1</span>] <span class="fl">1.35</span></a></code></pre></div>
 <p>Having performed 10-fold cross-validation, we quickly notice that our previous
 estimate of the model error (by resubstitution) was a bit optimistic. The honest
-estimate of the error is larger.</p>
+estimate of the error is larger!</p>
 </div>
 <div id="cross-validation-with-random-forests" class="section level3">
 <h3>
@@ -2299,11 +2302,12 @@ object generated by <code>make_folds</code>.</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co"># now, let's cross-validate...</span></a>
 <a class="sourceLine" id="cb25-2" data-line-number="2">folds &lt;-<span class="st"> </span><span class="kw">make_folds</span>(washb_data)</a>
 <a class="sourceLine" id="cb25-3" data-line-number="3">cvrf_results &lt;-<span class="st"> </span><span class="kw">cross_validate</span>(</a>
-<a class="sourceLine" id="cb25-4" data-line-number="4">  <span class="dt">cv_fun =</span> cv_rf, <span class="dt">folds =</span> folds, <span class="dt">data =</span> washb_data, <span class="dt">reg_form =</span> <span class="st">"whz ~ ."</span>,</a>
-<a class="sourceLine" id="cb25-5" data-line-number="5">  <span class="dt">use_future =</span> <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb25-6" data-line-number="6">)</a>
-<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="kw">mean</span>(cvrf_results<span class="op">$</span>SE)</a>
-<a class="sourceLine" id="cb25-8" data-line-number="8">[<span class="dv">1</span>] <span class="fl">1.0271</span></a></code></pre></div>
+<a class="sourceLine" id="cb25-4" data-line-number="4">  <span class="dt">cv_fun =</span> cv_rf, <span class="dt">folds =</span> folds, </a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">  <span class="dt">data =</span> washb_data, <span class="dt">reg_form =</span> <span class="st">"whz ~ ."</span>,</a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">  <span class="dt">use_future =</span> <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">)</a>
+<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="kw">mean</span>(cvrf_results<span class="op">$</span>SE)</a>
+<a class="sourceLine" id="cb25-9" data-line-number="9">[<span class="dv">1</span>] <span class="fl">1.0271</span></a></code></pre></div>
 <p>Using 10-fold cross-validation (the default), we obtain an honest estimate of
 the prediction error of random forests. From this, we gather that the use of
 <code>origami</code>’s <code>cross_validate</code> procedure can be generalized to arbitrary estimation
@@ -2569,7 +2573,7 @@ of the proposed algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 02, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 03, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
