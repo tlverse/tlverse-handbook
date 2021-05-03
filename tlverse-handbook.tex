@@ -194,7 +194,7 @@
 \providecommand{\subtitle}[1]{}
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{May 02, 2021}
+\date{May 03, 2021}
 
 \begin{document}
 \maketitle
@@ -1735,7 +1735,7 @@ numeric & tax71\_82 & 92 & 0.94352 & 0.55261 & 0.15032 & 0.03600 & 0.46100 & 0.5
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-05-02
+Updated: 2021-05-03
 
 \hypertarget{learning-objectives-2}{%
 \section{Learning Objectives}\label{learning-objectives-2}}
@@ -2153,12 +2153,12 @@ higher variance. This difference becomes more obvious as \(v<<n\) (but not too
 small, as then we increase bias). With V-fold cross-validation, we end up
 averaging output from \(v\) fits that are typically less correlated than the
 outputs from leave-one-out fits. Since the mean of many highly correlated
-quantities has higher variance, leave-one-out estimate of the risk will also
+quantities has higher variance, leave-one-out estimate of the risk will
 have higher variance than the estimate based on V-fold cross-validation.
 
 Let's see V-fold cross-validation with \passthrough{\lstinline!origami!} in action! In the next chapter
-we will study the Super Learner, an actual algorithm that we fit and evaluate
-its performance, that uses V-fold as default cross-validation scheme. In order
+we will study the Super Learner --- an actual algorithm that we fit and evaluate
+its performance. The Super Learner relies on V-fold cross-validation as default cross-validation scheme. In order
 to set up V-fold CV, we need to call function \passthrough{\lstinline!folds\_vfold(n, V)!}. Arguments
 for \passthrough{\lstinline!folds\_vfold(n, V)!} require the total number of samples to be
 cross-validated, and the number of folds we want to get.
@@ -2207,10 +2207,14 @@ partitions each time.
 
 Since the partitions are independent across folds, the same sample can appear in
 the validation set multiple times -- note that this is a stark difference
-between Monte Carlo and V-fold cross-validation. With Monte Carlo
+between Monte Carlo and V-fold cross-validation. For a given \(p\), Monte Carlo
+cross-validation would be optimal if done infinite times, but this is not
+computationally feasible. With Monte Carlo
 cross-validation, one is able to explore many more available partitions than
 with V-fold cross-validation -- resulting in a possibly less variable estimate
-of the risk, at a cost of an increase in bias.
+of the risk, at a cost of an increase in bias. By having many overlapping splits,
+we often also need more splits (and thus more computational time) to achieve
+V-fold performance with only \(V\) splits.
 
 We illustrate the usage of the Monte Carlo cross-validation with \passthrough{\lstinline!origami!}
 package below using the function \passthrough{\lstinline!folds\_montecarlo(n, V, pvalidation)!}. In order
@@ -2334,8 +2338,11 @@ dataset. The AirPassenger dataset in \passthrough{\lstinline!R!} provides monthl
 international airline passengers from 1949 to 1960. This dataset is already of a
 time series class therefore no further class or date manipulation is required.
 
-\textbf{Goal:} we want to forecast the number of airline passengers at time \(h\)
+\begin{shortbox}
+\Boxhead{Constructing a library that is consistent with the data-generating distribution}
+**Goal:** we want to forecast the number of airline passengers at time $h$
 horizon using the historical data from 1949 to 1960.
+\end{shortbox}
 
 \begin{lstlisting}[language=R]
 library(ggfortify)
@@ -2391,15 +2398,15 @@ package below using the function \passthrough{\lstinline!folds\_rolling\_origin(
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  the total number of time points we want to cross-validate
+  the total number of time points we want to cross-validate;
 \item
-  the size of the first training set
+  the size of the first training set;
 \item
-  the size of the validation set
+  the size of the validation set;
 \item
-  the gap between training and validation set
+  the gap between training and validation set;
 \item
-  the size of the update on the training set per each iteration of CV
+  the size of the update on the training set per each iteration of CV.
 \end{enumerate}
 
 Our time-series has \(t=144\) time points. Setting the \passthrough{\lstinline!first\_window!} to \(50\),
@@ -2479,15 +2486,15 @@ package below using the function \passthrough{\lstinline!folds\_rolling\_window(
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  the total number of time points we want to cross-validate
+  the total number of time points we want to cross-validate;
 \item
-  the size of the training sets
+  the size of the training sets;
 \item
-  the size of the validation set
+  the size of the validation set;
 \item
-  the gap between training and validation set
+  the gap between training and validation set;
 \item
-  the size of the update on the training set per each iteration of CV
+  the size of the update on the training set per each iteration of CV.
 \end{enumerate}
 
 Setting the \passthrough{\lstinline!window\_size!} to \(50\), \passthrough{\lstinline!validation\_size!} to 10, \passthrough{\lstinline!gap!} to 5 and
@@ -2571,10 +2578,9 @@ function \passthrough{\lstinline!folds\_vfold\_rolling\_window\_pooled(n, t, id,
 
 Before we dive into more details, let's take a moment to review some of the
 basic functionality in \passthrough{\lstinline!origami!} R package. The main function in the \passthrough{\lstinline!origami!}
-is \passthrough{\lstinline!cross\_validate!}. To start off, the user must define folds and a function
-that operates on each fold. Once these are passed to \passthrough{\lstinline!cross\_validate!}, this
-function will map the fold-specific function across the folds, combining the
-results in a reasonable way. We will see this in action in later sections; for
+is \passthrough{\lstinline!cross\_validate!}. To start off, the user must define the fold structure and a function
+that operates on each fold. Once these are passed to \passthrough{\lstinline!cross\_validate!}, \passthrough{\lstinline!cross\_validate!}
+will apply the same specified function to each fold, and combine the fold-specific results in a meaningful way. We will see this in action in later sections; for
 now, we provide specific details on each each step of this process below.
 
 \hypertarget{define-folds}{%
@@ -2597,8 +2603,8 @@ which will receive an individual fold object to operate on. Additional arguments
 can be passed to \passthrough{\lstinline!cv\_fun!} using the \passthrough{\lstinline!...!} argument to \passthrough{\lstinline!cross\_validate!}. Within
 this function, the convenience functions \passthrough{\lstinline!training!}, \passthrough{\lstinline!validation!} and
 \passthrough{\lstinline!fold\_index!} can return the various components of a fold object. If \passthrough{\lstinline!training!}
-or \passthrough{\lstinline!validation!} is passed an object, it will index into it in a sensible way.
-For instance, if it is a vector, it will index the vector directly. If it is a
+or \passthrough{\lstinline!validation!} is passed an object, it will index it in a sensible way.
+For instance, if it is a vector, it will index the vector directly; if it is a
 \passthrough{\lstinline!data.frame!} or \passthrough{\lstinline!matrix!}, it will index rows. This allows the user to easily
 partition data into training and validation sets. The fold function must return
 a named list of results containing whatever fold-specific outputs are generated.
@@ -2780,7 +2786,7 @@ F-statistic: 1.27 on 52 and 447 DF,  p-value: 0.104
 We can assess how well the model fits the data by comparing the predictions of
 the linear model to the true outcomes observed in the data set. This is the well
 known (and standard) mean squared error. We can extract that from the \passthrough{\lstinline!lm!} model
-object like so:
+object as follows:
 
 \begin{lstlisting}[language=R]
 (err <- mean(resid(lm_mod)^2))
@@ -2831,10 +2837,10 @@ cv_lm <- function(fold, data, reg_form) {
 \end{lstlisting}
 
 Our \passthrough{\lstinline!cv\_lm!} function is rather simple: we merely split the available data into a
-training and validation sets, using the eponymous functions provided in
-\passthrough{\lstinline!origami!}, fit the linear model on the training set, and evaluate the model on
-the testing set. This is a simple example of what \passthrough{\lstinline!origami!} considers to be
-\passthrough{\lstinline!cv\_fun!} -- functions for using cross-validation to perform a particular routine
+training and validation sets (using the eponymous functions provided in
+\passthrough{\lstinline!origami!}) fit the linear model on the training set, and evaluate the model on
+the validation set. This is a simple example of what \passthrough{\lstinline!origami!} considers to be
+\passthrough{\lstinline!cv\_fun!} --- functions for using cross-validation to perform a particular routine
 over an input data set. Having defined such a function, we can simply generate a
 set of partitions using \passthrough{\lstinline!origami!}'s \passthrough{\lstinline!make\_folds!} function, and apply our \passthrough{\lstinline!cv\_lm!}
 function over the resultant \passthrough{\lstinline!folds!} object. Below, we replicate the
@@ -2854,7 +2860,7 @@ This (nearly) matches the estimate of the error that we obtained above.
 We can more honestly evaluate the error by V-fold cross-validation, which
 partitions the data into \(v\) subsets, fitting the model on \(v - 1\) of the
 subsets and evaluating on the subset that was held out for testing. This is
-repeated such that each subset is used for testing. We can easily apply our
+repeated such that each subset is used for validation. We can easily apply our
 \passthrough{\lstinline!cv\_lm!} function using \passthrough{\lstinline!origami!}'s \passthrough{\lstinline!cross\_validate!} (n.b., by default this
 performs 10-fold cross-validation):
 
@@ -2871,7 +2877,7 @@ mean(cvlm_results$SE, na.rm = TRUE)
 
 Having performed 10-fold cross-validation, we quickly notice that our previous
 estimate of the model error (by resubstitution) was a bit optimistic. The honest
-estimate of the error is larger.
+estimate of the error is larger!
 
 \hypertarget{cross-validation-with-random-forests}{%
 \subsection{Cross-validation with random forests}\label{cross-validation-with-random-forests}}
@@ -2919,7 +2925,8 @@ object generated by \passthrough{\lstinline!make\_folds!}.
 # now, let's cross-validate...
 folds <- make_folds(washb_data)
 cvrf_results <- cross_validate(
-  cv_fun = cv_rf, folds = folds, data = washb_data, reg_form = "whz ~ .",
+  cv_fun = cv_rf, folds = folds, 
+  data = washb_data, reg_form = "whz ~ .",
   use_future = FALSE
 )
 mean(cvrf_results$SE)
@@ -3159,7 +3166,7 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-05-02
+Updated: 2021-05-03
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -4205,7 +4212,7 @@ $outer.iter
 [1] 1
 
 $elapsed
-Time difference of 0.011943 secs
+Time difference of 0.012115 secs
 
 $vscale
  [1] 1.01048 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
@@ -5555,7 +5562,7 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-05-02
+Updated: 2021-05-03
 
 \hypertarget{learning-objectives-3}{%
 \section{Learning Objectives}\label{learning-objectives-3}}
