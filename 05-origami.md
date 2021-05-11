@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
-Updated: 2021-05-03
+Updated: 2021-05-11
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -20,15 +20,15 @@ By the end of this chapter you will be able to:
 
 3. Select a loss function that is appropriate for the functional parameter to be
    estimated.
-   
+
 4. Understand and contrast different cross-validation schemes for i.i.d. data.
 
 5. Understand and contrast different cross-validation schemes for time dependent
    data.
-   
+
 6. Setup the proper fold structure, build custom fold-based function, and
    cross-validate the proposed function using the `origami` `R` package.
-   
+
 7. Setup the proper cross-validation structure for the use by the Super Learner
    using the the `origami` `R` package.
 
@@ -617,7 +617,7 @@ performance on 10 time points in the future.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{img/image/rolling_origin} 
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin} 
 
 }
 
@@ -698,7 +698,7 @@ algorithm on 10 time points in the future.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{img/image/rolling_window} 
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window} 
 
 }
 
@@ -768,7 +768,7 @@ $V$-folds, and 2 time-series CV folds.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{img/image/rolling_origin_v_fold} 
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin_v_fold} 
 
 }
 
@@ -786,7 +786,7 @@ validation_size, gap, batch)`. In the figure below, we show $V=2$ $V$-folds, and
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{img/image/rolling_window_v_fold} 
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window_v_fold} 
 
 }
 

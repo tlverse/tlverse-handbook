@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-05-03
+Updated: 2021-05-11
 
 ## Learning Objectives
 
@@ -50,7 +50,7 @@ them, or would not benefit from it.
 
 \begin{figure}
 
-{\centering \includegraphics[width=0.8\linewidth]{img/image/DynamicA_Illustration} 
+{\centering \includegraphics[width=0.8\linewidth]{img/png/DynamicA_Illustration} 
 
 }
 

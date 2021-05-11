@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-05-03
+Updated: 2021-05-11
 
 ## Learning Objectives
 
@@ -443,15 +443,15 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.5482	 Pars:  0.999997601 0.000002399
-Iter: 2 fn: 547.5482	 Pars:  0.9999991325 0.0000008675
+Iter: 1 fn: 548.0134	 Pars:  0.999996659 0.000003341
+Iter: 2 fn: 548.0134	 Pars:  0.999998795 0.000001205
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower  upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.76373  0.75992 0.022795 0.71524 0.8046         0.75992
-   lower_transformed upper_transformed
-1:           0.71524            0.8046
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.76468  0.75985 0.022767 0.71523 0.80447
+   psi_transformed lower_transformed upper_transformed
+1:         0.75985           0.71523           0.80447
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
