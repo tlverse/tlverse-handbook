@@ -2,14 +2,15 @@
 
 ## Learning Objectives {-}
 
-By the end of this chapter you will be able to
+In this chapter, we provide guidance on how to
 
 1. Translate scientific questions to statistical questions.
 2. Define a statistical model based on the knowledge of the experiment that
    generated the data.
 3. Identify a causal parameter as a function of the observed data distribution.
 4. Explain the following causal and statistical assumptions and their
-   implications: i.i.d., consistency, interference, positivity, SUTVA.
+   implications: i.i.d., consistency, interference, positivity, the stable unit
+   treatment value assumption.
 
 ## Introduction {-}
 
