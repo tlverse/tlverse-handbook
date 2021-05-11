@@ -2,7 +2,7 @@
 
 ## Learning Objectives {-}
 
-By the end of this chapter you will be able to:
+By the end of this chapter you will be able to
 
 1. Translate scientific questions to statistical questions.
 2. Define a statistical model based on the knowledge of the experiment that
