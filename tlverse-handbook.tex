@@ -95,6 +95,7 @@
 \usepackage{framed,color}
 \definecolor{shadecolor}{RGB}{248,248,248}
 \urlstyle{tt}
+\usepackage[none]{hyphenat} 
 
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\topfraction}{0.8}
@@ -194,7 +195,7 @@
 \providecommand{\subtitle}[1]{}
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{May 11, 2021}
+\date{June 03, 2021}
 
 \begin{document}
 \maketitle
@@ -1748,7 +1749,7 @@ numeric & tax71\_82 & 92 & 0.94352 & 0.55261 & 0.15032 & 0.03600 & 0.46100 & 0.5
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-05-11
+Updated: 2021-06-03
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -3179,31 +3180,37 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-05-11
+Updated: 2021-06-03
 
-\begin{VT1}
-\VH{Learning Objectives}
-
+\hypertarget{learning-objectives-2}{%
+\section*{Learning Objectives}\label{learning-objectives-2}}
 
 
 By the end of this chapter you will be able to:
 
-1. Select a loss function that is appropriate for the functional parameter to
-   be estimated.
-2. Assemble an ensemble of learners based on the properties that identify what
-   features they support.
-3. Customize learner tuning parameters to incorporate a diversity of different
-   settings.
-4. Select a subset of available covariates and pass only those variables to the
-   modeling algorithm.
-5. Fit an ensemble with nested cross-validation to obtain an estimate of the
-   performance of the ensemble itself.
-6. Obtain `sl3` variable importance metrics.
-7. Interpret the discrete and continuous Super Learner fits.
-8. Rationalize the need to remove bias from the Super Learner to make an
-   optimal bias-variance tradeoff for the parameter of interest.
-
-\end{VT1}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Select a loss function that is appropriate for the functional parameter to
+  be estimated.
+\item
+  Assemble an ensemble of learners based on the properties that identify what
+  features they support.
+\item
+  Customize learner tuning parameters to incorporate a diversity of different
+  settings.
+\item
+  Select a subset of available covariates and pass only those variables to the
+  modeling algorithm.
+\item
+  Fit an ensemble with nested cross-validation to obtain an estimate of the
+  performance of the ensemble itself.
+\item
+  Obtain \passthrough{\lstinline!sl3!} variable importance metrics.
+\item
+  Interpret the discrete and continuous Super Learner fits.'`
+\end{enumerate}
 
 \hypertarget{motivation}{%
 \section*{Motivation}\label{motivation}}
@@ -3216,15 +3223,19 @@ By the end of this chapter you will be able to:
   learn a function, which can be used to map new input variables into a
   predicted outcome.
 \item
-  For some data, algorithms that can model a complex function are necessary to
-  adequately model the data. For other data, a main terms regression model might
+  For some data, algorithms that can learn a complex function are necessary to
+  adequately model the data. For other data, main terms regression models might
   fit the data quite well.
 \item
-  The Super Learner (SL), an ensemble learner, solves this issue, by allowing a
-  combination of algorithms from the simplest (intercept-only) to most complex
-  (neural nets, random forests, SVM, etc).
+  It is generally impossible to know a priori which algorithm will be the best
+  for a given data set and prediction problem. It's like picking the winner of
+  \emph{The Great British Bake Off} at the start of the first week!
 \item
-  It works by using cross-validation in a manner which guarantees that the
+  The Super Learner (SL) solves this issue of algorithm selection by allowing
+  an ensemble of algorithms, from the simplest (intercept-only) to most
+  complex (neural nets, tree-based methods, support vector machines, etc.).
+\item
+  SL works by using cross-validation in a manner that guarantees the
   resulting fit will be as good as possible, given the learners provided.
 \end{itemize}
 
@@ -3274,7 +3285,7 @@ data-generating distribution. Also, the library should contain a diversity of
 algorithms that range from parametric regression models to multi-step algorithms
 involving screening covariates, penalizations, optimizing tuning parameters,
 etc. See flowchart in {[}ADD REF TO SL GUIDANCE PAPER{]}, which provides a visual
-representation of the sequence of steps for constructing a super learner in
+representation of the sequence of steps for constructing a Super Learner in
 practice, discussing all arguments and recommending specific inputs. (Maybe
 include flowchart here too, if that's allowed?)
 
@@ -4141,7 +4152,7 @@ for each subject.
 # we did it! now we have SL predictions
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-[1] -0.59571 -0.76121 -0.68938 -0.66515 -0.61549 -0.65685
+[1] -0.60804 -0.75293 -0.68060 -0.64754 -0.65408 -0.62135
 \end{lstlisting}
 
 We can also obtain a summary of the results.
@@ -4160,19 +4171,19 @@ List of 8
  $ lasso_screen       : chr "Pipeline(Lrnr_screener_coefs_0_NULL_2->Stack)"
 [1] "Lrnr_solnp_TRUE_TRUE_FALSE_1e-05"
 $pars
- [1] 0.055566 0.055551 0.055559 0.055564 0.055559 0.055585 0.055556 0.055574
- [9] 0.055555 0.055555 0.055555 0.055543 0.055554 0.055554 0.055554 0.055553
+ [1] 0.055567 0.055552 0.055560 0.055565 0.055560 0.055587 0.055551 0.055565
+ [9] 0.055551 0.055551 0.055551 0.055563 0.055554 0.055554 0.055554 0.055554
 [17] 0.055554 0.055509
 
 $convergence
 [1] 0
 
 $values
-[1] 1.0105 1.0105
+[1] 1.0109 1.0109
 
 $lagrange
            [,1]
-[1,] -0.0041139
+[1,] -0.0041181
 
 $hessian
       [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
@@ -4224,30 +4235,30 @@ $outer.iter
 [1] 1
 
 $elapsed
-Time difference of 0.012361 secs
+Time difference of 0.011887 secs
 
 $vscale
- [1] 1.01048 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
+ [1] 1.01094 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
 [10] 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
 [19] 1.00000 1.00000
 
 $coefficients
                           glm                     polspline 
-                     0.055566                      0.055551 
+                     0.055567                      0.055552 
                        enet.5                         ridge 
-                     0.055559                      0.055564 
+                     0.055560                      0.055565 
                         lasso                     xgboost50 
-                     0.055559                      0.055585 
+                     0.055560                      0.055587 
       randomforest_screen_glm randomforest_screen_polspline 
-                     0.055556                      0.055574 
+                     0.055551                      0.055565 
    randomforest_screen_enet.5     randomforest_screen_ridge 
-                     0.055555                      0.055555 
+                     0.055551                      0.055551 
     randomforest_screen_lasso randomforest_screen_xgboost50 
-                     0.055555                      0.055543 
+                     0.055551                      0.055563 
              lasso_screen_glm        lasso_screen_polspline 
                      0.055554                      0.055554 
           lasso_screen_enet.5            lasso_screen_ridge 
-                     0.055554                      0.055553 
+                     0.055554                      0.055554 
            lasso_screen_lasso        lasso_screen_xgboost50 
                      0.055554                      0.055509 
 
@@ -4259,49 +4270,49 @@ $name
 
 [1] "Cross-validated risk:"
                           learner coefficients   risk       se  fold_sd
- 1:                           glm     0.055566 1.0202 0.023955 0.067500
- 2:                     polspline     0.055551 1.0208 0.023577 0.067921
- 3:                        enet.5     0.055559 1.0133 0.023618 0.066232
- 4:                         ridge     0.055564 1.0155 0.023727 0.065653
- 5:                         lasso     0.055559 1.0132 0.023607 0.066250
- 6:                     xgboost50     0.055585 1.1136 0.025262 0.077580
- 7:       randomforest_screen_glm     0.055556 1.0181 0.023617 0.064287
- 8: randomforest_screen_polspline     0.055574 1.0122 0.023604 0.064125
- 9:    randomforest_screen_enet.5     0.055555 1.0179 0.023619 0.064642
-10:     randomforest_screen_ridge     0.055555 1.0182 0.023632 0.064600
-11:     randomforest_screen_lasso     0.055555 1.0178 0.023612 0.064616
-12: randomforest_screen_xgboost50     0.055543 1.1242 0.025511 0.065775
-13:              lasso_screen_glm     0.055554 1.0161 0.023525 0.064938
-14:        lasso_screen_polspline     0.055554 1.0177 0.023520 0.065566
-15:           lasso_screen_enet.5     0.055554 1.0161 0.023527 0.064945
-16:            lasso_screen_ridge     0.055553 1.0163 0.023536 0.064715
-17:            lasso_screen_lasso     0.055554 1.0161 0.023527 0.064944
-18:        lasso_screen_xgboost50     0.055509 1.1297 0.026028 0.088532
-19:                  SuperLearner           NA 1.0105 0.023438 0.066924
+ 1:                           glm     0.055567 1.0202 0.023955 0.067500
+ 2:                     polspline     0.055552 1.0208 0.023577 0.067921
+ 3:                        enet.5     0.055560 1.0133 0.023618 0.065940
+ 4:                         ridge     0.055565 1.0154 0.023736 0.065991
+ 5:                         lasso     0.055560 1.0130 0.023605 0.065828
+ 6:                     xgboost50     0.055587 1.1136 0.025262 0.077580
+ 7:       randomforest_screen_glm     0.055551 1.0210 0.023788 0.067304
+ 8: randomforest_screen_polspline     0.055565 1.0182 0.023813 0.067066
+ 9:    randomforest_screen_enet.5     0.055551 1.0209 0.023785 0.067125
+10:     randomforest_screen_ridge     0.055551 1.0211 0.023797 0.067130
+11:     randomforest_screen_lasso     0.055551 1.0209 0.023779 0.067032
+12: randomforest_screen_xgboost50     0.055563 1.1162 0.025343 0.090441
+13:              lasso_screen_glm     0.055554 1.0165 0.023561 0.064937
+14:        lasso_screen_polspline     0.055554 1.0184 0.023537 0.065581
+15:           lasso_screen_enet.5     0.055554 1.0164 0.023561 0.064912
+16:            lasso_screen_ridge     0.055554 1.0166 0.023567 0.064759
+17:            lasso_screen_lasso     0.055554 1.0164 0.023560 0.064898
+18:        lasso_screen_xgboost50     0.055509 1.1296 0.025767 0.084180
+19:                  SuperLearner           NA 1.0109 0.023498 0.068715
     fold_min_risk fold_max_risk
  1:       0.89442        1.1200
  2:       0.89892        1.1255
- 3:       0.88927        1.1102
- 4:       0.88562        1.1093
- 5:       0.88842        1.1090
+ 3:       0.88927        1.1082
+ 4:       0.88570        1.1104
+ 5:       0.89037        1.1090
  6:       0.96019        1.2337
- 7:       0.90212        1.1105
- 8:       0.90246        1.0919
- 9:       0.89998        1.1092
-10:       0.90104        1.1110
-11:       0.90037        1.1091
-12:       1.02694        1.2325
-13:       0.90204        1.1114
+ 7:       0.90214        1.1203
+ 8:       0.90394        1.1098
+ 9:       0.90196        1.1199
+10:       0.90165        1.1195
+11:       0.90199        1.1196
+12:       0.93603        1.2169
+13:       0.90204        1.1156
 14:       0.89742        1.1162
-15:       0.90182        1.1112
-16:       0.90120        1.1100
-17:       0.90183        1.1112
-18:       0.96251        1.2622
-19:       0.88891        1.1094
+15:       0.90184        1.1154
+16:       0.90132        1.1148
+17:       0.90183        1.1154
+18:       0.96251        1.2327
+19:       0.88481        1.1105
 \end{lstlisting}
 
 From the table of the printed SL fit, we note that the SL had a mean risk of
-1.0105 and that
+1.0109 and that
 this ensemble weighted the \passthrough{\lstinline!ranger!} and \passthrough{\lstinline!glmnet!} learners highest while not
 weighting the \passthrough{\lstinline!mean!} learner highly.
 
@@ -4357,43 +4368,43 @@ if (knitr::is_latex_output()) {
 \hline
 learner & coefficients & risk & se & fold\_sd & fold\_min\_risk & fold\_max\_risk\\
 \hline
-glm & 0.05556 & 1.0644 & 0.03068 & 0.02372 & 1.0476 & 1.0812\\
+glm & 0.05555 & 1.0644 & 0.03068 & 0.02372 & 1.0476 & 1.0812\\
 \hline
 polspline & 0.05556 & 1.0349 & 0.02403 & 0.00855 & 1.0289 & 1.0410\\
 \hline
-enet.5 & 0.05557 & 1.0292 & 0.02429 & 0.00703 & 1.0243 & 1.0342\\
+enet.5 & 0.05557 & 1.0299 & 0.02441 & 0.00471 & 1.0266 & 1.0332\\
 \hline
-ridge & 0.05557 & 1.0351 & 0.02476 & 0.00141 & 1.0340 & 1.0360\\
+ridge & 0.05557 & 1.0339 & 0.02465 & 0.00213 & 1.0324 & 1.0354\\
 \hline
-lasso & 0.05557 & 1.0274 & 0.02409 & 0.00907 & 1.0210 & 1.0338\\
+lasso & 0.05557 & 1.0283 & 0.02419 & 0.00774 & 1.0229 & 1.0338\\
 \hline
-xgboost50 & 0.05555 & 1.1912 & 0.02743 & 0.01545 & 1.1803 & 1.2021\\
+xgboost50 & 0.05554 & 1.1912 & 0.02743 & 0.01545 & 1.1803 & 1.2021\\
 \hline
-randomforest\_screen\_glm & 0.05555 & 1.0416 & 0.02449 & 0.02868 & 1.0213 & 1.0619\\
+randomforest\_screen\_glm & 0.05555 & 1.0475 & 0.02473 & 0.03140 & 1.0253 & 1.0697\\
 \hline
-randomforest\_screen\_polspline & 0.05557 & 1.0345 & 0.02443 & 0.01277 & 1.0254 & 1.0435\\
+randomforest\_screen\_polspline & 0.05558 & 1.0311 & 0.02425 & 0.01643 & 1.0195 & 1.0427\\
 \hline
-randomforest\_screen\_enet.5 & 0.05555 & 1.0395 & 0.02443 & 0.02687 & 1.0205 & 1.0585\\
+randomforest\_screen\_enet.5 & 0.05555 & 1.0432 & 0.02457 & 0.02547 & 1.0251 & 1.0612\\
 \hline
-randomforest\_screen\_ridge & 0.05555 & 1.0406 & 0.02453 & 0.02991 & 1.0194 & 1.0617\\
+randomforest\_screen\_ridge & 0.05555 & 1.0450 & 0.02470 & 0.02922 & 1.0243 & 1.0656\\
 \hline
-randomforest\_screen\_lasso & 0.05555 & 1.0396 & 0.02443 & 0.02625 & 1.0211 & 1.0582\\
+randomforest\_screen\_lasso & 0.05555 & 1.0430 & 0.02456 & 0.02526 & 1.0251 & 1.0609\\
 \hline
-randomforest\_screen\_xgboost50 & 0.05549 & 1.2261 & 0.02865 & 0.05917 & 1.1843 & 1.2680\\
+randomforest\_screen\_xgboost50 & 0.05553 & 1.2085 & 0.02741 & 0.01481 & 1.1981 & 1.2190\\
 \hline
-lasso\_screen\_glm & 0.05557 & 1.0289 & 0.02403 & 0.01470 & 1.0185 & 1.0393\\
+lasso\_screen\_glm & 0.05556 & 1.0325 & 0.02412 & 0.00963 & 1.0257 & 1.0393\\
 \hline
-lasso\_screen\_polspline & 0.05557 & 1.0320 & 0.02410 & 0.01204 & 1.0235 & 1.0406\\
+lasso\_screen\_polspline & 0.05556 & 1.0347 & 0.02414 & 0.00825 & 1.0289 & 1.0406\\
 \hline
-lasso\_screen\_enet.5 & 0.05557 & 1.0288 & 0.02403 & 0.01473 & 1.0184 & 1.0393\\
+lasso\_screen\_enet.5 & 0.05556 & 1.0321 & 0.02411 & 0.01011 & 1.0250 & 1.0393\\
 \hline
-lasso\_screen\_ridge & 0.05557 & 1.0286 & 0.02404 & 0.01514 & 1.0179 & 1.0393\\
+lasso\_screen\_ridge & 0.05556 & 1.0313 & 0.02411 & 0.01131 & 1.0233 & 1.0393\\
 \hline
-lasso\_screen\_lasso & 0.05557 & 1.0288 & 0.02403 & 0.01473 & 1.0184 & 1.0393\\
+lasso\_screen\_lasso & 0.05557 & 1.0299 & 0.02407 & 0.01325 & 1.0205 & 1.0393\\
 \hline
-lasso\_screen\_xgboost50 & 0.05552 & 1.1836 & 0.02652 & 0.01095 & 1.1759 & 1.1913\\
+lasso\_screen\_xgboost50 & 0.05553 & 1.1897 & 0.02664 & 0.01952 & 1.1759 & 1.2034\\
 \hline
-SuperLearner & NA & 1.0261 & 0.02396 & 0.00802 & 1.0205 & 1.0318\\
+SuperLearner & NA & 1.0261 & 0.02403 & 0.01670 & 1.0143 & 1.0379\\
 \hline
 \end{tabular}
 
@@ -4447,63 +4458,63 @@ if (knitr::is_latex_output()) {
 \hline
 X & risk\_ratio\\
 \hline
-aged & 1.04255\\
+aged & 1.04324\\
 \hline
-momedu & 1.01531\\
+momedu & 1.01569\\
 \hline
-asset\_refrig & 1.01000\\
+asset\_refrig & 1.00839\\
 \hline
-month & 1.00378\\
+asset\_chair & 1.00343\\
 \hline
-asset\_chair & 1.00249\\
+month & 1.00335\\
 \hline
-momheight & 1.00085\\
+momheight & 1.00144\\
 \hline
-Ncomp & 1.00051\\
+tr & 1.00102\\
 \hline
-walls & 1.00050\\
+Ncomp & 1.00065\\
 \hline
-floor & 1.00046\\
+floor & 1.00064\\
 \hline
-tr & 1.00040\\
+walls & 1.00051\\
 \hline
-asset\_mobile & 1.00035\\
+momage & 1.00040\\
 \hline
-asset\_khat & 1.00029\\
+asset\_mobile & 1.00036\\
 \hline
-Nlt18 & 1.00023\\
+asset\_khat & 1.00033\\
 \hline
-asset\_chouki & 1.00014\\
+sex & 1.00026\\
 \hline
-asset\_sewmach & 1.00007\\
+asset\_tv & 1.00022\\
+\hline
+Nlt18 & 1.00016\\
+\hline
+asset\_chouki & 1.00015\\
+\hline
+asset\_sewmach & 1.00008\\
 \hline
 delta\_momheight & 1.00002\\
 \hline
-asset\_tv & 0.99996\\
-\hline
-asset\_moto & 0.99996\\
-\hline
 delta\_momage & 0.99995\\
+\hline
+asset\_moto & 0.99994\\
 \hline
 roof & 0.99994\\
 \hline
-sex & 0.99989\\
-\hline
-asset\_bike & 0.99988\\
+asset\_bike & 0.99989\\
 \hline
 hfiacat & 0.99987\\
 \hline
 watmin & 0.99985\\
 \hline
-elec & 0.99975\\
+asset\_table & 0.99966\\
 \hline
-asset\_table & 0.99969\\
+asset\_wardrobe & 0.99954\\
 \hline
-momage & 0.99954\\
+elec & 0.99951\\
 \hline
-asset\_wardrobe & 0.99937\\
-\hline
-fracode & 0.99880\\
+fracode & 0.99893\\
 \hline
 \end{tabular}
 
@@ -5574,10 +5585,10 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-05-11
+Updated: 2021-06-03
 
-\hypertarget{learning-objectives-2}{%
-\section{Learning Objectives}\label{learning-objectives-2}}
+\hypertarget{learning-objectives-3}{%
+\section{Learning Objectives}\label{learning-objectives-3}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6686,10 +6697,10 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-05-11
+Updated: 2021-06-04
 
-\hypertarget{learning-objectives-3}{%
-\section{Learning Objectives}\label{learning-objectives-3}}
+\hypertarget{learning-objectives-4}{%
+\section{Learning Objectives}\label{learning-objectives-4}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -7552,10 +7563,10 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-05-11
+Updated: 2021-06-04
 
-\hypertarget{learning-objectives-4}{%
-\section{Learning Objectives}\label{learning-objectives-4}}
+\hypertarget{learning-objectives-5}{%
+\section{Learning Objectives}\label{learning-objectives-5}}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}

@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "May 11, 2021"
+date: "June 03, 2021"
 documentclass: krantz
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -37,7 +37,7 @@ contribute to the available content, consider visiting the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
 <!--- For HTML Only --->
-
+<!--
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
@@ -46,7 +46,7 @@ repository](https://github.com/tlverse/tlverse-handbook).
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
-
+-->
 
 ## Outline {#outline}
 
@@ -177,7 +177,7 @@ and precision medicine.
 # Acknowledgements {-}
 -->
 
-
+<!--
 
 ## Reproduciblity with the `tlverse` {#repro}
 
@@ -215,7 +215,7 @@ following packages:
 |readr        |1.4.0   |CRAN (R 4.0.2)                         |
 |rmarkdown    |2.7     |CRAN (R 4.0.2)                         |
 |skimr        |2.1.3   |CRAN (R 4.0.2)                         |
-|sl3          |1.4.3   |Github (tlverse/sl3\@6db1814)          |
+|sl3          |1.4.3   |Github (tlverse/sl3\@8429751)          |
 |stringr      |1.4.0   |CRAN (R 4.0.2)                         |
 |tibble       |3.1.1   |CRAN (R 4.0.2)                         |
 |tidyr        |1.1.3   |CRAN (R 4.0.2)                         |
@@ -224,7 +224,7 @@ following packages:
 |tmle3mopttx  |0.1.0   |Github (tlverse/tmle3mopttx\@c48f9ac)  |
 |tmle3shift   |0.2.0   |Github (tlverse/tmle3shift\@43f6fc0)   |
 
-
+-->
 
 ## Learning resources {#learn}
 
