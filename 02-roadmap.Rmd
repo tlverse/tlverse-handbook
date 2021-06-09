@@ -202,33 +202,54 @@ thus, we will typically take $Z_{1 - \frac{\alpha}{2}} \approx 1.96$.
 
 ## Summary of the Roadmap {#roadmap-summary}
 
-Data, $O$, is viewed as a random variable that has a probability distribution.
-We often have $n$ units of independent identically distributed units with
-probability distribution $P_0$, such that $O_1, \ldots, O_n \sim P_0$. We have
-statistical knowledge about the experiment that generated this data. In other
-words, we make a statement that the true data distribution $P_0$ falls in a
-certain set called a statistical model, $\M$. Often these sets are very large
-because statistical knowledge is very limited -- hence, these statistical models
-are often infinite dimensional models. Our statistical query is, "What are we
-trying to learn from the data?" denoted by the statistical target parameter,
-$\Psi$, which maps the $P_0$ into the estimand, $\Psi(P_0)$. At this point the
-statistical estimation problem is formally defined and now we will need
-statistical theory to guide us in the construction of estimators.
+Data collected across $n$ i.i.d. units, $O_1, \ldots, O_n$, can be viewed as a
+collection of random variables, $O$, all arising from the same probability
+distribution $\P_0$. This collection of data may be expressed $O_1, \ldots, O_n
+\sim P_0$, where we leverage statistical knowledge available about the
+experiment that generated the data.  to support the statement that the true data
+distribution $P_0$ falls in a statistical model, $\M$, which is itself a
+collection of candidate probability distributions reflecting the data-generating
+experiment. Often these sets -- that is, the statistical model $\M$ -- must be
+very large, to appropriately reflect the fact that statistical knowledge is very
+limited. Hence, these _realistic_ statistical models are often termed _semi-_ or
+_non-parametric_, since they are too large to be indexed by a finite-dimensional
+set of parameters.  Necessarily, our statistical query must begin with, "What
+are we trying to learn from the data?", a question whose answer is captured by
+the statistical target parameter, $\Psi$, which maps the true data-generating
+distribution $P_0$ into the statistical estimand, $\Psi(P_0)$. At this point the
+statistical estimation problem is formally defined, allowing for the use of
+statistical theory to guide the construction of optimal estimators.
 
 ## Causal Target Parameters {#causal}
 
 In many cases, we are interested in problems that ask questions regarding the
-effect of an intervention on a future outcome of interest. These questions can
-be represented as causal estimands.
+_causal_ effect of an intervention on a future outcome of interest. These causal
+effects may be defined as summaries of the population of interest (e.g., the
+population mean of a particular outcome) under different conditions (e.g.,
+treated versus untreated). For example, a causal effect could be defined as the
+difference in the means of a disease outcome between _causal contrasts_ in which
+the population were to experience low pollution levels (for some pollutant) and
+the mean in the same population in the case that high pollution levels were
+experienced. There are different ways of operationalizing the theoretical
+experiments that generate the counterfactual data necessary for describing our
+causal contrasts of interest, including simply assuming that the counterfactual
+outcomes exist in theory for all treatment contrasts of interest
+[@neyman1938contribution; @rubin2005causal; @imbens2015causal] or through
+considering interventions on directed acyclic graphs (DAGs) or nonparametric
+structural equation models (NPSEMs) [@pearl1995causal; @pearl2009causality],
+both of which encode the known or hypothesized set of relationships between
+variables in the system under study.
 
 ### The Causal Model {-}
 
-After formalizing the data and the statistical model, we can define a causal
-model to express causal parameters of interest. Directed acyclic graphs (DAGs)
-are one useful tool to express what we know about the causal relations among
-variables. Ignoring exogenous $U$ terms (explained below), we assume the
-following ordering of the variables in the observed data $O$. We do this below
-using `DAGitty` [@textor2011dagitty]:
+We focus on the use of DAGs and NPSEMs for the description of causal parameters.
+Estimators of statistical parameters that correspond, under standard but
+untestable _identifiability_ assumptions, to these causal parameters are
+introduced below.  DAGs are a particularly useful tool for expressing what we
+know about the causal relations among variables in the system under study.
+Ignoring exogenous $U$ terms (explained below), we assume the following ordering
+of the variables in the observed data $O$. We demonstrate the construction of a
+DAG below using `DAGitty` [@textor2011dagitty]:
 
 ```{r simple-DAG}
 library(dagitty)
@@ -252,55 +273,64 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-While directed acyclic graphs (DAGs) like above provide a convenient means by
-which to visualize causal relations between variables, the same causal relations
-among variables can be represented via a set of structural equations, which
-define the non-parametric structural equation model (NPSEM):
+While DAGs like the above provide a convenient means by which to visualize
+causal relations between variables, the same causal relations among variables
+can be equivalently represented by an NPSEM:
 \begin{align*}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
   Y &= f_Y(W, A, U_Y),
 \end{align*}
+where the $f$'s are unspecified (non-parametric) functions that generate the
+corresponding random variable as a function of the variable's parents (i.e.,
+nodes with arrows into the variable) in the DAG and the unobserved, exogenous
+error terms (i.e., the $U$'s). An NPSEM may be thought of as a representation
+of the algorithm that produces the data, $O$, in the population of interest.
+Much of statistics and data science is devoted to discovering properties of this
+system of equations (e.g., estimation of the prediction function $f_Y$).
+
+<!--
 where $U_W$, $U_A$, and $U_Y$ represent the unmeasured exogenous background
 characteristics that influence the value of each variable. In the NPSEM, $f_W$,
 $f_A$ and $f_Y$ denote that each variable (for $W$, $A$ and $Y$, respectively)
-is a function of its parents and unmeasured background characteristics, but note
-that there is no imposition of any particular functional constraints(e.g.,
+is a function of its parents and unmeasured background characteristics, but
+note that there is no imposition of any particular functional constraints(e.g.,
 linear, logit-linear, only one interaction, etc.). For this reason, they are
 called non-parametric structural equation models (NPSEMs). The DAG and set of
-nonparametric structural equations represent exactly the same information and so
-may be used interchangeably.
+nonparametric structural equations represent exactly the same information and
+so may be used interchangeably.
+-->
 
 The first hypothetical experiment we will consider is assigning exposure to the
-whole population and observing the outcome, and then assigning no exposure to
-the whole population and observing the outcome. On the nonparametric structural
-equations, this corresponds to a comparison of the outcome distribution in the
-population under two interventions:
+entire population and observing the outcome, and then withholding exposure to
+the same population and observing the outcome. This corresponds to a comparison
+of the outcome distribution in the population under two interventions:
 
 1. $A$ is set to $1$ for all individuals, and
 2. $A$ is set to $0$ for all individuals.
 
-These interventions imply two new nonparametric structural equation models. For
-the case $A = 1$, we have
+These interventions imply two new sets of nonparametric structural equations
+For the case $A = 1$, we have
 \begin{align*}
   W &= f_W(U_W) \\
   A &= 1 \\
   Y(1) &= f_Y(W, 1, U_Y),
 \end{align*}
-and for the case $A=0$,
+while, for the case $A=0$,
 \begin{align*}
   W &= f_W(U_W) \\
   A &= 0 \\
   Y(0) &= f_Y(W, 0, U_Y).
 \end{align*}
 
-In these equations, $A$ is no longer a function of $W$ because we have
-intervened on the system, setting $A$ deterministically to either of the values
-$1$ or $0$. The new symbols $Y(1)$ and $Y(0)$ indicate the outcome variable in
-our population if it were generated by the respective NPSEMs above; these are
-often called _counterfactuals_ (since they run contrary-to-fact). The difference
-between the means of the outcome under these two interventions defines a
-parameter that is often called the "average treatment effect" (ATE), denoted
+In these equations, $A$ is no longer a function of $W$ because of the
+intervention on the system that set $A$ deterministically to either of the
+values $1$ or $0$. The new symbols $Y(1)$ and $Y(0)$ indicate the outcome
+variable in the population of interest when it is generated by the respective
+NPSEMs above; these are often called _counterfactuals_. The difference between
+the means of the outcome under these two interventions defines a parameter that
+is often called the "average treatment effect" (ATE), denoted
+
 \begin{equation}
   ATE = \E_X(Y(1) - Y(0)),
   (\#eq:ate)
@@ -317,34 +347,49 @@ different identifiability assumptions discussed below.
 
 Because we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
 and $Y(1)$ (similarly, the counterfactual outcome when $A=1$), we cannot
-estimate the quantity in Equation \@ref(eq:ate) directly. Instead, we have to
-make assumptions under which this quantity may be estimated from the observed
-data $O \sim P_0$ under the data-generating distribution $P_0$. Fortunately,
-given the causal model specified in the NPSEM above, we can, with a handful of
-untestable assumptions, estimate the ATE, even from observational data. These
-assumptions may be summarized as follows.
+estimate the quantity in Equation \@ref(eq:ate) directly. Thus, the primary task
+of causal inference methods in our context is to _identify_ the assumptions
+necessary to express causal quantities of interest as functions of the
+data-generating distribution. We have to make assumptions under which this
+quantity may be estimated from the observed data $O \sim P_0$ under the
+data-generating distribution $P_0$. Fortunately, given the causal model
+specified in the NPSEM above, we can, with a handful of untestable assumptions,
+estimate the ATE from observational data. These assumptions may be summarized as
+follows.
 
-1. The causal graph implies $Y(a) \perp A$ for all $a \in \mathcal{A}$, which
-   is the _randomization_ assumption. In the case of observational data, the
-   analogous assumption is _strong ignorability_ or _no unmeasured confounding_
-   $Y(a) \perp A \mid W$ for all $a \in \mathcal{A}$;
-2. Although not represented in the causal graph, also required is the assumption
-   of no interference between units, that is, the outcome for unit $i$ $Y_i$ is
-   not affected by exposure for unit $j$ $A_j$ unless $i=j$;
+1. _No unmeasured confounding_: $A \perp Y(a) \mid W$ for all $a \in
+   \mathcal{A}$, which states that the potential outcomes $(Y(a) : a \in
+   \mathcal{A})$ arise independently from exposure status $A$, conditional on
+   the observed covariates $W$. This is the analog of the _randomization_
+   assumption in data arising from natural experiments, ensuring that the effect
+   of $A$ on $Y$ can be disentangled from that of $W$ on $Y$, even though $W$
+   affects both.
+2. _No interference_ between units: the outcome for unit $i$, $Y_i$, cannot
+   be affected by the exposure of unit $j$, $A_j$, for all $i \neq j$.
+   <!--
+   NH: This is a standard assumption of causal inference, and not everyone will
+   agree that it is the same as the i.i.d. assumption, myself included. This is
+   an assumption about the fundamental nature of the system under study (for
+   example, could my drinking coffee possibly influence your choice to have a
+   caffeinated beverage) -- simply sampling units in a way that makes them
+   independent does not speak to the nature of the system itself.
+   -->
 3. _Consistency_ of the treatment mechanism is also required, i.e., the outcome
    for unit $i$ is $Y_i(a)$ whenever $A_i = a$, an assumption also known as "no
-   other versions of treatment";
-4. It is also necessary that all observed units, across strata defined by $W$,
-   have a bounded (non-deterministic) probability of receiving treatment --
-   that is, $0 < \P(A = a \mid W) < 1$ for all $a$ and $W$). This assumption
-   is referred to as _positivity_ or _overlap_.
+   other versions of treatment".
+4. _Positivity_ or _overlap_: All observed units, across strata defined by $W$,
+   must have a bounded (non-deterministic) probability of receiving treatment --
+   that is, $0 < \P(A = a \mid W) < 1$ for all $a$ and $W$).
 
+<!--
 _Remark_: Together, (2) and (3), the assumptions of no interference and
 consistency, respectively, are jointly referred to as the *stable unit
 treatment value assumption* (SUTVA).
+-->
 
 Given these assumptions, the ATE may be re-written as a function of $P_0$,
 specifically
+
 \begin{equation}
   ATE = \E_0(Y(1) - Y(0)) = \E_0
     \left(\E_0[Y \mid A = 1, W] - \E_0[Y \mid A = 0, W]\right).
@@ -356,8 +401,7 @@ in the population, averaged over all observations. Thus, a parameter of a
 theoretical "full" data distribution can be represented as an estimand of the
 observed data distribution. Significantly, there is nothing about the
 representation in Equation \@ref(eq:estimand) that requires parameteric
-assumptions; thus, the regressions on the right hand side may be estimated
-freely with machine learning. With different parameters, there will be
-potentially different identifiability assumptions and the resulting estimands
-can be functions of different components of $P_0$. We discuss several more
-complex estimands in later sections of this handbook.
+assumptions; thus, the regressions on the right hand side may be estimated.
+With different parameters, there will be potentially different identifiability
+assumptions and the resulting estimands can be functions of different components
+of $P_0$. We discuss several more complex estimands in later sections.
