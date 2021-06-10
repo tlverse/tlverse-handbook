@@ -5,9 +5,11 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-06-04
+Updated: 2021-06-10
 
-## Learning Objectives
+
+
+## Learning Objectives {-}
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
    treatment regimes.
@@ -27,6 +29,8 @@ Updated: 2021-06-04
    shifting each individual to a value that's supported by the data.
 9. Define novel shift intervention functions to extend the `tmle3shift` `R`
    package.
+
+
 
 ## Introduction to Stochastic Interventions
 
@@ -439,15 +443,15 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.0134	 Pars:  0.999996659 0.000003341
-Iter: 2 fn: 548.0134	 Pars:  0.999998795 0.000001205
+Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
+Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
    type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.76468  0.75985 0.022767 0.71523 0.80447
+1:  TSM E[Y_{A=NULL}]  0.76372  0.76011 0.022838 0.71535 0.80488
    psi_transformed lower_transformed upper_transformed
-1:         0.75985           0.71523           0.80447
+1:         0.76011           0.71535           0.80488
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the

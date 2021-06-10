@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 3 Welcome to the tlverse | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4/tabs.js"></script><script src="libs/bs3compat-0.2.4/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body>
@@ -68,16 +68,17 @@
 <h1>
 <span class="header-section-number">3</span> Welcome to the <code>tlverse</code><a class="anchor" aria-label="anchor" href="#tlverse"><i class="fas fa-link"></i></a>
 </h1>
+<p>Updated: 2021-06-10</p>
 <div id="learning-objectives-1" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-1"><i class="fas fa-link"></i></a>
 </h2>
+<p>This chapter introduces the <code>tlverse</code> software ecosystem, including</p>
 <ol style="list-style-type: decimal">
-<li>Understand the <code>tlverse</code> ecosystem conceptually</li>
-<li>Identify the core components of the <code>tlverse</code>
-</li>
-<li>Install <code>tlverse</code> <code>R</code> packages</li>
-<li>Understand the Targeted Learning roadmap</li>
-<li>Learn about the WASH Benefits example data</li>
+<li>Understanding the <code>tlverse</code> ecosystem conceptually.</li>
+<li>Identifying the core components of the <code>tlverse</code>.</li>
+<li>Installing <code>tlverse</code> <code>R</code> packages.</li>
+<li>Understanding the Targeted Learning roadmap.</li>
+<li>Learning about the WASH Benefits example data.</li>
 </ol>
 </div>
 <div id="what-is-the-tlverse" class="section level2 unnumbered">
@@ -100,17 +101,32 @@ structures.</p>
 <div id="anatomy-of-the-tlverse" class="section level2 unnumbered">
 <h2>Anatomy of the <code>tlverse</code><a class="anchor" aria-label="anchor" href="#anatomy-of-the-tlverse"><i class="fas fa-link"></i></a>
 </h2>
-<p>These are the main packages that represent the <strong>core</strong> of the <code>tlverse</code>:</p>
+<p>All Targeted Learning methods are targeted maximum likelihood (or minimum
+loss-based) estimators (TMLEs). The construction of any Targeted Learning
+estimator proceeds through a two-stage process:</p>
+<ol style="list-style-type: decimal">
+<li>Flexibly learning particular components of the data-generating distribution
+through macchine learning (e.g., Super Learning), resulting in <em>initial
+estimates</em> of nuisance parameters.</li>
+<li>Use of a parametric model-based update via maximum likelihood estimation
+(i.e., MLE), incorporating the initial estimates produced by the prior step.</li>
+</ol>
+<p>The packages making up the core components of the <code>tlverse</code> software ecosystem,
+<code>sl3</code> and <code>tmle3</code>, address the above two goals, respectively. Together, the very
+general functionality exposed by both allows one to build specific TMLEs
+tailored exactly to a particular estimation problem.</p>
+<p>The software packages that make up the <strong>core</strong> of the <code>tlverse</code> are</p>
 <ul>
 <li>
-<a href="https://github.com/tlverse/sl3"><code>sl3</code></a>: Modern Super Learning with Pipelines
+<a href="https://github.com/tlverse/sl3"><code>sl3</code></a>: Modern Super Machine Learning
 <ul>
 <li>
 <em>What?</em> A modern object-oriented re-implementation of the Super Learner
-algorithm, employing recently developed paradigms for <code>R</code> programming.</li>
+algorithm, employing recently developed paradigms in <code>R</code> programming.</li>
 <li>
-<em>Why?</em> A design that leverages modern tools for fast computation, is
-forward-looking, and can form one of the cornerstones of the <code>tlverse</code>.</li>
+<em>Why?</em> A design that leverages modern ideas for faster computation, is
+easily extensible and forward-looking, and forms one of the cornerstones of
+the <code>tlverse</code>.</li>
 </ul>
 </li>
 <li>
@@ -122,24 +138,26 @@ identifying and implementing a series of common statistical estimation
 procedures.</li>
 <li>
 <em>Why?</em> A common interface and engine that accommodates current algorithmic
-approaches to Targeted Learning and is still flexible enough to remain the
-engine even as new techniques are developed.</li>
+approaches to Targeted Learning and yet remains a flexible enough engine to
+power the implementation of emerging statistical techniques as they are
+developed.</li>
 </ul>
 </li>
 </ul>
-<p>In addition to the engines that drive development in the <code>tlverse</code>, there are
-some supporting packages – in particular, we have two…</p>
+<p>Beyond these engines that provide the driving force behind the <code>tlverse</code>, there
+are a few supporting packages that play important roles in the background:</p>
 <ul>
 <li>
 <a href="https://github.com/tlverse/origami"><code>origami</code></a>: A Generalized Framework for
-Cross-Validation
+Cross-Validation <span class="citation">(Coyle and Hejazi <a href="references.html#ref-coyle2018origami">2018</a>)</span>
 <ul>
 <li>
-<em>What?</em> A generalized framework for flexible cross-validation</li>
+<em>What?</em> A generalized framework for flexible cross-validation.</li>
 <li>
 <em>Why?</em> Cross-validation is a key part of ensuring error estimates are honest
-and preventing overfitting. It is an essential part of the both the Super
-Learner algorithm and Targeted Learning.</li>
+and in preventing overfitting. It is an essential part of the both the Super
+Learner ensemble modeling algorithm and in the construction of Targeted
+Learning estimators.</li>
 </ul>
 </li>
 <li>
@@ -147,41 +165,57 @@ Learner algorithm and Targeted Learning.</li>
 Dependent Tasks
 <ul>
 <li>
-<em>What?</em> A framework for delayed computations (futures) based on task
+<em>What?</em> A framework for delayed computations (i.e., futures) based on task
 dependencies.</li>
 <li>
 <em>Why?</em> Efficient allocation of compute resources is essential when deploying
-large-scale, computationally intensive algorithms.</li>
+computationally intensive algorithms at large scale.</li>
 </ul>
 </li>
 </ul>
-<p>A key principle of the <code>tlverse</code> is extensibility. That is, we want to support
-new Targeted Learning estimators as they are developed. The model for this is
-new estimators are implemented in additional packages using the core packages
-above. There are currently two featured examples of this:</p>
+<p>A key principle of the <code>tlverse</code> is extensibility. That is, the software
+ecosystem aims to support the development of new Targeted Learning estimators as
+they reaching maturity. To achieve this degree of flexibility, we follow the
+model of implementing new classes of estimators, for distinct causal inference
+problems, in separate packages, all of which use the core machinery provided by
+the <code>sl3</code> and <code>tmle3</code> packages There are currently three examples:</p>
 <ul>
 <li>
 <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code></a>: Optimal Treatments
-in <code>tlverse</code>
+in the <code>tlverse</code>
 <ul>
 <li>
-<em>What?</em> Learn an optimal rule and estimate the mean outcome under the rule</li>
+<em>What?</em> Learn an optimal rule and estimate the mean outcome under the rule.</li>
 <li>
-<em>Why?</em> Optimal Treatment is a powerful tool in precision healthcare and
+<em>Why?</em> Optimal treatments are a powerful tool in precision healthcare and
 other settings where a one-size-fits-all treatment approach is not
 appropriate.</li>
 </ul>
 </li>
 <li>
-<a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code></a>: Shift Interventions in
-<code>tlverse</code>
+<a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code></a>: Stochastic Shift
+Interventions in the <code>tlverse</code>
 <ul>
 <li>
-<em>What?</em> Shift interventions for continuous treatments</li>
+<em>What?</em> Stochastic shift interventions for continuous-valued treatments.</li>
 <li>
-<em>Why?</em> Not all treatment variables are discrete. Being able to estimate the
-effects of continuous treatment represents a powerful extension of the
-Targeted Learning approach.</li>
+<em>Why?</em> Not all treatment variables are binary or categorical. Estimating the
+total effects of intervening on continuous-valued treatments provides a way
+to probe how an effect changes with shifts in the treatment variable.</li>
+</ul>
+</li>
+<li>
+<a href="https://github.com/tlverse/tmle3mediate"><code>tmle3mediate</code></a>: Causal Mediation
+Analysis in the <code>tlverse</code>
+<ul>
+<li>
+<em>What?</em> Techniques for evaluating the direct and indirect effects of
+treatments through mediating variables.</li>
+<li>
+<em>Why?</em> Evaluating the total effect of a treatment does not provide
+information about the pathways through which it may operate. When mediating
+variables have been collected, one can instead evaluate direct and indirect
+effect parameters that speak to the <em>action mechanism</em> of the treatment.</li>
 </ul>
 </li>
 </ul>
@@ -274,7 +308,7 @@ package which threw the error above.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 03, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 10, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

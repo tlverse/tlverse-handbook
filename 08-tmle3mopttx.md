@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-06-03
+Updated: 2021-06-10
 
 ## Learning Objectives
 
@@ -722,9 +722,9 @@ fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
    type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.54435  0.61851 0.069083 0.48311 0.75391
+1:  TSM E[Y_{A=NULL}]  0.55273  0.61149 0.065326 0.48346 0.73953
    psi_transformed lower_transformed upper_transformed
-1:         0.61851           0.48311           0.75391
+1:         0.61149           0.48346           0.73953
 ```
 
 We can see that the estimate of $psi_0$ is $0.60$, and that the confidence
@@ -768,9 +768,9 @@ fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
    type                param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{d(V=W3,W2,W1)}]  0.54841  0.55108 0.062027 0.42951 0.67265
+1:  TSM E[Y_{d(V=W3,W2,W1)}]  0.54382  0.61714 0.070518 0.47893 0.75536
    psi_transformed lower_transformed upper_transformed
-1:         0.55108           0.42951           0.67265
+1:         0.61714           0.47893           0.75536
 ```
 
 Therefore even though the user specified all baseline covariates as the basis
@@ -804,16 +804,16 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower  upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.55355  0.65922 0.021419 0.61723 0.7012         0.65922
-   lower_transformed upper_transformed
-1:           0.61723            0.7012
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.54896  0.65453 0.021603 0.61219 0.69687
+   psi_transformed lower_transformed upper_transformed
+1:         0.65453           0.61219           0.69687
 
 # How many individuals got assigned each treatment?
 table(tmle_spec$return_rule)
 
   2   3 
-502 498 
+507 493 
 ```
 
 ### Q-learning

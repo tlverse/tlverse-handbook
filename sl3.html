@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 Super (Machine) Learning | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4/tabs.js"></script><script src="libs/bs3compat-0.2.4/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body>
@@ -71,7 +71,7 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-06-03</p>
+<p>Updated: 2021-06-10</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
@@ -146,9 +146,9 @@ estimator of this estimand. The first step in this estimation procedure is an
 initial estimate of the data-generating distribution, or the relevant part of
 this distribution that is needed to evaluate the target parameter. For this
 initial estimation, we use the Super Learner (SL) <span class="citation">(van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super">2007</a>)</span>.</p>
-<p>The SL provides an important step in creating a robust estimator. It is a
-loss function based tool that uses cross-validation to obtain an estimator for
-a desired prediction function (which may be a component of our target estimand),
+<p>The SL provides an important step in creating a robust estimator. It is a loss
+function based tool that uses cross-validation to obtain an estimator for a
+desired prediction function (which may be a component of our target estimand),
 based on a weighted combination of a library of machine learning algorithms.
 The library of machine learning algorithms consists of functions (“learners” in
 the <code>sl3</code> nomenclature) that we think might be consistent with the true
@@ -1386,7 +1386,7 @@ sacrifices I have to make for this chapter to build in time!</p>
 <a class="sourceLine" id="cb46-12" data-line-number="12">screen_rf<span class="op">$</span><span class="kw">train</span>(washb_task)</a>
 <a class="sourceLine" id="cb46-13" data-line-number="13">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_importance_5"</span></a>
 <a class="sourceLine" id="cb46-14" data-line-number="14"><span class="op">$</span>selected</a>
-<a class="sourceLine" id="cb46-15" data-line-number="15">[<span class="dv">1</span>] <span class="st">"aged"</span>         <span class="st">"momheight"</span>    <span class="st">"month"</span>        <span class="st">"momedu"</span>       <span class="st">"asset_refrig"</span></a></code></pre></div>
+<a class="sourceLine" id="cb46-15" data-line-number="15">[<span class="dv">1</span>] <span class="st">"aged"</span>        <span class="st">"month"</span>       <span class="st">"momedu"</span>      <span class="st">"asset_tv"</span>    <span class="st">"asset_chair"</span></a></code></pre></div>
 <p>An example of how to format <code>Lrnr_screener_augment</code> is included below for
 clarity.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">keepme &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"aged"</span>, <span class="st">"momage"</span>)</a>
@@ -1491,7 +1491,7 @@ for each subject.</p>
 <div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># we did it! now we have SL predictions</span></a>
 <a class="sourceLine" id="cb54-2" data-line-number="2">sl_preds &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">predict</span>()</a>
 <a class="sourceLine" id="cb54-3" data-line-number="3"><span class="kw">head</span>(sl_preds)</a>
-<a class="sourceLine" id="cb54-4" data-line-number="4">[<span class="dv">1</span>] <span class="fl">-0.60804</span> <span class="fl">-0.75293</span> <span class="fl">-0.68060</span> <span class="fl">-0.64754</span> <span class="fl">-0.65408</span> <span class="fl">-0.62135</span></a></code></pre></div>
+<a class="sourceLine" id="cb54-4" data-line-number="4">[<span class="dv">1</span>] <span class="fl">-0.64698</span> <span class="fl">-0.76514</span> <span class="fl">-0.64312</span> <span class="fl">-0.68991</span> <span class="fl">-0.68068</span> <span class="fl">-0.66422</span></a></code></pre></div>
 <!--
 Below we visualize the observed versus predicted values.
 
@@ -1523,19 +1523,19 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-11" data-line-number="11"> <span class="op">$</span><span class="st"> </span>lasso_screen       <span class="op">:</span><span class="st"> </span>chr <span class="st">"Pipeline(Lrnr_screener_coefs_0_NULL_2-&gt;Stack)"</span></a>
 <a class="sourceLine" id="cb55-12" data-line-number="12">[<span class="dv">1</span>] <span class="st">"Lrnr_solnp_TRUE_TRUE_FALSE_1e-05"</span></a>
 <a class="sourceLine" id="cb55-13" data-line-number="13"><span class="op">$</span>pars</a>
-<a class="sourceLine" id="cb55-14" data-line-number="14"> [<span class="dv">1</span>] <span class="fl">0.055567</span> <span class="fl">0.055552</span> <span class="fl">0.055560</span> <span class="fl">0.055565</span> <span class="fl">0.055560</span> <span class="fl">0.055587</span> <span class="fl">0.055551</span> <span class="fl">0.055565</span></a>
-<a class="sourceLine" id="cb55-15" data-line-number="15"> [<span class="dv">9</span>] <span class="fl">0.055551</span> <span class="fl">0.055551</span> <span class="fl">0.055551</span> <span class="fl">0.055563</span> <span class="fl">0.055554</span> <span class="fl">0.055554</span> <span class="fl">0.055554</span> <span class="fl">0.055554</span></a>
-<a class="sourceLine" id="cb55-16" data-line-number="16">[<span class="dv">17</span>] <span class="fl">0.055554</span> <span class="fl">0.055509</span></a>
+<a class="sourceLine" id="cb55-14" data-line-number="14"> [<span class="dv">1</span>] <span class="fl">0.055565</span> <span class="fl">0.055551</span> <span class="fl">0.055558</span> <span class="fl">0.055564</span> <span class="fl">0.055558</span> <span class="fl">0.055583</span> <span class="fl">0.055556</span> <span class="fl">0.055573</span></a>
+<a class="sourceLine" id="cb55-15" data-line-number="15"> [<span class="dv">9</span>] <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055546</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055552</span></a>
+<a class="sourceLine" id="cb55-16" data-line-number="16">[<span class="dv">17</span>] <span class="fl">0.055553</span> <span class="fl">0.055516</span></a>
 <a class="sourceLine" id="cb55-17" data-line-number="17"></a>
 <a class="sourceLine" id="cb55-18" data-line-number="18"><span class="op">$</span>convergence</a>
 <a class="sourceLine" id="cb55-19" data-line-number="19">[<span class="dv">1</span>] <span class="dv">0</span></a>
 <a class="sourceLine" id="cb55-20" data-line-number="20"></a>
 <a class="sourceLine" id="cb55-21" data-line-number="21"><span class="op">$</span>values</a>
-<a class="sourceLine" id="cb55-22" data-line-number="22">[<span class="dv">1</span>] <span class="fl">1.0109</span> <span class="fl">1.0109</span></a>
+<a class="sourceLine" id="cb55-22" data-line-number="22">[<span class="dv">1</span>] <span class="fl">1.01</span> <span class="fl">1.01</span></a>
 <a class="sourceLine" id="cb55-23" data-line-number="23"></a>
 <a class="sourceLine" id="cb55-24" data-line-number="24"><span class="op">$</span>lagrange</a>
 <a class="sourceLine" id="cb55-25" data-line-number="25">           [,<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb55-26" data-line-number="26">[<span class="dv">1</span>,] <span class="fl">-0.0041181</span></a>
+<a class="sourceLine" id="cb55-26" data-line-number="26">[<span class="dv">1</span>,] <span class="fl">-0.0050956</span></a>
 <a class="sourceLine" id="cb55-27" data-line-number="27"></a>
 <a class="sourceLine" id="cb55-28" data-line-number="28"><span class="op">$</span>hessian</a>
 <a class="sourceLine" id="cb55-29" data-line-number="29">      [,<span class="dv">1</span>] [,<span class="dv">2</span>] [,<span class="dv">3</span>] [,<span class="dv">4</span>] [,<span class="dv">5</span>] [,<span class="dv">6</span>] [,<span class="dv">7</span>] [,<span class="dv">8</span>] [,<span class="dv">9</span>] [,<span class="dv">10</span>] [,<span class="dv">11</span>] [,<span class="dv">12</span>] [,<span class="dv">13</span>]</a>
@@ -1587,32 +1587,32 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
 <a class="sourceLine" id="cb55-76" data-line-number="76"></a>
 <a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012183</span> secs</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.015244</span> secs</a>
 <a class="sourceLine" id="cb55-79" data-line-number="79"></a>
 <a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
-<a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01094</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
+<a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
 <a class="sourceLine" id="cb55-82" data-line-number="82">[<span class="dv">10</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
 <a class="sourceLine" id="cb55-83" data-line-number="83">[<span class="dv">19</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
 <a class="sourceLine" id="cb55-84" data-line-number="84"></a>
 <a class="sourceLine" id="cb55-85" data-line-number="85"><span class="op">$</span>coefficients</a>
 <a class="sourceLine" id="cb55-86" data-line-number="86">                          glm                     polspline </a>
-<a class="sourceLine" id="cb55-87" data-line-number="87">                     <span class="fl">0.055567</span>                      <span class="fl">0.055552</span> </a>
+<a class="sourceLine" id="cb55-87" data-line-number="87">                     <span class="fl">0.055565</span>                      <span class="fl">0.055551</span> </a>
 <a class="sourceLine" id="cb55-88" data-line-number="88">                       enet<span class="fl">.5</span>                         ridge </a>
-<a class="sourceLine" id="cb55-89" data-line-number="89">                     <span class="fl">0.055560</span>                      <span class="fl">0.055565</span> </a>
+<a class="sourceLine" id="cb55-89" data-line-number="89">                     <span class="fl">0.055558</span>                      <span class="fl">0.055564</span> </a>
 <a class="sourceLine" id="cb55-90" data-line-number="90">                        lasso                     xgboost50 </a>
-<a class="sourceLine" id="cb55-91" data-line-number="91">                     <span class="fl">0.055560</span>                      <span class="fl">0.055587</span> </a>
+<a class="sourceLine" id="cb55-91" data-line-number="91">                     <span class="fl">0.055558</span>                      <span class="fl">0.055583</span> </a>
 <a class="sourceLine" id="cb55-92" data-line-number="92">      randomforest_screen_glm randomforest_screen_polspline </a>
-<a class="sourceLine" id="cb55-93" data-line-number="93">                     <span class="fl">0.055551</span>                      <span class="fl">0.055565</span> </a>
+<a class="sourceLine" id="cb55-93" data-line-number="93">                     <span class="fl">0.055556</span>                      <span class="fl">0.055573</span> </a>
 <a class="sourceLine" id="cb55-94" data-line-number="94">   randomforest_screen_enet<span class="fl">.5</span>     randomforest_screen_ridge </a>
-<a class="sourceLine" id="cb55-95" data-line-number="95">                     <span class="fl">0.055551</span>                      <span class="fl">0.055551</span> </a>
+<a class="sourceLine" id="cb55-95" data-line-number="95">                     <span class="fl">0.055555</span>                      <span class="fl">0.055555</span> </a>
 <a class="sourceLine" id="cb55-96" data-line-number="96">    randomforest_screen_lasso randomforest_screen_xgboost50 </a>
-<a class="sourceLine" id="cb55-97" data-line-number="97">                     <span class="fl">0.055551</span>                      <span class="fl">0.055563</span> </a>
+<a class="sourceLine" id="cb55-97" data-line-number="97">                     <span class="fl">0.055555</span>                      <span class="fl">0.055546</span> </a>
 <a class="sourceLine" id="cb55-98" data-line-number="98">             lasso_screen_glm        lasso_screen_polspline </a>
-<a class="sourceLine" id="cb55-99" data-line-number="99">                     <span class="fl">0.055554</span>                      <span class="fl">0.055554</span> </a>
+<a class="sourceLine" id="cb55-99" data-line-number="99">                     <span class="fl">0.055553</span>                      <span class="fl">0.055553</span> </a>
 <a class="sourceLine" id="cb55-100" data-line-number="100">          lasso_screen_enet<span class="fl">.5</span>            lasso_screen_ridge </a>
-<a class="sourceLine" id="cb55-101" data-line-number="101">                     <span class="fl">0.055554</span>                      <span class="fl">0.055554</span> </a>
+<a class="sourceLine" id="cb55-101" data-line-number="101">                     <span class="fl">0.055553</span>                      <span class="fl">0.055552</span> </a>
 <a class="sourceLine" id="cb55-102" data-line-number="102">           lasso_screen_lasso        lasso_screen_xgboost50 </a>
-<a class="sourceLine" id="cb55-103" data-line-number="103">                     <span class="fl">0.055554</span>                      <span class="fl">0.055509</span> </a>
+<a class="sourceLine" id="cb55-103" data-line-number="103">                     <span class="fl">0.055553</span>                      <span class="fl">0.055516</span> </a>
 <a class="sourceLine" id="cb55-104" data-line-number="104"></a>
 <a class="sourceLine" id="cb55-105" data-line-number="105"><span class="op">$</span>training_offset</a>
 <a class="sourceLine" id="cb55-106" data-line-number="106">[<span class="dv">1</span>] <span class="ot">FALSE</span></a>
@@ -1622,47 +1622,47 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-110" data-line-number="110"></a>
 <a class="sourceLine" id="cb55-111" data-line-number="111">[<span class="dv">1</span>] <span class="st">"Cross-validated risk:"</span></a>
 <a class="sourceLine" id="cb55-112" data-line-number="112">                          learner coefficients   risk       se  fold_sd</a>
-<a class="sourceLine" id="cb55-113" data-line-number="113"> <span class="dv">1</span><span class="op">:</span><span class="st">                           </span>glm     <span class="fl">0.055567</span> <span class="fl">1.0202</span> <span class="fl">0.023955</span> <span class="fl">0.067500</span></a>
-<a class="sourceLine" id="cb55-114" data-line-number="114"> <span class="dv">2</span><span class="op">:</span><span class="st">                     </span>polspline     <span class="fl">0.055552</span> <span class="fl">1.0208</span> <span class="fl">0.023577</span> <span class="fl">0.067921</span></a>
-<a class="sourceLine" id="cb55-115" data-line-number="115"> <span class="dv">3</span><span class="op">:</span><span class="st">                        </span>enet<span class="fl">.5</span>     <span class="fl">0.055560</span> <span class="fl">1.0133</span> <span class="fl">0.023618</span> <span class="fl">0.065940</span></a>
-<a class="sourceLine" id="cb55-116" data-line-number="116"> <span class="dv">4</span><span class="op">:</span><span class="st">                         </span>ridge     <span class="fl">0.055565</span> <span class="fl">1.0154</span> <span class="fl">0.023736</span> <span class="fl">0.065991</span></a>
-<a class="sourceLine" id="cb55-117" data-line-number="117"> <span class="dv">5</span><span class="op">:</span><span class="st">                         </span>lasso     <span class="fl">0.055560</span> <span class="fl">1.0130</span> <span class="fl">0.023605</span> <span class="fl">0.065828</span></a>
-<a class="sourceLine" id="cb55-118" data-line-number="118"> <span class="dv">6</span><span class="op">:</span><span class="st">                     </span>xgboost50     <span class="fl">0.055587</span> <span class="fl">1.1136</span> <span class="fl">0.025262</span> <span class="fl">0.077580</span></a>
-<a class="sourceLine" id="cb55-119" data-line-number="119"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span>randomforest_screen_glm     <span class="fl">0.055551</span> <span class="fl">1.0210</span> <span class="fl">0.023788</span> <span class="fl">0.067304</span></a>
-<a class="sourceLine" id="cb55-120" data-line-number="120"> <span class="dv">8</span><span class="op">:</span><span class="st"> </span>randomforest_screen_polspline     <span class="fl">0.055565</span> <span class="fl">1.0182</span> <span class="fl">0.023813</span> <span class="fl">0.067066</span></a>
-<a class="sourceLine" id="cb55-121" data-line-number="121"> <span class="dv">9</span><span class="op">:</span><span class="st">    </span>randomforest_screen_enet<span class="fl">.5</span>     <span class="fl">0.055551</span> <span class="fl">1.0209</span> <span class="fl">0.023785</span> <span class="fl">0.067125</span></a>
-<a class="sourceLine" id="cb55-122" data-line-number="122"><span class="dv">10</span><span class="op">:</span><span class="st">     </span>randomforest_screen_ridge     <span class="fl">0.055551</span> <span class="fl">1.0211</span> <span class="fl">0.023797</span> <span class="fl">0.067130</span></a>
-<a class="sourceLine" id="cb55-123" data-line-number="123"><span class="dv">11</span><span class="op">:</span><span class="st">     </span>randomforest_screen_lasso     <span class="fl">0.055551</span> <span class="fl">1.0209</span> <span class="fl">0.023779</span> <span class="fl">0.067032</span></a>
-<a class="sourceLine" id="cb55-124" data-line-number="124"><span class="dv">12</span><span class="op">:</span><span class="st"> </span>randomforest_screen_xgboost50     <span class="fl">0.055563</span> <span class="fl">1.1162</span> <span class="fl">0.025343</span> <span class="fl">0.090441</span></a>
-<a class="sourceLine" id="cb55-125" data-line-number="125"><span class="dv">13</span><span class="op">:</span><span class="st">              </span>lasso_screen_glm     <span class="fl">0.055554</span> <span class="fl">1.0165</span> <span class="fl">0.023561</span> <span class="fl">0.064937</span></a>
-<a class="sourceLine" id="cb55-126" data-line-number="126"><span class="dv">14</span><span class="op">:</span><span class="st">        </span>lasso_screen_polspline     <span class="fl">0.055554</span> <span class="fl">1.0184</span> <span class="fl">0.023537</span> <span class="fl">0.065581</span></a>
-<a class="sourceLine" id="cb55-127" data-line-number="127"><span class="dv">15</span><span class="op">:</span><span class="st">           </span>lasso_screen_enet<span class="fl">.5</span>     <span class="fl">0.055554</span> <span class="fl">1.0164</span> <span class="fl">0.023561</span> <span class="fl">0.064912</span></a>
-<a class="sourceLine" id="cb55-128" data-line-number="128"><span class="dv">16</span><span class="op">:</span><span class="st">            </span>lasso_screen_ridge     <span class="fl">0.055554</span> <span class="fl">1.0166</span> <span class="fl">0.023567</span> <span class="fl">0.064759</span></a>
-<a class="sourceLine" id="cb55-129" data-line-number="129"><span class="dv">17</span><span class="op">:</span><span class="st">            </span>lasso_screen_lasso     <span class="fl">0.055554</span> <span class="fl">1.0164</span> <span class="fl">0.023560</span> <span class="fl">0.064898</span></a>
-<a class="sourceLine" id="cb55-130" data-line-number="130"><span class="dv">18</span><span class="op">:</span><span class="st">        </span>lasso_screen_xgboost50     <span class="fl">0.055509</span> <span class="fl">1.1296</span> <span class="fl">0.025767</span> <span class="fl">0.084180</span></a>
-<a class="sourceLine" id="cb55-131" data-line-number="131"><span class="dv">19</span><span class="op">:</span><span class="st">                  </span>SuperLearner           <span class="ot">NA</span> <span class="fl">1.0109</span> <span class="fl">0.023498</span> <span class="fl">0.068715</span></a>
+<a class="sourceLine" id="cb55-113" data-line-number="113"> <span class="dv">1</span><span class="op">:</span><span class="st">                           </span>glm     <span class="fl">0.055565</span> <span class="fl">1.0202</span> <span class="fl">0.023955</span> <span class="fl">0.067500</span></a>
+<a class="sourceLine" id="cb55-114" data-line-number="114"> <span class="dv">2</span><span class="op">:</span><span class="st">                     </span>polspline     <span class="fl">0.055551</span> <span class="fl">1.0208</span> <span class="fl">0.023577</span> <span class="fl">0.067921</span></a>
+<a class="sourceLine" id="cb55-115" data-line-number="115"> <span class="dv">3</span><span class="op">:</span><span class="st">                        </span>enet<span class="fl">.5</span>     <span class="fl">0.055558</span> <span class="fl">1.0131</span> <span class="fl">0.023598</span> <span class="fl">0.065732</span></a>
+<a class="sourceLine" id="cb55-116" data-line-number="116"> <span class="dv">4</span><span class="op">:</span><span class="st">                         </span>ridge     <span class="fl">0.055564</span> <span class="fl">1.0153</span> <span class="fl">0.023739</span> <span class="fl">0.065299</span></a>
+<a class="sourceLine" id="cb55-117" data-line-number="117"> <span class="dv">5</span><span class="op">:</span><span class="st">                         </span>lasso     <span class="fl">0.055558</span> <span class="fl">1.0130</span> <span class="fl">0.023592</span> <span class="fl">0.065840</span></a>
+<a class="sourceLine" id="cb55-118" data-line-number="118"> <span class="dv">6</span><span class="op">:</span><span class="st">                     </span>xgboost50     <span class="fl">0.055583</span> <span class="fl">1.1136</span> <span class="fl">0.025262</span> <span class="fl">0.077580</span></a>
+<a class="sourceLine" id="cb55-119" data-line-number="119"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span>randomforest_screen_glm     <span class="fl">0.055556</span> <span class="fl">1.0173</span> <span class="fl">0.023830</span> <span class="fl">0.069913</span></a>
+<a class="sourceLine" id="cb55-120" data-line-number="120"> <span class="dv">8</span><span class="op">:</span><span class="st"> </span>randomforest_screen_polspline     <span class="fl">0.055573</span> <span class="fl">1.0135</span> <span class="fl">0.023814</span> <span class="fl">0.069240</span></a>
+<a class="sourceLine" id="cb55-121" data-line-number="121"> <span class="dv">9</span><span class="op">:</span><span class="st">    </span>randomforest_screen_enet<span class="fl">.5</span>     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023842</span> <span class="fl">0.070142</span></a>
+<a class="sourceLine" id="cb55-122" data-line-number="122"><span class="dv">10</span><span class="op">:</span><span class="st">     </span>randomforest_screen_ridge     <span class="fl">0.055555</span> <span class="fl">1.0176</span> <span class="fl">0.023855</span> <span class="fl">0.069787</span></a>
+<a class="sourceLine" id="cb55-123" data-line-number="123"><span class="dv">11</span><span class="op">:</span><span class="st">     </span>randomforest_screen_lasso     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023840</span> <span class="fl">0.070155</span></a>
+<a class="sourceLine" id="cb55-124" data-line-number="124"><span class="dv">12</span><span class="op">:</span><span class="st"> </span>randomforest_screen_xgboost50     <span class="fl">0.055546</span> <span class="fl">1.1277</span> <span class="fl">0.026043</span> <span class="fl">0.078673</span></a>
+<a class="sourceLine" id="cb55-125" data-line-number="125"><span class="dv">13</span><span class="op">:</span><span class="st">              </span>lasso_screen_glm     <span class="fl">0.055553</span> <span class="fl">1.0164</span> <span class="fl">0.023542</span> <span class="fl">0.065018</span></a>
+<a class="sourceLine" id="cb55-126" data-line-number="126"><span class="dv">14</span><span class="op">:</span><span class="st">        </span>lasso_screen_polspline     <span class="fl">0.055553</span> <span class="fl">1.0177</span> <span class="fl">0.023520</span> <span class="fl">0.065566</span></a>
+<a class="sourceLine" id="cb55-127" data-line-number="127"><span class="dv">15</span><span class="op">:</span><span class="st">           </span>lasso_screen_enet<span class="fl">.5</span>     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065017</span></a>
+<a class="sourceLine" id="cb55-128" data-line-number="128"><span class="dv">16</span><span class="op">:</span><span class="st">            </span>lasso_screen_ridge     <span class="fl">0.055552</span> <span class="fl">1.0166</span> <span class="fl">0.023553</span> <span class="fl">0.064869</span></a>
+<a class="sourceLine" id="cb55-129" data-line-number="129"><span class="dv">17</span><span class="op">:</span><span class="st">            </span>lasso_screen_lasso     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065020</span></a>
+<a class="sourceLine" id="cb55-130" data-line-number="130"><span class="dv">18</span><span class="op">:</span><span class="st">        </span>lasso_screen_xgboost50     <span class="fl">0.055516</span> <span class="fl">1.1256</span> <span class="fl">0.025939</span> <span class="fl">0.084270</span></a>
+<a class="sourceLine" id="cb55-131" data-line-number="131"><span class="dv">19</span><span class="op">:</span><span class="st">                  </span>SuperLearner           <span class="ot">NA</span> <span class="fl">1.0100</span> <span class="fl">0.023524</span> <span class="fl">0.068184</span></a>
 <a class="sourceLine" id="cb55-132" data-line-number="132">    fold_min_risk fold_max_risk</a>
 <a class="sourceLine" id="cb55-133" data-line-number="133"> <span class="dv">1</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89442</span>        <span class="fl">1.1200</span></a>
 <a class="sourceLine" id="cb55-134" data-line-number="134"> <span class="dv">2</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89892</span>        <span class="fl">1.1255</span></a>
-<a class="sourceLine" id="cb55-135" data-line-number="135"> <span class="dv">3</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88927</span>        <span class="fl">1.1082</span></a>
-<a class="sourceLine" id="cb55-136" data-line-number="136"> <span class="dv">4</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88570</span>        <span class="fl">1.1104</span></a>
-<a class="sourceLine" id="cb55-137" data-line-number="137"> <span class="dv">5</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89037</span>        <span class="fl">1.1090</span></a>
+<a class="sourceLine" id="cb55-135" data-line-number="135"> <span class="dv">3</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88839</span>        <span class="fl">1.1058</span></a>
+<a class="sourceLine" id="cb55-136" data-line-number="136"> <span class="dv">4</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88559</span>        <span class="fl">1.1063</span></a>
+<a class="sourceLine" id="cb55-137" data-line-number="137"> <span class="dv">5</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88842</span>        <span class="fl">1.1060</span></a>
 <a class="sourceLine" id="cb55-138" data-line-number="138"> <span class="dv">6</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96019</span>        <span class="fl">1.2337</span></a>
-<a class="sourceLine" id="cb55-139" data-line-number="139"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90214</span>        <span class="fl">1.1203</span></a>
-<a class="sourceLine" id="cb55-140" data-line-number="140"> <span class="dv">8</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90394</span>        <span class="fl">1.1098</span></a>
-<a class="sourceLine" id="cb55-141" data-line-number="141"> <span class="dv">9</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90196</span>        <span class="fl">1.1199</span></a>
-<a class="sourceLine" id="cb55-142" data-line-number="142"><span class="dv">10</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90165</span>        <span class="fl">1.1195</span></a>
-<a class="sourceLine" id="cb55-143" data-line-number="143"><span class="dv">11</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90199</span>        <span class="fl">1.1196</span></a>
-<a class="sourceLine" id="cb55-144" data-line-number="144"><span class="dv">12</span><span class="op">:</span><span class="st">       </span><span class="fl">0.93603</span>        <span class="fl">1.2169</span></a>
+<a class="sourceLine" id="cb55-139" data-line-number="139"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88579</span>        <span class="fl">1.1119</span></a>
+<a class="sourceLine" id="cb55-140" data-line-number="140"> <span class="dv">8</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89370</span>        <span class="fl">1.1190</span></a>
+<a class="sourceLine" id="cb55-141" data-line-number="141"> <span class="dv">9</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1137</span></a>
+<a class="sourceLine" id="cb55-142" data-line-number="142"><span class="dv">10</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88620</span>        <span class="fl">1.1128</span></a>
+<a class="sourceLine" id="cb55-143" data-line-number="143"><span class="dv">11</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1136</span></a>
+<a class="sourceLine" id="cb55-144" data-line-number="144"><span class="dv">12</span><span class="op">:</span><span class="st">       </span><span class="fl">1.00223</span>        <span class="fl">1.2465</span></a>
 <a class="sourceLine" id="cb55-145" data-line-number="145"><span class="dv">13</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90204</span>        <span class="fl">1.1156</span></a>
 <a class="sourceLine" id="cb55-146" data-line-number="146"><span class="dv">14</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89742</span>        <span class="fl">1.1162</span></a>
 <a class="sourceLine" id="cb55-147" data-line-number="147"><span class="dv">15</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90184</span>        <span class="fl">1.1154</span></a>
-<a class="sourceLine" id="cb55-148" data-line-number="148"><span class="dv">16</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90132</span>        <span class="fl">1.1148</span></a>
+<a class="sourceLine" id="cb55-148" data-line-number="148"><span class="dv">16</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90120</span>        <span class="fl">1.1146</span></a>
 <a class="sourceLine" id="cb55-149" data-line-number="149"><span class="dv">17</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90183</span>        <span class="fl">1.1154</span></a>
 <a class="sourceLine" id="cb55-150" data-line-number="150"><span class="dv">18</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96251</span>        <span class="fl">1.2327</span></a>
-<a class="sourceLine" id="cb55-151" data-line-number="151"><span class="dv">19</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88481</span>        <span class="fl">1.1105</span></a></code></pre></div>
+<a class="sourceLine" id="cb55-151" data-line-number="151"><span class="dv">19</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88036</span>        <span class="fl">1.1041</span></a></code></pre></div>
 <p>From the table of the printed SL fit, we note that the SL had a mean risk of
-1.0109 and that
+1.01 and that
 this ensemble weighted the <code>ranger</code> and <code>glmnet</code> learners highest while not
 weighting the <code>mean</code> learner highly.</p>
 <p>We can also see that the <code>glmnet</code> learner had the lowest cross-validated mean
@@ -1741,19 +1741,19 @@ glm
 0.05555
 </td>
 <td style="text-align:right;">
-1.0644
+1.0494
 </td>
 <td style="text-align:right;">
-0.03068
+0.02687
 </td>
 <td style="text-align:right;">
-0.02372
+0.07973
 </td>
 <td style="text-align:right;">
-1.0476
+0.99301
 </td>
 <td style="text-align:right;">
-1.0812
+1.1058
 </td>
 </tr>
 <tr>
@@ -1761,22 +1761,22 @@ glm
 polspline
 </td>
 <td style="text-align:right;">
-0.05556
+0.05557
 </td>
 <td style="text-align:right;">
-1.0349
+1.0173
 </td>
 <td style="text-align:right;">
-0.02403
+0.02354
 </td>
 <td style="text-align:right;">
-0.00855
+0.06840
 </td>
 <td style="text-align:right;">
-1.0289
+0.96890
 </td>
 <td style="text-align:right;">
-1.0410
+1.0656
 </td>
 </tr>
 <tr>
@@ -1784,22 +1784,22 @@ polspline
 enet.5
 </td>
 <td style="text-align:right;">
-0.05557
+0.05556
 </td>
 <td style="text-align:right;">
-1.0299
+1.0239
 </td>
 <td style="text-align:right;">
-0.02441
+0.02413
 </td>
 <td style="text-align:right;">
-0.00471
+0.07188
 </td>
 <td style="text-align:right;">
-1.0266
+0.97310
 </td>
 <td style="text-align:right;">
-1.0332
+1.0748
 </td>
 </tr>
 <tr>
@@ -1810,19 +1810,19 @@ ridge
 0.05557
 </td>
 <td style="text-align:right;">
-1.0339
+1.0271
 </td>
 <td style="text-align:right;">
-0.02465
+0.02418
 </td>
 <td style="text-align:right;">
-0.00213
+0.06797
 </td>
 <td style="text-align:right;">
-1.0324
+0.97906
 </td>
 <td style="text-align:right;">
-1.0354
+1.0752
 </td>
 </tr>
 <tr>
@@ -1830,22 +1830,22 @@ ridge
 lasso
 </td>
 <td style="text-align:right;">
-0.05557
+0.05556
 </td>
 <td style="text-align:right;">
-1.0283
+1.0243
 </td>
 <td style="text-align:right;">
-0.02419
+0.02417
 </td>
 <td style="text-align:right;">
-0.00774
+0.07238
 </td>
 <td style="text-align:right;">
-1.0229
+0.97314
 </td>
 <td style="text-align:right;">
-1.0338
+1.0755
 </td>
 </tr>
 <tr>
@@ -1853,22 +1853,22 @@ lasso
 xgboost50
 </td>
 <td style="text-align:right;">
-0.05554
+0.05555
 </td>
 <td style="text-align:right;">
-1.1912
+1.1789
 </td>
 <td style="text-align:right;">
-0.02743
+0.02668
 </td>
 <td style="text-align:right;">
-0.01545
+0.00524
 </td>
 <td style="text-align:right;">
-1.1803
+1.17521
 </td>
 <td style="text-align:right;">
-1.2021
+1.1826
 </td>
 </tr>
 <tr>
@@ -1879,19 +1879,19 @@ randomforest_screen_glm
 0.05555
 </td>
 <td style="text-align:right;">
-1.0475
+1.0324
 </td>
 <td style="text-align:right;">
-0.02473
+0.02392
 </td>
 <td style="text-align:right;">
-0.03140
+0.05939
 </td>
 <td style="text-align:right;">
-1.0253
+0.99043
 </td>
 <td style="text-align:right;">
-1.0697
+1.0744
 </td>
 </tr>
 <tr>
@@ -1899,22 +1899,22 @@ randomforest_screen_glm
 randomforest_screen_polspline
 </td>
 <td style="text-align:right;">
-0.05558
+0.05556
 </td>
 <td style="text-align:right;">
-1.0311
+1.0259
 </td>
 <td style="text-align:right;">
-0.02425
+0.02372
 </td>
 <td style="text-align:right;">
-0.01643
+0.07722
 </td>
 <td style="text-align:right;">
-1.0195
+0.97129
 </td>
 <td style="text-align:right;">
-1.0427
+1.0805
 </td>
 </tr>
 <tr>
@@ -1925,19 +1925,19 @@ randomforest_screen_enet.5
 0.05555
 </td>
 <td style="text-align:right;">
-1.0432
+1.0284
 </td>
 <td style="text-align:right;">
-0.02457
+0.02390
 </td>
 <td style="text-align:right;">
-0.02547
+0.06515
 </td>
 <td style="text-align:right;">
-1.0251
+0.98234
 </td>
 <td style="text-align:right;">
-1.0612
+1.0745
 </td>
 </tr>
 <tr>
@@ -1948,19 +1948,19 @@ randomforest_screen_ridge
 0.05555
 </td>
 <td style="text-align:right;">
-1.0450
+1.0310
 </td>
 <td style="text-align:right;">
-0.02470
+0.02395
 </td>
 <td style="text-align:right;">
-0.02922
+0.06113
 </td>
 <td style="text-align:right;">
-1.0243
+0.98782
 </td>
 <td style="text-align:right;">
-1.0656
+1.0743
 </td>
 </tr>
 <tr>
@@ -1971,19 +1971,19 @@ randomforest_screen_lasso
 0.05555
 </td>
 <td style="text-align:right;">
-1.0430
+1.0285
 </td>
 <td style="text-align:right;">
-0.02456
+0.02390
 </td>
 <td style="text-align:right;">
-0.02526
+0.06508
 </td>
 <td style="text-align:right;">
-1.0251
+0.98244
 </td>
 <td style="text-align:right;">
-1.0609
+1.0745
 </td>
 </tr>
 <tr>
@@ -1991,22 +1991,22 @@ randomforest_screen_lasso
 randomforest_screen_xgboost50
 </td>
 <td style="text-align:right;">
-0.05553
+0.05554
 </td>
 <td style="text-align:right;">
-1.2085
+1.1721
 </td>
 <td style="text-align:right;">
-0.02741
+0.02685
 </td>
 <td style="text-align:right;">
-0.01481
+0.03247
 </td>
 <td style="text-align:right;">
-1.1981
+1.14913
 </td>
 <td style="text-align:right;">
-1.2190
+1.1950
 </td>
 </tr>
 <tr>
@@ -2017,19 +2017,19 @@ lasso_screen_glm
 0.05556
 </td>
 <td style="text-align:right;">
-1.0325
-</td>
-<td style="text-align:right;">
-0.02412
-</td>
-<td style="text-align:right;">
-0.00963
-</td>
-<td style="text-align:right;">
 1.0257
 </td>
 <td style="text-align:right;">
-1.0393
+0.02381
+</td>
+<td style="text-align:right;">
+0.05370
+</td>
+<td style="text-align:right;">
+0.98771
+</td>
+<td style="text-align:right;">
+1.0636
 </td>
 </tr>
 <tr>
@@ -2040,19 +2040,19 @@ lasso_screen_polspline
 0.05556
 </td>
 <td style="text-align:right;">
-1.0347
+1.0267
 </td>
 <td style="text-align:right;">
-0.02414
+0.02390
 </td>
 <td style="text-align:right;">
-0.00825
+0.05510
 </td>
 <td style="text-align:right;">
-1.0289
+0.98771
 </td>
 <td style="text-align:right;">
-1.0406
+1.0656
 </td>
 </tr>
 <tr>
@@ -2063,19 +2063,19 @@ lasso_screen_enet.5
 0.05556
 </td>
 <td style="text-align:right;">
-1.0321
+1.0261
 </td>
 <td style="text-align:right;">
-0.02411
+0.02384
 </td>
 <td style="text-align:right;">
-0.01011
+0.05463
 </td>
 <td style="text-align:right;">
-1.0250
+0.98753
 </td>
 <td style="text-align:right;">
-1.0393
+1.0648
 </td>
 </tr>
 <tr>
@@ -2086,19 +2086,19 @@ lasso_screen_ridge
 0.05556
 </td>
 <td style="text-align:right;">
-1.0313
+1.0255
 </td>
 <td style="text-align:right;">
-0.02411
+0.02383
 </td>
 <td style="text-align:right;">
-0.01131
+0.05439
 </td>
 <td style="text-align:right;">
-1.0233
+0.98703
 </td>
 <td style="text-align:right;">
-1.0393
+1.0639
 </td>
 </tr>
 <tr>
@@ -2106,22 +2106,22 @@ lasso_screen_ridge
 lasso_screen_lasso
 </td>
 <td style="text-align:right;">
-0.05557
+0.05556
 </td>
 <td style="text-align:right;">
-1.0299
+1.0262
 </td>
 <td style="text-align:right;">
-0.02407
+0.02384
 </td>
 <td style="text-align:right;">
-0.01325
+0.05464
 </td>
 <td style="text-align:right;">
-1.0205
+0.98753
 </td>
 <td style="text-align:right;">
-1.0393
+1.0648
 </td>
 </tr>
 <tr>
@@ -2132,19 +2132,19 @@ lasso_screen_xgboost50
 0.05553
 </td>
 <td style="text-align:right;">
-1.1897
+1.1519
 </td>
 <td style="text-align:right;">
-0.02664
+0.02577
 </td>
 <td style="text-align:right;">
-0.01952
+0.04334
 </td>
 <td style="text-align:right;">
-1.1759
+1.12129
 </td>
 <td style="text-align:right;">
-1.2034
+1.1826
 </td>
 </tr>
 <tr>
@@ -2155,19 +2155,19 @@ SuperLearner
 NA
 </td>
 <td style="text-align:right;">
-1.0261
+1.0187
 </td>
 <td style="text-align:right;">
-0.02403
+0.02366
 </td>
 <td style="text-align:right;">
-0.01670
+0.06090
 </td>
 <td style="text-align:right;">
-1.0143
+0.97563
 </td>
 <td style="text-align:right;">
-1.0379
+1.0618
 </td>
 </tr>
 </tbody>
@@ -2230,7 +2230,7 @@ risk_ratio
 aged
 </td>
 <td style="text-align:right;">
-1.04324
+1.04130
 </td>
 </tr>
 <tr>
@@ -2238,7 +2238,7 @@ aged
 momedu
 </td>
 <td style="text-align:right;">
-1.01569
+1.01392
 </td>
 </tr>
 <tr>
@@ -2246,7 +2246,7 @@ momedu
 asset_refrig
 </td>
 <td style="text-align:right;">
-1.00839
+1.00831
 </td>
 </tr>
 <tr>
@@ -2254,7 +2254,7 @@ asset_refrig
 asset_chair
 </td>
 <td style="text-align:right;">
-1.00343
+1.00457
 </td>
 </tr>
 <tr>
@@ -2262,7 +2262,7 @@ asset_chair
 month
 </td>
 <td style="text-align:right;">
-1.00335
+1.00316
 </td>
 </tr>
 <tr>
@@ -2270,175 +2270,7 @@ month
 momheight
 </td>
 <td style="text-align:right;">
-1.00144
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-tr
-</td>
-<td style="text-align:right;">
-1.00102
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Ncomp
-</td>
-<td style="text-align:right;">
-1.00065
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-floor
-</td>
-<td style="text-align:right;">
-1.00064
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-walls
-</td>
-<td style="text-align:right;">
-1.00051
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-momage
-</td>
-<td style="text-align:right;">
-1.00040
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_mobile
-</td>
-<td style="text-align:right;">
-1.00036
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_khat
-</td>
-<td style="text-align:right;">
-1.00033
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-sex
-</td>
-<td style="text-align:right;">
-1.00026
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_tv
-</td>
-<td style="text-align:right;">
-1.00022
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Nlt18
-</td>
-<td style="text-align:right;">
-1.00016
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_chouki
-</td>
-<td style="text-align:right;">
-1.00015
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_sewmach
-</td>
-<td style="text-align:right;">
-1.00008
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-delta_momheight
-</td>
-<td style="text-align:right;">
-1.00002
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-delta_momage
-</td>
-<td style="text-align:right;">
-0.99995
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_moto
-</td>
-<td style="text-align:right;">
-0.99994
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-roof
-</td>
-<td style="text-align:right;">
-0.99994
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_bike
-</td>
-<td style="text-align:right;">
-0.99989
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-hfiacat
-</td>
-<td style="text-align:right;">
-0.99987
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-watmin
-</td>
-<td style="text-align:right;">
-0.99985
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_table
-</td>
-<td style="text-align:right;">
-0.99966
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-asset_wardrobe
-</td>
-<td style="text-align:right;">
-0.99954
+1.00274
 </td>
 </tr>
 <tr>
@@ -2446,7 +2278,143 @@ asset_wardrobe
 elec
 </td>
 <td style="text-align:right;">
-0.99951
+1.00204
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tr
+</td>
+<td style="text-align:right;">
+1.00203
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nlt18
+</td>
+<td style="text-align:right;">
+1.00116
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+momage
+</td>
+<td style="text-align:right;">
+1.00061
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_chouki
+</td>
+<td style="text-align:right;">
+1.00032
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_mobile
+</td>
+<td style="text-align:right;">
+1.00030
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+floor
+</td>
+<td style="text-align:right;">
+1.00021
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+delta_momheight
+</td>
+<td style="text-align:right;">
+1.00008
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_table
+</td>
+<td style="text-align:right;">
+1.00003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Ncomp
+</td>
+<td style="text-align:right;">
+1.00001
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sex
+</td>
+<td style="text-align:right;">
+1.00000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_moto
+</td>
+<td style="text-align:right;">
+0.99999
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+watmin
+</td>
+<td style="text-align:right;">
+0.99997
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+walls
+</td>
+<td style="text-align:right;">
+0.99997
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+delta_momage
+</td>
+<td style="text-align:right;">
+0.99996
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+roof
+</td>
+<td style="text-align:right;">
+0.99993
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_tv
+</td>
+<td style="text-align:right;">
+0.99992
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hfiacat
+</td>
+<td style="text-align:right;">
+0.99990
 </td>
 </tr>
 <tr>
@@ -2454,7 +2422,39 @@ elec
 fracode
 </td>
 <td style="text-align:right;">
-0.99893
+0.99983
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_wardrobe
+</td>
+<td style="text-align:right;">
+0.99980
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_bike
+</td>
+<td style="text-align:right;">
+0.99978
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_sewmach
+</td>
+<td style="text-align:right;">
+0.99978
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+asset_khat
+</td>
+<td style="text-align:right;">
+0.99965
 </td>
 </tr>
 </tbody>
@@ -3631,7 +3631,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 03, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 10, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

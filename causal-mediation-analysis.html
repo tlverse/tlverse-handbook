@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 10 Causal Mediation Analysis | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.5.1/jquery-3.5.1.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="libs/bootstrap-4.5.3/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.5.3/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.4/tabs.js"></script><script src="libs/bs3compat-0.2.4/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body>
@@ -72,10 +72,9 @@
 <p>Based on the <a href="https://github.com/tlverse/tmle3mediate"><code>tmle3mediate</code> <code>R</code>
 package</a> by <em>Nima Hejazi, James
 Duncan, and David McCoy</em>.</p>
-<p>Updated: 2021-06-04</p>
-<div id="learning-objectives-6" class="section level2">
-<h2>
-<span class="header-section-number">10.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-6"><i class="fas fa-link"></i></a>
+<p>Updated: 2021-06-10</p>
+<div id="learning-objectives-6" class="section level2 unnumbered">
+<h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-6"><i class="fas fa-link"></i></a>
 </h2>
 <ol style="list-style-type: decimal">
 <li>Appreciate how the presence of a mediating variable in a causal pathway can
@@ -98,7 +97,7 @@ using the <code>tmle3mediate</code> <code>R</code> package.</li>
 </div>
 <div id="introduction-to-causal-mediation-analysis" class="section level2">
 <h2>
-<span class="header-section-number">10.2</span> Introduction to Causal Mediation Analysis<a class="anchor" aria-label="anchor" href="#introduction-to-causal-mediation-analysis"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.1</span> Introduction to Causal Mediation Analysis<a class="anchor" aria-label="anchor" href="#introduction-to-causal-mediation-analysis"><i class="fas fa-link"></i></a>
 </h2>
 <p>A treatment often affects an outcome indirectly, through a particular pathway,
 by its effect on <em>intermediate variables</em> (mediators). Causal mediation analysis
@@ -122,7 +121,7 @@ receiving attention relatively recently <span class="citation">(Tchetgen Tchetge
 </div>
 <div id="data-structure-and-notation-2" class="section level2">
 <h2>
-<span class="header-section-number">10.3</span> Data Structure and Notation<a class="anchor" aria-label="anchor" href="#data-structure-and-notation-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.2</span> Data Structure and Notation<a class="anchor" aria-label="anchor" href="#data-structure-and-notation-2"><i class="fas fa-link"></i></a>
 </h2>
 <p>Consider <span class="math inline">\(n\)</span> observed units <span class="math inline">\(O_1, \ldots, O_n\)</span>, where each observed data random
 variable takes the form <span class="math inline">\(O = (W, A, Z, Y)\)</span>, for a vector of observed covariates
@@ -202,7 +201,7 @@ on causal mediation analysis, among them <span class="citation">Díaz et al. (<a
 </div>
 <div id="decomposing-the-average-treatment-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.4</span> Decomposing the Average Treatment Effect<a class="anchor" aria-label="anchor" href="#decomposing-the-average-treatment-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.3</span> Decomposing the Average Treatment Effect<a class="anchor" aria-label="anchor" href="#decomposing-the-average-treatment-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>The natural direct and indirect effects arise from a decomposition of the ATE:
 <span class="math display">\[\begin{equation*}
@@ -249,7 +248,7 @@ studies.</p>
 </div>
 <div id="the-natural-direct-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.5</span> The Natural Direct Effect<a class="anchor" aria-label="anchor" href="#the-natural-direct-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.4</span> The Natural Direct Effect<a class="anchor" aria-label="anchor" href="#the-natural-direct-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>The NDE is defined as
 <span class="math display">\[\begin{align*}
@@ -320,7 +319,7 @@ bias-correcting update step of the TMLE procedure.</p>
 </div>
 <div id="the-natural-indirect-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.6</span> The Natural Indirect Effect<a class="anchor" aria-label="anchor" href="#the-natural-indirect-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.5</span> The Natural Indirect Effect<a class="anchor" aria-label="anchor" href="#the-natural-indirect-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>Derivation and estimation of the NIE is analogous to that of the NDE. The NIE
 is the effect of <span class="math inline">\(A\)</span> on <span class="math inline">\(Y\)</span> <em>only through the mediator(s) <span class="math inline">\(Z\)</span></em>. This quantity
@@ -346,7 +345,7 @@ our estimate <span class="math inline">\(\psi_n\)</span> is slightly different, 
 </div>
 <div id="the-population-intervention-indirect-effects" class="section level2">
 <h2>
-<span class="header-section-number">10.7</span> The Population Intervention (In)Direct Effects<a class="anchor" aria-label="anchor" href="#the-population-intervention-indirect-effects"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.6</span> The Population Intervention (In)Direct Effects<a class="anchor" aria-label="anchor" href="#the-population-intervention-indirect-effects"><i class="fas fa-link"></i></a>
 </h2>
 <p>At times, the natural direct and indirect effects may prove too limiting, as
 these effect definitions are based on <em>static interventions</em> (i.e., setting
@@ -379,7 +378,7 @@ independence any cross-world counterfactuals.</p>
 </div>
 <div id="decomposing-the-population-intervention-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.8</span> Decomposing the Population Intervention Effect<a class="anchor" aria-label="anchor" href="#decomposing-the-population-intervention-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.7</span> Decomposing the Population Intervention Effect<a class="anchor" aria-label="anchor" href="#decomposing-the-population-intervention-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>We may decompose the population intervention effect (PIE) in terms of the
 <em>population intervention direct effect</em> (PIDE) and the <em>population
@@ -409,7 +408,7 @@ mechanisms, as proposed in <span class="citation">Kennedy et al. (<a href="refer
 </div>
 <div id="estimating-the-effect-decomposition-term" class="section level2">
 <h2>
-<span class="header-section-number">10.9</span> Estimating the Effect Decomposition Term<a class="anchor" aria-label="anchor" href="#estimating-the-effect-decomposition-term"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.8</span> Estimating the Effect Decomposition Term<a class="anchor" aria-label="anchor" href="#estimating-the-effect-decomposition-term"><i class="fas fa-link"></i></a>
 </h2>
 <p>As described by <span class="citation">Díaz and Hejazi (<a href="references.html#ref-diaz2020causal">2020</a>)</span>, the statistical functional identifying the
 decomposition term that appears in both the PIDE and PIIE
@@ -439,7 +438,7 @@ via its TML estimator.</p>
 </div>
 <div id="evaluating-the-direct-and-indirect-effects" class="section level2">
 <h2>
-<span class="header-section-number">10.10</span> Evaluating the Direct and Indirect Effects<a class="anchor" aria-label="anchor" href="#evaluating-the-direct-and-indirect-effects"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.9</span> Evaluating the Direct and Indirect Effects<a class="anchor" aria-label="anchor" href="#evaluating-the-direct-and-indirect-effects"><i class="fas fa-link"></i></a>
 </h2>
 <p>We now turn to estimating the natural direct and indirect effects, as well as
 the population intervention direct effect, using the WASH Benefits data,
@@ -520,7 +519,7 @@ learning algorithms:</p>
 </div>
 <div id="estimating-the-natural-indirect-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.11</span> Estimating the Natural Indirect Effect<a class="anchor" aria-label="anchor" href="#estimating-the-natural-indirect-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.10</span> Estimating the Natural Indirect Effect<a class="anchor" aria-label="anchor" href="#estimating-the-natural-indirect-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>We demonstrate calculation of the NIE below, starting by instantiating a “Spec”
 object that encodes exactly which learners to use for the nuisance parameters
@@ -538,17 +537,17 @@ parameters based on <span class="math inline">\(A\)</span> and <span class="math
 <a class="sourceLine" id="cb129-8" data-line-number="8">)</a>
 <a class="sourceLine" id="cb129-9" data-line-number="9">washb_NIE</a>
 <a class="sourceLine" id="cb129-10" data-line-number="10">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
-<a class="sourceLine" id="cb129-11" data-line-number="11">   type                  param  init_est  tmle_est      se     lower    upper</a>
-<a class="sourceLine" id="cb129-12" data-line-number="12"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>NIE NIE[Y_{A=<span class="dv">1</span>} <span class="op">-</span><span class="st"> </span>Y_{A=<span class="dv">0</span>}] <span class="fl">0.0011663</span> <span class="fl">0.0010331</span> <span class="fl">0.04461</span> <span class="fl">-0.086401</span> <span class="fl">0.088467</span></a>
+<a class="sourceLine" id="cb129-11" data-line-number="11">   type                  param  init_est  tmle_est       se     lower    upper</a>
+<a class="sourceLine" id="cb129-12" data-line-number="12"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>NIE NIE[Y_{A=<span class="dv">1</span>} <span class="op">-</span><span class="st"> </span>Y_{A=<span class="dv">0</span>}] <span class="fl">0.0022912</span> <span class="fl">0.0026608</span> <span class="fl">0.044295</span> <span class="fl">-0.084156</span> <span class="fl">0.089478</span></a>
 <a class="sourceLine" id="cb129-13" data-line-number="13">   psi_transformed lower_transformed upper_transformed</a>
-<a class="sourceLine" id="cb129-14" data-line-number="14"><span class="dv">1</span><span class="op">:</span><span class="st">       </span><span class="fl">0.0010331</span>         <span class="fl">-0.086401</span>          <span class="fl">0.088467</span></a></code></pre></div>
+<a class="sourceLine" id="cb129-14" data-line-number="14"><span class="dv">1</span><span class="op">:</span><span class="st">       </span><span class="fl">0.0026608</span>         <span class="fl">-0.084156</span>          <span class="fl">0.089478</span></a></code></pre></div>
 <p>Based on the output, we conclude that the indirect effect of the treatment
 through the mediators (sex, month, aged) is
-0.00103.</p>
+0.00266.</p>
 </div>
 <div id="estimating-the-natural-direct-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.12</span> Estimating the Natural Direct Effect<a class="anchor" aria-label="anchor" href="#estimating-the-natural-direct-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.11</span> Estimating the Natural Direct Effect<a class="anchor" aria-label="anchor" href="#estimating-the-natural-direct-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>An analogous procedure applies for estimation of the NDE, only replacing the
 Spec object for the NIE with <code>tmle_spec_NDE</code> to define learners for the NDE
@@ -563,21 +562,21 @@ nuisance parameters:</p>
 <a class="sourceLine" id="cb130-8" data-line-number="8">)</a>
 <a class="sourceLine" id="cb130-9" data-line-number="9">washb_NDE</a>
 <a class="sourceLine" id="cb130-10" data-line-number="10">A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</a>
-<a class="sourceLine" id="cb130-11" data-line-number="11">   type                  param init_est tmle_est       se    lower  upper</a>
-<a class="sourceLine" id="cb130-12" data-line-number="12"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>NDE NDE[Y_{A=<span class="dv">1</span>} <span class="op">-</span><span class="st"> </span>Y_{A=<span class="dv">0</span>}] <span class="fl">0.012981</span> <span class="fl">0.012981</span> <span class="fl">0.085879</span> <span class="fl">-0.15534</span> <span class="fl">0.1813</span></a>
+<a class="sourceLine" id="cb130-11" data-line-number="11">   type                  param init_est tmle_est      se   lower   upper</a>
+<a class="sourceLine" id="cb130-12" data-line-number="12"><span class="dv">1</span><span class="op">:</span><span class="st">  </span>NDE NDE[Y_{A=<span class="dv">1</span>} <span class="op">-</span><span class="st"> </span>Y_{A=<span class="dv">0</span>}] <span class="fl">0.012983</span> <span class="fl">0.012983</span> <span class="fl">0.10285</span> <span class="fl">-0.1886</span> <span class="fl">0.21457</span></a>
 <a class="sourceLine" id="cb130-13" data-line-number="13">   psi_transformed lower_transformed upper_transformed</a>
-<a class="sourceLine" id="cb130-14" data-line-number="14"><span class="dv">1</span><span class="op">:</span><span class="st">        </span><span class="fl">0.012981</span>          <span class="fl">-0.15534</span>            <span class="fl">0.1813</span></a></code></pre></div>
+<a class="sourceLine" id="cb130-14" data-line-number="14"><span class="dv">1</span><span class="op">:</span><span class="st">        </span><span class="fl">0.012983</span>           <span class="fl">-0.1886</span>           <span class="fl">0.21457</span></a></code></pre></div>
 <p>From this, we can draw the conclusion that the direct effect of the treatment
 (through all paths not involving the mediators (sex, month, aged)) is
 0.01298. Note that, together, the estimates of
 the natural direct and indirect effects approximately recover the <em>average
 treatment effect</em>, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.01401.</p>
+0.01564.</p>
 </div>
 <div id="estimating-the-population-intervention-direct-effect" class="section level2">
 <h2>
-<span class="header-section-number">10.13</span> Estimating the Population Intervention Direct Effect<a class="anchor" aria-label="anchor" href="#estimating-the-population-intervention-direct-effect"><i class="fas fa-link"></i></a>
+<span class="header-section-number">10.12</span> Estimating the Population Intervention Direct Effect<a class="anchor" aria-label="anchor" href="#estimating-the-population-intervention-direct-effect"><i class="fas fa-link"></i></a>
 </h2>
 <p>As previously noted, the assumptions underlying the natural direct and indirect
 effects may be challenging to justify; moreover, the effect definitions
@@ -674,19 +673,19 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#causal-mediation-analysis"><span class="header-section-number">10</span> Causal Mediation Analysis</a></li>
-<li><a class="nav-link" href="#learning-objectives-6"><span class="header-section-number">10.1</span> Learning Objectives</a></li>
-<li><a class="nav-link" href="#introduction-to-causal-mediation-analysis"><span class="header-section-number">10.2</span> Introduction to Causal Mediation Analysis</a></li>
-<li><a class="nav-link" href="#data-structure-and-notation-2"><span class="header-section-number">10.3</span> Data Structure and Notation</a></li>
-<li><a class="nav-link" href="#decomposing-the-average-treatment-effect"><span class="header-section-number">10.4</span> Decomposing the Average Treatment Effect</a></li>
-<li><a class="nav-link" href="#the-natural-direct-effect"><span class="header-section-number">10.5</span> The Natural Direct Effect</a></li>
-<li><a class="nav-link" href="#the-natural-indirect-effect"><span class="header-section-number">10.6</span> The Natural Indirect Effect</a></li>
-<li><a class="nav-link" href="#the-population-intervention-indirect-effects"><span class="header-section-number">10.7</span> The Population Intervention (In)Direct Effects</a></li>
-<li><a class="nav-link" href="#decomposing-the-population-intervention-effect"><span class="header-section-number">10.8</span> Decomposing the Population Intervention Effect</a></li>
-<li><a class="nav-link" href="#estimating-the-effect-decomposition-term"><span class="header-section-number">10.9</span> Estimating the Effect Decomposition Term</a></li>
-<li><a class="nav-link" href="#evaluating-the-direct-and-indirect-effects"><span class="header-section-number">10.10</span> Evaluating the Direct and Indirect Effects</a></li>
-<li><a class="nav-link" href="#estimating-the-natural-indirect-effect"><span class="header-section-number">10.11</span> Estimating the Natural Indirect Effect</a></li>
-<li><a class="nav-link" href="#estimating-the-natural-direct-effect"><span class="header-section-number">10.12</span> Estimating the Natural Direct Effect</a></li>
-<li><a class="nav-link" href="#estimating-the-population-intervention-direct-effect"><span class="header-section-number">10.13</span> Estimating the Population Intervention Direct Effect</a></li>
+<li><a class="nav-link" href="#learning-objectives-6">Learning Objectives</a></li>
+<li><a class="nav-link" href="#introduction-to-causal-mediation-analysis"><span class="header-section-number">10.1</span> Introduction to Causal Mediation Analysis</a></li>
+<li><a class="nav-link" href="#data-structure-and-notation-2"><span class="header-section-number">10.2</span> Data Structure and Notation</a></li>
+<li><a class="nav-link" href="#decomposing-the-average-treatment-effect"><span class="header-section-number">10.3</span> Decomposing the Average Treatment Effect</a></li>
+<li><a class="nav-link" href="#the-natural-direct-effect"><span class="header-section-number">10.4</span> The Natural Direct Effect</a></li>
+<li><a class="nav-link" href="#the-natural-indirect-effect"><span class="header-section-number">10.5</span> The Natural Indirect Effect</a></li>
+<li><a class="nav-link" href="#the-population-intervention-indirect-effects"><span class="header-section-number">10.6</span> The Population Intervention (In)Direct Effects</a></li>
+<li><a class="nav-link" href="#decomposing-the-population-intervention-effect"><span class="header-section-number">10.7</span> Decomposing the Population Intervention Effect</a></li>
+<li><a class="nav-link" href="#estimating-the-effect-decomposition-term"><span class="header-section-number">10.8</span> Estimating the Effect Decomposition Term</a></li>
+<li><a class="nav-link" href="#evaluating-the-direct-and-indirect-effects"><span class="header-section-number">10.9</span> Evaluating the Direct and Indirect Effects</a></li>
+<li><a class="nav-link" href="#estimating-the-natural-indirect-effect"><span class="header-section-number">10.10</span> Estimating the Natural Indirect Effect</a></li>
+<li><a class="nav-link" href="#estimating-the-natural-direct-effect"><span class="header-section-number">10.11</span> Estimating the Natural Direct Effect</a></li>
+<li><a class="nav-link" href="#estimating-the-population-intervention-direct-effect"><span class="header-section-number">10.12</span> Estimating the Population Intervention Direct Effect</a></li>
 </ul>
 
       <div class="book-extra">
@@ -704,7 +703,7 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 03, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 10, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

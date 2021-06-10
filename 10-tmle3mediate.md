@@ -6,9 +6,11 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-06-04
+Updated: 2021-06-10
 
-## Learning Objectives
+
+
+## Learning Objectives {-}
 
 1. Appreciate how the presence of a mediating variable in a causal pathway can
    allow direct and indirect effects of the treatment on the outcome to be
@@ -26,6 +28,8 @@ Updated: 2021-06-04
    including differences in the assumptions required for their identification.
 7. Estimate the population intervention direct effect of a binary treatment
    using the `tmle3mediate` `R` package.
+
+
 
 ## Introduction to Causal Mediation Analysis
 
@@ -491,15 +495,15 @@ washb_NIE <- tmle3(
 )
 washb_NIE
 A tmle3_Fit that took 1 step(s)
-   type                  param  init_est  tmle_est      se     lower    upper
-1:  NIE NIE[Y_{A=1} - Y_{A=0}] 0.0011663 0.0010331 0.04461 -0.086401 0.088467
+   type                  param  init_est  tmle_est       se     lower    upper
+1:  NIE NIE[Y_{A=1} - Y_{A=0}] 0.0022912 0.0026608 0.044295 -0.084156 0.089478
    psi_transformed lower_transformed upper_transformed
-1:       0.0010331         -0.086401          0.088467
+1:       0.0026608         -0.084156          0.089478
 ```
 
 Based on the output, we conclude that the indirect effect of the treatment
 through the mediators (sex, month, aged) is
-0.00103.
+0.00266.
 
 ## Estimating the Natural Direct Effect
 
@@ -519,10 +523,10 @@ washb_NDE <- tmle3(
 )
 washb_NDE
 A tmle3_Fit that took 1 step(s)
-   type                  param init_est tmle_est       se    lower  upper
-1:  NDE NDE[Y_{A=1} - Y_{A=0}] 0.012981 0.012981 0.085879 -0.15534 0.1813
+   type                  param init_est tmle_est      se   lower   upper
+1:  NDE NDE[Y_{A=1} - Y_{A=0}] 0.012983 0.012983 0.10285 -0.1886 0.21457
    psi_transformed lower_transformed upper_transformed
-1:        0.012981          -0.15534            0.1813
+1:        0.012983           -0.1886           0.21457
 ```
 
 From this, we can draw the conclusion that the direct effect of the treatment
@@ -531,7 +535,7 @@ From this, we can draw the conclusion that the direct effect of the treatment
 the natural direct and indirect effects approximately recover the _average
 treatment effect_, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.01401.
+0.01564.
 
 ## Estimating the Population Intervention Direct Effect
 

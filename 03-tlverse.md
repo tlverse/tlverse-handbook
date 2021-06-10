@@ -1,12 +1,20 @@
 # Welcome to the `tlverse` {#tlverse}
 
+Updated: 2021-06-10
+
+
+
 ## Learning Objectives {-}
 
-1. Understand the `tlverse` ecosystem conceptually
-2. Identify the core components of the `tlverse`
-3. Install `tlverse` `R` packages
-4. Understand the Targeted Learning roadmap
-5. Learn about the WASH Benefits example data
+This chapter introduces the `tlverse` software ecosystem, including
+
+1. Understanding the `tlverse` ecosystem conceptually.
+2. Identifying the core components of the `tlverse`.
+3. Installing `tlverse` `R` packages.
+4. Understanding the Targeted Learning roadmap.
+5. Learning about the WASH Benefits example data.
+
+
 
 ## What is the `tlverse`? {-}
 
@@ -26,57 +34,86 @@ So, the [`tlverse`](https://tlverse.org) is
 
 ## Anatomy of the `tlverse` {-}
 
-These are the main packages that represent the **core** of the `tlverse`:
+All Targeted Learning methods are targeted maximum likelihood (or minimum
+loss-based) estimators (TMLEs). The construction of any Targeted Learning
+estimator proceeds through a two-stage process:
 
-* [`sl3`](https://github.com/tlverse/sl3): Modern Super Learning with Pipelines
+1. Flexibly learning particular components of the data-generating distribution
+   through macchine learning (e.g., Super Learning), resulting in _initial
+   estimates_ of nuisance parameters.
+2. Use of a parametric model-based update via maximum likelihood estimation
+   (i.e., MLE), incorporating the initial estimates produced by the prior step.
+
+The packages making up the core components of the `tlverse` software ecosystem,
+`sl3` and `tmle3`, address the above two goals, respectively. Together, the very
+general functionality exposed by both allows one to build specific TMLEs
+tailored exactly to a particular estimation problem.
+
+The software packages that make up the **core** of the `tlverse` are
+
+* [`sl3`](https://github.com/tlverse/sl3): Modern Super Machine Learning
   * _What?_ A modern object-oriented re-implementation of the Super Learner
-    algorithm, employing recently developed paradigms for `R` programming.
-  * _Why?_ A design that leverages modern tools for fast computation, is
-    forward-looking, and can form one of the cornerstones of the `tlverse`.
+    algorithm, employing recently developed paradigms in `R` programming.
+  * _Why?_ A design that leverages modern ideas for faster computation, is
+    easily extensible and forward-looking, and forms one of the cornerstones of
+    the `tlverse`.
 
 * [`tmle3`](https://github.com/tlverse/tmle3): An Engine for Targeted Learning
   * _What?_ A generalized framework that simplifies Targeted Learning by
     identifying and implementing a series of common statistical estimation
     procedures.
   * _Why?_ A common interface and engine that accommodates current algorithmic
-    approaches to Targeted Learning and is still flexible enough to remain the
-    engine even as new techniques are developed.
+    approaches to Targeted Learning and yet remains a flexible enough engine to
+    power the implementation of emerging statistical techniques as they are
+    developed.
 
-In addition to the engines that drive development in the `tlverse`, there are
-some supporting packages -- in particular, we have two...
+Beyond these engines that provide the driving force behind the `tlverse`, there
+are a few supporting packages that play important roles in the background:
 
 * [`origami`](https://github.com/tlverse/origami): A Generalized Framework for
-   Cross-Validation
-  * _What?_ A generalized framework for flexible cross-validation
+   Cross-Validation [@coyle2018origami]
+  * _What?_ A generalized framework for flexible cross-validation.
   * _Why?_ Cross-validation is a key part of ensuring error estimates are honest
-    and preventing overfitting. It is an essential part of the both the Super
-    Learner algorithm and Targeted Learning.
+    and in preventing overfitting. It is an essential part of the both the Super
+    Learner ensemble modeling algorithm and in the construction of Targeted
+    Learning estimators.
 
 * [`delayed`](https://github.com/tlverse/delayed): Parallelization Framework for
    Dependent Tasks
-  * _What?_ A framework for delayed computations (futures) based on task
+  * _What?_ A framework for delayed computations (i.e., futures) based on task
     dependencies.
   * _Why?_ Efficient allocation of compute resources is essential when deploying
-    large-scale, computationally intensive algorithms.
+    computationally intensive algorithms at large scale.
 
-A key principle of the `tlverse` is extensibility. That is, we want to support
-new Targeted Learning estimators as they are developed. The model for this is
-new estimators are implemented in additional packages using the core packages
-above. There are currently two featured examples of this:
+A key principle of the `tlverse` is extensibility. That is, the software
+ecosystem aims to support the development of new Targeted Learning estimators as
+they reaching maturity. To achieve this degree of flexibility, we follow the
+model of implementing new classes of estimators, for distinct causal inference
+problems, in separate packages, all of which use the core machinery provided by
+the `sl3` and `tmle3` packages There are currently three examples:
 
 * [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx): Optimal Treatments
-  in `tlverse`
-  * _What?_ Learn an optimal rule and estimate the mean outcome under the rule
-  * _Why?_ Optimal Treatment is a powerful tool in precision healthcare and
+  in the `tlverse`
+  * _What?_ Learn an optimal rule and estimate the mean outcome under the rule.
+  * _Why?_ Optimal treatments are a powerful tool in precision healthcare and
     other settings where a one-size-fits-all treatment approach is not
     appropriate.
 
-* [`tmle3shift`](https://github.com/tlverse/tmle3shift): Shift Interventions in
-  `tlverse`
-  * _What?_ Shift interventions for continuous treatments
-  * _Why?_ Not all treatment variables are discrete. Being able to estimate the
-    effects of continuous treatment represents a powerful extension of the
-    Targeted Learning approach.
+* [`tmle3shift`](https://github.com/tlverse/tmle3shift): Stochastic Shift
+  Interventions in the `tlverse`
+  * _What?_ Stochastic shift interventions for continuous-valued treatments.
+  * _Why?_ Not all treatment variables are binary or categorical. Estimating the
+    total effects of intervening on continuous-valued treatments provides a way
+    to probe how an effect changes with shifts in the treatment variable.
+
+* [`tmle3mediate`](https://github.com/tlverse/tmle3mediate): Causal Mediation
+  Analysis in the `tlverse`
+  * _What?_ Techniques for evaluating the direct and indirect effects of
+    treatments through mediating variables.
+  * _Why?_ Evaluating the total effect of a treatment does not provide
+    information about the pathways through which it may operate. When mediating
+    variables have been collected, one can instead evaluate direct and indirect
+    effect parameters that speak to the _action mechanism_ of the treatment.
 
 ## Installation {#installtlverse}
 
@@ -130,10 +167,11 @@ user (you'll need a GitHub user account). Follow these two steps:
 7. Save your `.Renviron` file. The example below shows how this syntax should
    look.
 
+  
+  ```r
+  GITHUB_PAT <- yourPAT
+  ```
 
-```r
-GITHUB_PAT <- yourPAT
-```
 8. Restart R. You can restart R via the drop-down menu on RStudio's "Session"
    tab, which is located at the top of the RStudio interface. You have to
    restart R for the changes to take effect!
