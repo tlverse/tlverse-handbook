@@ -6,11 +6,12 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-06-10
+Updated: 2021-06-16
+
+\begin{VT1}
+\VH{Learning Objectives}
 
 
-
-## Learning Objectives {-}
 
 1. Appreciate how the presence of a mediating variable in a causal pathway can
    allow direct and indirect effects of the treatment on the outcome to be
@@ -29,7 +30,7 @@ Updated: 2021-06-10
 7. Estimate the population intervention direct effect of a binary treatment
    using the `tmle3mediate` `R` package.
 
-
+\end{VT1}
 
 ## Introduction to Causal Mediation Analysis
 
@@ -112,7 +113,9 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-<img src="10-tmle3mediate_files/figure-html/mediation-DAG-1.png" width="80%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.8\linewidth]{10-tmle3mediate_files/figure-latex/mediation-DAG-1} \end{center}
 
 The likelihood of the data $O$ admits a factorization, wherein, for $p_0^O$,
 the density of $O$ with respect to the product measure, the density evaluated
