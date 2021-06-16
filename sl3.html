@@ -71,7 +71,7 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-06-10</p>
+<p>Updated: 2021-06-16</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
@@ -114,8 +114,8 @@ for a given data set and prediction problem. It’s like picking the winner of
 <li>The Super Learner (SL) solves this issue of algorithm selection by allowing
 an ensemble of algorithms, from the simplest (intercept-only) to most
 complex (neural nets, tree-based methods, support vector machines, etc.).</li>
-<li>SL works by using cross-validation in a manner that guarantees the
-resulting fit will be as good as possible, given the learners provided.</li>
+<li>SL works by using cross-validation in a manner that theoretically guarantees
+the resulting fit will be as good as possible, given the learners provided.</li>
 </ul>
 </div>
 <div id="introduction-2" class="section level2">
@@ -127,128 +127,146 @@ Learning</em></a> as a general template to translate real-world data
 applications into formal statistical estimation problems. The first steps of
 this roadmap define the <em>statistical estimation problem</em>, which establish</p>
 <ol style="list-style-type: decimal">
-<li>Data as a random variable, or equivalently, a realization of a particular
-experiment/study. We assume the observations in the data are independent and
-identically distributed.</li>
-<li>A statistical model as the set of possible probability distributions that
-could have given rise to the observed data.</li>
-<li>A translation of the scientific question, which is often causal, into a
-target estimand.</li>
+<li>The data <span class="math inline">\(O\)</span> as a random variable, or equivalently, a realization of a
+particular experiment/study, which has probability distribution <span class="math inline">\(P_0\)</span>. This
+probablity distribution <span class="math inline">\(P_0\)</span> of <span class="math inline">\(O\)</span> is also commonly referred to as the
+data-generating process (DGP) and the data-generating distribution (DGD).
+The data structure <span class="math inline">\(O\)</span> is comprised of variables, such as a vector of
+covariates <span class="math inline">\(W\)</span>, a treatment or exposure <span class="math inline">\(A\)</span>, and an outcome <span class="math inline">\(Y\)</span>,
+<span class="math inline">\(O=(W,A,Y) \sim P_0\)</span>. We often observe the random variable <span class="math inline">\(O\)</span> <span class="math inline">\(n\)</span> times
+by repeating the common experiment <span class="math inline">\(n\)</span> times. For example, the
+<span class="math inline">\(O_1,\ldots, O_n\)</span> random variables could result from a randomly sampling <span class="math inline">\(n\)</span>
+units from a population, collecting baseline characteristics <span class="math inline">\(W\)</span>, assigning
+exposure <span class="math inline">\(A\)</span>, and later measuring an outcome <span class="math inline">\(Y\)</span>.</li>
+<li>A statistical model <span class="math inline">\(\mathcal{M}\)</span> as a set of possible probability
+distributions that could have given rise to the data, which is specified such
+that <span class="math inline">\(P_0\)</span> is known to be an element of <span class="math inline">\(\mathcal{M}\)</span>.</li>
+<li>A translation of the (often causal) scientific question into a function of
+<span class="math inline">\(P_0\)</span>, the target statistical estimand.</li>
 </ol>
-<p>Note that if the estimand is causal, step 3 also requires establishing
-identifiability of the estimand from the observed data, under possible
-non-testable assumptions that may not necessarily be reasonable. Still, the
-target quantity does have a valid statistical interpretation. See <a href="intro.html#causal">causal target
-parameters</a> for more detail on causal models and identifiability.</p>
-<p>Now that we have defined the statistical estimation problem, we are ready to
-construct the TMLE; an asymptotically linear and efficient substitution
-estimator of this estimand. The first step in this estimation procedure is an
-initial estimate of the data-generating distribution, or the relevant part of
-this distribution that is needed to evaluate the target parameter. For this
-initial estimation, we use the Super Learner (SL) <span class="citation">(van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super">2007</a>)</span>.</p>
-<p>The SL provides an important step in creating a robust estimator. It is a loss
-function based tool that uses cross-validation to obtain an estimator for a
-desired prediction function (which may be a component of our target estimand),
-based on a weighted combination of a library of machine learning algorithms.
-The library of machine learning algorithms consists of functions (“learners” in
-the <code>sl3</code> nomenclature) that we think might be consistent with the true
-data-generating distribution. Also, the library should contain a diversity of
-algorithms that range from parametric regression models to multi-step algorithms
-involving screening covariates, penalizations, optimizing tuning parameters,
-etc. See flowchart in [ADD REF TO SL GUIDANCE PAPER], which provides a visual
-representation of the sequence of steps for constructing a Super Learner in
-practice, discussing all arguments and recommending specific inputs. (Maybe
-include flowchart here too, if that’s allowed?)</p>
-<p>We mentioned above that the library should contain functions that are<br>
-“consistent with the true data-generating distribution”. This means that
-the candidate algorithms in the library should not violate subject-matter
-knowledge about the experiment that generated the data. For example, suppose it
-is known that the outcome is strictly positive, and we see that an algorithm is
-producing negative predictions. In this scenario, that algorithm would not be
-consistent with the true data-generating distribution. We could truncate all
-negative predictions to be 0, or slightly greater than 0, which would be fine
-for an algorithm that seldomly produces negative predictions [ADD REF]. (Do
-you recommend this?)</p>
+<p>Note that, if the scientific question is causal, then it’s translation will
+produce a target <em>causal</em> estimand. Another layer of translation,
+identifiability, is required to arrive at a target <em>statistical</em> estimand. See
+<a href="intro.html#causal">causal target parameters</a> for more detail on causal models and
+identifiability.</p>
+<p>Once the statistical estimation problem has been defined, then estimator can be
+constructed. SL provides an important step in creating a robust estimator. We
+will use it to obtain an estimator for a desired prediction function, and this
+could be the target statistical estimand, or a component of a target statistical
+estimand. SL is an algorithm that uses cross-validation and a loss function to
+estimate a prediction function based on a weighted combination of a library of
+machine learning algorithms.</p>
+<p>The library of machine learning algorithms in the SL consists of estimators
+(“learners” in the <code>sl3</code> nomenclature) that align with the knowledge about the
+DGP. That is, the learners in the library need to respect the statistical model.
+Also, the library should be able to adapt to a diversity of possible forms for
+the DGP, which can be acheived by including a diversity of learners that range
+from parametric regression models to multi-step algorithms involving screening
+covariates, penalizations, optimizing tuning parameters, etc.</p>
+<div class="whitebox">
+<div class="center">
+<p><strong>Keep in mind</strong></p>
+</div>
+<p>The learners in the SL library should be jusified in terms of the prediction
+problem, statistical model, data sparsity (e.g., number of independent samples,
+number of events for rare binary outcomes), and the number of covariates.</p>
+</div>
 <p>The ensembling of the collection of algorithms with weights (“metalearning” in
 the <code>sl3</code> nomenclature) has been shown to be adaptive and robust, even in small
 samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>. Asymptotically (i.e., as the sample size goes to
-infinity), the SL is proven to be as accurate as the best possible prediction
+infinity), SL is proven to be as accurate as the best possible prediction
 algorithm in the library <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
 <div id="step-by-step-overview" class="section level3">
 <h3>
 <span class="header-section-number">6.1.1</span> Step-by-step overview<a class="anchor" aria-label="anchor" href="#step-by-step-overview"><i class="fas fa-link"></i></a>
 </h3>
 <p>Consider the scenario in which we have <span class="math inline">\(n\)</span> independent and identically
-distributed observations in the data, and our data structure is not a time
-series. Also, let’s say we have <span class="math inline">\(k\)</span> number of candidate learners/algorithms.</p>
+distributed observations in the data. Also, let’s say <span class="math inline">\(k\)</span> number of learners
+are included the SL library.</p>
 <ol style="list-style-type: decimal">
 <li>
-<p>Create the validation data for all <span class="math inline">\(V=v\)</span> folds. Break up the data evenly
-into <span class="math inline">\(V=v\)</span> splits; such that no observation is contained more than one split,
-and the splits contain about the same number of observations (e.g., about
-<span class="math inline">\(n/V\)</span> observations in each split).</p>
+<p>Create the validation data for the <span class="math inline">\(V\)</span> folds by breaking up the data evenly
+into <span class="math inline">\(V\)</span> disjoint subsets, such that no observation is contained in more
+than one subset and each subset <span class="math inline">\(v\)</span> contains about the same number (roughly
+<span class="math inline">\(n/V\)</span>) observations.</p>
 <ul>
-<li>If a rare binary outcome (or highly important binary predictor, such as
-a treatment) is present in the data, we should consider making the
-prevalence of this binary outcome in the splits similar to the
-prevalence that exists in the data. We can achieve this by specifying,
-for the <code>strata_ids</code> argument in <code><a href="http://tlverse.org/origami/reference/make_folds.html">origami::make_folds()</a></code>, the vector of
-binary outcomes (or important binary covariate).</li>
-<li>If we have repeated measures or cluster-level dependence in the data,
-then all observations within a subject/cluster should be placed in the
-same split.</li>
+<li>If the data contain a rare binary outcome (or highly important binary
+covariate, such as treatment/exposure), one should consider making the
+prevalence of this binary outcome in the <span class="math inline">\(V\)</span> folds similar to the
+prevalence that exists in the original data. This can be achieved
+by populating the <code>strata_ids</code> argument in the <code><a href="http://tlverse.org/origami/reference/make_folds.html">origami::make_folds()</a></code>
+function with the vector of binary outcomes (or important binary
+covariate). The returned list can then be passed as the <code>folds</code> argument
+in the <code>sl3_Task</code>.</li>
+<li>If the data contain clusters (e.g., repeated measures), then all
+observations in the same cluster should be placed in the same fold.
+This can be achieved by populating the <code>cluster_ids</code> argument in the
+<code><a href="http://tlverse.org/origami/reference/make_folds.html">origami::make_folds()</a></code> function with the vector of cluster identifiers.
+The returned list can then be passed as the <code>folds</code> argument in the
+<code>sl3_Task</code>.</li>
 </ul>
 </li>
 <li>
 <p>For each fold <span class="math inline">\(v\)</span>:</p>
 <ol style="list-style-type: lower-alpha">
-<li><p>Separate (i) from (ii):</p></li>
-<li>The data that was selected for fold <span class="math inline">\(v\)</span> in Step 1, which contains
-roughly <span class="math inline">\(n/V\)</span> total observations. We will refer to this subset of the
-data as the “validation” data, and it’s also commonly referred to as
-the “test” data. Let’s call <span class="math inline">\(n_{\text{validation}}\)</span> as the number of
-observations in then validation data,</li>
-</ol>
-<ol start="2" style="list-style-type: lower-roman">
-<li>The data that was NOT selected for fold <span class="math inline">\(v\)</span> in Step 1, which contains
-roughly <span class="math inline">\(n - n_{\text{validation}}\)</span> total observations. We will refer
-to this subset of the data as the “training”, and
-<span class="math inline">\(n_{\text{training}}\)</span> as the number of observations in the training
-data.</li>
-</ol>
-<ol start="2" style="list-style-type: lower-alpha">
-<li>Fit each of the <span class="math inline">\(k\)</span> learners on the training data (ii).</li>
-<li>Using each of the <span class="math inline">\(k\)</span> trained learners, predict the outcomes in the
-validation data (i). We can call these predictions
-“cross-validated predictions”; since they were obtained from the
-validation sample’s covariate information, which was never seen while
-fitting these models. We end up with a <span class="math inline">\(n_{validation} \times k\)</span>
-matrix of cross-validated predictions.</li>
+<li>
+<p>Separate (i) from (ii):</p>
+<ol style="list-style-type: lower-roman">
+<li>The data that was included in the disjoint subset for fold <span class="math inline">\(v\)</span> in Step
+1, which contains roughly <span class="math inline">\(n/V\)</span> total observations. We will refer to
+this portion of the data as fold <span class="math inline">\(v\)</span>’s “validation” data, and
+<span class="math inline">\(n_{\text{validation}}\)</span> as the number of observations in the
+validation data in the <span class="math inline">\(v^{\text{th}}\)</span> fold.</li>
 </ol>
 </li>
-<li>Bind together the rows of all <span class="math inline">\(v\)</span> <span class="math inline">\(n_{validation} \times k\)</span> matrices of
+</ol>
+<ol start="2" style="list-style-type: lower-roman">
+<li>The data that was <em>not</em> included in the disjoint subset for fold <span class="math inline">\(v\)</span>
+in Step 1, which contains <span class="math inline">\(n - n_{\text{validation}}\)</span> total
+observations. We will refer to this portion of the data as fold <span class="math inline">\(v\)</span>’s
+“training” data, and <span class="math inline">\(n_{\text{training}}\)</span> as the number of
+observations in the training data for the <span class="math inline">\(v^{\text{th}}\)</span> fold.</li>
+</ol>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>Fit each of the <span class="math inline">\(k\)</span> learners on the training data (ii) to obtain <span class="math inline">\(k\)</span>
+estimators of the prediction function. Here, each of the <span class="math inline">\(k\)</span> learners
+employs their various strategies to map the training data, consisting of
+<span class="math inline">\(n_{\text{training}}\)</span> records with input variables (covariates) and an
+output variable (outcome), into a prediction function.</li>
+<li>Use the <span class="math inline">\(k\)</span> trained learners created in the previous step to map the
+validation data covariates, which represent a new set of input variables,
+into predicted outcomes. This results in an <span class="math inline">\(n_{validation} \times k\)</span>
+matrix of so-called “cross-validated predictions”. Since the <span class="math inline">\(k\)</span>
+estimators were not trained using the validation data’s outcomes, the
+predictions based on the validation data’s covariate information can be
+used as a fair means to evaluate the <span class="math inline">\(k\)</span> estimator’s performance.</li>
+</ol>
+</li>
+<li>Bind together the rows of all <span class="math inline">\(V\)</span> <span class="math inline">\(n_{validation} \times k\)</span> matrices of
 cross-validated predictions, to obtain an <span class="math inline">\(n \times k\)</span> matrix of
 cross-validated predictions. This matrix <span class="math inline">\(n \times k\)</span> matrix of
 cross-validated predictions is often referred to as the
-“level-one” or “Z” matrix.</li>
-<li>Retain the observed outcome <span class="math inline">\(Y\)</span> for all of the <span class="math inline">\(n\)</span> observations, using
+“level-one” or “meta-level” dataset.</li>
+<li>Retain the observed outcomes (<span class="math inline">\(Y\)</span>) for all of the <span class="math inline">\(n\)</span> observations and use
 them to measure the “loss” of each cross-validated prediction
 (e.g., (<span class="math inline">\(Y - \hat{Y}^2\)</span>).</li>
-<li>For each <span class="math inline">\(k\)</span> column, take the (potentially weighted) mean across all of the
-<span class="math inline">\(n\)</span> losses, which we call the “cross-validated empirical risk”. The
-cross-validated empirical risk provides measure of performance, summarized
-across all <span class="math inline">\(n\)</span>, for each of the <span class="math inline">\(k\)</span> learners. The weights that could be
-incorporated in the data, and used to calculate a weighted mean, serve to
-to up weight or down weight samples whose loss should be considered less or
-more important, respectively.</li>
+<li>For each <span class="math inline">\(k\)</span> column, take the mean across all of the <span class="math inline">\(n\)</span> losses, which we
+call the “cross-validated empirical risk”. The cross-validated empirical
+risk provides, for each of the <span class="math inline">\(k\)</span> learners, a summarized measure of
+performance across all of the <span class="math inline">\(n\)</span> observations. Note that if there are
+observational-level weights in the data, then these will be taken into
+account (i) in the cross-validated empirical risk via calculation of a
+weighted mean across all of the <span class="math inline">\(n\)</span> losses, and (ii) in training the
+learners, but only for learners that support weights. One can specify
+observational-level weights in <code>sl3</code> by populating <code>weights</code> argument in
+the <code>sl3_Task</code> with the column name in the data (character) that contains
+them.</li>
 <li>
-<p>Establish the ensemble/combination of the <span class="math inline">\(k\)</span> learners by fitting the
-so-called “metalearner”. The ensemble is just a weighted combination of
-the learners, so the weights here are just a <span class="math inline">\(k\)</span>-dimensional vector. The
-metalearner is a function that decides on the weights to be assigned to
+<p>Fit the so-called “metalearner” to establish the weighted combination (a
+<span class="math inline">\(k\)</span>-dimensional vector) of the <span class="math inline">\(k\)</span> learners. The metalearner
+is a function that decides on the weights to be assigned to
 each of the <span class="math inline">\(k\)</span> learners; taking as input the cross-validated empirical risk
-for all <span class="math inline">\(k\)</span> learners (a), or taking as input a loss function and the Z
-matrix (b).</p>
+for all <span class="math inline">\(k\)</span> learners (a), or taking as input a loss function and the meta-level dataset (b).</p>
 <ol style="list-style-type: lower-alpha">
 <li>The discrete SL (or cross-validated selector) employs a simple
 metalearner that takes as input the cross-validated empirical risk for
@@ -1587,7 +1605,7 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
 <a class="sourceLine" id="cb55-76" data-line-number="76"></a>
 <a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.011723</span> secs</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012502</span> secs</a>
 <a class="sourceLine" id="cb55-79" data-line-number="79"></a>
 <a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
 <a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
@@ -3631,7 +3649,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 10, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 16, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

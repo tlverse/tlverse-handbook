@@ -4,10 +4,9 @@ _Nima Hejazi_ and _Rachael Phillips_
 
 Updated: 2021-06-16
 
-\begin{VT1}
-\VH{Learning Objectives}
 
 
+## Learning Objectives {-}
 
 In this chapter, we provide guidance on how to
 
@@ -19,7 +18,7 @@ In this chapter, we provide guidance on how to
    implications: i.i.d., consistency, no unmeasured confounding, interference,
    positivity.
 
-\end{VT1}
+
 
 ## Introduction {-}
 
@@ -290,9 +289,7 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-
-
-\begin{center}\includegraphics[width=0.8\linewidth]{02-roadmap_files/figure-latex/simple-DAG-1} \end{center}
+<img src="02-roadmap_files/figure-html/simple-DAG-1.png" width="80%" style="display: block; margin: auto;" />
 
 While DAGs like the above provide a convenient means by which to visualize
 causal relations between variables, the same causal relations among variables
