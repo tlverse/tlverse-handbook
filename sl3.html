@@ -71,7 +71,7 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-06-16</p>
+<p>Updated: 2021-06-21</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
@@ -163,19 +163,38 @@ Also, the library should be able to adapt to a diversity of possible forms for
 the DGP, which can be acheived by including a diversity of learners that range
 from parametric regression models to multi-step algorithms involving screening
 covariates, penalizations, optimizing tuning parameters, etc.</p>
-<div class="whitebox">
-<div class="center">
-<p><strong>Keep in mind</strong></p>
-</div>
 <p>The learners in the SL library should be jusified in terms of the prediction
 problem, statistical model, data sparsity (e.g., number of independent samples,
 number of events for rare binary outcomes), and the number of covariates.</p>
-</div>
 <p>The ensembling of the collection of algorithms with weights (“metalearning” in
 the <code>sl3</code> nomenclature) has been shown to be adaptive and robust, even in small
 samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>. Asymptotically (i.e., as the sample size goes to
 infinity), SL is proven to be as accurate as the best possible prediction
 algorithm in the library <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
+<p>Above, it was mentioned that the library should contain functions that are<br>
+align with the knowledge about the DGP. This means that the candidate algorithms
+in the library should aim to coincide with subject-matter knowledge about the
+experiment that generated the data. For example, suppose it is known that the
+outcome cannot take certain values, e.g., the outcome is always a positive
+real number. First, the statistical model should be constrained to reflect these
+outcome bounds. Later, the learners in the SL library should be constructed such
+that they respect the bounds. This will guarantee that the SL respects the
+bounds as well, but only if the SL is a discrete SL or an ensemble SL with a
+convex combination of the weights. For learners that allow link functions
+(e.g., generalized elastic-net regression models), different link functions can
+be chosen to match known outcome bounds. If a learner does not support link
+functions, or some other bounding criteria for model fitting, then there is a
+possibility that the learner will yield predictions that fall outside of known
+outcome bounds. In this scenario, the predictions that are not within known
+bounds could be trucated, which might be fine for learners that seldomly produce
+predictions which violate the bounds.</p>
+<p>In general, the use of link function(s) is more sensible, since it formulates a
+model for the function that respects the statistical model, and then optimizes
+the fit in that model. The truncation option optimizes in a model that’s too
+big, losing information, and then corrects ad hoc. However, it might be
+limiting to only include learners that support some desired link function
+(e.g., a library of several logistic regression models), since a diversity of
+possible DGPs might not be captured by this library.</p>
 <div id="step-by-step-overview" class="section level3">
 <h3>
 <span class="header-section-number">6.1.1</span> Step-by-step overview<a class="anchor" aria-label="anchor" href="#step-by-step-overview"><i class="fas fa-link"></i></a>
@@ -1605,7 +1624,7 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
 <a class="sourceLine" id="cb55-76" data-line-number="76"></a>
 <a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012502</span> secs</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.011815</span> secs</a>
 <a class="sourceLine" id="cb55-79" data-line-number="79"></a>
 <a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
 <a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
@@ -3649,7 +3668,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 16, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 21, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
