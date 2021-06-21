@@ -1,10 +1,11 @@
 # Welcome to the `tlverse` {#tlverse}
 
-Updated: 2021-06-16
+Updated: 2021-06-21
+
+\begin{VT1}
+\VH{Learning Objectives}
 
 
-
-## Learning Objectives {-}
 
 This chapter introduces the `tlverse` software ecosystem, including
 
@@ -14,7 +15,7 @@ This chapter introduces the `tlverse` software ecosystem, including
 4. Understanding the Targeted Learning roadmap.
 5. Learning about the WASH Benefits example data.
 
-
+\end{VT1}
 
 ## What is the `tlverse`? {-}
 
