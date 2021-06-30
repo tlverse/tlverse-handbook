@@ -6,7 +6,7 @@ Based on the [`tmle3mediate` `R`
 package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
 Duncan, and David McCoy_.
 
-Updated: 2021-06-21
+Updated: 2021-06-30
 
 
 

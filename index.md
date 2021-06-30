@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "June 21, 2021"
+date: "June 30, 2021"
 documentclass: krantz
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -215,7 +215,7 @@ following packages:
 |readr        |1.4.0      |CRAN (R 4.0.2)                         |
 |rmarkdown    |2.8        |CRAN (R 4.0.2)                         |
 |skimr        |2.1.3      |CRAN (R 4.0.2)                         |
-|sl3          |1.4.3      |Github (tlverse/sl3\@8429751)          |
+|sl3          |1.4.3      |Github (tlverse/sl3\@aeeb7e9)          |
 |stringr      |1.4.0      |CRAN (R 4.0.2)                         |
 |tibble       |3.1.2      |CRAN (R 4.0.2)                         |
 |tidyr        |1.1.3      |CRAN (R 4.0.2)                         |
