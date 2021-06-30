@@ -1917,3 +1917,12 @@
 \endinput
 %%
 %% End of file `krantz.cls'.
+
+
+\newtcolorbox{whitebox}{
+  colback=white,
+  colframe=orange,
+  coltext=black,
+  boxsep=5pt,
+  arc=4pt
+  }

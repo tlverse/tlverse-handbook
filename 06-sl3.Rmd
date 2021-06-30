@@ -50,8 +50,8 @@ By the end of this chapter you will be able to:
 - The Super Learner (SL) solves this issue of algorithm selection by allowing
   an ensemble of algorithms, from the simplest (intercept-only) to most 
   complex (neural nets, tree-based methods, support vector machines, etc.).
-- SL works by using cross-validation in a manner that guarantees the
-  resulting fit will be as good as possible, given the learners provided.
+- SL works by using cross-validation in a manner that theoretically guarantees 
+  the resulting fit will be as good as possible, given the learners provided.
 
 ## Introduction
 
@@ -60,125 +60,164 @@ Learning_](#roadmap) as a general template to translate real-world data
 applications into formal statistical estimation problems. The first steps of
 this roadmap define the *statistical estimation problem*, which establish
 
-1. Data as a random variable, or equivalently, a realization of a particular
-   experiment/study. We assume the observations in the data are independent and
-   identically distributed.
-2. A statistical model as the set of possible probability distributions that
-   could have given rise to the observed data.
-3. A translation of the scientific question, which is often causal, into a
-   target estimand.
+1. The data $O$ as a random variable, or equivalently, a realization of a 
+   particular experiment/study, which has probability distribution $P_0$. This 
+   probablity distribution $P_0$ of $O$ is also commonly referred to as the 
+   data-generating process (DGP) and the data-generating distribution (DGD).
+   The data structure $O$ is comprised of variables, such as a vector of 
+   covariates $W$, a treatment or exposure $A$, and an outcome $Y$, 
+   $O=(W,A,Y) \sim P_0$. We often observe the random variable $O$ $n$ times 
+   by repeating the common experiment $n$ times. For example, the 
+   $O_1,\ldots, O_n$ random variables could result from a randomly sampling $n$ 
+   units from a population, collecting baseline characteristics $W$, assigning 
+   exposure $A$, and later measuring an outcome $Y$. 
+2. A statistical model $\mathcal{M}$ as a set of possible probability 
+   distributions that could have given rise to the data, which is specified such 
+   that $P_0$ is known to be an element of $\mathcal{M}$. 
+3. A translation of the (often causal) scientific question into a function of 
+   $P_0$, the target statistical estimand.
 
-Note that if the estimand is causal, step 3 also requires establishing
-identifiability of the estimand from the observed data, under possible
-non-testable assumptions that may not necessarily be reasonable. Still, the
-target quantity does have a valid statistical interpretation. See [causal target
-parameters](#causal) for more detail on causal models and identifiability.
+Note that, if the scientific question is causal, then it's translation will 
+produce a target *causal* estimand. Another layer of translation, 
+identifiability, is required to arrive at a target *statistical* estimand. See 
+[causal target parameters](#causal) for more detail on causal models and 
+identifiability. 
 
-Now that we have defined the statistical estimation problem, we are ready to
-construct the TMLE; an asymptotically linear and efficient substitution
-estimator of this estimand. The first step in this estimation procedure is an
-initial estimate of the data-generating distribution, or the relevant part of
-this distribution that is needed to evaluate the target parameter. For this
-initial estimation, we use the Super Learner (SL) [@vdl2007super].
+Once the statistical estimation problem has been defined, then estimator can be 
+constructed. SL provides an important step in creating a robust estimator. We 
+will use it to obtain an estimator for a desired prediction function, and this
+could be the target statistical estimand, or a component of a target statistical 
+estimand. SL is an algorithm that uses cross-validation and a loss function to 
+estimate a prediction function based on a weighted combination of a library of 
+machine learning algorithms. 
 
-The SL provides an important step in creating a robust estimator. It is a loss
-function based tool that uses cross-validation to obtain an estimator for a
-desired prediction function (which may be a component of our target estimand),
-based on a weighted combination of a library of machine learning algorithms.
-The library of machine learning algorithms consists of functions ("learners" in
-the `sl3` nomenclature) that we think might be consistent with the true
-data-generating distribution. Also, the library should contain a diversity of
-algorithms that range from parametric regression models to multi-step algorithms
-involving screening covariates, penalizations, optimizing tuning parameters,
-etc. See flowchart in [ADD REF TO SL GUIDANCE PAPER], which provides a visual
-representation of the sequence of steps for constructing a Super Learner in
-practice, discussing all arguments and recommending specific inputs. (Maybe
-include flowchart here too, if that's allowed?) 
+The library of machine learning algorithms in the SL consists of estimators 
+("learners" in the `sl3` nomenclature) that align with the knowledge about the 
+DGP. That is, the learners in the library need to respect the statistical model. 
+Also, the library should be able to adapt to a diversity of possible forms for 
+the DGP, which can be acheived by including a diversity of learners that range 
+from parametric regression models to multi-step algorithms involving screening 
+covariates, penalizations, optimizing tuning parameters, etc. 
 
-`r if (knitr::is_latex_output()) '\\begin{shortbox}\n\\Boxhead{Constructing a library that is consistent with the data-generating distribution}'`
-We mentioned above that the library should contain functions that are  
-"consistent with the true data-generating distribution". This means that 
-the candidate algorithms in the library should not violate subject-matter 
-knowledge about the experiment that generated the data. For example, suppose it 
-is known that the outcome is strictly positive, and we see that an algorithm is 
-producing negative predictions. In this scenario, that algorithm would not be 
-consistent with the true data-generating distribution. We could truncate all
-negative predictions to be 0, or slightly greater than 0, which would be fine 
-for an algorithm that seldomly produces negative predictions [ADD REF]. (Do 
-you recommend this?)
-`r if (knitr::is_latex_output()) '\\end{shortbox}'`
+`r if (knitr::is_latex_output()) '\\begin{VT1}\n\\VH{Keep in mind}'`
+The learners in the SL library should be jusified in terms of the prediction 
+problem, statistical model, data sparsity (e.g., number of independent samples, 
+number of events for rare binary outcomes), and the number of covariates. 
+`r if (knitr::is_latex_output()) '\\end{VT1}'`
 
 The ensembling of the collection of algorithms with weights ("metalearning" in
 the `sl3` nomenclature) has been shown to be adaptive and robust, even in small
 samples [@polley2010super]. Asymptotically (i.e., as the sample size goes to 
-infinity), the SL is proven to be as accurate as the best possible prediction 
+infinity), SL is proven to be as accurate as the best possible prediction 
 algorithm in the library [@vdl2003unified; @vaart2006oracle]. 
+
+`r if (knitr::is_latex_output()) '\\begin{shortbox}\n\\Boxhead{Constructing a library that respects the statistical model}'`
+Above, it was mentioned that the library should contain functions that are  
+align with the knowledge about the DGP. This means that the candidate algorithms 
+in the library should aim to coincide with subject-matter knowledge about the 
+experiment that generated the data. For example, suppose it is known that the 
+outcome cannot take certain values, e.g., the outcome is always a positive 
+real number. First, the statistical model should be constrained to reflect these 
+outcome bounds. Later, the learners in the SL library should be constructed such 
+that they respect the bounds. This will guarantee that the SL respects the 
+bounds as well, but only if the SL is a discrete SL or an ensemble SL with a 
+convex combination of the weights. For learners that allow link functions 
+(e.g., generalized elastic-net regression models), different link functions can 
+be chosen to match known outcome bounds. If a learner does not support link 
+functions, or some other bounding criteria for model fitting, then there is a 
+possibility that the learner will yield predictions that fall outside of known 
+outcome bounds. In this scenario, the predictions that are not within known 
+bounds could be trucated, which might be fine for learners that seldomly produce 
+predictions which violate the bounds. 
+
+In general, the use of link function(s) is more sensible, since it formulates a 
+model for the function that respects the statistical model, and then optimizes 
+the fit in that model. The truncation option optimizes in a model that's too 
+big, losing information, and then corrects ad hoc. However, it might be 
+limiting to only include learners that support some desired link function 
+(e.g., a library of several logistic regression models), since a diversity of 
+possible DGPs might not be captured by this library. 
+`r if (knitr::is_latex_output()) '\\end{shortbox}'`
 
 ### Step-by-step overview
 
 Consider the scenario in which we have $n$ independent and identically
-distributed observations in the data, and our data structure is not a time
-series. Also, let's say we have $k$ number of candidate learners/algorithms.
+distributed observations in the data. Also, let's say $k$ number of learners 
+are included the SL library.
 
-1. Create the validation data for all $V=v$ folds. Break up the data evenly
-   into $V=v$ splits; such that no observation is contained more than one split,
-   and the splits contain about the same number of observations (e.g., about
-   $n/V$ observations in each split).
+1. Create the validation data for the $V$ folds by breaking up the data evenly
+   into $V$ disjoint subsets, such that no observation is contained in more 
+   than one subset and each subset $v$ contains about the same number (roughly 
+   $n/V$) observations.
 
-    + If a rare binary outcome (or highly important binary predictor, such as
-      a treatment) is present in the data, we should consider making the
-      prevalence of this binary outcome in the splits similar to the
-      prevalence that exists in the data. We can achieve this by specifying,
-      for the `strata_ids` argument in `origami::make_folds()`, the vector of
-      binary outcomes (or important binary  covariate).
-    + If we have repeated measures or cluster-level dependence in the data,
-      then all observations within a subject/cluster should be placed in the
-      same split.
+    + If the data contain a rare binary outcome (or highly important binary 
+      covariate, such as treatment/exposure), one should consider making the 
+      prevalence of this binary outcome in the $V$ folds similar to the 
+      prevalence that exists in the original data. This can be achieved 
+      by populating the `strata_ids` argument in the `origami::make_folds()` 
+      function with the vector of binary outcomes (or important binary 
+      covariate). The returned list can then be passed as the `folds` argument 
+      in the `sl3_Task`.
+    + If the data contain clusters (e.g., repeated measures), then all 
+      observations in the same cluster should be placed in the same fold. 
+      This can be achieved by populating the `cluster_ids` argument in the 
+      `origami::make_folds()` function with the vector of cluster identifiers. 
+      The returned list can then be passed as the `folds` argument in the 
+      `sl3_Task`.
 
 2. For each fold $v$:
 
     a. Separate (i) from (ii):
 
-      i. The data that was selected for fold $v$ in Step 1, which contains
-         roughly $n/V$ total observations. We will refer to this subset of the
-         data as the "validation" data, and it's also commonly referred to as
-         the "test" data. Let's call $n_{\text{validation}}$ as the number of
-         observations in then validation data,
-      ii. The data that was NOT selected for fold $v$ in Step 1, which contains
-          roughly $n - n_{\text{validation}}$ total observations. We will refer
-          to this subset of the data as the "training", and
-          $n_{\text{training}}$ as the number of observations in the training
-          data.
-    b. Fit each of the $k$ learners on the training data (ii).
-    c. Using each of the $k$ trained learners, predict the outcomes in the
-       validation data (i). We can call these predictions
-       "cross-validated predictions"; since they were obtained from the
-       validation sample's covariate information, which was never seen while
-       fitting these models. We end up with a $n_{validation} \times k$
-       matrix of cross-validated predictions.
+       i. The data that was included in the disjoint subset for fold $v$ in Step 
+          1, which contains roughly $n/V$ total observations. We will refer to 
+          this portion of the data as fold $v$'s "validation" data, and 
+          $n_{\text{validation}}$ as the number of observations in the 
+          validation data in the $v^{\text{th}}$ fold. 
+          
+      ii. The data that was *not* included in the disjoint subset for fold $v$ 
+          in Step 1, which contains $n - n_{\text{validation}}$ total 
+          observations. We will refer to this portion of the data as fold $v$'s 
+          "training" data, and $n_{\text{training}}$ as the number of 
+          observations in the training data for the $v^{\text{th}}$ fold.
+          
+    b. Fit each of the $k$ learners on the training data (ii) to obtain $k$ 
+       estimators of the prediction function. Here, each of the $k$ learners 
+       employs their various strategies to map the training data, consisting of 
+       $n_{\text{training}}$ records with input variables (covariates) and an 
+       output variable (outcome), into a prediction function. 
+    c. Use the $k$ trained learners created in the previous step to map the 
+       validation data covariates, which represent a new set of input variables, 
+       into predicted outcomes. This results in an $n_{validation} \times k$ 
+       matrix of so-called "cross-validated predictions". Since the $k$ 
+       estimators were not trained using the validation data's outcomes, the 
+       predictions based on the validation data's covariate information can be 
+       used as a fair means to evaluate the $k$ estimator's performance.
 
- 3. Bind together the rows of all $v$ $n_{validation} \times k$ matrices of
+ 3. Bind together the rows of all $V$ $n_{validation} \times k$ matrices of
     cross-validated predictions, to obtain an $n \times k$ matrix of
     cross-validated predictions. This matrix $n \times k$ matrix of
     cross-validated predictions is often referred to as the
-    "level-one" or "Z" matrix.
- 4. Retain the observed outcome $Y$ for all of the $n$ observations, using
+    "level-one" or "meta-level" dataset.
+ 4. Retain the observed outcomes ($Y$) for all of the $n$ observations and use
     them to measure the "loss" of each cross-validated prediction
     (e.g., ($Y - \hat{Y}^2$).
- 5. For each $k$ column, take the (potentially weighted) mean across all of the
-    $n$ losses, which we call the "cross-validated empirical risk". The
-    cross-validated empirical risk provides measure of performance, summarized
-    across all $n$, for each of the $k$ learners. The weights that could be
-    incorporated in the data, and used to calculate a weighted mean, serve to
-    to up weight or down weight samples whose loss should be considered less or
-    more important, respectively.
- 6. Establish the ensemble/combination of the $k$ learners by fitting the
-    so-called "metalearner". The ensemble is just a weighted combination of
-    the learners, so the weights here are just a $k$-dimensional vector. The
-    metalearner is a function that decides on the weights to be assigned to
+ 5. For each $k$ column, take the mean across all of the $n$ losses, which we 
+    call the "cross-validated empirical risk". The cross-validated empirical 
+    risk provides, for each of the $k$ learners, a summarized measure of 
+    performance across all of the $n$ observations. Note that if there are 
+    observational-level weights in the data, then these will be taken into 
+    account (i) in the cross-validated empirical risk via calculation of a 
+    weighted mean across all of the $n$ losses, and (ii) in training the 
+    learners, but only for learners that support weights. One can specify 
+    observational-level weights in `sl3` by populating `weights` argument in 
+    the `sl3_Task` with the column name in the data (character) that contains
+    them.
+ 6. Fit the so-called "metalearner" to establish the weighted combination (a 
+    $k$-dimensional vector) of the $k$ learners. The metalearner 
+    is a function that decides on the weights to be assigned to
     each of the $k$ learners; taking as input the cross-validated empirical risk
-    for all $k$ learners (a), or taking as input a loss function and the Z
-    matrix (b).
+    for all $k$ learners (a), or taking as input a loss function and the meta-level dataset (b).
 
      a. The discrete SL (or cross-validated selector) employs a simple
         metalearner that takes as input the cross-validated empirical risk for
