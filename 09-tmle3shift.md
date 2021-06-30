@@ -7,9 +7,10 @@ by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
 Updated: 2021-06-30
 
+\begin{VT1}
+\VH{Learning Objectives}
 
 
-## Learning Objectives {-}
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
    treatment regimes.
@@ -30,7 +31,7 @@ Updated: 2021-06-30
 9. Define novel shift intervention functions to extend the `tmle3shift` `R`
    package.
 
-
+\end{VT1}
 
 ## Introduction to Stochastic Interventions
 
@@ -259,16 +260,20 @@ give a recipe:
      (\#eq:tmle)
    \end{equation}
 
-
+<!--
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-<div class="figure" style="text-align: center">
-<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
-</div>
+\begin{figure}
 
+{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
+}
+
+\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
+\end{figure}
+
+-->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
@@ -443,7 +448,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
+Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
