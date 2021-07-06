@@ -71,7 +71,7 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-06-30</p>
+<p>Updated: 2021-07-06</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
@@ -88,16 +88,16 @@ modeling algorithm.</li>
 <li>Fit an ensemble with nested cross-validation to obtain an estimate of the
 performance of the ensemble itself.</li>
 <li>Obtain <code>sl3</code> variable importance metrics.</li>
-<li>Interpret the discrete and continuous Super Learner fits.’`</li>
+<li>Interpret the discrete and continuous Super Learner fits.</li>
 </ol>
 </div>
 <div id="motivation" class="section level2 unnumbered">
 <h2>Motivation<a class="anchor" aria-label="anchor" href="#motivation"><i class="fas fa-link"></i></a>
 </h2>
 <ul>
-<li>A common task in data analysis is prediction – using the observed data to
-learn a function, which can be used to map new input variables into a
-predicted outcome.
+<li>A common task in data analysis is prediction – using the observed data (input
+variables and outcomes) to learn a function that can map new input variables
+into a predicted outcome.
 <!--
   Oftentimes, the scientific question of interest translates to a statistical
   question that requires (causal) effect estimation. Even in these scenarios,
@@ -105,17 +105,18 @@ predicted outcome.
   embedded in the procedure.
   --->
 </li>
-<li>For some data, algorithms that can learn a complex function are necessary to
-adequately model the data. For other data, main terms regression models might
-fit the data quite well.</li>
+<li>For some data, algorithms that learn complex relationships between variables
+are necessary to adequately model the data. For other data, main terms
+regression models might fit the data quite well.</li>
 <li>It is generally impossible to know a priori which algorithm will be the best
 for a given data set and prediction problem. It’s like picking the winner of
 <em>The Great British Bake Off</em> at the start of the first week!</li>
-<li>The Super Learner (SL) solves this issue of algorithm selection by allowing
-an ensemble of algorithms, from the simplest (intercept-only) to most
+<li>The Super Learner solves this issue of algorithm selection by creating an
+ensemble of many algorithms, from the simplest (intercept-only) to most
 complex (neural nets, tree-based methods, support vector machines, etc.).</li>
-<li>SL works by using cross-validation in a manner that theoretically guarantees
-the resulting fit will be as good as possible, given the learners provided.</li>
+<li>Super Learner works by using cross-validation in a manner that theoretically
+(asymptotically) guarantees the resulting fit will be as good as possible,
+given the algorithms provided.</li>
 </ul>
 </div>
 <div id="introduction-2" class="section level2">
@@ -129,65 +130,101 @@ this roadmap define the <em>statistical estimation problem</em>, which establish
 <ol style="list-style-type: decimal">
 <li>The data <span class="math inline">\(O\)</span> as a random variable, or equivalently, a realization of a
 particular experiment/study, which has probability distribution <span class="math inline">\(P_0\)</span>. This
-probablity distribution <span class="math inline">\(P_0\)</span> of <span class="math inline">\(O\)</span> is also commonly referred to as the
-data-generating process (DGP) and the data-generating distribution (DGD).
-The data structure <span class="math inline">\(O\)</span> is comprised of variables, such as a vector of
-covariates <span class="math inline">\(W\)</span>, a treatment or exposure <span class="math inline">\(A\)</span>, and an outcome <span class="math inline">\(Y\)</span>,
-<span class="math inline">\(O=(W,A,Y) \sim P_0\)</span>. We often observe the random variable <span class="math inline">\(O\)</span> <span class="math inline">\(n\)</span> times
-by repeating the common experiment <span class="math inline">\(n\)</span> times. For example, the
-<span class="math inline">\(O_1,\ldots, O_n\)</span> random variables could result from a randomly sampling <span class="math inline">\(n\)</span>
-units from a population, collecting baseline characteristics <span class="math inline">\(W\)</span>, assigning
-exposure <span class="math inline">\(A\)</span>, and later measuring an outcome <span class="math inline">\(Y\)</span>.</li>
+is written <span class="math inline">\(O \sim P_0\)</span>, and <span class="math inline">\(P_0\)</span> is also commonly referred to as the
+data-generating process (DGP) and also the data-generating distribution
+(DGD). The data structure <span class="math inline">\(O\)</span> is comprised of variables, such as a
+vector of covariates <span class="math inline">\(W\)</span>, a treatment or exposure <span class="math inline">\(A\)</span> and an outcome <span class="math inline">\(Y\)</span>,
+<span class="math inline">\(O=(W,A,Y) \sim P_0\)</span>. We often observe the random variable <span class="math inline">\(O\)</span> <span class="math inline">\(n\)</span> times by
+repeating the common experiment <span class="math inline">\(n\)</span> times. For example, <span class="math inline">\(O_1,\ldots, O_n\)</span>
+random variables could be the result of a random sample of <span class="math inline">\(n\)</span> subjects from
+a population, collecting baseline characteristics <span class="math inline">\(W\)</span>, randomly assigning
+treatment <span class="math inline">\(A\)</span>, and then later measuring an outcome <span class="math inline">\(Y\)</span>.</li>
 <li>A statistical model <span class="math inline">\(\mathcal{M}\)</span> as a set of possible probability
-distributions that could have given rise to the data, which is specified such
-that <span class="math inline">\(P_0\)</span> is known to be an element of <span class="math inline">\(\mathcal{M}\)</span>.</li>
+distributions that could have given rise to the data, which is specified
+realistically, such that <span class="math inline">\(P_0\)</span> is guaranteed reside in the statistical model,
+<span class="math inline">\(P_0 \in \mathcal{M}\)</span>. Continuing the example in step 1, the following
+restrictions could be placed on the statistical model: the
+<span class="math inline">\(O_1, \ldots, O_n\)</span> observations in the data are independent and identically
+distributed (i.i.d.), the assignment of treatment <span class="math inline">\(A\)</span> was random and not
+based on covariates <span class="math inline">\(W\)</span>. These restrictions on the statistical model
+<span class="math inline">\(\mathcal{M}\)</span> are realistic, since they are only based on facts about the
+experiment that generated the data; therefore, <span class="math inline">\(\mathcal{M}\)</span> is correctly
+specified since $P_0 <span class="math inline">\(\mathcal{M}\)</span>.</li>
 <li>A translation of the (often causal) scientific question into a function of
-<span class="math inline">\(P_0\)</span>, the target statistical estimand.</li>
+<span class="math inline">\(P_0\)</span>, the target statistical estimand <span class="math inline">\(\Psi(P_0)\)</span>. For example, we might be
+interested in the average, across baseline covariate strata for <span class="math inline">\(W\)</span>, of the
+difference in mean outcomes under treatment <span class="math inline">\(A=1\)</span> versus placebo <span class="math inline">\(A=0\)</span>:
+<span class="math inline">\(\Psi(P_0) = E_{P_0}[E_{P_0}(Y | A = 1, W) − E_{P_0}(Y | A = 0, W)]\)</span>. Note
+that, if the scientific question is causal, then it’s translation will
+produce a target <em>causal</em> estimand; another layer of translation,
+identifiability, is required to express the target causal estimand as a
+function of the observed data distribution <span class="math inline">\(P_0\)</span>. See <a href="intro.html#causal">causal target
+parameters</a> for more information on causal quantities, models and
+identifiability.</li>
 </ol>
-<p>Note that, if the scientific question is causal, then it’s translation will
-produce a target <em>causal</em> estimand. Another layer of translation,
-identifiability, is required to arrive at a target <em>statistical</em> estimand. See
-<a href="intro.html#causal">causal target parameters</a> for more detail on causal models and
-identifiability.</p>
-<p>Once the statistical estimation problem has been defined, then estimator can be
-constructed. SL provides an important step in creating a robust estimator. We
-will use it to obtain an estimator for a desired prediction function, and this
-could be the target statistical estimand, or a component of a target statistical
-estimand. SL is an algorithm that uses cross-validation and a loss function to
-estimate a prediction function based on a weighted combination of a library of
-machine learning algorithms.</p>
-<p>The library of machine learning algorithms in the SL consists of estimators
-(“learners” in the <code>sl3</code> nomenclature) that align with the knowledge about the
-DGP. That is, the learners in the library need to respect the statistical model.
-Also, the library should be able to adapt to a diversity of possible forms for
-the DGP, which can be acheived by including a diversity of learners that range
-from parametric regression models to multi-step algorithms involving screening
-covariates, penalizations, optimizing tuning parameters, etc.</p>
-<p>The learners in the SL library should be jusified in terms of the prediction
-problem, statistical model, data sparsity (e.g., number of independent samples,
-number of events for rare binary outcomes), and the number of covariates.</p>
-<p>The ensembling of the collection of algorithms with weights (“metalearning” in
-the <code>sl3</code> nomenclature) has been shown to be adaptive and robust, even in small
-samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>. Asymptotically (i.e., as the sample size goes to
-infinity), SL is proven to be as accurate as the best possible prediction
-algorithm in the library <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>.</p>
-<p>Above, it was mentioned that the library should contain functions that are<br>
-align with the knowledge about the DGP. This means that the candidate algorithms
-in the library should aim to coincide with subject-matter knowledge about the
-experiment that generated the data. For example, suppose it is known that the
-outcome cannot take certain values, e.g., the outcome is always a positive
-real number. First, the statistical model should be constrained to reflect these
-outcome bounds. Later, the learners in the SL library should be constructed such
-that they respect the bounds. This will guarantee that the SL respects the
-bounds as well, but only if the SL is a discrete SL or an ensemble SL with a
-convex combination of the weights. For learners that allow link functions
-(e.g., generalized elastic-net regression models), different link functions can
-be chosen to match known outcome bounds. If a learner does not support link
-functions, or some other bounding criteria for model fitting, then there is a
-possibility that the learner will yield predictions that fall outside of known
-outcome bounds. In this scenario, the predictions that are not within known
-bounds could be trucated, which might be fine for learners that seldomly produce
-predictions which violate the bounds.</p>
+<p>Once the statistical estimation problem has been defined, then the estimator can
+be constructed. Estimators (also referred to as “algorithms” and “learners”)
+are functions that take as input the observed data and return as output an
+estimate of <span class="math inline">\(P_0\)</span>, or some feature of <span class="math inline">\(P_0\)</span> (such as a component of the target
+estimand). We will use the Super Learner (SL) algorithm to estimate a
+prediction function, and we will use the estimated prediction function to
+obtain predicted outcomes with new input data. Occasionally, the prediction
+function itself is the target estimand, but more often, it’s a component of a
+target estimand. For example, we might want to estimate the prediction
+function for <span class="math inline">\(E(Y|A,W)\)</span> (the conditional mean outcome, given treatment <span class="math inline">\(A\)</span> and
+baseline covariates <span class="math inline">\(W\)</span>), so we can predict what the outcomes would have been
+under a hypothetical scenario where all subjects received treatment <span class="math inline">\(A=1\)</span>.
+This learning paradigm corresponds to estimation of a component of the target
+statistical estimand mentioned in step 3 above.</p>
+<p>There are various strategies that estimators can employ to learn relationships
+from the observed data, and there is no “one fits all” algorithm in the world
+of real data analysis. However, the statistical properties of algorithms’
+(e.g., mean squared error) can be used to compare them. Therefore, algorithm
+selection should be driven criteria that have been (i) proven to optimize
+relevant statistical properties (e.g., provide theoretical guarantees) and (ii)
+shown to be reliable in practice (e.g., when sample size is finite). The SL is
+an algorithm that utilizes such a criteria, the cross-validation criterion
+<span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>, which is described in this Introduction’s
+subsection, <a href="sl3.html#sl3-theory">“Theoretical Foundations and Further Reading”</a>. Also,
+as an ensemble machine learning algorithm, SL leverages information learned
+from a variety of candidate algorithms by creating a weighted combination of
+them (i.e., metalearning). In summary, SL represents a practical approach for
+principled machine learning. It has been shown to be adaptive and robust, even
+in small samples <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>)</span>.</p>
+<div id="candidate-learners-and-ensembling" class="section level3">
+<h3>
+<span class="header-section-number">6.1.1</span> Candidate learners and ensembling<a class="anchor" aria-label="anchor" href="#candidate-learners-and-ensembling"><i class="fas fa-link"></i></a>
+</h3>
+<p>The set of algorithms considering by the SL (also referred to as “library”)
+should consist of those that align with what’s known about the DGP and what is
+not known about the DGP. In other words, the learners in the library should
+be tailored to respect the statistical model <span class="math inline">\(\mathcal{M}\)</span>, both in terms of</p>
+<ol style="list-style-type: decimal">
+<li>the restrictions placed on <span class="math inline">\(\mathcal{M}\)</span>, so the candidate algorithms
+represent functions that align with the knowledge about the DGP, and</li>
+<li>the vastness of <span class="math inline">\(\mathcal{M}\)</span>, so the library is able to adapt to a
+diversity of possible forms for the DGP, which can be acheived by including
+a variety of learning strategies (e.g., that range from parametric regression
+models to multi-step algorithms involving screening covariates,
+penalizations, optimizing tuning parameters, etc.)</li>
+</ol>
+<div id="example-respecting-known-bounds-on-the-outcome" class="section level4">
+<h4>
+<span class="header-section-number">6.1.1.1</span> Example: Respecting known bounds on the outcome<a class="anchor" aria-label="anchor" href="#example-respecting-known-bounds-on-the-outcome"><i class="fas fa-link"></i></a>
+</h4>
+<p>Suppose it is known that the outcome cannot take certain values,
+(e.g., the outcome is always a positive real number). The statistical model
+should be constrained to reflect these outcome bounds, and in order for the
+learners in the library to respect the statistical model, the learners should
+be constructed such that their predictions do not fall outside of the outcome
+bounds. For learners that allow link functions (e.g., generalized elastic-net
+regression models), different link functions can be chosen to match known
+outcome bounds. If a learner does not support link functions, or some other
+bounding criteria during model fitting, then there is a possibility that the
+learner will yield predictions that fall outside of known outcome bounds. In
+this scenario, the predictions that are not within known bounds could be
+truncated, which might be fine for learners that seldomly produce predictions
+that violate known outcome bounds.</p>
 <p>In general, the use of link function(s) is more sensible, since it formulates a
 model for the function that respects the statistical model, and then optimizes
 the fit in that model. The truncation option optimizes in a model that’s too
@@ -195,14 +232,32 @@ big, losing information, and then corrects ad hoc. However, it might be
 limiting to only include learners that support some desired link function
 (e.g., a library of several logistic regression models), since a diversity of
 possible DGPs might not be captured by this library.</p>
-<div id="step-by-step-overview" class="section level3">
+<p>Recall that SL is a weighted combination of this library of candidate
+algorithms, and not all weighted combinations are created equally. In order to
+ensure that the SL has the same bounds on the predictions as the candidates in
+the library, SL’s weighted combination should be a convex combination
+(i.e., weights are non-negative and sum to one). The most simple example of a
+convex combination would be the so-called “discrete SL” or
+“cross-validated selector”, which uses a metalearner that assigns a weight of
+one to the <em>best</em> candidate algorithm in the library, and a weight of zero to
+all others (where <em>best</em> is formally defined in the <a href="sl3.html#sl3-theory">Theoretical Foundations
+and Further Reading</a> subsection). More flexible metalearners,
+like the default metalearner in <code>sl3</code>, are those that allow multiple algorithms
+to have nonzero weights and still enforce a convex combination.</p>
+</div>
+</div>
+<div id="sl3-steps" class="section level3">
 <h3>
-<span class="header-section-number">6.1.1</span> Step-by-step overview<a class="anchor" aria-label="anchor" href="#step-by-step-overview"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.1.2</span> Step-by-step overview with V-fold cross-validation<a class="anchor" aria-label="anchor" href="#sl3-steps"><i class="fas fa-link"></i></a>
 </h3>
-<p>Consider the scenario in which we have <span class="math inline">\(n\)</span> independent and identically
-distributed observations in the data. Also, let’s say <span class="math inline">\(k\)</span> number of learners
-are included the SL library.</p>
-<ol style="list-style-type: decimal">
+<p>Consider the scenario in which we have <span class="math inline">\(n\)</span> i.i.d. observations in the data.
+Also, let’s say a total of <span class="math inline">\(K\)</span> learners are included the SL library.</p>
+<ol start="0" style="list-style-type: decimal">
+<li>Fit each <span class="math inline">\(k=1,\ldots,K\)</span> learner on the whole sample of <span class="math inline">\(n\)</span> observations to
+obtain <span class="math inline">\(K\)</span> so-called “full-fit” learners. The following steps are used to
+derive the weights/coefficients of the SL, which will later be used to obtain
+SL predictions, as a weighted combination of the full-fit learners’
+predictions.</li>
 <li>
 <p>Create the validation data for the <span class="math inline">\(V\)</span> folds by breaking up the data evenly
 into <span class="math inline">\(V\)</span> disjoint subsets, such that no observation is contained in more
@@ -247,64 +302,74 @@ observations. We will refer to this portion of the data as fold <span class="mat
 observations in the training data for the <span class="math inline">\(v^{\text{th}}\)</span> fold.</li>
 </ol>
 <ol start="2" style="list-style-type: lower-alpha">
-<li>Fit each of the <span class="math inline">\(k\)</span> learners on the training data (ii) to obtain <span class="math inline">\(k\)</span>
-estimators of the prediction function. Here, each of the <span class="math inline">\(k\)</span> learners
+<li>Fit each of the <span class="math inline">\(K\)</span> learners on the training data (ii) to obtain <span class="math inline">\(K\)</span>
+estimators of the prediction function. Here, each of the <span class="math inline">\(K\)</span> learners
 employs their various strategies to map the training data, consisting of
 <span class="math inline">\(n_{\text{training}}\)</span> records with input variables (covariates) and an
 output variable (outcome), into a prediction function.</li>
-<li>Use the <span class="math inline">\(k\)</span> trained learners created in the previous step to map the
+<li>Use the <span class="math inline">\(K\)</span> trained learners created in the previous step to map the
 validation data covariates, which represent a new set of input variables,
-into predicted outcomes. This results in an <span class="math inline">\(n_{validation} \times k\)</span>
-matrix of so-called “cross-validated predictions”. Since the <span class="math inline">\(k\)</span>
+into predicted outcomes. This results in an
+<span class="math inline">\(n_{\text{validation}} \times K\)</span>
+matrix of so-called “cross-validated predictions”. Since the <span class="math inline">\(K\)</span>
 estimators were not trained using the validation data’s outcomes, the
 predictions based on the validation data’s covariate information can be
 used as a fair means to evaluate the <span class="math inline">\(k\)</span> estimator’s performance.</li>
 </ol>
 </li>
-<li>Bind together the rows of all <span class="math inline">\(V\)</span> <span class="math inline">\(n_{validation} \times k\)</span> matrices of
-cross-validated predictions, to obtain an <span class="math inline">\(n \times k\)</span> matrix of
-cross-validated predictions. This matrix <span class="math inline">\(n \times k\)</span> matrix of
+<li>Bind together the rows of all <span class="math inline">\(V\)</span> <span class="math inline">\(n_{\text{validation}} \times K\)</span> matrices
+of cross-validated predictions, to obtain an <span class="math inline">\(n \times K\)</span> matrix of
+cross-validated predictions. This matrix <span class="math inline">\(n \times K\)</span> matrix of
 cross-validated predictions is often referred to as the
 “level-one” or “meta-level” dataset.</li>
-<li>Retain the observed outcomes (<span class="math inline">\(Y\)</span>) for all of the <span class="math inline">\(n\)</span> observations and use
-them to measure the “loss” of each cross-validated prediction
-(e.g., (<span class="math inline">\(Y - \hat{Y}^2\)</span>).</li>
-<li>For each <span class="math inline">\(k\)</span> column, take the mean across all of the <span class="math inline">\(n\)</span> losses, which we
-call the “cross-validated empirical risk”. The cross-validated empirical
-risk provides, for each of the <span class="math inline">\(k\)</span> learners, a summarized measure of
-performance across all of the <span class="math inline">\(n\)</span> observations. Note that if there are
-observational-level weights in the data, then these will be taken into
-account (i) in the cross-validated empirical risk via calculation of a
-weighted mean across all of the <span class="math inline">\(n\)</span> losses, and (ii) in training the
-learners, but only for learners that support weights. One can specify
-observational-level weights in <code>sl3</code> by populating <code>weights</code> argument in
-the <code>sl3_Task</code> with the column name in the data (character) that contains
-them.</li>
 <li>
-<p>Fit the so-called “metalearner” to establish the weighted combination (a
-<span class="math inline">\(k\)</span>-dimensional vector) of the <span class="math inline">\(k\)</span> learners. The metalearner
-is a function that decides on the weights to be assigned to
-each of the <span class="math inline">\(k\)</span> learners; taking as input the cross-validated empirical risk
-for all <span class="math inline">\(k\)</span> learners (a), or taking as input a loss function and the meta-level dataset (b).</p>
+<p>Fit the so-called “metalearner” to establish the weighted combination of
+the <span class="math inline">\(K\)</span> learners. The metalearner is a function that
+decides on the weights to be assigned to each of the <span class="math inline">\(K\)</span> learners,
+taking as input the <span class="math inline">\(n \times K\)</span> meta-level dataset of cross-validated
+predictions, the <span class="math inline">\(n\)</span>-length vector of observed outcomes, and if the
+metalearner is not equipped with an optimizer (such as discrete SL) then it
+will also take as input a loss or risk function. The metalearner outputs a
+<span class="math inline">\(K\)</span>-length vector of weights (also commonly referred to as coefficients),
+<span class="math inline">\(\bf{\Beta}=(\Beta_1,\ldots,\Beta_K)\)</span>.</p>
 <ol style="list-style-type: lower-alpha">
 <li>The discrete SL (or cross-validated selector) employs a simple
-metalearner that takes as input the cross-validated empirical risk for
-all <span class="math inline">\(k\)</span> learners. This metalearner assigns weight of 1 to the single
-learner with smallest cross-validated risk, and a weight of 0 to all
-other learners.</li>
-<li>The ensemble SL (often referred to as the “Super Learner”) employs
-metalearners that take as input the Z matrix, and the loss function of
-interest (unless the loss is implied by the metalearning function
-itself). These metalearners assign the weights such that the weighted
-combination of Z matrix predictions is optimized to minimize the
-cross-validated empirical risk. This often results in more than one
-learner having positive weight. Aggressive metalearning (e.g., assigning
-negative weight) can be problematic, leading to overfitting.</li>
+metalearner that calculates the cross-validated empirical risk for each
+<span class="math inline">\(k\)</span> learner, and then assigns weight of 1 to the single learner with
+smallest cross-validated risk and a weight of 0 to all other learners.
+If a loss is supplied, then the cross-validated empirical risk for the
+<span class="math inline">\(K\)</span> learners is calculated by first deriving an <span class="math inline">\(n \times K\)</span> matrix of
+losses for each prediction (e.g., squared error loss,
+<span class="math inline">\((Y_i - \hat{Y_i})^2\)</span>), and then taking the learner-specific
+(i.e., column-wise) mean across the <span class="math inline">\(n\)</span> losses to obtain a <span class="math inline">\(1 \times K\)</span>
+vector of cross-validated empirical risks (e.g., <span class="math inline">\(k\)</span>-specific mean
+squared error). If a risk is supplied (e.g., 1-AUC), then the
+cross-validated empirical risk for each of the <span class="math inline">\(k\)</span> learners is
+calculated by applying this risk function column-wise to the
+<span class="math inline">\(n \times K\)</span> meta-level dataset of cross-validated predictions, to
+obtain a <span class="math inline">\(1 \times K\)</span> vector of cross-validated empirical risks. Note
+that the discrete SL’s predictions will be identical to one of the
+learners. For example, say the learners are ridge, lasso, and
+unpenalized linear regression, and the lasso had the lowest
+cross-validated empirical risk. Then, the weighted combination would
+look like
+<span class="math inline">\({\text{SL}} = 0*{\text{ridge}} + 1*{\text{lasso}} + 0*{\text{linear}}\)</span>,
+so SL would produce the same predictions as the lasso model.</li>
+<li>The continuous SL (often what’s traditionally referred to as the
+“Super Learner”) learns which weights result in a weighted combination
+whose risk (e.g., expected loss) is minimized. For example, a
+no-intercept least-squares regression is commonly used used as a
+metalearner, to estimate the weights <span class="math inline">\(\hat{\bf{\Beta}}\)</span> that minimizes
+the sum of mean squared loss:
+<span class="math inline">\(\hat{\bf{\Beta}}=\underset{\bf{\Beta}}{\mathrm{arg min}}\sum_{i=1}^n\Big(\bf{\Beta}\dot\hat{\bf{Y_i}}-Y_i \Big)^2\)</span>, where <span class="math inline">\(\hat{\bf{Y_i}}\)</span> is the row of the <span class="math inline">\(n \times K\)</span>
+meta-level matrix of cross-validated predicted outcomes corresponding to
+subject <span class="math inline">\(i\)</span> and <span class="math inline">\(Y_i\)</span> is the observed outcome for subject <span class="math inline">\(i\)</span>.</li>
 </ol>
 </li>
-<li>Fit the learners (or only the learners with non-zero weight from Step 5)
-on the entire sample of <span class="math inline">\(n\)</span> observations, and use the weights that were
-obtained in Step 5 to get the SL fit. That’s it! The SL fit is just all of
+<li>Fit the all of the learners, or only the learners with non-zero weight
+from step 4, on the whole sample of <span class="math inline">\(n\)</span> observations to obtain so-called
+“full-fit” learners. Use the
+weights that were obtained in step 4 to get the SL fit. That’s it! The SL fit is just all of
 <span class="math inline">\(k\)</span> learner fits — the weights don’t come in to play until we obtain the
 predictions from the SL; where the SL predictions are the weighted
 combination of the <span class="math inline">\(k\)</span> learner predictions, as determined by the
@@ -324,26 +389,38 @@ This figure considers <span class="math inline">\(k=16\)</span> learners, and in
 error loss function, thus mean squared error (MSE) is the risk.
 <img src="img/png/SLKaiserNew.png" width="80%" style="display: block; margin: auto;"><!-- ADD REFERENCE + CV-SL FIGURE AND REFERENCE --></p>
 </div>
-<div id="theoretical-foundations-and-further-reading" class="section level3">
+<div id="sl3-theory" class="section level3">
 <h3>
-<span class="header-section-number">6.1.2</span> Theoretical Foundations and Further Reading<a class="anchor" aria-label="anchor" href="#theoretical-foundations-and-further-reading"><i class="fas fa-link"></i></a>
+<span class="header-section-number">6.1.3</span> Theoretical Foundations and Further Reading<a class="anchor" aria-label="anchor" href="#sl3-theory"><i class="fas fa-link"></i></a>
 </h3>
-<ul>
-<li>Cross-validation is proven to be optimal for selection among estimators. This
-result was established through the oracle inequality for the cross-validation
-selector among a collection of candidate estimators <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>. The only conditions are that loss function uniformly
-bounded, which is guaranteed in <code>sl3</code>, and that the loss function is <em>valid</em>
-(defined below). (Do we also need for the proportion of validation observation
-times the number of observations to go to infinity?)</li>
-<li>
-<p>We use a <em>loss function</em> <span class="math inline">\(L\)</span> to assign a measure of performance to each
-learner <span class="math inline">\(\psi\)</span> when applied to the data <span class="math inline">\(O\)</span>, and subsequently compare
-performance across the learners. More generally, <span class="math inline">\(L\)</span> maps every <span class="math inline">\(\psi \in \R\)</span>
+<p>The so-called “oracle” results for the cross-validation selector among a
+collection of candidate estimators prove that cross-validation is
+asymptotically (i.e., as sample size goes to infinity) optimal for selection
+among estimators <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>. These asymptotic results
+assume the following:</p>
+<ol style="list-style-type: decimal">
+<li>The number of observations in the validation sample (referred to as
+<span class="math inline">\(n_{\text{validation}}\)</span> in the <a href="sl3.html#sl3-steps">step-by-step overview</a> above)
+converges to infinity as the sample size <span class="math inline">\(n\)</span> converges to infinity, thereby
+making <span class="math inline">\(V\)</span> fold cross-validation an appropriate cross-validation choice when
+<span class="math inline">\(V\)</span> is fixed or when <span class="math inline">\(V\)</span> converges to infinity slower than <span class="math inline">\(n\)</span> converges to
+infinity.</li>
+<li>As the sample size <span class="math inline">\(n\)</span> converges to infinity, the number of candidate
+algorithms in the library grows polynomially. That is, the number of
+candidates increases at a rate that is bounded by some polynomial function
+of <span class="math inline">\(n\)</span>.</li>
+<li>The loss function is uniformly bounded and it’s expectation is minimized at
+the true prediction function under the DGP.</li>
+</ol>
+<p>We use a <em>loss function</em> <span class="math inline">\(L\)</span> to assign a measure of performance to each learner
+<span class="math inline">\(\psi_n\)</span>, and subsequently compare performance across the learners. More
+generally, <span class="math inline">\(L\)</span> maps every <span class="math inline">\(\psi \in \R\)</span>
 to <span class="math inline">\(L(\psi) : (O) \mapsto L(\psi)(O)\)</span>. We use the terms “learner”,
 “algorithm”, and “estimator” interchangeably.</p>
 <ul>
 <li>It is important to recall that <span class="math inline">\(\psi\)</span> is an estimator of <span class="math inline">\(\psi_0\)</span>, the
-unknown and true parameter value under <span class="math inline">\(P_0\)</span>.</li>
+unknown and true parameter value under <span class="math inline">\(P_0\)</span>.
+<ul>
 <li>A <em>valid loss function</em> will have mean/expectation (i.e., risk) that is
 minimized at the true value of the parameter <span class="math inline">\(\psi_0\)</span>. Thus, minimizing
 the expected loss will bring an estimator <span class="math inline">\(\psi\)</span> closer to the true
@@ -1624,7 +1701,7 @@ learner on the block, main terms linear regression.
 <a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
 <a class="sourceLine" id="cb55-76" data-line-number="76"></a>
 <a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012512</span> secs</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.011929</span> secs</a>
 <a class="sourceLine" id="cb55-79" data-line-number="79"></a>
 <a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
 <a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
@@ -3622,8 +3699,9 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <li><a class="nav-link" href="#motivation">Motivation</a></li>
 <li>
 <a class="nav-link" href="#introduction-2"><span class="header-section-number">6.1</span> Introduction</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#step-by-step-overview"><span class="header-section-number">6.1.1</span> Step-by-step overview</a></li>
-<li><a class="nav-link" href="#theoretical-foundations-and-further-reading"><span class="header-section-number">6.1.2</span> Theoretical Foundations and Further Reading</a></li>
+<li><a class="nav-link" href="#candidate-learners-and-ensembling"><span class="header-section-number">6.1.1</span> Candidate learners and ensembling</a></li>
+<li><a class="nav-link" href="#sl3-steps"><span class="header-section-number">6.1.2</span> Step-by-step overview with V-fold cross-validation</a></li>
+<li><a class="nav-link" href="#sl3-theory"><span class="header-section-number">6.1.3</span> Theoretical Foundations and Further Reading</a></li>
 </ul>
 </li>
 <li>
@@ -3668,7 +3746,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 30, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 06, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
