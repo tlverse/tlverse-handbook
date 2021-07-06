@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-06-30
+Updated: 2021-07-06
 
 \begin{VT1}
 \VH{Learning Objectives}

@@ -2,7 +2,7 @@
 
 _Nima Hejazi_ and _Rachael Phillips_
 
-Updated: 2021-06-30
+Updated: 2021-07-06
 
 \begin{VT1}
 \VH{Learning Objectives}
