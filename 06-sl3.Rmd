@@ -66,60 +66,65 @@ this roadmap define the *statistical estimation problem*, which establish
    is written $O \sim P_0$, and $P_0$ is also commonly referred to as the 
    data-generating process (DGP) and also the data-generating distribution 
    (DGD). The data structure $O$ is comprised of variables, such as a 
-   vector of covariates $W$, a treatment or exposure $A$ and an outcome $Y$, 
-   $O=(W,A,Y) \sim P_0$. We often observe the random variable $O$ $n$ times by 
+   vector of covariates $W$, a treatment or exposure $A$, and an outcome $Y$, 
+   $O=(W,A,Y) \sim P_0$. We often observe the random variable $O$ $n$ times, by 
    repeating the common experiment $n$ times. For example, $O_1,\ldots, O_n$ 
    random variables could be the result of a random sample of $n$ subjects from 
    a population, collecting baseline characteristics $W$, randomly assigning 
    treatment $A$, and then later measuring an outcome $Y$. 
-2. A statistical model $\mathcal{M}$ as a set of possible probability 
-   distributions that could have given rise to the data, which is specified 
-   realistically, such that $P_0$ is guaranteed reside in the statistical model, 
-   $P_0 \in \mathcal{M}$. Continuing the example in step 1, the following 
-   restrictions could be placed on the statistical model: the 
-   $O_1, \ldots, O_n$ observations in the data are independent and identically 
-   distributed (i.i.d.), the assignment of treatment $A$ was random and not 
-   based on covariates $W$. These restrictions on the statistical model 
-   $\mathcal{M}$ are realistic, since they are only based on facts about the 
-   experiment that generated the data; therefore, $\mathcal{M}$ is correctly 
-   specified since $P_0 \in $\mathcal{M}$.
-3. A translation of the (often causal) scientific question into a function of 
+2. A statistical model $\M$ as a set of possible probability distributions that 
+   could have given rise to the data. It's essential for $\M$ to only 
+   constrained by factual subject-matter knowledge in order to guarantee $P_0$ 
+   resides in the statistical model, written $P_0 \in \M$. Continuing 
+   the example from step 1, the following restrictions could be placed on the 
+   statistical model: the $O_1, \ldots, O_n$ observations in the data are 
+   independent and identically distributed (i.i.d.), the assignment of 
+   treatment $A$ was random and not based on covariates $W$. 
+3. A translation of the scientific question of interest into a function of 
    $P_0$, the target statistical estimand $\Psi(P_0)$. For example, we might be 
-   interested in the average, across baseline covariate strata for $W$, of the 
-   difference in mean outcomes under treatment $A=1$ versus placebo $A=0$: 
-   $\Psi(P_0) = E_{P_0}[E_{P_0}(Y | A = 1, W) − E_{P_0}(Y | A = 0, W)]$. Note 
+   interested in the average difference in mean outcomes under treatment $A=1$ 
+   versus placebo $A=0$: 
+   $\Psi(P_0)=E_{P_0}\Big[E_{P_0}(Y|A=1,W)−E_{P_0}(Y|A=0,W)\Big]$. Note 
    that, if the scientific question is causal, then it's translation will 
    produce a target *causal* estimand; another layer of translation, 
    identifiability, is required to express the target causal estimand as a 
    function of the observed data distribution $P_0$. See [causal target 
-   parameters](#causal) for more information on causal quantities, models and 
-   identifiability.
+   parameters](#causal) for more information on causal quantities, causal models 
+   and identifiability.
 
-Once the statistical estimation problem has been defined, then the estimator can 
-be constructed. Estimators (also referred to as "algorithms" and "learners") 
+Once the statistical estimation problem has been established, then the estimator 
+can be constructed. Estimators (also referred to as "algorithms" and "learners") 
 are functions that take as input the observed data and return as output an 
 estimate of $P_0$, or some feature of $P_0$ (such as a component of the target 
 estimand). We will use the Super Learner (SL) algorithm to estimate a 
-prediction function, and we will use the estimated prediction function to 
-obtain predicted outcomes with new input data. Occasionally, the prediction 
-function itself is the target estimand, but more often, it's a component of a 
-target estimand. For example, we might want to estimate the prediction 
-function for $E(Y|A,W)$ (the conditional mean outcome, given treatment $A$ and 
-baseline covariates $W$), so we can predict what the outcomes would have been 
-under a hypothetical scenario where all subjects received treatment $A=1$. 
-This learning paradigm corresponds to estimation of a component of the target 
-statistical estimand mentioned in step 3 above. 
+prediction function, and then we will use the SL estimator of the prediction 
+function to predict outcomes from new input (e.g., covariate/predictor) data. 
+Occasionally, the prediction function itself is the target estimand, but more 
+commonly, the prediction function is a component of a target estimand. 
 
-There are various strategies that estimators can employ to learn relationships 
-from the observed data, and there is no "one fits all" algorithm in the world 
-of real data analysis. However, the statistical properties of algorithms'
-(e.g., mean squared error) can be used to compare them. Therefore, algorithm 
+For example, we might want to estimate the prediction function for 
+$E_{P_0}(Y|A,W)$ (the conditional mean outcome, given treatment $A$ and 
+baseline covariates $W$), so we can predict what the outcomes would have been 
+under a hypothetical scenario where all subjects received treatment $A=1$. In
+order for this estimator to output predictions that correspond to outcomes in 
+a world where all subjects received treatment $A=1$, we would need to supply 
+the estimator with input data that reflects it; specifically, the baseline 
+covariate information $W$ would remain the same treatment as it is in the 
+observed data, but the treatment $A$ would be set to 1 for all individuals, 
+regardless of whether or not they actually received it. This learning paradigm 
+corresponds to estimation of a component of the target statistical estimand 
+mentioned in step 3 above, the $E_{P_0}(Y|A=1,W)$ component of $\Psi(P_0)$. 
+
+There are various strategies that estimators can employ to model relationships 
+from the observed data, and there is no "one fits all" algorithm in the realm
+of real-world data science. However, the statistical performance of algorithms'
+(e.g., mean squared error) can be used to compare them. Therefore, algorithm
 selection should be driven criteria that have been (i) proven to optimize 
 relevant statistical properties (e.g., provide theoretical guarantees) and (ii) 
-shown to be reliable in practice (e.g., when sample size is finite). The SL is 
-an algorithm that utilizes such a criteria, the cross-validation criterion 
-[@vdl2003unified; @vaart2006oracle], which is described in this Introduction's 
-subsection, ["Theoretical Foundations and Further Reading"](#sl3-theory). Also, 
+shown to be reliable in practice (e.g., with complex real-world data). The SL 
+is an algorithm that is equipped with such a standard, the cross-validation 
+criterion [@vdl2003unified; @vaart2006oracle], which is described further in 
+the ["Theoretical foundations"](#sl3-theory) subsection. Also, 
 as an ensemble machine learning algorithm, SL leverages information learned 
 from a variety of candidate algorithms by creating a weighted combination of 
 them (i.e., metalearning). In summary, SL represents a practical approach for 
@@ -173,8 +178,8 @@ the library, SL's weighted combination should be a convex combination
 convex combination would be the so-called "discrete SL" or 
 "cross-validated selector", which uses a metalearner that assigns a weight of 
 one to the *best* candidate algorithm in the library, and a weight of zero to 
-all others (where *best* is formally defined in the [Theoretical Foundations 
-and Further Reading](#sl3-theory) subsection). More flexible metalearners, 
+all others (where *best* is described in step 4(a) in the [step-by-step 
+overview](#sl3-steps) below). More flexible metalearners, 
 like the default metalearner in `sl3`, are those that allow multiple algorithms 
 to have nonzero weights and still enforce a convex combination. 
 
@@ -193,10 +198,9 @@ Consider the scenario in which we have $n$ i.i.d. observations in the data.
 Also, let's say a total of $K$ learners are included the SL library. 
 
 0. Fit each $k=1,\ldots,K$ learner on the whole sample of $n$ observations to 
-   obtain $K$ so-called "full-fit" learners. The following steps are used to 
-   derive the weights/coefficients of the SL, which will later be used to obtain 
-   SL predictions, as a weighted combination of the full-fit learners' 
-   predictions.
+   obtain $K$ so-called "full-fit" learners. The SL is defined by these $K$ 
+   full-fit learners and the weights (also commonly referred to as 
+   "coefficients"), which we derive in the following steps.
 1. Create the validation data for the $V$ folds by breaking up the data evenly
    into $V$ disjoint subsets, such that no observation is contained in more 
    than one subset and each subset $v$ contains about the same number (roughly 
@@ -221,106 +225,111 @@ Also, let's say a total of $K$ learners are included the SL library.
 
     a. Separate (i) from (ii):
 
-       i. The data that was included in the disjoint subset for fold $v$ in Step 
+       i. The data that was included in the disjoint subset for fold $v$ in step 
           1, which contains roughly $n/V$ total observations. We will refer to 
           this portion of the data as fold $v$'s "validation" data, and 
           $n_{\text{validation}}$ as the number of observations in the 
           validation data in the $v^{\text{th}}$ fold. 
-          
       ii. The data that was *not* included in the disjoint subset for fold $v$ 
-          in Step 1, which contains $n - n_{\text{validation}}$ total 
+          in step 1, which contains $n - n_{\text{validation}}$ total 
           observations. We will refer to this portion of the data as fold $v$'s 
           "training" data, and $n_{\text{training}}$ as the number of 
           observations in the training data for the $v^{\text{th}}$ fold.
           
     b. Fit each of the $K$ learners on the training data (ii) to obtain $K$ 
-       estimators of the prediction function. Here, each of the $K$ learners 
-       employs their various strategies to map the training data, consisting of 
+       estimators of the prediction function. Here, each $k$ learner employs 
+       their various strategies to map the training data, consisting of 
        $n_{\text{training}}$ records with input variables (covariates) and an 
        output variable (outcome), into a prediction function. 
     c. Use the $K$ trained learners created in the previous step to map the 
        validation data covariates, which represent a new set of input variables, 
        into predicted outcomes. This results in an 
-       $n_{\text{validation}} \times K$ 
-       matrix of so-called "cross-validated predictions". Since the $K$ 
-       estimators were not trained using the validation data's outcomes, the 
-       predictions based on the validation data's covariate information can be 
-       used as a fair means to evaluate the $k$ estimator's performance.
+       $n_{\text{validation}} \times K$ matrix of so-called 
+       "cross-validated predictions". Since the $K$ estimators were not trained 
+       using the validation data's outcomes, the predictions based on the 
+       validation data's covariate information can be used as a fair means to 
+       evaluate the performance of the $K$ estimators.
 
  3. Bind together the rows of all $V$ $n_{\text{validation}} \times K$ matrices 
     of cross-validated predictions, to obtain an $n \times K$ matrix of
     cross-validated predictions. This matrix $n \times K$ matrix of
     cross-validated predictions is often referred to as the
-    "level-one" or "meta-level" dataset. 
+    "level-one" or "meta-level dataset". 
  4. Fit the so-called "metalearner" to establish the weighted combination of 
-    the $K$ learners. The metalearner is a function that 
-    decides on the weights to be assigned to each of the $K$ learners,
-    taking as input the $n \times K$ meta-level dataset of cross-validated 
-    predictions, the $n$-length vector of observed outcomes, and if the 
-    metalearner is not equipped with an optimizer (such as discrete SL) then it 
-    will also take as input a loss or risk function. The metalearner outputs a 
-    $K$-length vector of weights (also commonly referred to as coefficients),
-    $\bf{\Beta}=(\Beta_1,\ldots,\Beta_K)$. 
+    the $K$ learners. The metalearner is a function that outputs the 
+    weights/coefficients to be assigned to the $K$ learners, taking as input 
+    the $n \times K$ meta-level dataset of cross-validated predictions, and the 
+    $n \times 1$ vector of observed outcomes. If the metalearner is not equipped 
+    with an objective function to optimize over (such as discrete SL), then the
+    metalearner will also require a loss function or risk function as input.  
 
-     a. The discrete SL (or cross-validated selector) employs a simple
-        metalearner that calculates the cross-validated empirical risk for each 
-        $k$ learner, and then assigns weight of 1 to the single learner with 
-        smallest cross-validated risk and a weight of 0 to all other learners. 
-        If a loss is supplied, then the cross-validated empirical risk for the 
-        $K$ learners is calculated by first deriving an $n \times K$ matrix of 
-        losses for each prediction (e.g., squared error loss, 
-        $(Y_i - \hat{Y_i})^2$), and then taking the learner-specific 
-        (i.e., column-wise) mean across the $n$ losses to obtain a $1 \times K$ 
-        vector of cross-validated empirical risks (e.g., $k$-specific mean 
-        squared error). If a risk is supplied (e.g., 1-AUC), then the 
-        cross-validated empirical risk for each of the $k$ learners is 
-        calculated by applying this risk function column-wise to the 
-        $n \times K$ meta-level dataset of cross-validated predictions, to 
-        obtain a $1 \times K$ vector of cross-validated empirical risks. Note 
-        that the discrete SL's predictions will be identical to one of the 
-        learners. For example, say the learners are ridge, lasso, and 
-        unpenalized linear regression, and the lasso had the lowest 
-        cross-validated empirical risk. Then, the weighted combination would 
-        look like 
-        ${\text{SL}} = 0*{\text{ridge}} + 1*{\text{lasso}} + 0*{\text{linear}}$,
-        so SL would produce the same predictions as the lasso model. 
-     b. The continuous SL (often what's traditionally referred to as the 
-        "Super Learner") learns which weights result in a weighted combination 
-        whose risk (e.g., expected loss) is minimized. For example, a 
-        no-intercept least-squares regression is commonly used used as a 
-        metalearner, to estimate the weights $\hat{\bf{\Beta}}$ that minimizes 
-        the sum of mean squared loss:
-        $\hat{\bf{\Beta}}=\underset{\bf{\Beta}}{\mathrm{arg min}}\sum_{i=1}^n\Big(\bf{\Beta}\dot\hat{\bf{Y_i}}-Y_i \Big)^2$, where $\hat{\bf{Y_i}}$ is the row of the $n \times K$ 
-        meta-level matrix of cross-validated predicted outcomes corresponding to 
-        subject $i$ and $Y_i$ is the observed outcome for subject $i$.
+     a. Discrete SL (or cross-validated selector) metalearners first calculate 
+        the so-called "cross-validated empirical risk" for 
+        each learner (it's derivation is described in (i) and (ii) below), then 
+        they assign a weight of 1 to the single learner with lowest 
+        cross-validated empirical risk and a weight of 0 to all other learners, 
+        outputting a $1 \times K$ vector of weights 
+        $\bm{\beta}=(\beta_1,\ldots,\beta_K)$. The discrete SL's predictions 
+        will be identical to one of the learner's predictions, since the 
+        discrete SL allocates all of it's weight to one single learner. As a 
+        simple example, say the learners are ridge, lasso, and unpenalized 
+        linear regression, and the lasso had the lowest cross-validated 
+        empirical risk. Here, the weighted combination would look like 
+        ${\text{SL}} = 0*{\text{ridge}} + 1*{\text{lasso}} + 0*{\text{linear}}$;
+        for some subject $j$'s input variables (i.e., covariates/predictors), 
+        the SL and lasso predicted outcome's for $j$ would be identical, 
+        $\hat{Y_{SL,j}}=\sum{k=1}^3\beta_k\times\hat{Y_{k,j}}$.
+        
+            i. If a loss function is supplied, then the cross-validated 
+               empirical risk for the $K$ learners is calculated by first 
+               deriving an $n \times K$ matrix of losses: for each learner $k$ 
+               and subject $i=1,\ldots,n$ (i.e., for each column and each row, 
+               respectively, of the meta-level dataset of cross-validated 
+               predictions), the pairing of the observed outcome $Y_i$ and 
+               predicted outcome $\hat{Y_{k,i}}$ is used to calculate the loss, 
+               such as the squared error loss $(\hat{Y_{k,i}}-Y_i)^2$. Next, 
+               the learner-specific (i.e., column-wise) mean across the $n$ 
+               losses is calculated, resulting in a $1 \times K$ vector of 
+               cross-validated empirical risks (such as mean squared errors).
+           ii. If a risk function is supplied instead of a loss function, then 
+               the $1 \times K$ vector of learner-specific cross-validated 
+               empirical risks is calculated by providing the risk function with 
+               the $n \times 1$ observed outcomes and applying it at the 
+               learner-level (i.e., column-wise) to the $n \times K$ meta-level 
+               dataset of cross-validated predictions. An example risk function 
+               that may be of interest when the goal of the SL is simply 
+               prediction is 1-predictiveness, where "predictiveness" could be 
+               a metric like AUC (the area under the receiver operating 
+               characteristic curve). 
+               
+     b. Continuous SL (often what traditional "Super Learner" refers to) 
+        metalearners learn which weights/coefficients result in a weighted 
+        combination whose cross-validated empirical risk is minimized. Unlike 
+        the discrete SL, the continuous SL directly optimizes the weights. 
+        Continuous SL metalearners are just regression models --- they learn 
+        their best fit to the training data by optimizing the model's 
+        coefficients, but for metalearner, the training data is special; 
+        specifically, it is the $n \times K$ meta-level dataset of 
+        cross-validated predicted outcomes and the $n \times 1$ vector of 
+        observed outcomes. As an example, non-negative least-squares 
+        (NNLS) regression is commonly used used as a metalearner because it's 
+        optimization corresponds to minimizing the expected squared error 
+        ($L_2$) loss function, a so-called "valid loss" for a couple of 
+        commonly-estimated functions (more details on valid loss functions are 
+        provided below, in the ["Theoretical foundations"](#sl3-theory) 
+        subsection). Specifically, NNLS finds the weights $\bm{\beta}$ 
+        optimizing $\argmin_{\bm{\beta}}\norm{\bm{\beta}\hat{\bm{Y}}-\bm{y}}$ 
+        subject to $\bm{\beta} \geq 0$, where $\norm{\dot}_2$ is the 
+        $\ell_2$-norm, \hat{\bm{Y}}$ is the $n \times K$ matrix of 
+        cross-validated predicted outcomes, and $\bm{y}$ is the $n \times 1$ 
+        vector of observed outcomes.
           
-  6. Fit the all of the learners, or only the learners with non-zero weight 
-     from step 4, on the whole sample of $n$ observations to obtain so-called 
-     "full-fit" learners. Use the 
-     weights that were obtained in step 4 to get the SL fit. That's it! The SL fit is just all of
-     $k$ learner fits --- the weights don't come in to play until we obtain the
-     predictions from the SL; where the SL predictions are the weighted
-     combination of the $k$ learner predictions, as determined by the
-     metalearner. Notice that, we use this rigorous, optimal, and fair procedure
-     to derive the weights from the $n \times k$ Z matrix of cross-validated
-     predictions; but once we've done that, we capitalize on the entire sample
-     of observations, transitioning our focus to obtaining the best fit possible
-     of our $k$ learners. 
-  7. SL predictions, variable importance, and/or a cross-validated SL can be
-     obtained from an SL fit (like most other learners). The cross-validated SL
-     provides an estimate of the performance of the SL on unseen data, and
-     incorporates a outer layer of cross-validation in order to cross-validate
-     this entire procedure.
+  5. The $K$ learner full-fits obtained in step 0 and the $\bm{\beta}$ weights 
+     vector obtained in step 4 define the SL. We can now obtain SL predictions 
+     on new covariate data through the weighted combination of the learner's 
+     full-fit predictions' on this new covariate data.
 
-Below is a figure from [ADD REF] describing the same step-by-step procedure.
-This figure considers $k=16$ learners, and in the figure $p=k$; and the squared
-error loss function, thus mean squared error (MSE) is the risk.
-```{r cv_fig, fig.show="hold", echo = FALSE}
-knitr::include_graphics("img/png/SLKaiserNew.png")
-```
-<!-- ADD REFERENCE + CV-SL FIGURE AND REFERENCE -->
-
-### Theoretical Foundations and Further Reading {#sl3-theory}
+### Theoretical foundations {#sl3-theory}
 
 The so-called "oracle" results for the cross-validation selector among a 
 collection of candidate estimators prove that cross-validation is 
@@ -387,7 +396,22 @@ generally, $L$ maps every $\psi \in \R$
       regressions in @breiman1996stacked. Restricting the weights to be positive
       and sum to one (i.e., a convex combination) has been shown to perform well
       in practice [@polley2010super; @vdl2007super].
-
+      because it's 
+      
+      optimization strategy corresponds to minimizing the expected 
+      squared error (or $L_2$) loss and the $L_2$ loss is so-called 
+      "valid loss function" for frequently estimated functions, including the 
+      conditional mean outcome, $E_{P_0}(Y|X)$ (where $X$ are predictors of 
+      the outcome $Y$, such as treatment $A$ and baseline covariates $W$), 
+      and the conditional probability of a binary outcome, $P_0(Y=1|X)$.
+      The expected $L_2$ loss is minimized by both $E_{P_0}(Y|X)$ and 
+      $P_0(Y=1|X)$, which is why it's considered valid for their estimation.
+      
+      Non-negativity constraints on the weights 
+     have been shown to produce ensembles with lower prediction error 
+     [@leblanc1996combining, @breiman1996stacked]. A convex combination of 
+     the weights can be enforced by constraining the weights sum to one, in
+     addition to  
 <!--
 The *oracle results* prove that, if the number of algorithms in the library are
 polynomial in sample size, then the cross-validation selector (i.e., discrete
