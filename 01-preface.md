@@ -1,13 +1,15 @@
 # Robust Statistics and Reproducible Science {#robust}
 
 <!--
-
+\begin{shortbox}
+\Boxhead{Test}
 test shortbox
+\end{shortbox}
 
-
-
+\begin{VT1}
+\VH{Test}
 test VT1
-
+\end{VT1}
 -->
 
 > "One enemy of robust science is our humanity -- our appetite for
