@@ -71,24 +71,31 @@
 <p><em>Rachael Phillips</em></p>
 <p>Based on the <a href="https://github.com/tlverse/sl3"><code>sl3</code> <code>R</code> package</a> by <em>Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p>
-<p>Updated: 2021-07-07</p>
+<p>Updated: 2021-07-15</p>
 <div id="learning-objectives-3" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-3"><i class="fas fa-link"></i></a>
 </h2>
 <p>By the end of this chapter you will be able to:</p>
 <ol style="list-style-type: decimal">
-<li>Select a loss function that is appropriate for the functional parameter to
-be estimated.</li>
-<li>Assemble an ensemble of learners based on the properties that identify what
-features they support.</li>
-<li>Customize learner tuning parameters to incorporate a diversity of different
-settings.</li>
-<li>Select a subset of available covariates and pass only those variables to the
-modeling algorithm.</li>
+<li>Select an objective function that aligns with both the purpose of your
+analysis and is optimized by the target parameter.</li>
+<li>Assemble a diverse library of learners to be considered in the Super Learner
+ensemble.</li>
+<li>Customize a learner by modifying it’s tuning parameters.</li>
+<li>Create several different versions of the same learner by specifying a grid
+of tuning parameters.</li>
+<li>Create covariate screening pipelines in order to pass a screener’s output,
+a subset of covariates, as input for another learner that will model the data
+using the subset of covariates selected by the screener.</li>
 <li>Fit an ensemble with nested cross-validation to obtain an estimate of the
 performance of the ensemble itself.</li>
 <li>Obtain <code>sl3</code> variable importance metrics.</li>
-<li>Interpret the discrete and continuous Super Learner fits.</li>
+<li>Interpret the fit for discrete and continuous Super Learner’s from the
+cross-validated risk table and the coefficients.</li>
+<li>learners in the SL library and should be justified in terms of the prediction
+problem, statistical model <span class="math inline">\(\M\)</span>, data sparsity (e.g., number of
+independent samples, number of events for rare binary outcomes), and the number
+of covariates. The metalearning strategy should be similarly justified.</li>
 </ol>
 </div>
 <div id="motivation" class="section level2 unnumbered">
@@ -189,7 +196,7 @@ relevant statistical properties (e.g., provide theoretical guarantees) and (ii)
 shown to be reliable in practice (e.g., with complex real-world data). The SL
 is an algorithm that is equipped with such a standard, the cross-validation
 criterion <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>, which is described further in
-the <a href="sl3.html#sl3-theory">“Theoretical foundations”</a> subsection. Also,
+the <a href="#sl3-theory">“Theoretical foundations”</a> subsection. Also,
 as an ensemble machine learning algorithm, SL leverages information learned
 from a variety of candidate algorithms by creating a weighted combination of
 them (i.e., metalearning). In summary, SL represents a practical approach for
@@ -254,266 +261,296 @@ to have nonzero weights and still enforce a convex combination.</p>
 <h3>
 <span class="header-section-number">6.1.2</span> Step-by-step overview with V-fold cross-validation<a class="anchor" aria-label="anchor" href="#sl3-steps"><i class="fas fa-link"></i></a>
 </h3>
-<p>Consider the scenario in which we have <span class="math inline">\(n\)</span> i.i.d. observations in the data.
-Also, let’s say a total of <span class="math inline">\(K\)</span> learners are included the SL library.</p>
-<ol start="0" style="list-style-type: decimal">
-<li>Fit each <span class="math inline">\(k=1,\ldots,K\)</span> learner on the whole sample of <span class="math inline">\(n\)</span> observations to
-obtain <span class="math inline">\(K\)</span> so-called “full-fit” learners. The SL is defined by these <span class="math inline">\(K\)</span>
-full-fit learners and the weights (also commonly referred to as
-“coefficients”), which we derive in the following steps.</li>
-<li>
-<p>Create the validation data for the <span class="math inline">\(V\)</span> folds by breaking up the data evenly
-into <span class="math inline">\(V\)</span> disjoint subsets, such that no observation is contained in more
-than one subset and each subset <span class="math inline">\(v\)</span> contains about the same number (roughly
-<span class="math inline">\(n/V\)</span>) observations.</p>
-<ul>
-<li>If the data contain a rare binary outcome (or highly important binary
-covariate, such as treatment/exposure), one should consider making the
-prevalence of this binary outcome in the <span class="math inline">\(V\)</span> folds similar to the
-prevalence that exists in the original data. This can be achieved
-by populating the <code>strata_ids</code> argument in the <code><a href="http://tlverse.org/origami/reference/make_folds.html">origami::make_folds()</a></code>
-function with the vector of binary outcomes (or important binary
-covariate). The returned list can then be passed as the <code>folds</code> argument
-in the <code>sl3_Task</code>.</li>
-<li>If the data contain clusters (e.g., repeated measures), then all
-observations in the same cluster should be placed in the same fold.
-This can be achieved by populating the <code>cluster_ids</code> argument in the
-<code><a href="http://tlverse.org/origami/reference/make_folds.html">origami::make_folds()</a></code> function with the vector of cluster identifiers.
-The returned list can then be passed as the <code>folds</code> argument in the
-<code>sl3_Task</code>.</li>
-</ul>
-</li>
-<li>
-<p>For each fold <span class="math inline">\(v\)</span>:</p>
-<ol style="list-style-type: lower-alpha">
-<li>
-<p>Separate (i) from (ii):</p>
-<ol style="list-style-type: lower-roman">
-<li>The data that was included in the disjoint subset for fold <span class="math inline">\(v\)</span> in step
-1, which contains roughly <span class="math inline">\(n/V\)</span> total observations. We will refer to
-this portion of the data as fold <span class="math inline">\(v\)</span>’s “validation” data, and
-<span class="math inline">\(n_{\text{validation}}\)</span> as the number of observations in the
-validation data in the <span class="math inline">\(v^{\text{th}}\)</span> fold.</li>
-</ol>
-</li>
-</ol>
-<ol start="2" style="list-style-type: lower-roman">
-<li>The data that was <em>not</em> included in the disjoint subset for fold <span class="math inline">\(v\)</span>
-in step 1, which contains <span class="math inline">\(n - n_{\text{validation}}\)</span> total
-observations. We will refer to this portion of the data as fold <span class="math inline">\(v\)</span>’s
-“training” data, and <span class="math inline">\(n_{\text{training}}\)</span> as the number of
-observations in the training data for the <span class="math inline">\(v^{\text{th}}\)</span> fold.</li>
-</ol>
-<ol start="2" style="list-style-type: lower-alpha">
-<li>Fit each of the <span class="math inline">\(K\)</span> learners on the training data (ii) to obtain <span class="math inline">\(K\)</span>
-estimators of the prediction function. Here, each <span class="math inline">\(k\)</span> learner employs
-their various strategies to map the training data, consisting of
-<span class="math inline">\(n_{\text{training}}\)</span> records with input variables (covariates) and an
-output variable (outcome), into a prediction function.</li>
-<li>Use the <span class="math inline">\(K\)</span> trained learners created in the previous step to map the
-validation data covariates, which represent a new set of input variables,
-into predicted outcomes. This results in an
-<span class="math inline">\(n_{\text{validation}} \times K\)</span> matrix of so-called
-“cross-validated predictions”. Since the <span class="math inline">\(K\)</span> estimators were not trained
-using the validation data’s outcomes, the predictions based on the
-validation data’s covariate information can be used as a fair means to
-evaluate the performance of the <span class="math inline">\(K\)</span> estimators.</li>
-</ol>
-</li>
-<li>Bind together the rows of all <span class="math inline">\(V\)</span> <span class="math inline">\(n_{\text{validation}} \times K\)</span> matrices
-of cross-validated predictions, to obtain an <span class="math inline">\(n \times K\)</span> matrix of
-cross-validated predictions. This matrix <span class="math inline">\(n \times K\)</span> matrix of
-cross-validated predictions is often referred to as the
-“level-one” or “meta-level dataset”.</li>
-<li>
-<p>Fit the so-called “metalearner” to establish the weighted combination of
-the <span class="math inline">\(K\)</span> learners. The metalearner is a function that outputs the
-weights/coefficients to be assigned to the <span class="math inline">\(K\)</span> learners, taking as input
-the <span class="math inline">\(n \times K\)</span> meta-level dataset of cross-validated predictions, and the
-<span class="math inline">\(n \times 1\)</span> vector of observed outcomes. If the metalearner is not equipped
-with an objective function to optimize over (such as discrete SL), then the
-metalearner will also require a loss function or risk function as input.</p>
-<ol style="list-style-type: lower-alpha">
-<li>
-<p>Discrete SL (or cross-validated selector) metalearners first calculate
-the so-called “cross-validated empirical risk” for
-each learner (it’s derivation is described in (i) and (ii) below), then
-they assign a weight of 1 to the single learner with lowest
-cross-validated empirical risk and a weight of 0 to all other learners,
-outputting a <span class="math inline">\(1 \times K\)</span> vector of weights
-<span class="math inline">\(\bm{\beta}=(\beta_1,\ldots,\beta_K)\)</span>. The discrete SL’s predictions
-will be identical to one of the learner’s predictions, since the
-discrete SL allocates all of it’s weight to one single learner. As a
-simple example, say the learners are ridge, lasso, and unpenalized
-linear regression, and the lasso had the lowest cross-validated
-empirical risk. Here, the weighted combination would look like
-<span class="math inline">\({\text{SL}} = 0*{\text{ridge}} + 1*{\text{lasso}} + 0*{\text{linear}}\)</span>;
-for some subject <span class="math inline">\(j\)</span>’s input variables (i.e., covariates/predictors),
-the SL and lasso predicted outcome’s for <span class="math inline">\(j\)</span> would be identical,
-<span class="math inline">\(\hat{Y_{SL,j}}=\sum{k=1}^3\beta_k\times\hat{Y_{k,j}}\)</span>.</p>
-<pre><code>i. If a loss function is supplied, then the cross-validated 
-   empirical risk for the $K$ learners is calculated by first 
-   deriving an $n \times K$ matrix of losses: for each learner $k$ 
-   and subject $i=1,\ldots,n$ (i.e., for each column and each row, 
-   respectively, of the meta-level dataset of cross-validated 
-   predictions), the pairing of the observed outcome $Y_i$ and 
-   predicted outcome $\hat{Y_{k,i}}$ is used to calculate the loss, 
-   such as the squared error loss $(\hat{Y_{k,i}}-Y_i)^2$. Next, 
-   the learner-specific (i.e., column-wise) mean across the $n$ 
-   losses is calculated, resulting in a $1 \times K$ vector of 
-   cross-validated empirical risks (such as mean squared errors).</code></pre>
-<ol start="2" style="list-style-type: lower-roman">
-<li>If a risk function is supplied instead of a loss function, then
-the <span class="math inline">\(1 \times K\)</span> vector of learner-specific cross-validated
-empirical risks is calculated by providing the risk function with
-the <span class="math inline">\(n \times 1\)</span> observed outcomes and applying it at the
-learner-level (i.e., column-wise) to the <span class="math inline">\(n \times K\)</span> meta-level
-dataset of cross-validated predictions. An example risk function
-that may be of interest when the goal of the SL is simply
-prediction is 1-predictiveness, where “predictiveness” could be
-a metric like AUC (the area under the receiver operating
-characteristic curve).</li>
-</ol>
-</li>
-<li><p>Continuous SL (often what traditional “Super Learner” refers to)
-metalearners learn which weights/coefficients result in a weighted
-combination whose cross-validated empirical risk is minimized. Unlike
-the discrete SL, the continuous SL directly optimizes the weights.
-Continuous SL metalearners are just regression models – they learn
-their best fit to the training data by optimizing the model’s
-coefficients, but for metalearner, the training data is special;
-specifically, it is the <span class="math inline">\(n \times K\)</span> meta-level dataset of
-cross-validated predicted outcomes and the <span class="math inline">\(n \times 1\)</span> vector of
-observed outcomes. As an example, non-negative least-squares
-(NNLS) regression is commonly used used as a metalearner because it’s
-optimization corresponds to minimizing the expected squared error
-(<span class="math inline">\(L_2\)</span>) loss function, a so-called “valid loss” for a couple of
-commonly-estimated functions (more details on valid loss functions are
-provided below, in the <a href="sl3.html#sl3-theory">“Theoretical foundations”</a>
-subsection). Specifically, NNLS finds the weights <span class="math inline">\(\bm{\beta}\)</span>
-optimizing <span class="math inline">\(\argmin_{\bm{\beta}}\norm{\bm{\beta}\hat{\bm{Y}}-\bm{y}}\)</span>
-subject to <span class="math inline">\(\bm{\beta} \geq 0\)</span>, where <span class="math inline">\(\norm{\dot}_2\)</span> is the
-<span class="math inline">\(\ell_2\)</span>-norm, $ is the <span class="math inline">\(n \times K\)</span> matrix of
-cross-validated predicted outcomes, and <span class="math inline">\(\bm{y}\)</span> is the <span class="math inline">\(n \times 1\)</span>
-vector of observed outcomes.</p></li>
-</ol>
-</li>
-<li><p>The <span class="math inline">\(K\)</span> learner full-fits obtained in step 0 and the <span class="math inline">\(\bm{\beta}\)</span> weights
-vector obtained in step 4 define the SL. We can now obtain SL predictions
-on new covariate data by combining of the learner’s full-fit predictions’
-on this new covariate data with the weights.</p></li>
-</ol>
-</div>
-<div id="sl3-theory" class="section level3">
-<h3>
-<span class="header-section-number">6.1.3</span> Theoretical foundations<a class="anchor" aria-label="anchor" href="#sl3-theory"><i class="fas fa-link"></i></a>
-</h3>
-<p>The so-called “oracle” results for the cross-validation selector among a
-collection of candidate estimators prove that cross-validation is
-asymptotically (i.e., as sample size goes to infinity) optimal for selection
-among estimators <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified">2003</a>; Van der Vaart, Dudoit, and Laan <a href="references.html#ref-vaart2006oracle">2006</a>)</span>. These asymptotic results
-assume the following:</p>
-<ol style="list-style-type: decimal">
-<li>The number of observations in the validation sample (referred to as
-<span class="math inline">\(n_{\text{validation}}\)</span> in the <a href="sl3.html#sl3-steps">step-by-step overview</a> above)
-converges to infinity as the sample size <span class="math inline">\(n\)</span> converges to infinity, thereby
-making <span class="math inline">\(V\)</span> fold cross-validation an appropriate cross-validation choice when
-<span class="math inline">\(V\)</span> is fixed or when <span class="math inline">\(V\)</span> converges to infinity slower than <span class="math inline">\(n\)</span> converges to
-infinity.</li>
-<li>As the sample size <span class="math inline">\(n\)</span> converges to infinity, the number of candidate
-algorithms in the library grows polynomially. That is, the number of
-candidates increases at a rate that is bounded by some polynomial function
-of <span class="math inline">\(n\)</span>.</li>
-<li>The loss function is uniformly bounded and it’s expectation is minimized at
-the true prediction function under the DGP.</li>
-</ol>
-<p>We use a <em>loss function</em> <span class="math inline">\(L\)</span> to assign a measure of performance to each learner
-<span class="math inline">\(\psi_n\)</span>, and subsequently compare performance across the learners. More
-generally, <span class="math inline">\(L\)</span> maps every <span class="math inline">\(\psi \in \R\)</span>
-to <span class="math inline">\(L(\psi) : (O) \mapsto L(\psi)(O)\)</span>. We use the terms “learner”,
-“algorithm”, and “estimator” interchangeably.</p>
-<ul>
-<li>It is important to recall that <span class="math inline">\(\psi\)</span> is an estimator of <span class="math inline">\(\psi_0\)</span>, the
-unknown and true parameter value under <span class="math inline">\(P_0\)</span>.
-<ul>
-<li>A <em>valid loss function</em> will have mean/expectation (i.e., risk) that is
-minimized at the true value of the parameter <span class="math inline">\(\psi_0\)</span>. Thus, minimizing
-the expected loss will bring an estimator <span class="math inline">\(\psi\)</span> closer to the true
-<span class="math inline">\(\psi_0\)</span>.</li>
-<li>For example, say we observe a learning data set <span class="math inline">\(O_i=(Y_i,X_i)\)</span>, of
-<span class="math inline">\(i=1, \ldots, n\)</span> independent and identically distributed observations,
-where <span class="math inline">\(Y_i\)</span> is a continuous outcome of interest, <span class="math inline">\(X_i\)</span> is a set of
-covariates. Also, let our objective be to estimate the function <span class="math inline">\(\psi_0: X \mapsto \psi_0(X) = E_0(Y \mid X)\)</span>, which is the conditional mean outcome
-given covariates. This function can be expressed as the minimizer of the
-expected squared error loss: <span class="math inline">\(\psi_0 = \text{argmin}_{\psi} E[L(O,\psi(X))]\)</span>, where <span class="math inline">\(L(O, \psi(X)) = (Y - \psi(X))^2\)</span>.</li>
-<li>We can estimate the loss by substituting the empirical distribution of
-the data <span class="math inline">\(P_n\)</span> for the true and unknown distribution of the observed data
-<span class="math inline">\(P_0\)</span>.</li>
-<li>Also, we can use the cross-validated risk to empirically determine the
-relative performance of an estimator (i.e., a candidate learner), and
-perhaps, how it’s performance compares to other estimators.</li>
-<li>Once we have tested different estimators on actual data, and looked at
-the performance (e.g., MSE of predictions across all learners), we can
-see which algorithm (or weighted combination) has the lowest risk, and
-thus is closest to the true <span class="math inline">\(\psi_0\)</span>.</li>
-</ul>
-</li>
-<li>
-<p>The <em>cross-validated empirical risk</em> of an algorithm is defined as the
-empirical mean over a validation sample of the loss of the algorithm fitted on
-the training sample, averaged across the splits of the data.</p>
-<ul>
-<li>The <em>discrete Super Learner</em>, or <em>cross-validation selector</em>, is the
-algorithm in the library that minimizes the cross-validated empirical
-risk.</li>
-<li>
-<p>The <em>continuous/ensemble Super Learner</em>, often referred to as
-<em>Super Learner</em> is a weighted average of the library of algorithm
-predictions, where the weights are chosen to minimize the cross-validated
-empirical risk of the library. This notion of weighted combinations was
-introduced in <span class="citation">Wolpert (<a href="references.html#ref-wolpert1992stacked">1992</a>)</span> for neural networks and adapted for
-regressions in <span class="citation">Breiman (<a href="references.html#ref-breiman1996stacked">1996</a>)</span>. Restricting the weights to be positive
-and sum to one (i.e., a convex combination) has been shown to perform well
-in practice <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super">2010</a>; van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super">2007</a>)</span>.
-because it’s</p>
-<p>optimization strategy corresponds to minimizing the expected
-squared error (or <span class="math inline">\(L_2\)</span>) loss and the <span class="math inline">\(L_2\)</span> loss is so-called
-“valid loss function” for frequently estimated functions, including the
-conditional mean outcome, <span class="math inline">\(E_{P_0}(Y|X)\)</span> (where <span class="math inline">\(X\)</span> are predictors of
-the outcome <span class="math inline">\(Y\)</span>, such as treatment <span class="math inline">\(A\)</span> and baseline covariates <span class="math inline">\(W\)</span>),
-and the conditional probability of a binary outcome, <span class="math inline">\(P_0(Y=1|X)\)</span>.
-The expected <span class="math inline">\(L_2\)</span> loss is minimized by both <span class="math inline">\(E_{P_0}(Y|X)\)</span> and
-<span class="math inline">\(P_0(Y=1|X)\)</span>, which is why it’s considered valid for their estimation.</p>
-<p>Non-negativity constraints on the weights
-have been shown to produce ensembles with lower prediction error
-<span class="citation">(LeBlanc and Tibshirani <a href="references.html#ref-leblanc1996combining">1996</a>, <span class="citation">@breiman1996stacked</span>)</span>. A convex combination of
-the weights can be enforced by constraining the weights sum to one, in
-addition to<br>
-&lt;!–
-The <em>oracle results</em> prove that, if the number of algorithms in the library are
+<p>This section is under construction.
+<!--
+Consider the scenario in which we have $n$ i.i.d. observations in the data. 
+Also, let's say a total of $K$ learners are included the SL library. 
+
+0. **Obtain candidate learner full-fits**. Fit each learner $k=1,\ldots,K$ on 
+   the *whole* sample of $n$ observations to obtain $K$ learner "full-fits". 
+   These $K$ full-fit learner predictions and the weights (also commonly referred to as 
+   "coefficients"), which we derive in the following steps.
+1. Create the validation data for the $V$ folds by breaking up the data evenly
+   into $V$ disjoint subsets, such that no observation is contained in more 
+   than one subset and each subset $v$ contains about the same number (roughly 
+   $n/V$) observations.
+
+    + If the data contain a rare binary outcome (or highly important binary 
+      covariate, such as treatment/exposure), one should consider making the 
+      prevalence of this binary outcome in the $V$ folds similar to the 
+      prevalence that exists in the original data. This can be achieved 
+      by populating the `strata_ids` argument in the `origami::make_folds()` 
+      function with the vector of binary outcomes (or important binary 
+      covariate). The returned list can then be passed as the `folds` argument 
+      in the `sl3_Task`.
+    + If the data contain clusters (e.g., repeated measures), then all 
+      observations in the same cluster should be placed in the same fold. 
+      This can be achieved by populating the `cluster_ids` argument in the 
+      `origami::make_folds()` function with the vector of cluster identifiers. 
+      The returned list can then be passed as the `folds` argument in the 
+      `sl3_Task`.
+
+2. For each fold $v$:
+
+    a. Separate (i) from (ii):
+
+        i. The data that was included in the disjoint subset for fold $v$ in step 
+           1, which contains roughly $n/V$ total observations. We will refer to 
+           this portion of the data as fold $v$'s "validation" data, and 
+           $n_{\text{validation}}$ as the number of observations in the 
+           validation data in the $v^{\text{th}}$ fold. 
+          
+        ii. The data that was *not* included in the disjoint subset for fold $v$ 
+            in step 1, which contains $n - n_{\text{validation}}$ total 
+            observations. We will refer to this portion of the data as fold 
+            $v$'s "training" data, and $n_{\text{training}}$ as the number of 
+            observations in the training data for the $v^{\text{th}}$ fold.
+          
+    b. Fit each of the $K$ learners on the training data (ii) to obtain $K$ 
+       estimators of the prediction function. Here, each $k$ learner employs 
+       their various strategies to map the training data, consisting of 
+       $n_{\text{training}}$ records with input variables (covariates) and an 
+       output variable (outcome), into a prediction function. 
+    c. Use the $K$ trained learners created in the previous step to map the 
+       validation data covariates, which represent a new set of input variables, 
+       into predicted outcomes. This results in an 
+       $n_{\text{validation}} \times K$ matrix of so-called 
+       "cross-validated predictions". Since the $K$ estimators were not trained 
+       using the validation data's outcomes, the predictions based on the 
+       validation data's covariate information can be used as a fair means to 
+       evaluate the performance of the $K$ estimators.
+
+ 3. Bind together the rows of all $V$ $n_{\text{validation}} \times K$ matrices 
+    of cross-validated predictions, to obtain an $n \times K$ matrix of
+    cross-validated predictions. This $n \times K$ matrix of cross-validated 
+    predictions is often referred to as the "level-one" or "$Z$" 
+    dataset or matrix.
+ 4. Construct the so-called "meta-level" dataset of $n$ observations by binding 
+    the $n \times K$ matrix of cross-validated predictions $Z$ with the 
+    $n \times 1$ vector of observed outcomes $Y$, $(Z_i, Y_i)$, $i=1,\ldots,n$. 
+ 5. Use the meta-level dataset created above as the training data to fit the 
+    so-called "metalearner" $m$, an algorithm that estimates the ensemble 
+    (weighted combination) of the $K$ candidate algorithms. A metalearner is 
+    the same as any other algorithm -- it maps the training data, consisting of 
+    both input and output variables, into a prediction function that can be used 
+    to map (possibly new) input into a predicted outcome; also, the fitted 
+    model parameters (such as linear regression coefficients) are estimates that 
+    optimize some objective function (such as mean squared error). What's 
+    special about the metalearner is that it learns from non-traditional input 
+    variables, the $K$ learners predictions', so it's estimated parameters are 
+    applied to that input. The metalearner's parameters are often referred to 
+    as coefficients and sometimes as weights; a common the metalearner is a 
+    regression model (like ), it's parameters are indeed  default metalearners 
+    in the software are regression models, and are thus parameterized by regression 
+    coefficients. We denote the metalearner's model parameters and 
+    their estimates $\alpha$ and $\hat{\alpha}$, respectively. We denote the 
+    metalearner as $m(Z|\hat{\alpha})$, a prediction function that can be used 
+    to map input $Z$, which is (possibly new) $K$ learners predictions', into a 
+    predicted outcome. 
+    
+    Some metalearners (like the cross-validated 
+    selector) require the user to specify the objective function to optimize, 
+    which can either be a loss function (where the expected loss will serve as 
+    the risk) or a risk function (which will be calculated directly from the 
+    meta-level dataset). Common across all 
+    metalearners is that they will apply their objective function to their 
+    training dataset (the meta-level dataset of cross-validated predicted 
+    outcomes and observed outcomes) to estimate the so-called 
+    "cross-validated risk" $R_{CV}$, and their learned weights vector 
+    $\hat{\bm{alpha}}$ minimizes this; that is, 
+    $\hat{\bm{alpha}} = \argmin_{\bm{\alpha}}R_{CV}(\bm{\alpha})$.
+    What differs across the metalearners is how they estimate the optimal
+    weights/coefficients vector $\hat{\bm{alpha}}$.We denote the metalearner as 
+    $m(Z|\hat{\alpha})$, a prediction function that can be used to map input 
+    $Z$, which is (possibly new) $K$ learners predictions', into a predicted 
+    outcome. 
+
+     a. *Discrete SL* (or *cross-validated selector*) metalearners first 
+        calculate the cross-validated empirical risk for each learner 
+        (it's derivation is described in (i) and (ii) below), then 
+        they assign a weight of 1 to the single learner with lowest 
+        cross-validated empirical risk and a weight of 0 to all other learners, 
+        outputting a $1 \times K$ vector of learned weights
+        $\hat{\bm{\alpha}}=(\hat{\alpha_1},\ldots,\hat{\alpha_K})$. The 
+        discrete SL's predictions will be identical to one of the learner's 
+        predictions, since the discrete SL allocates all of it's weight to one 
+        single learner. As a simple example, say the learners are ridge, lasso, 
+        and unpenalized linear regression, and the lasso had the lowest 
+        cross-validated empirical risk. Here, the weighted combination would 
+        look like 
+        ${\text{SL}} = 0*{\text{ridge}} + 1*{\text{lasso}} + 0*{\text{linear}}$;
+        for some subject $j$'s input variables (i.e., covariates/predictors), 
+        the SL and lasso predicted outcome's for $j$ would be identical, 
+        $\hat{y_{SL,j}}=\sum{k=1}^3\hat{\alpha_k}\times\hat{y_{k,j}}$.
+        
+        i. If a loss function is supplied, then the cross-validated empirical 
+           risk for the $K$ learners is calculated by first deriving an 
+           $n \times K$ matrix of losses: for each learner $k$ and subject 
+           $i=1,\ldots,n$ (i.e., for each column and each row, respectively, of 
+           the meta-level dataset of cross-validated predictions), the pairing 
+           of the observed outcome $y_i$ and predicted outcome $z_{k,i}$ 
+           is used to calculate the loss, such as the squared error loss 
+           $(z_{k,i}-y_i)^2$. Next, the learner-specific (i.e., column-wise) 
+           mean across the $n$ losses is calculated, resulting in a $1 \times K$ 
+           vector of cross-validated empirical risks 
+           (such as mean squared errors).
+        ii. If a risk function is supplied instead of a loss function, then the 
+            $1 \times K$ vector of learner-specific cross-validated empirical 
+            risks is calculated by providing the risk function with the 
+            $n \times 1$ observed outcomes and applying it at the learner-level 
+            (i.e., column-wise) to the $n \times K$ meta-level dataset of 
+            cross-validated predictions. An example risk function that may be 
+            of interest when the goal of the SL is simply prediction is 
+            1-predictiveness, where "predictiveness" could be a metric like 
+            AUC (the area under the receiver operating characteristic curve). 
+               
+     b. Continuous SL (often what traditional "Super Learner" refers to) 
+        metalearners learn which weights/coefficients $\alpha$ result in a 
+        weighted combination whose cross-validated empirical risk is minimized. 
+        Unlike the discrete SL, the continuous SL directly optimizes the weights. 
+        Continuous SL metalearners are just regression models -- they learn 
+        their best fit to the training data by optimizing the model's 
+        coefficients, but for metalearner, the training data is special; 
+        specifically, it is the $n \times K$ meta-level dataset of 
+        cross-validated predicted outcomes and the $n \times 1$ vector of 
+        observed outcomes. As an example, non-negative least-squares 
+        (NNLS) regression is commonly used used as a metalearner because it's 
+        optimization corresponds to minimizing the expected squared error 
+        ($L_2$) loss function, a so-called "valid loss" for a couple of 
+        commonly-estimated functions (more details on valid loss functions are 
+        provided below, in the ["Theoretical foundations"](#sl3-theory) 
+        subsection). Specifically, NNLS learns the weights $\hat{\bm{\alpha}}$ 
+        optimizing $\argmin_{\bm{\alpha}}\norm{\bm{\alpha}\hat{\bm{Y}}-\bm{y}}$ 
+        subject to $\bm{\alpha} \geq 0$, where $\norm{\dot}_2$ is the 
+        $\ell_2$-norm, $\hat{\bm{Y}}$ is the $n \times K$ matrix of 
+        cross-validated predicted outcomes, and $\bm{y}$ is the $n \times 1$ 
+        vector of observed outcomes.
+          
+  5. The $K$ learner full-fits obtained in step 0 and the weights 
+     vector obtained in step 4 define the SL. We can now obtain SL predictions 
+     on new covariate data by combining of the learner's full-fit predictions' 
+     on this new covariate data with the weights. 
+-->
+### Theoretical foundations {#sl3-theory}
+This section is under construction.
+<!--
+The so-called "oracle" results for the cross-validation selector among a 
+collection of candidate estimators prove that cross-validation is 
+asymptotically (i.e., as sample size goes to infinity) optimal for selection 
+among estimators [@vdl2003unified; @vaart2006oracle]. These asymptotic results 
+assume the following:
+
+1. The number of observations in the validation sample (referred to as 
+   $n_{\text{validation}}$ in the [step-by-step overview](#sl3-steps) above)
+   converges to infinity as the sample size $n$ converges to infinity, thereby 
+   making $V$ fold cross-validation an appropriate cross-validation choice when 
+   $V$ is fixed or when $V$ converges to infinity slower than $n$ converges to 
+   infinity.
+2. As the sample size $n$ converges to infinity, the number of candidate 
+   algorithms in the library is allowed to grows polynomially. That is, the number of 
+   candidates can increase, so long as the rate that is increases is bounded by some polynomial function 
+   of $n$.
+3. The loss function is uniformly bounded and it's expectation is minimized at 
+   the true prediction function under the DGP. 
+
+
+- oracle better as library better
+- use v-fold, keep training data large enough
+- use valid loss
+- for risk, the eIC of the risk (a means to express the risk as the loss, 
+  which is indexed by candidate and the nuisance) has to be uniformly bounded 
+  (see Ivan's dose response)
+loss potentially not bounded:
+- estimators -- when estimators are not in the parameter space, predictions fall 
+  outside bounds/away from 0
+- data -- if the outcome/covs are not bounded/trimmed
+
+
+We use a *loss function* $L$ to assign a measure of performance to each learner 
+$\psi_n$, and subsequently compare performance across the learners. More 
+generally, $L$ maps every $\psi \in \R$
+  to $L(\psi) : (O) \mapsto L(\psi)(O)$. We use the terms "learner",
+  "algorithm", and "estimator" interchangeably.
+
+    + It is important to recall that $\psi$ is an estimator of $\psi_0$, the
+      unknown and true parameter value under $P_0$.
+    + A *valid loss function* will have mean/expectation (i.e., risk) that is
+      minimized at the true value of the parameter $\psi_0$. Thus, minimizing
+      the expected loss will bring an estimator $\psi$ closer to the true
+      $\psi_0$.
+    + For example, say we observe a learning data set $O_i=(Y_i,X_i)$, of
+      $i=1, \ldots, n$ independent and identically distributed observations,
+      where $Y_i$ is a continuous outcome of interest, $X_i$ is a set of
+      covariates. Also, let our objective be to estimate the function $\psi_0: X
+      \mapsto \psi_0(X) = E_0(Y \mid X)$, which is the conditional mean outcome
+      given covariates. This function can be expressed as the minimizer of the
+      expected squared error loss: $\psi_0 = \text{argmin}_{\psi}
+      E[L(O,\psi(X))]$, where $L(O, \psi(X)) = (Y - \psi(X))^2$.
+    + We can estimate the loss by substituting the empirical distribution of
+      the data $P_n$ for the true and unknown distribution of the observed data
+      $P_0$.
+    + Also, we can use the cross-validated risk to empirically determine the
+      relative performance of an estimator (i.e., a candidate learner), and
+      perhaps, how it's performance compares to other estimators.
+    + Once we have tested different estimators on actual data, and looked at
+      the performance (e.g., MSE of predictions across all learners), we can
+      see which algorithm (or weighted combination) has the lowest risk, and
+      thus is closest to the true $\psi_0$.
+
+- The *cross-validated empirical risk* of an algorithm is defined as the
+  empirical mean over a validation sample of the loss of the algorithm fitted on
+  the training sample, averaged across the splits of the data.
+
+    + The *discrete Super Learner*, or *cross-validation selector*, is the
+      algorithm in the library that minimizes the cross-validated empirical
+      risk.
+    + The *continuous/ensemble Super Learner*, often referred to as
+      *Super Learner* is a weighted average of the library of algorithm
+      predictions, where the weights are chosen to minimize the cross-validated
+      empirical risk of the library. This notion of weighted combinations was
+      introduced in @wolpert1992stacked for neural networks and adapted for
+      regressions in @breiman1996stacked. Restricting the weights to be positive
+      and sum to one (i.e., a convex combination) has been shown to perform well
+      in practice [@polley2010super; @vdl2007super].
+      because it's 
+      
+      optimization strategy corresponds to minimizing the expected 
+      squared error (or $L_2$) loss and the $L_2$ loss is so-called 
+      "valid loss function" for frequently estimated functions, including the 
+      conditional mean outcome, $E_{P_0}(Y|X)$ (where $X$ are predictors of 
+      the outcome $Y$, such as treatment $A$ and baseline covariates $W$), 
+      and the conditional probability of a binary outcome, $P_0(Y=1|X)$.
+      The expected $L_2$ loss is minimized by both $E_{P_0}(Y|X)$ and 
+      $P_0(Y=1|X)$, which is why it's considered valid for their estimation.
+      
+      Non-negativity constraints on the weights 
+     have been shown to produce ensembles with lower prediction error 
+     [@leblanc1996combining, @breiman1996stacked]. A convex combination of 
+     the weights can be enforced by constraining the weights sum to one, in
+     addition to 
+-->
+<!--
+The *oracle results* prove that, if the number of algorithms in the library are
 polynomial in sample size, then the cross-validation selector (i.e., discrete
 Super Learner) (1) is equivalent with the oracle selector asymptotically (based
 on sample of size of training samples), or (2) achieves the parametric rate
-(log <span class="math inline">\(n/n\)</span>) for convergence with respect to the loss-based dissimilarity (risk)
-between a candidate estimate <span class="math inline">\(\psi\)</span> and the true parameter value <span class="math inline">\(\psi_0\)</span>.</p>
-</li>
-</ul>
-</li>
-</ul>
-</div>
-<div id="super-learner-for-prediction" class="section level3 unnumbered">
-<h3>Super Learner for Prediction<a class="anchor" aria-label="anchor" href="#super-learner-for-prediction"><i class="fas fa-link"></i></a>
-</h3>
-<p>Below, we show the results of
+(log $n/n$) for convergence with respect to the loss-based dissimilarity (risk)
+between a candidate estimate $\psi$ and the true parameter value $\psi_0$.
+
+### Super Learner for Prediction {-}
+
+Below, we show the results of
 such a study, comparing the fits of several different learners, including the
-SL algorithms.</p>
-<p>r cv_fig3, results=“asis”, echo = FALSE
-knitr::include_graphics(“img/png/ericSL.png”)</p>
-<p>For more detail on Super Learner we refer the reader to <span class="citation">van der Laan, Polley, and Hubbard (<a href="references.html#ref-vdl2007super">2007</a>)</span> and
-<span class="citation">Polley and van der Laan (<a href="references.html#ref-polley2010super">2010</a>)</span>. The optimality results for the cross-validation selector
-among a family of algorithms were established in <span class="citation">van der Laan and Dudoit (<a href="references.html#ref-vdl2003unified">2003</a>)</span> and extended
-in <span class="citation">Van der Vaart, Dudoit, and Laan (<a href="references.html#ref-vaart2006oracle">2006</a>)</span>.
-–&gt;</p>
+SL algorithms.
+
+r cv_fig3, results="asis", echo = FALSE
+knitr::include_graphics("img/png/ericSL.png")
+
+For more detail on Super Learner we refer the reader to @vdl2007super and
+@polley2010super. The optimality results for the cross-validation selector
+among a family of algorithms were established in @vdl2003unified and extended
+in @vaart2006oracle.
+--></p>
 </div>
 </div>
 <div id="sl3-microwave-dinner-implementation" class="section level2">
@@ -548,7 +585,7 @@ devel branch of the `sl3` GitHub repository, you need to install that version
 of the package (i.e., `usethis::install_github(tlverse/sl3@devel)`), re-start
 your `R` session, and then re-load the `sl3` package.
 -->
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://readr.tidyverse.org">readr</a></span><span class="op">)</span>
@@ -1194,18 +1231,18 @@ the outcome is observed, given the history (i.e., variables that were measured
 before the missingness). Estimating the missingness mechanism requires learning
 a prediction function that outputs the predicted probability that a unit is
 missing, given their history.</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="co"># specify the outcome and covariates</span></a>
-<a class="sourceLine" id="cb31-2" data-line-number="2">outcome &lt;-<span class="st"> "whz"</span></a>
-<a class="sourceLine" id="cb31-3" data-line-number="3">covars &lt;-<span class="st"> </span><span class="kw">colnames</span>(washb_data)[<span class="op">-</span><span class="kw">which</span>(<span class="kw">names</span>(washb_data) <span class="op">==</span><span class="st"> </span>outcome)]</a>
-<a class="sourceLine" id="cb31-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb31-5" data-line-number="5"><span class="co"># create the sl3 task</span></a>
-<a class="sourceLine" id="cb31-6" data-line-number="6">washb_task &lt;-<span class="st"> </span><span class="kw">make_sl3_Task</span>(</a>
-<a class="sourceLine" id="cb31-7" data-line-number="7">  <span class="dt">data =</span> washb_data,</a>
-<a class="sourceLine" id="cb31-8" data-line-number="8">  <span class="dt">covariates =</span> covars,</a>
-<a class="sourceLine" id="cb31-9" data-line-number="9">  <span class="dt">outcome =</span> outcome</a>
-<a class="sourceLine" id="cb31-10" data-line-number="10">)</a>
-<a class="sourceLine" id="cb31-11" data-line-number="11">Warning <span class="cf">in</span> <span class="kw">process_data</span>(data, nodes, <span class="dt">column_names =</span> column_names, <span class="dt">flag =</span> flag, <span class="op">:</span></a>
-<a class="sourceLine" id="cb31-12" data-line-number="12">Missing covariate data detected<span class="op">:</span><span class="st"> </span>imputing covariates.</a></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># specify the outcome and covariates</span></a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">outcome &lt;-<span class="st"> "whz"</span></a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">covars &lt;-<span class="st"> </span><span class="kw">colnames</span>(washb_data)[<span class="op">-</span><span class="kw">which</span>(<span class="kw">names</span>(washb_data) <span class="op">==</span><span class="st"> </span>outcome)]</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5"><span class="co"># create the sl3 task</span></a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">washb_task &lt;-<span class="st"> </span><span class="kw">make_sl3_Task</span>(</a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">  <span class="dt">data =</span> washb_data,</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">  <span class="dt">covariates =</span> covars,</a>
+<a class="sourceLine" id="cb30-9" data-line-number="9">  <span class="dt">outcome =</span> outcome</a>
+<a class="sourceLine" id="cb30-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb30-11" data-line-number="11">Warning <span class="cf">in</span> <span class="kw">process_data</span>(data, nodes, <span class="dt">column_names =</span> column_names, <span class="dt">flag =</span> flag, <span class="op">:</span></a>
+<a class="sourceLine" id="cb30-12" data-line-number="12">Missing covariate data detected<span class="op">:</span><span class="st"> </span>imputing covariates.</a></code></pre></div>
 <p><em>This warning is important.</em> The task just imputed missing covariates for us.
 Specifically, for each covariate column with missing values, <code>sl3</code> uses the
 median to impute missing continuous covariates, and the mode to impute binary
@@ -1217,48 +1254,48 @@ handy when the missingness in the data might be informative.</p>
 in the task. The default cross-validation scheme is V-fold, with <span class="math inline">\(V=10\)</span> number
 of folds.</p>
 <p>Let’s visualize our <code>washb_task</code>:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1">washb_task</a>
-<a class="sourceLine" id="cb32-2" data-line-number="2">A sl3 Task with <span class="dv">4695</span> obs and these nodes<span class="op">:</span></a>
-<a class="sourceLine" id="cb32-3" data-line-number="3"><span class="er">$</span>covariates</a>
-<a class="sourceLine" id="cb32-4" data-line-number="4"> [<span class="dv">1</span>] <span class="st">"tr"</span>              <span class="st">"fracode"</span>         <span class="st">"month"</span>           <span class="st">"aged"</span>           </a>
-<a class="sourceLine" id="cb32-5" data-line-number="5"> [<span class="dv">5</span>] <span class="st">"sex"</span>             <span class="st">"momage"</span>          <span class="st">"momedu"</span>          <span class="st">"momheight"</span>      </a>
-<a class="sourceLine" id="cb32-6" data-line-number="6"> [<span class="dv">9</span>] <span class="st">"hfiacat"</span>         <span class="st">"Nlt18"</span>           <span class="st">"Ncomp"</span>           <span class="st">"watmin"</span>         </a>
-<a class="sourceLine" id="cb32-7" data-line-number="7">[<span class="dv">13</span>] <span class="st">"elec"</span>            <span class="st">"floor"</span>           <span class="st">"walls"</span>           <span class="st">"roof"</span>           </a>
-<a class="sourceLine" id="cb32-8" data-line-number="8">[<span class="dv">17</span>] <span class="st">"asset_wardrobe"</span>  <span class="st">"asset_table"</span>     <span class="st">"asset_chair"</span>     <span class="st">"asset_khat"</span>     </a>
-<a class="sourceLine" id="cb32-9" data-line-number="9">[<span class="dv">21</span>] <span class="st">"asset_chouki"</span>    <span class="st">"asset_tv"</span>        <span class="st">"asset_refrig"</span>    <span class="st">"asset_bike"</span>     </a>
-<a class="sourceLine" id="cb32-10" data-line-number="10">[<span class="dv">25</span>] <span class="st">"asset_moto"</span>      <span class="st">"asset_sewmach"</span>   <span class="st">"asset_mobile"</span>    <span class="st">"delta_momage"</span>   </a>
-<a class="sourceLine" id="cb32-11" data-line-number="11">[<span class="dv">29</span>] <span class="st">"delta_momheight"</span></a>
-<a class="sourceLine" id="cb32-12" data-line-number="12"></a>
-<a class="sourceLine" id="cb32-13" data-line-number="13"><span class="op">$</span>outcome</a>
-<a class="sourceLine" id="cb32-14" data-line-number="14">[<span class="dv">1</span>] <span class="st">"whz"</span></a>
-<a class="sourceLine" id="cb32-15" data-line-number="15"></a>
-<a class="sourceLine" id="cb32-16" data-line-number="16"><span class="op">$</span>id</a>
-<a class="sourceLine" id="cb32-17" data-line-number="17"><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb32-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb32-19" data-line-number="19"><span class="op">$</span>weights</a>
-<a class="sourceLine" id="cb32-20" data-line-number="20"><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb32-21" data-line-number="21"></a>
-<a class="sourceLine" id="cb32-22" data-line-number="22"><span class="op">$</span>offset</a>
-<a class="sourceLine" id="cb32-23" data-line-number="23"><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb32-24" data-line-number="24"></a>
-<a class="sourceLine" id="cb32-25" data-line-number="25"><span class="op">$</span>time</a>
-<a class="sourceLine" id="cb32-26" data-line-number="26"><span class="ot">NULL</span></a></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">washb_task</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">A sl3 Task with <span class="dv">4695</span> obs and these nodes<span class="op">:</span></a>
+<a class="sourceLine" id="cb31-3" data-line-number="3"><span class="er">$</span>covariates</a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"> [<span class="dv">1</span>] <span class="st">"tr"</span>              <span class="st">"fracode"</span>         <span class="st">"month"</span>           <span class="st">"aged"</span>           </a>
+<a class="sourceLine" id="cb31-5" data-line-number="5"> [<span class="dv">5</span>] <span class="st">"sex"</span>             <span class="st">"momage"</span>          <span class="st">"momedu"</span>          <span class="st">"momheight"</span>      </a>
+<a class="sourceLine" id="cb31-6" data-line-number="6"> [<span class="dv">9</span>] <span class="st">"hfiacat"</span>         <span class="st">"Nlt18"</span>           <span class="st">"Ncomp"</span>           <span class="st">"watmin"</span>         </a>
+<a class="sourceLine" id="cb31-7" data-line-number="7">[<span class="dv">13</span>] <span class="st">"elec"</span>            <span class="st">"floor"</span>           <span class="st">"walls"</span>           <span class="st">"roof"</span>           </a>
+<a class="sourceLine" id="cb31-8" data-line-number="8">[<span class="dv">17</span>] <span class="st">"asset_wardrobe"</span>  <span class="st">"asset_table"</span>     <span class="st">"asset_chair"</span>     <span class="st">"asset_khat"</span>     </a>
+<a class="sourceLine" id="cb31-9" data-line-number="9">[<span class="dv">21</span>] <span class="st">"asset_chouki"</span>    <span class="st">"asset_tv"</span>        <span class="st">"asset_refrig"</span>    <span class="st">"asset_bike"</span>     </a>
+<a class="sourceLine" id="cb31-10" data-line-number="10">[<span class="dv">25</span>] <span class="st">"asset_moto"</span>      <span class="st">"asset_sewmach"</span>   <span class="st">"asset_mobile"</span>    <span class="st">"delta_momage"</span>   </a>
+<a class="sourceLine" id="cb31-11" data-line-number="11">[<span class="dv">29</span>] <span class="st">"delta_momheight"</span></a>
+<a class="sourceLine" id="cb31-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb31-13" data-line-number="13"><span class="op">$</span>outcome</a>
+<a class="sourceLine" id="cb31-14" data-line-number="14">[<span class="dv">1</span>] <span class="st">"whz"</span></a>
+<a class="sourceLine" id="cb31-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb31-16" data-line-number="16"><span class="op">$</span>id</a>
+<a class="sourceLine" id="cb31-17" data-line-number="17"><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb31-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb31-19" data-line-number="19"><span class="op">$</span>weights</a>
+<a class="sourceLine" id="cb31-20" data-line-number="20"><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb31-21" data-line-number="21"></a>
+<a class="sourceLine" id="cb31-22" data-line-number="22"><span class="op">$</span>offset</a>
+<a class="sourceLine" id="cb31-23" data-line-number="23"><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb31-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb31-25" data-line-number="25"><span class="op">$</span>time</a>
+<a class="sourceLine" id="cb31-26" data-line-number="26"><span class="ot">NULL</span></a></code></pre></div>
 <p>We can’t see when we print the task, but the default cross-validation fold
 structure (<span class="math inline">\(V\)</span>-fold cross-validation with <span class="math inline">\(V\)</span>=10 folds) was created when we
 defined the task.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">length</span>(washb_task<span class="op">$</span>folds) <span class="co"># how many folds?</span></a>
-<a class="sourceLine" id="cb33-2" data-line-number="2">[<span class="dv">1</span>] <span class="dv">10</span></a>
-<a class="sourceLine" id="cb33-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="kw">head</span>(washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>training_set) <span class="co"># row indexes for fold 1 training</span></a>
-<a class="sourceLine" id="cb33-5" data-line-number="5">[<span class="dv">1</span>] <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span></a>
-<a class="sourceLine" id="cb33-6" data-line-number="6"><span class="kw">head</span>(washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>validation_set) <span class="co"># row indexes for fold 1 validation</span></a>
-<a class="sourceLine" id="cb33-7" data-line-number="7">[<span class="dv">1</span>] <span class="dv">12</span> <span class="dv">21</span> <span class="dv">29</span> <span class="dv">41</span> <span class="dv">43</span> <span class="dv">53</span></a>
-<a class="sourceLine" id="cb33-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb33-9" data-line-number="9"><span class="kw">any</span>(</a>
-<a class="sourceLine" id="cb33-10" data-line-number="10">  washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>training_set <span class="op">%in%</span></a>
-<a class="sourceLine" id="cb33-11" data-line-number="11"><span class="st">    </span>washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>validation_set</a>
-<a class="sourceLine" id="cb33-12" data-line-number="12">)</a>
-<a class="sourceLine" id="cb33-13" data-line-number="13">[<span class="dv">1</span>] <span class="ot">FALSE</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">length</span>(washb_task<span class="op">$</span>folds) <span class="co"># how many folds?</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">[<span class="dv">1</span>] <span class="dv">10</span></a>
+<a class="sourceLine" id="cb32-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4"><span class="kw">head</span>(washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>training_set) <span class="co"># row indexes for fold 1 training</span></a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">[<span class="dv">1</span>] <span class="dv">1</span> <span class="dv">2</span> <span class="dv">3</span> <span class="dv">4</span> <span class="dv">5</span> <span class="dv">6</span></a>
+<a class="sourceLine" id="cb32-6" data-line-number="6"><span class="kw">head</span>(washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>validation_set) <span class="co"># row indexes for fold 1 validation</span></a>
+<a class="sourceLine" id="cb32-7" data-line-number="7">[<span class="dv">1</span>] <span class="dv">12</span> <span class="dv">21</span> <span class="dv">29</span> <span class="dv">41</span> <span class="dv">43</span> <span class="dv">53</span></a>
+<a class="sourceLine" id="cb32-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb32-9" data-line-number="9"><span class="kw">any</span>(</a>
+<a class="sourceLine" id="cb32-10" data-line-number="10">  washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>training_set <span class="op">%in%</span></a>
+<a class="sourceLine" id="cb32-11" data-line-number="11"><span class="st">    </span>washb_task<span class="op">$</span>folds[[<span class="dv">1</span>]]<span class="op">$</span>validation_set</a>
+<a class="sourceLine" id="cb32-12" data-line-number="12">)</a>
+<a class="sourceLine" id="cb32-13" data-line-number="13">[<span class="dv">1</span>] <span class="ot">FALSE</span></a></code></pre></div>
 <p><code>R6</code> Tip: If you type <code>washb_task$</code> and then press the “tab” button (you will
 need to press “tab” twice if you’re not in RStudio), you can view all of the
 active and public fields and methods that can be accessed from the <code>washb_task</code>
@@ -1285,39 +1322,39 @@ distribution.</li>
 <p>Learners have properties that indicate what features they support. We may use
 <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_properties()</a></code> to get a list of all properties supported by at least
 one learner.</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">sl3_list_properties</span>()</a>
-<a class="sourceLine" id="cb34-2" data-line-number="2"> [<span class="dv">1</span>] <span class="st">"binomial"</span>      <span class="st">"categorical"</span>   <span class="st">"continuous"</span>    <span class="st">"cv"</span>           </a>
-<a class="sourceLine" id="cb34-3" data-line-number="3"> [<span class="dv">5</span>] <span class="st">"density"</span>       <span class="st">"h2o"</span>           <span class="st">"ids"</span>           <span class="st">"importance"</span>   </a>
-<a class="sourceLine" id="cb34-4" data-line-number="4"> [<span class="dv">9</span>] <span class="st">"offset"</span>        <span class="st">"preprocessing"</span> <span class="st">"sampling"</span>      <span class="st">"screener"</span>     </a>
-<a class="sourceLine" id="cb34-5" data-line-number="5">[<span class="dv">13</span>] <span class="st">"timeseries"</span>    <span class="st">"weights"</span>       <span class="st">"wrapper"</span>      </a></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="kw">sl3_list_properties</span>()</a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"> [<span class="dv">1</span>] <span class="st">"binomial"</span>      <span class="st">"categorical"</span>   <span class="st">"continuous"</span>    <span class="st">"cv"</span>           </a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"> [<span class="dv">5</span>] <span class="st">"density"</span>       <span class="st">"h2o"</span>           <span class="st">"ids"</span>           <span class="st">"importance"</span>   </a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"> [<span class="dv">9</span>] <span class="st">"offset"</span>        <span class="st">"preprocessing"</span> <span class="st">"sampling"</span>      <span class="st">"screener"</span>     </a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">[<span class="dv">13</span>] <span class="st">"timeseries"</span>    <span class="st">"weights"</span>       <span class="st">"wrapper"</span>      </a></code></pre></div>
 <p>Since we have a continuous outcome, we may identify the learners that support
 this outcome type with <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners()</a></code>.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="kw">sl3_list_learners</span>(<span class="st">"continuous"</span>)</a>
-<a class="sourceLine" id="cb35-2" data-line-number="2"> [<span class="dv">1</span>] <span class="st">"Lrnr_arima"</span>                     <span class="st">"Lrnr_bartMachine"</span>              </a>
-<a class="sourceLine" id="cb35-3" data-line-number="3"> [<span class="dv">3</span>] <span class="st">"Lrnr_bayesglm"</span>                  <span class="st">"Lrnr_bilstm"</span>                   </a>
-<a class="sourceLine" id="cb35-4" data-line-number="4"> [<span class="dv">5</span>] <span class="st">"Lrnr_bound"</span>                     <span class="st">"Lrnr_caret"</span>                    </a>
-<a class="sourceLine" id="cb35-5" data-line-number="5"> [<span class="dv">7</span>] <span class="st">"Lrnr_cv_selector"</span>               <span class="st">"Lrnr_dbarts"</span>                   </a>
-<a class="sourceLine" id="cb35-6" data-line-number="6"> [<span class="dv">9</span>] <span class="st">"Lrnr_earth"</span>                     <span class="st">"Lrnr_expSmooth"</span>                </a>
-<a class="sourceLine" id="cb35-7" data-line-number="7">[<span class="dv">11</span>] <span class="st">"Lrnr_gam"</span>                       <span class="st">"Lrnr_gbm"</span>                      </a>
-<a class="sourceLine" id="cb35-8" data-line-number="8">[<span class="dv">13</span>] <span class="st">"Lrnr_glm"</span>                       <span class="st">"Lrnr_glm_fast"</span>                 </a>
-<a class="sourceLine" id="cb35-9" data-line-number="9">[<span class="dv">15</span>] <span class="st">"Lrnr_glmnet"</span>                    <span class="st">"Lrnr_grf"</span>                      </a>
-<a class="sourceLine" id="cb35-10" data-line-number="10">[<span class="dv">17</span>] <span class="st">"Lrnr_gru_keras"</span>                 <span class="st">"Lrnr_gts"</span>                      </a>
-<a class="sourceLine" id="cb35-11" data-line-number="11">[<span class="dv">19</span>] <span class="st">"Lrnr_h2o_glm"</span>                   <span class="st">"Lrnr_h2o_grid"</span>                 </a>
-<a class="sourceLine" id="cb35-12" data-line-number="12">[<span class="dv">21</span>] <span class="st">"Lrnr_hal9001"</span>                   <span class="st">"Lrnr_HarmonicReg"</span>              </a>
-<a class="sourceLine" id="cb35-13" data-line-number="13">[<span class="dv">23</span>] <span class="st">"Lrnr_hts"</span>                       <span class="st">"Lrnr_lightgbm"</span>                 </a>
-<a class="sourceLine" id="cb35-14" data-line-number="14">[<span class="dv">25</span>] <span class="st">"Lrnr_lstm_keras"</span>                <span class="st">"Lrnr_mean"</span>                     </a>
-<a class="sourceLine" id="cb35-15" data-line-number="15">[<span class="dv">27</span>] <span class="st">"Lrnr_multiple_ts"</span>               <span class="st">"Lrnr_nnet"</span>                     </a>
-<a class="sourceLine" id="cb35-16" data-line-number="16">[<span class="dv">29</span>] <span class="st">"Lrnr_nnls"</span>                      <span class="st">"Lrnr_optim"</span>                    </a>
-<a class="sourceLine" id="cb35-17" data-line-number="17">[<span class="dv">31</span>] <span class="st">"Lrnr_pkg_SuperLearner"</span>          <span class="st">"Lrnr_pkg_SuperLearner_method"</span>  </a>
-<a class="sourceLine" id="cb35-18" data-line-number="18">[<span class="dv">33</span>] <span class="st">"Lrnr_pkg_SuperLearner_screener"</span> <span class="st">"Lrnr_polspline"</span>                </a>
-<a class="sourceLine" id="cb35-19" data-line-number="19">[<span class="dv">35</span>] <span class="st">"Lrnr_randomForest"</span>              <span class="st">"Lrnr_ranger"</span>                   </a>
-<a class="sourceLine" id="cb35-20" data-line-number="20">[<span class="dv">37</span>] <span class="st">"Lrnr_rpart"</span>                     <span class="st">"Lrnr_rugarch"</span>                  </a>
-<a class="sourceLine" id="cb35-21" data-line-number="21">[<span class="dv">39</span>] <span class="st">"Lrnr_screener_correlation"</span>      <span class="st">"Lrnr_solnp"</span>                    </a>
-<a class="sourceLine" id="cb35-22" data-line-number="22">[<span class="dv">41</span>] <span class="st">"Lrnr_stratified"</span>                <span class="st">"Lrnr_svm"</span>                      </a>
-<a class="sourceLine" id="cb35-23" data-line-number="23">[<span class="dv">43</span>] <span class="st">"Lrnr_tsDyn"</span>                     <span class="st">"Lrnr_xgboost"</span>                  </a></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">sl3_list_learners</span>(<span class="st">"continuous"</span>)</a>
+<a class="sourceLine" id="cb34-2" data-line-number="2"> [<span class="dv">1</span>] <span class="st">"Lrnr_arima"</span>                     <span class="st">"Lrnr_bartMachine"</span>              </a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"> [<span class="dv">3</span>] <span class="st">"Lrnr_bayesglm"</span>                  <span class="st">"Lrnr_bilstm"</span>                   </a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"> [<span class="dv">5</span>] <span class="st">"Lrnr_bound"</span>                     <span class="st">"Lrnr_caret"</span>                    </a>
+<a class="sourceLine" id="cb34-5" data-line-number="5"> [<span class="dv">7</span>] <span class="st">"Lrnr_cv_selector"</span>               <span class="st">"Lrnr_dbarts"</span>                   </a>
+<a class="sourceLine" id="cb34-6" data-line-number="6"> [<span class="dv">9</span>] <span class="st">"Lrnr_earth"</span>                     <span class="st">"Lrnr_expSmooth"</span>                </a>
+<a class="sourceLine" id="cb34-7" data-line-number="7">[<span class="dv">11</span>] <span class="st">"Lrnr_gam"</span>                       <span class="st">"Lrnr_gbm"</span>                      </a>
+<a class="sourceLine" id="cb34-8" data-line-number="8">[<span class="dv">13</span>] <span class="st">"Lrnr_glm"</span>                       <span class="st">"Lrnr_glm_fast"</span>                 </a>
+<a class="sourceLine" id="cb34-9" data-line-number="9">[<span class="dv">15</span>] <span class="st">"Lrnr_glmnet"</span>                    <span class="st">"Lrnr_grf"</span>                      </a>
+<a class="sourceLine" id="cb34-10" data-line-number="10">[<span class="dv">17</span>] <span class="st">"Lrnr_gru_keras"</span>                 <span class="st">"Lrnr_gts"</span>                      </a>
+<a class="sourceLine" id="cb34-11" data-line-number="11">[<span class="dv">19</span>] <span class="st">"Lrnr_h2o_glm"</span>                   <span class="st">"Lrnr_h2o_grid"</span>                 </a>
+<a class="sourceLine" id="cb34-12" data-line-number="12">[<span class="dv">21</span>] <span class="st">"Lrnr_hal9001"</span>                   <span class="st">"Lrnr_HarmonicReg"</span>              </a>
+<a class="sourceLine" id="cb34-13" data-line-number="13">[<span class="dv">23</span>] <span class="st">"Lrnr_hts"</span>                       <span class="st">"Lrnr_lightgbm"</span>                 </a>
+<a class="sourceLine" id="cb34-14" data-line-number="14">[<span class="dv">25</span>] <span class="st">"Lrnr_lstm_keras"</span>                <span class="st">"Lrnr_mean"</span>                     </a>
+<a class="sourceLine" id="cb34-15" data-line-number="15">[<span class="dv">27</span>] <span class="st">"Lrnr_multiple_ts"</span>               <span class="st">"Lrnr_nnet"</span>                     </a>
+<a class="sourceLine" id="cb34-16" data-line-number="16">[<span class="dv">29</span>] <span class="st">"Lrnr_nnls"</span>                      <span class="st">"Lrnr_optim"</span>                    </a>
+<a class="sourceLine" id="cb34-17" data-line-number="17">[<span class="dv">31</span>] <span class="st">"Lrnr_pkg_SuperLearner"</span>          <span class="st">"Lrnr_pkg_SuperLearner_method"</span>  </a>
+<a class="sourceLine" id="cb34-18" data-line-number="18">[<span class="dv">33</span>] <span class="st">"Lrnr_pkg_SuperLearner_screener"</span> <span class="st">"Lrnr_polspline"</span>                </a>
+<a class="sourceLine" id="cb34-19" data-line-number="19">[<span class="dv">35</span>] <span class="st">"Lrnr_randomForest"</span>              <span class="st">"Lrnr_ranger"</span>                   </a>
+<a class="sourceLine" id="cb34-20" data-line-number="20">[<span class="dv">37</span>] <span class="st">"Lrnr_rpart"</span>                     <span class="st">"Lrnr_rugarch"</span>                  </a>
+<a class="sourceLine" id="cb34-21" data-line-number="21">[<span class="dv">39</span>] <span class="st">"Lrnr_screener_correlation"</span>      <span class="st">"Lrnr_solnp"</span>                    </a>
+<a class="sourceLine" id="cb34-22" data-line-number="22">[<span class="dv">41</span>] <span class="st">"Lrnr_stratified"</span>                <span class="st">"Lrnr_svm"</span>                      </a>
+<a class="sourceLine" id="cb34-23" data-line-number="23">[<span class="dv">43</span>] <span class="st">"Lrnr_tsDyn"</span>                     <span class="st">"Lrnr_xgboost"</span>                  </a></code></pre></div>
 <p>Now that we have an idea of some learners, we can construct them using the
 <code>make_learner</code> function or the <code>new</code> method.</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># choose base learners</span>
 <span class="va">lrn_glm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glm</span><span class="op">)</span>
 <span class="va">lrn_mean</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_mean.html">Lrnr_mean</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></code></pre></div>
@@ -1325,7 +1362,7 @@ this outcome type with <code><a href="https://tlverse.org/sl3/reference/list_lea
 different settings. Documentation for the learners and their hyperparameters
 can be found in the <a href="https://tlverse.org/sl3/reference/index.html#section-sl-learners"><code>sl3</code> Learners
 Reference</a>.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lrn_lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glmnet</span><span class="op">)</span> <span class="co"># alpha default is 1</span>
 <span class="va">lrn_ridge</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_glmnet.html">Lrnr_glmnet</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>alpha <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
 <span class="va">lrn_enet.5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glmnet</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
@@ -1344,7 +1381,7 @@ where each vector specifies an interaction. For example, we specify
 interactions below between (1) <code>tr</code> (whether or not the subject received the
 WASH intervention) and <code>elec</code> (whether or not the subject had electricity); and
 between (2) <code>tr</code> and <code>hfiacat</code> (the subject’s level of food security).</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">interactions</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"elec"</span>, <span class="st">"tr"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tr"</span>, <span class="st">"hfiacat"</span><span class="op">)</span><span class="op">)</span>
 <span class="co"># main terms as well as the interactions above will be included</span>
 <span class="va">lrn_interaction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_define_interactions</span>, <span class="va">interactions</span><span class="op">)</span></code></pre></div>
@@ -1356,16 +1393,16 @@ defining learner and another learner that incorporate these terms when fitting
 a model. Let’s create a learner pipeline that will fit a linear model with the
 combination of main terms and interactions terms, as specified in
 <code>lrn_interaction_main</code>.</p>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># we already instantiated a linear model learner above, no need to do it again</span></a>
-<a class="sourceLine" id="cb39-2" data-line-number="2">lrn_glm_interaction &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Pipeline, lrn_interaction, lrn_glm)</a>
-<a class="sourceLine" id="cb39-3" data-line-number="3">lrn_glm_interaction</a>
-<a class="sourceLine" id="cb39-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"Lrnr_define_interactions_TRUE"</span></a>
-<a class="sourceLine" id="cb39-5" data-line-number="5">[<span class="dv">1</span>] <span class="st">"Lrnr_glm_TRUE"</span></a></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="co"># we already instantiated a linear model learner above, no need to do it again</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">lrn_glm_interaction &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Pipeline, lrn_interaction, lrn_glm)</a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">lrn_glm_interaction</a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"Lrnr_define_interactions_TRUE"</span></a>
+<a class="sourceLine" id="cb38-5" data-line-number="5">[<span class="dv">1</span>] <span class="st">"Lrnr_glm_TRUE"</span></a></code></pre></div>
 <p>We can also include learners from the <code>SuperLearner</code> <code>R</code> package.</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">lrn_bayesglm</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/SuperLearner_interface.html">Lrnr_pkg_SuperLearner</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="st">"SL.bayesglm"</span><span class="op">)</span></code></pre></div>
 <p>Here is a fun trick to create customized learners over a grid of parameters.</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># I like to crock pot my SLs</span>
 <span class="va">grid_params</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
   cost <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">1</span>, <span class="fl">10</span>, <span class="fl">100</span>, <span class="fl">1000</span><span class="op">)</span>,
@@ -1377,54 +1414,54 @@ combination of main terms and interactions terms, as specified in
 <span class="va">svm_learners</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">grid</span>, MARGIN <span class="op">=</span> <span class="fl">1</span>, <span class="kw">function</span><span class="op">(</span><span class="va">tuning_params</span><span class="op">)</span> <span class="op">{</span>
   <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span><span class="op">(</span><span class="va">Lrnr_svm</span><span class="op">$</span><span class="va">new</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">as.list</a></span><span class="op">(</span><span class="va">tuning_params</span><span class="op">)</span><span class="op">)</span>
 <span class="op">}</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">grid_params &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
-<a class="sourceLine" id="cb42-2" data-line-number="2">  <span class="dt">max_depth =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>),</a>
-<a class="sourceLine" id="cb42-3" data-line-number="3">  <span class="dt">eta =</span> <span class="kw">c</span>(<span class="fl">0.001</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>),</a>
-<a class="sourceLine" id="cb42-4" data-line-number="4">  <span class="dt">nrounds =</span> <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb42-6" data-line-number="6">grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(grid_params, <span class="dt">KEEP.OUT.ATTRS =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb42-7" data-line-number="7">grid</a>
-<a class="sourceLine" id="cb42-8" data-line-number="8">  max_depth   eta nrounds</a>
-<a class="sourceLine" id="cb42-9" data-line-number="9"><span class="dv">1</span>         <span class="dv">2</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-10" data-line-number="10"><span class="dv">2</span>         <span class="dv">4</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-11" data-line-number="11"><span class="dv">3</span>         <span class="dv">6</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-12" data-line-number="12"><span class="dv">4</span>         <span class="dv">2</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-13" data-line-number="13"><span class="dv">5</span>         <span class="dv">4</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-14" data-line-number="14"><span class="dv">6</span>         <span class="dv">6</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-15" data-line-number="15"><span class="dv">7</span>         <span class="dv">2</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-16" data-line-number="16"><span class="dv">8</span>         <span class="dv">4</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-17" data-line-number="17"><span class="dv">9</span>         <span class="dv">6</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
-<a class="sourceLine" id="cb42-18" data-line-number="18"></a>
-<a class="sourceLine" id="cb42-19" data-line-number="19">xgb_learners &lt;-<span class="st"> </span><span class="kw">apply</span>(grid, <span class="dt">MARGIN =</span> <span class="dv">1</span>, <span class="cf">function</span>(tuning_params) {</a>
-<a class="sourceLine" id="cb42-20" data-line-number="20">  <span class="kw">do.call</span>(Lrnr_xgboost<span class="op">$</span>new, <span class="kw">as.list</span>(tuning_params))</a>
-<a class="sourceLine" id="cb42-21" data-line-number="21">})</a>
-<a class="sourceLine" id="cb42-22" data-line-number="22">xgb_learners</a>
-<a class="sourceLine" id="cb42-23" data-line-number="23">[[<span class="dv">1</span>]]</a>
-<a class="sourceLine" id="cb42-24" data-line-number="24">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.001"</span></a>
-<a class="sourceLine" id="cb42-25" data-line-number="25"></a>
-<a class="sourceLine" id="cb42-26" data-line-number="26">[[<span class="dv">2</span>]]</a>
-<a class="sourceLine" id="cb42-27" data-line-number="27">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.001"</span></a>
-<a class="sourceLine" id="cb42-28" data-line-number="28"></a>
-<a class="sourceLine" id="cb42-29" data-line-number="29">[[<span class="dv">3</span>]]</a>
-<a class="sourceLine" id="cb42-30" data-line-number="30">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.001"</span></a>
-<a class="sourceLine" id="cb42-31" data-line-number="31"></a>
-<a class="sourceLine" id="cb42-32" data-line-number="32">[[<span class="dv">4</span>]]</a>
-<a class="sourceLine" id="cb42-33" data-line-number="33">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.1"</span></a>
-<a class="sourceLine" id="cb42-34" data-line-number="34"></a>
-<a class="sourceLine" id="cb42-35" data-line-number="35">[[<span class="dv">5</span>]]</a>
-<a class="sourceLine" id="cb42-36" data-line-number="36">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.1"</span></a>
-<a class="sourceLine" id="cb42-37" data-line-number="37"></a>
-<a class="sourceLine" id="cb42-38" data-line-number="38">[[<span class="dv">6</span>]]</a>
-<a class="sourceLine" id="cb42-39" data-line-number="39">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.1"</span></a>
-<a class="sourceLine" id="cb42-40" data-line-number="40"></a>
-<a class="sourceLine" id="cb42-41" data-line-number="41">[[<span class="dv">7</span>]]</a>
-<a class="sourceLine" id="cb42-42" data-line-number="42">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.3"</span></a>
-<a class="sourceLine" id="cb42-43" data-line-number="43"></a>
-<a class="sourceLine" id="cb42-44" data-line-number="44">[[<span class="dv">8</span>]]</a>
-<a class="sourceLine" id="cb42-45" data-line-number="45">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.3"</span></a>
-<a class="sourceLine" id="cb42-46" data-line-number="46"></a>
-<a class="sourceLine" id="cb42-47" data-line-number="47">[[<span class="dv">9</span>]]</a>
-<a class="sourceLine" id="cb42-48" data-line-number="48">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.3"</span></a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">grid_params &lt;-<span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">  <span class="dt">max_depth =</span> <span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>),</a>
+<a class="sourceLine" id="cb41-3" data-line-number="3">  <span class="dt">eta =</span> <span class="kw">c</span>(<span class="fl">0.001</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>),</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">  <span class="dt">nrounds =</span> <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb41-6" data-line-number="6">grid &lt;-<span class="st"> </span><span class="kw">expand.grid</span>(grid_params, <span class="dt">KEEP.OUT.ATTRS =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb41-7" data-line-number="7">grid</a>
+<a class="sourceLine" id="cb41-8" data-line-number="8">  max_depth   eta nrounds</a>
+<a class="sourceLine" id="cb41-9" data-line-number="9"><span class="dv">1</span>         <span class="dv">2</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-10" data-line-number="10"><span class="dv">2</span>         <span class="dv">4</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-11" data-line-number="11"><span class="dv">3</span>         <span class="dv">6</span> <span class="fl">0.001</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-12" data-line-number="12"><span class="dv">4</span>         <span class="dv">2</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-13" data-line-number="13"><span class="dv">5</span>         <span class="dv">4</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-14" data-line-number="14"><span class="dv">6</span>         <span class="dv">6</span> <span class="fl">0.100</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-15" data-line-number="15"><span class="dv">7</span>         <span class="dv">2</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-16" data-line-number="16"><span class="dv">8</span>         <span class="dv">4</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-17" data-line-number="17"><span class="dv">9</span>         <span class="dv">6</span> <span class="fl">0.300</span>     <span class="dv">100</span></a>
+<a class="sourceLine" id="cb41-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb41-19" data-line-number="19">xgb_learners &lt;-<span class="st"> </span><span class="kw">apply</span>(grid, <span class="dt">MARGIN =</span> <span class="dv">1</span>, <span class="cf">function</span>(tuning_params) {</a>
+<a class="sourceLine" id="cb41-20" data-line-number="20">  <span class="kw">do.call</span>(Lrnr_xgboost<span class="op">$</span>new, <span class="kw">as.list</span>(tuning_params))</a>
+<a class="sourceLine" id="cb41-21" data-line-number="21">})</a>
+<a class="sourceLine" id="cb41-22" data-line-number="22">xgb_learners</a>
+<a class="sourceLine" id="cb41-23" data-line-number="23">[[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb41-24" data-line-number="24">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.001"</span></a>
+<a class="sourceLine" id="cb41-25" data-line-number="25"></a>
+<a class="sourceLine" id="cb41-26" data-line-number="26">[[<span class="dv">2</span>]]</a>
+<a class="sourceLine" id="cb41-27" data-line-number="27">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.001"</span></a>
+<a class="sourceLine" id="cb41-28" data-line-number="28"></a>
+<a class="sourceLine" id="cb41-29" data-line-number="29">[[<span class="dv">3</span>]]</a>
+<a class="sourceLine" id="cb41-30" data-line-number="30">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.001"</span></a>
+<a class="sourceLine" id="cb41-31" data-line-number="31"></a>
+<a class="sourceLine" id="cb41-32" data-line-number="32">[[<span class="dv">4</span>]]</a>
+<a class="sourceLine" id="cb41-33" data-line-number="33">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.1"</span></a>
+<a class="sourceLine" id="cb41-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb41-35" data-line-number="35">[[<span class="dv">5</span>]]</a>
+<a class="sourceLine" id="cb41-36" data-line-number="36">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.1"</span></a>
+<a class="sourceLine" id="cb41-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb41-38" data-line-number="38">[[<span class="dv">6</span>]]</a>
+<a class="sourceLine" id="cb41-39" data-line-number="39">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.1"</span></a>
+<a class="sourceLine" id="cb41-40" data-line-number="40"></a>
+<a class="sourceLine" id="cb41-41" data-line-number="41">[[<span class="dv">7</span>]]</a>
+<a class="sourceLine" id="cb41-42" data-line-number="42">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_2_0.3"</span></a>
+<a class="sourceLine" id="cb41-43" data-line-number="43"></a>
+<a class="sourceLine" id="cb41-44" data-line-number="44">[[<span class="dv">8</span>]]</a>
+<a class="sourceLine" id="cb41-45" data-line-number="45">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_4_0.3"</span></a>
+<a class="sourceLine" id="cb41-46" data-line-number="46"></a>
+<a class="sourceLine" id="cb41-47" data-line-number="47">[[<span class="dv">9</span>]]</a>
+<a class="sourceLine" id="cb41-48" data-line-number="48">[<span class="dv">1</span>] <span class="st">"Lrnr_xgboost_100_1_6_0.3"</span></a></code></pre></div>
 <p>Did you see <code>Lrnr_caret</code> when we called <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners(c("binomial"))</a></code>?
 All we need to specify to use this popular algorithm as a candidate in our
 SL is the <code>algorithm</code> we want to tune, which is passed as <code>method</code> to
@@ -1432,7 +1469,7 @@ SL is the <code>algorithm</code> we want to tune, which is passed as <code>metho
 set to “CV” instead of the <code><a href="https://rdrr.io/pkg/caret/man/train.html">caret::train()</a></code> default <code>boot</code>. The summary metric
 used to select the optimal model is <code>RMSE</code> for continuous outcomes and
 <code>Accuracy</code> for categorical and binomial outcomes.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Unlike xgboost, I have no idea how to tune a neural net or BART machine, so</span>
 <span class="co"># I let caret take the reins</span>
 <span class="va">lrnr_caret_nnet</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_caret</span>, algorithm <span class="op">=</span> <span class="st">"nnet"</span><span class="op">)</span>
@@ -1447,36 +1484,36 @@ together.</p>
 learners. What makes a stack special is that it combines multiple learners by
 training them simultaneously, so that their predictions can be either combined
 or compared.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1">stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(</a>
-<a class="sourceLine" id="cb44-2" data-line-number="2">  Stack, lrn_glm, lrn_polspline, lrn_enet<span class="fl">.5</span>, lrn_ridge, lrn_lasso, xgb_<span class="dv">50</span></a>
-<a class="sourceLine" id="cb44-3" data-line-number="3">)</a>
-<a class="sourceLine" id="cb44-4" data-line-number="4">stack</a>
-<a class="sourceLine" id="cb44-5" data-line-number="5">[<span class="dv">1</span>] <span class="st">"Lrnr_glm_TRUE"</span>                                  </a>
-<a class="sourceLine" id="cb44-6" data-line-number="6">[<span class="dv">2</span>] <span class="st">"Lrnr_polspline_5"</span>                               </a>
-<a class="sourceLine" id="cb44-7" data-line-number="7">[<span class="dv">3</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_0.5_100_TRUE_FALSE"</span></a>
-<a class="sourceLine" id="cb44-8" data-line-number="8">[<span class="dv">4</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_0_100_TRUE_FALSE"</span>  </a>
-<a class="sourceLine" id="cb44-9" data-line-number="9">[<span class="dv">5</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_1_100_TRUE_FALSE"</span>  </a>
-<a class="sourceLine" id="cb44-10" data-line-number="10">[<span class="dv">6</span>] <span class="st">"Lrnr_xgboost_50_1"</span>                              </a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(</a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">  Stack, lrn_glm, lrn_polspline, lrn_enet<span class="fl">.5</span>, lrn_ridge, lrn_lasso, xgb_<span class="dv">50</span></a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">)</a>
+<a class="sourceLine" id="cb43-4" data-line-number="4">stack</a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">[<span class="dv">1</span>] <span class="st">"Lrnr_glm_TRUE"</span>                                  </a>
+<a class="sourceLine" id="cb43-6" data-line-number="6">[<span class="dv">2</span>] <span class="st">"Lrnr_polspline_5"</span>                               </a>
+<a class="sourceLine" id="cb43-7" data-line-number="7">[<span class="dv">3</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_0.5_100_TRUE_FALSE"</span></a>
+<a class="sourceLine" id="cb43-8" data-line-number="8">[<span class="dv">4</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_0_100_TRUE_FALSE"</span>  </a>
+<a class="sourceLine" id="cb43-9" data-line-number="9">[<span class="dv">5</span>] <span class="st">"Lrnr_glmnet_NULL_deviance_10_1_100_TRUE_FALSE"</span>  </a>
+<a class="sourceLine" id="cb43-10" data-line-number="10">[<span class="dv">6</span>] <span class="st">"Lrnr_xgboost_50_1"</span>                              </a></code></pre></div>
 <p>We can also stack the learners by first creating a vector, and then
 instantiating the stack. I prefer this method, since it easily allows us to
 modify the names of the learners.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="co"># named vector of learners first</span></a>
-<a class="sourceLine" id="cb45-2" data-line-number="2">learners &lt;-<span class="st"> </span><span class="kw">c</span>(lrn_glm, lrn_polspline, lrn_enet<span class="fl">.5</span>, lrn_ridge, lrn_lasso, xgb_<span class="dv">50</span>)</a>
-<a class="sourceLine" id="cb45-3" data-line-number="3"><span class="kw">names</span>(learners) &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
-<a class="sourceLine" id="cb45-4" data-line-number="4">  <span class="st">"glm"</span>, <span class="st">"polspline"</span>, <span class="st">"enet.5"</span>, <span class="st">"ridge"</span>, <span class="st">"lasso"</span>, <span class="st">"xgboost50"</span></a>
-<a class="sourceLine" id="cb45-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb45-6" data-line-number="6"><span class="co"># next make the stack</span></a>
-<a class="sourceLine" id="cb45-7" data-line-number="7">stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, learners)</a>
-<a class="sourceLine" id="cb45-8" data-line-number="8"><span class="co"># now the names are pretty</span></a>
-<a class="sourceLine" id="cb45-9" data-line-number="9">stack</a>
-<a class="sourceLine" id="cb45-10" data-line-number="10">[<span class="dv">1</span>] <span class="st">"glm"</span>       <span class="st">"polspline"</span> <span class="st">"enet.5"</span>    <span class="st">"ridge"</span>     <span class="st">"lasso"</span>     <span class="st">"xgboost50"</span></a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="co"># named vector of learners first</span></a>
+<a class="sourceLine" id="cb44-2" data-line-number="2">learners &lt;-<span class="st"> </span><span class="kw">c</span>(lrn_glm, lrn_polspline, lrn_enet<span class="fl">.5</span>, lrn_ridge, lrn_lasso, xgb_<span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb44-3" data-line-number="3"><span class="kw">names</span>(learners) &lt;-<span class="st"> </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb44-4" data-line-number="4">  <span class="st">"glm"</span>, <span class="st">"polspline"</span>, <span class="st">"enet.5"</span>, <span class="st">"ridge"</span>, <span class="st">"lasso"</span>, <span class="st">"xgboost50"</span></a>
+<a class="sourceLine" id="cb44-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb44-6" data-line-number="6"><span class="co"># next make the stack</span></a>
+<a class="sourceLine" id="cb44-7" data-line-number="7">stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, learners)</a>
+<a class="sourceLine" id="cb44-8" data-line-number="8"><span class="co"># now the names are pretty</span></a>
+<a class="sourceLine" id="cb44-9" data-line-number="9">stack</a>
+<a class="sourceLine" id="cb44-10" data-line-number="10">[<span class="dv">1</span>] <span class="st">"glm"</span>       <span class="st">"polspline"</span> <span class="st">"enet.5"</span>    <span class="st">"ridge"</span>     <span class="st">"lasso"</span>     <span class="st">"xgboost50"</span></a></code></pre></div>
 <p>We’re jumping ahead a bit, but let’s check something out quickly. It’s
 straightforward, and just one more step, to set up this stack such that all of
 the learners will train in a cross-validated manner.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">cv_stack &lt;-<span class="st"> </span>Lrnr_cv<span class="op">$</span><span class="kw">new</span>(stack)</a>
-<a class="sourceLine" id="cb46-2" data-line-number="2">cv_stack</a>
-<a class="sourceLine" id="cb46-3" data-line-number="3">[<span class="dv">1</span>] <span class="st">"Lrnr_cv"</span></a>
-<a class="sourceLine" id="cb46-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"glm"</span>       <span class="st">"polspline"</span> <span class="st">"enet.5"</span>    <span class="st">"ridge"</span>     <span class="st">"lasso"</span>     <span class="st">"xgboost50"</span></a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">cv_stack &lt;-<span class="st"> </span>Lrnr_cv<span class="op">$</span><span class="kw">new</span>(stack)</a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">cv_stack</a>
+<a class="sourceLine" id="cb45-3" data-line-number="3">[<span class="dv">1</span>] <span class="st">"Lrnr_cv"</span></a>
+<a class="sourceLine" id="cb45-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"glm"</span>       <span class="st">"polspline"</span> <span class="st">"enet.5"</span>    <span class="st">"ridge"</span>     <span class="st">"lasso"</span>     <span class="st">"xgboost50"</span></a></code></pre></div>
 <div id="screening-algorithms-for-feature-selection" class="section level4">
 <h4>
 <span class="header-section-number">6.2.2.1</span> Screening Algorithms for Feature Selection<a class="anchor" aria-label="anchor" href="#screening-algorithms-for-feature-selection"><i class="fas fa-link"></i></a>
@@ -1516,40 +1553,40 @@ setting <code>ntree = 20</code>).</p>
 <p>Hang on! Before you think it – I will confess: Bob Ross and I both know that 20
 trees makes for a lonely forest, and I shouldn’t consider it, but these are the
 sacrifices I have to make for this chapter to build in time!</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">miniforest &lt;-<span class="st"> </span>Lrnr_ranger<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb47-2" data-line-number="2">  <span class="dt">num.trees =</span> <span class="dv">20</span>, <span class="dt">write.forest =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb47-3" data-line-number="3">  <span class="dt">importance =</span> <span class="st">"impurity_corrected"</span></a>
-<a class="sourceLine" id="cb47-4" data-line-number="4">)</a>
-<a class="sourceLine" id="cb47-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb47-6" data-line-number="6"><span class="co"># learner must already be instantiated, we did this when we created miniforest</span></a>
-<a class="sourceLine" id="cb47-7" data-line-number="7">screen_rf &lt;-<span class="st"> </span>Lrnr_screener_importance<span class="op">$</span><span class="kw">new</span>(<span class="dt">learner =</span> miniforest, <span class="dt">num_screen =</span> <span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb47-8" data-line-number="8">screen_rf</a>
-<a class="sourceLine" id="cb47-9" data-line-number="9">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_importance_5"</span></a>
-<a class="sourceLine" id="cb47-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb47-11" data-line-number="11"><span class="co"># which covariates are selected on the full data?</span></a>
-<a class="sourceLine" id="cb47-12" data-line-number="12">screen_rf<span class="op">$</span><span class="kw">train</span>(washb_task)</a>
-<a class="sourceLine" id="cb47-13" data-line-number="13">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_importance_5"</span></a>
-<a class="sourceLine" id="cb47-14" data-line-number="14"><span class="op">$</span>selected</a>
-<a class="sourceLine" id="cb47-15" data-line-number="15">[<span class="dv">1</span>] <span class="st">"aged"</span>        <span class="st">"month"</span>       <span class="st">"momedu"</span>      <span class="st">"asset_tv"</span>    <span class="st">"asset_chair"</span></a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">miniforest &lt;-<span class="st"> </span>Lrnr_ranger<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">  <span class="dt">num.trees =</span> <span class="dv">20</span>, <span class="dt">write.forest =</span> <span class="ot">FALSE</span>,</a>
+<a class="sourceLine" id="cb46-3" data-line-number="3">  <span class="dt">importance =</span> <span class="st">"impurity_corrected"</span></a>
+<a class="sourceLine" id="cb46-4" data-line-number="4">)</a>
+<a class="sourceLine" id="cb46-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb46-6" data-line-number="6"><span class="co"># learner must already be instantiated, we did this when we created miniforest</span></a>
+<a class="sourceLine" id="cb46-7" data-line-number="7">screen_rf &lt;-<span class="st"> </span>Lrnr_screener_importance<span class="op">$</span><span class="kw">new</span>(<span class="dt">learner =</span> miniforest, <span class="dt">num_screen =</span> <span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb46-8" data-line-number="8">screen_rf</a>
+<a class="sourceLine" id="cb46-9" data-line-number="9">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_importance_5"</span></a>
+<a class="sourceLine" id="cb46-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb46-11" data-line-number="11"><span class="co"># which covariates are selected on the full data?</span></a>
+<a class="sourceLine" id="cb46-12" data-line-number="12">screen_rf<span class="op">$</span><span class="kw">train</span>(washb_task)</a>
+<a class="sourceLine" id="cb46-13" data-line-number="13">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_importance_5"</span></a>
+<a class="sourceLine" id="cb46-14" data-line-number="14"><span class="op">$</span>selected</a>
+<a class="sourceLine" id="cb46-15" data-line-number="15">[<span class="dv">1</span>] <span class="st">"aged"</span>        <span class="st">"month"</span>       <span class="st">"momedu"</span>      <span class="st">"asset_tv"</span>    <span class="st">"asset_chair"</span></a></code></pre></div>
 <p>An example of how to format <code>Lrnr_screener_augment</code> is included below for
 clarity.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1">keepme &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"aged"</span>, <span class="st">"momage"</span>)</a>
-<a class="sourceLine" id="cb48-2" data-line-number="2"><span class="co"># screener must already be instantiated, we did this when we created screen_rf</span></a>
-<a class="sourceLine" id="cb48-3" data-line-number="3">screen_augment_rf &lt;-<span class="st"> </span>Lrnr_screener_augment<span class="op">$</span><span class="kw">new</span>(</a>
-<a class="sourceLine" id="cb48-4" data-line-number="4">  <span class="dt">screener =</span> screen_rf, <span class="dt">default_covariates =</span> keepme</a>
-<a class="sourceLine" id="cb48-5" data-line-number="5">)</a>
-<a class="sourceLine" id="cb48-6" data-line-number="6">screen_augment_rf</a>
-<a class="sourceLine" id="cb48-7" data-line-number="7">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_augment_c(</span><span class="ch">\"</span><span class="st">aged</span><span class="ch">\"</span><span class="st">, </span><span class="ch">\"</span><span class="st">momage</span><span class="ch">\"</span><span class="st">)"</span></a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1">keepme &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"aged"</span>, <span class="st">"momage"</span>)</a>
+<a class="sourceLine" id="cb47-2" data-line-number="2"><span class="co"># screener must already be instantiated, we did this when we created screen_rf</span></a>
+<a class="sourceLine" id="cb47-3" data-line-number="3">screen_augment_rf &lt;-<span class="st"> </span>Lrnr_screener_augment<span class="op">$</span><span class="kw">new</span>(</a>
+<a class="sourceLine" id="cb47-4" data-line-number="4">  <span class="dt">screener =</span> screen_rf, <span class="dt">default_covariates =</span> keepme</a>
+<a class="sourceLine" id="cb47-5" data-line-number="5">)</a>
+<a class="sourceLine" id="cb47-6" data-line-number="6">screen_augment_rf</a>
+<a class="sourceLine" id="cb47-7" data-line-number="7">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_augment_c(</span><span class="ch">\"</span><span class="st">aged</span><span class="ch">\"</span><span class="st">, </span><span class="ch">\"</span><span class="st">momage</span><span class="ch">\"</span><span class="st">)"</span></a></code></pre></div>
 <p>Selecting covariates with non-zero lasso coefficients is quite common. Let’s
 construct <code>Lrnr_screener_coefs</code> screener that does just that, and test it out.</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1"><span class="co"># we already instantiated a lasso learner above, no need to do it again</span></a>
-<a class="sourceLine" id="cb49-2" data-line-number="2">screen_lasso &lt;-<span class="st"> </span>Lrnr_screener_coefs<span class="op">$</span><span class="kw">new</span>(<span class="dt">learner =</span> lrn_lasso, <span class="dt">threshold =</span> <span class="dv">0</span>)</a>
-<a class="sourceLine" id="cb49-3" data-line-number="3">screen_lasso</a>
-<a class="sourceLine" id="cb49-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_coefs_0_NULL_2"</span></a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="co"># we already instantiated a lasso learner above, no need to do it again</span></a>
+<a class="sourceLine" id="cb48-2" data-line-number="2">screen_lasso &lt;-<span class="st"> </span>Lrnr_screener_coefs<span class="op">$</span><span class="kw">new</span>(<span class="dt">learner =</span> lrn_lasso, <span class="dt">threshold =</span> <span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3">screen_lasso</a>
+<a class="sourceLine" id="cb48-4" data-line-number="4">[<span class="dv">1</span>] <span class="st">"Lrnr_screener_coefs_0_NULL_2"</span></a></code></pre></div>
 <p>To <strong>“pipe”</strong> only the selected covariates to the modeling algorithm, we need to
 make a <code>Pipeline</code>, similar to the one we built for the regression model with
 interaction terms.</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">screen_rf_pipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Pipeline</span>, <span class="va">screen_rf</span>, <span class="va">stack</span><span class="op">)</span>
 <span class="va">screen_lasso_pipe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Pipeline</span>, <span class="va">screen_lasso</span>, <span class="va">stack</span><span class="op">)</span></code></pre></div>
 <p>Now, these learners with no internal screening will be preceded by a screening
@@ -1559,15 +1596,15 @@ methods perform in comparison to the methods without feature selection.</p>
 <p>Analogous to what we have seen before, we have to stack the pipeline and
 original <code>stack</code> together, so we may use them as base learners in our super
 learner.</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co"># pretty names again</span></a>
-<a class="sourceLine" id="cb51-2" data-line-number="2">learners2 &lt;-<span class="st"> </span><span class="kw">c</span>(learners, screen_rf_pipe, screen_lasso_pipe)</a>
-<a class="sourceLine" id="cb51-3" data-line-number="3"><span class="kw">names</span>(learners2) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">names</span>(learners), <span class="st">"randomforest_screen"</span>, <span class="st">"lasso_screen"</span>)</a>
-<a class="sourceLine" id="cb51-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb51-5" data-line-number="5">fancy_stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, learners2)</a>
-<a class="sourceLine" id="cb51-6" data-line-number="6">fancy_stack</a>
-<a class="sourceLine" id="cb51-7" data-line-number="7">[<span class="dv">1</span>] <span class="st">"glm"</span>                 <span class="st">"polspline"</span>           <span class="st">"enet.5"</span>             </a>
-<a class="sourceLine" id="cb51-8" data-line-number="8">[<span class="dv">4</span>] <span class="st">"ridge"</span>               <span class="st">"lasso"</span>               <span class="st">"xgboost50"</span>          </a>
-<a class="sourceLine" id="cb51-9" data-line-number="9">[<span class="dv">7</span>] <span class="st">"randomforest_screen"</span> <span class="st">"lasso_screen"</span>       </a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1"><span class="co"># pretty names again</span></a>
+<a class="sourceLine" id="cb50-2" data-line-number="2">learners2 &lt;-<span class="st"> </span><span class="kw">c</span>(learners, screen_rf_pipe, screen_lasso_pipe)</a>
+<a class="sourceLine" id="cb50-3" data-line-number="3"><span class="kw">names</span>(learners2) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">names</span>(learners), <span class="st">"randomforest_screen"</span>, <span class="st">"lasso_screen"</span>)</a>
+<a class="sourceLine" id="cb50-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb50-5" data-line-number="5">fancy_stack &lt;-<span class="st"> </span><span class="kw">make_learner</span>(Stack, learners2)</a>
+<a class="sourceLine" id="cb50-6" data-line-number="6">fancy_stack</a>
+<a class="sourceLine" id="cb50-7" data-line-number="7">[<span class="dv">1</span>] <span class="st">"glm"</span>                 <span class="st">"polspline"</span>           <span class="st">"enet.5"</span>             </a>
+<a class="sourceLine" id="cb50-8" data-line-number="8">[<span class="dv">4</span>] <span class="st">"ridge"</span>               <span class="st">"lasso"</span>               <span class="st">"xgboost50"</span>          </a>
+<a class="sourceLine" id="cb50-9" data-line-number="9">[<span class="dv">7</span>] <span class="st">"randomforest_screen"</span> <span class="st">"lasso_screen"</span>       </a></code></pre></div>
 <p>We will use the <a href="https://tlverse.org/sl3/reference/default_metalearner.html">default
 metalearner</a>, which
 uses <a href="https://tlverse.org/sl3/reference/Lrnr_solnp.html"><code>Lrnr_solnp()</code></a> to
@@ -1579,7 +1616,7 @@ outcome type. Note that any learner can be used as a metalearner.</p>
 <p>Now that we have made a diverse stack of base learners, we are ready to make
 the SL. The SL algorithm fits a metalearner on the validation set
 predictions/losses across all folds.</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb51"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_sl</span>, learners <span class="op">=</span> <span class="va">fancy_stack</span><span class="op">)</span></code></pre></div>
 <p>We can also use <code>Lrnr_cv</code> to build a SL, cross-validate a stack of
 learners to compare performance of the learners in the stack, or cross-validate
@@ -1593,7 +1630,7 @@ in all the places you could otherwise use any other <code>sl3</code> learners, i
 assigns a weight of 1 to the learner with the lowest cross-validated empirical
 risk, and weight of 0 to all other learners. This metalearner specification can
 be invoked with <code>Lrnr_cv_selector</code>.</p>
-<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">discrete_sl_metalrn</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_cv_selector.html">Lrnr_cv_selector</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="va">discrete_sl</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   learners <span class="op">=</span> <span class="va">fancy_stack</span>,
@@ -1622,7 +1659,7 @@ plot(dt_sl, color = FALSE, height = "400px", width = "90%")
 <p>The SL algorithm fits a metalearner on the validation-set predictions in a
 cross-validated manner, thereby avoiding overfitting.</p>
 <p>Now we are ready to <strong>“train”</strong> our SL on our <code>sl3_task</code> object, <code>washb_task</code>.</p>
-<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb53"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">4197</span><span class="op">)</span>
 <span class="va">sl_fit</span> <span class="op">&lt;-</span> <span class="va">sl</span><span class="op">$</span><span class="fu">train</span><span class="op">(</span><span class="va">washb_task</span><span class="op">)</span></code></pre></div>
 </div>
@@ -1632,10 +1669,10 @@ cross-validated manner, thereby avoiding overfitting.</p>
 </h3>
 <p>Now that we have fit the SL, we are ready to calculate the predicted outcome
 for each subject.</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co"># we did it! now we have SL predictions</span></a>
-<a class="sourceLine" id="cb55-2" data-line-number="2">sl_preds &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">predict</span>()</a>
-<a class="sourceLine" id="cb55-3" data-line-number="3"><span class="kw">head</span>(sl_preds)</a>
-<a class="sourceLine" id="cb55-4" data-line-number="4">[<span class="dv">1</span>] <span class="fl">-0.64698</span> <span class="fl">-0.76514</span> <span class="fl">-0.64312</span> <span class="fl">-0.68991</span> <span class="fl">-0.68068</span> <span class="fl">-0.66422</span></a></code></pre></div>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># we did it! now we have SL predictions</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2">sl_preds &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">predict</span>()</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="kw">head</span>(sl_preds)</a>
+<a class="sourceLine" id="cb54-4" data-line-number="4">[<span class="dv">1</span>] <span class="fl">-0.64698</span> <span class="fl">-0.76514</span> <span class="fl">-0.64312</span> <span class="fl">-0.68991</span> <span class="fl">-0.68068</span> <span class="fl">-0.66422</span></a></code></pre></div>
 <!--
 Below we visualize the observed versus predicted values.
 
@@ -1654,157 +1691,157 @@ learner on the block, main terms linear regression.
 ```
 -->
 <p>We can also obtain a summary of the results.</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1">sl_fit_summary &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">print</span>()</a>
-<a class="sourceLine" id="cb56-2" data-line-number="2">[<span class="dv">1</span>] <span class="st">"SuperLearner:"</span></a>
-<a class="sourceLine" id="cb56-3" data-line-number="3">List of <span class="dv">8</span></a>
-<a class="sourceLine" id="cb56-4" data-line-number="4"> <span class="op">$</span><span class="st"> </span>glm                <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glm_TRUE"</span></a>
-<a class="sourceLine" id="cb56-5" data-line-number="5"> <span class="op">$</span><span class="st"> </span>polspline          <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_polspline_5"</span></a>
-<a class="sourceLine" id="cb56-6" data-line-number="6"> <span class="op">$</span><span class="st"> </span>enet<span class="fl">.5</span>             <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_0.5_100_TRUE_FALSE"</span></a>
-<a class="sourceLine" id="cb56-7" data-line-number="7"> <span class="op">$</span><span class="st"> </span>ridge              <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_0_100_TRUE_FALSE"</span></a>
-<a class="sourceLine" id="cb56-8" data-line-number="8"> <span class="op">$</span><span class="st"> </span>lasso              <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_1_100_TRUE_FALSE"</span></a>
-<a class="sourceLine" id="cb56-9" data-line-number="9"> <span class="op">$</span><span class="st"> </span>xgboost50          <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_xgboost_50_1"</span></a>
-<a class="sourceLine" id="cb56-10" data-line-number="10"> <span class="op">$</span><span class="st"> </span>randomforest_screen<span class="op">:</span><span class="st"> </span>chr <span class="st">"Pipeline(Lrnr_screener_importance_5-&gt;Stack)"</span></a>
-<a class="sourceLine" id="cb56-11" data-line-number="11"> <span class="op">$</span><span class="st"> </span>lasso_screen       <span class="op">:</span><span class="st"> </span>chr <span class="st">"Pipeline(Lrnr_screener_coefs_0_NULL_2-&gt;Stack)"</span></a>
-<a class="sourceLine" id="cb56-12" data-line-number="12">[<span class="dv">1</span>] <span class="st">"Lrnr_solnp_TRUE_TRUE_FALSE_1e-05"</span></a>
-<a class="sourceLine" id="cb56-13" data-line-number="13"><span class="op">$</span>pars</a>
-<a class="sourceLine" id="cb56-14" data-line-number="14"> [<span class="dv">1</span>] <span class="fl">0.055565</span> <span class="fl">0.055551</span> <span class="fl">0.055558</span> <span class="fl">0.055564</span> <span class="fl">0.055558</span> <span class="fl">0.055583</span> <span class="fl">0.055556</span> <span class="fl">0.055573</span></a>
-<a class="sourceLine" id="cb56-15" data-line-number="15"> [<span class="dv">9</span>] <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055546</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055552</span></a>
-<a class="sourceLine" id="cb56-16" data-line-number="16">[<span class="dv">17</span>] <span class="fl">0.055553</span> <span class="fl">0.055516</span></a>
-<a class="sourceLine" id="cb56-17" data-line-number="17"></a>
-<a class="sourceLine" id="cb56-18" data-line-number="18"><span class="op">$</span>convergence</a>
-<a class="sourceLine" id="cb56-19" data-line-number="19">[<span class="dv">1</span>] <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-20" data-line-number="20"></a>
-<a class="sourceLine" id="cb56-21" data-line-number="21"><span class="op">$</span>values</a>
-<a class="sourceLine" id="cb56-22" data-line-number="22">[<span class="dv">1</span>] <span class="fl">1.01</span> <span class="fl">1.01</span></a>
-<a class="sourceLine" id="cb56-23" data-line-number="23"></a>
-<a class="sourceLine" id="cb56-24" data-line-number="24"><span class="op">$</span>lagrange</a>
-<a class="sourceLine" id="cb56-25" data-line-number="25">           [,<span class="dv">1</span>]</a>
-<a class="sourceLine" id="cb56-26" data-line-number="26">[<span class="dv">1</span>,] <span class="fl">-0.0050956</span></a>
-<a class="sourceLine" id="cb56-27" data-line-number="27"></a>
-<a class="sourceLine" id="cb56-28" data-line-number="28"><span class="op">$</span>hessian</a>
-<a class="sourceLine" id="cb56-29" data-line-number="29">      [,<span class="dv">1</span>] [,<span class="dv">2</span>] [,<span class="dv">3</span>] [,<span class="dv">4</span>] [,<span class="dv">5</span>] [,<span class="dv">6</span>] [,<span class="dv">7</span>] [,<span class="dv">8</span>] [,<span class="dv">9</span>] [,<span class="dv">10</span>] [,<span class="dv">11</span>] [,<span class="dv">12</span>] [,<span class="dv">13</span>]</a>
-<a class="sourceLine" id="cb56-30" data-line-number="30"> [<span class="dv">1</span>,]    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-31" data-line-number="31"> [<span class="dv">2</span>,]    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-32" data-line-number="32"> [<span class="dv">3</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-33" data-line-number="33"> [<span class="dv">4</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-34" data-line-number="34"> [<span class="dv">5</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-35" data-line-number="35"> [<span class="dv">6</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-36" data-line-number="36"> [<span class="dv">7</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-37" data-line-number="37"> [<span class="dv">8</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-38" data-line-number="38"> [<span class="dv">9</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-39" data-line-number="39">[<span class="dv">10</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-40" data-line-number="40">[<span class="dv">11</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-41" data-line-number="41">[<span class="dv">12</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-42" data-line-number="42">[<span class="dv">13</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span></a>
-<a class="sourceLine" id="cb56-43" data-line-number="43">[<span class="dv">14</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-44" data-line-number="44">[<span class="dv">15</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-45" data-line-number="45">[<span class="dv">16</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-46" data-line-number="46">[<span class="dv">17</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-47" data-line-number="47">[<span class="dv">18</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-48" data-line-number="48">      [,<span class="dv">14</span>] [,<span class="dv">15</span>] [,<span class="dv">16</span>] [,<span class="dv">17</span>] [,<span class="dv">18</span>]</a>
-<a class="sourceLine" id="cb56-49" data-line-number="49"> [<span class="dv">1</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-50" data-line-number="50"> [<span class="dv">2</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-51" data-line-number="51"> [<span class="dv">3</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-52" data-line-number="52"> [<span class="dv">4</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-53" data-line-number="53"> [<span class="dv">5</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-54" data-line-number="54"> [<span class="dv">6</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-55" data-line-number="55"> [<span class="dv">7</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-56" data-line-number="56"> [<span class="dv">8</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-57" data-line-number="57"> [<span class="dv">9</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-58" data-line-number="58">[<span class="dv">10</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-59" data-line-number="59">[<span class="dv">11</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-60" data-line-number="60">[<span class="dv">12</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-61" data-line-number="61">[<span class="dv">13</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-62" data-line-number="62">[<span class="dv">14</span>,]     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-63" data-line-number="63">[<span class="dv">15</span>,]     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-64" data-line-number="64">[<span class="dv">16</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-65" data-line-number="65">[<span class="dv">17</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span></a>
-<a class="sourceLine" id="cb56-66" data-line-number="66">[<span class="dv">18</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span></a>
-<a class="sourceLine" id="cb56-67" data-line-number="67"></a>
-<a class="sourceLine" id="cb56-68" data-line-number="68"><span class="op">$</span>ineqx0</a>
-<a class="sourceLine" id="cb56-69" data-line-number="69"><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb56-70" data-line-number="70"></a>
-<a class="sourceLine" id="cb56-71" data-line-number="71"><span class="op">$</span>nfuneval</a>
-<a class="sourceLine" id="cb56-72" data-line-number="72">[<span class="dv">1</span>] <span class="dv">23</span></a>
-<a class="sourceLine" id="cb56-73" data-line-number="73"></a>
-<a class="sourceLine" id="cb56-74" data-line-number="74"><span class="op">$</span>outer.iter</a>
-<a class="sourceLine" id="cb56-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
-<a class="sourceLine" id="cb56-76" data-line-number="76"></a>
-<a class="sourceLine" id="cb56-77" data-line-number="77"><span class="op">$</span>elapsed</a>
-<a class="sourceLine" id="cb56-78" data-line-number="78">Time difference of <span class="fl">0.012277</span> secs</a>
-<a class="sourceLine" id="cb56-79" data-line-number="79"></a>
-<a class="sourceLine" id="cb56-80" data-line-number="80"><span class="op">$</span>vscale</a>
-<a class="sourceLine" id="cb56-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
-<a class="sourceLine" id="cb56-82" data-line-number="82">[<span class="dv">10</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
-<a class="sourceLine" id="cb56-83" data-line-number="83">[<span class="dv">19</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
-<a class="sourceLine" id="cb56-84" data-line-number="84"></a>
-<a class="sourceLine" id="cb56-85" data-line-number="85"><span class="op">$</span>coefficients</a>
-<a class="sourceLine" id="cb56-86" data-line-number="86">                          glm                     polspline </a>
-<a class="sourceLine" id="cb56-87" data-line-number="87">                     <span class="fl">0.055565</span>                      <span class="fl">0.055551</span> </a>
-<a class="sourceLine" id="cb56-88" data-line-number="88">                       enet<span class="fl">.5</span>                         ridge </a>
-<a class="sourceLine" id="cb56-89" data-line-number="89">                     <span class="fl">0.055558</span>                      <span class="fl">0.055564</span> </a>
-<a class="sourceLine" id="cb56-90" data-line-number="90">                        lasso                     xgboost50 </a>
-<a class="sourceLine" id="cb56-91" data-line-number="91">                     <span class="fl">0.055558</span>                      <span class="fl">0.055583</span> </a>
-<a class="sourceLine" id="cb56-92" data-line-number="92">      randomforest_screen_glm randomforest_screen_polspline </a>
-<a class="sourceLine" id="cb56-93" data-line-number="93">                     <span class="fl">0.055556</span>                      <span class="fl">0.055573</span> </a>
-<a class="sourceLine" id="cb56-94" data-line-number="94">   randomforest_screen_enet<span class="fl">.5</span>     randomforest_screen_ridge </a>
-<a class="sourceLine" id="cb56-95" data-line-number="95">                     <span class="fl">0.055555</span>                      <span class="fl">0.055555</span> </a>
-<a class="sourceLine" id="cb56-96" data-line-number="96">    randomforest_screen_lasso randomforest_screen_xgboost50 </a>
-<a class="sourceLine" id="cb56-97" data-line-number="97">                     <span class="fl">0.055555</span>                      <span class="fl">0.055546</span> </a>
-<a class="sourceLine" id="cb56-98" data-line-number="98">             lasso_screen_glm        lasso_screen_polspline </a>
-<a class="sourceLine" id="cb56-99" data-line-number="99">                     <span class="fl">0.055553</span>                      <span class="fl">0.055553</span> </a>
-<a class="sourceLine" id="cb56-100" data-line-number="100">          lasso_screen_enet<span class="fl">.5</span>            lasso_screen_ridge </a>
-<a class="sourceLine" id="cb56-101" data-line-number="101">                     <span class="fl">0.055553</span>                      <span class="fl">0.055552</span> </a>
-<a class="sourceLine" id="cb56-102" data-line-number="102">           lasso_screen_lasso        lasso_screen_xgboost50 </a>
-<a class="sourceLine" id="cb56-103" data-line-number="103">                     <span class="fl">0.055553</span>                      <span class="fl">0.055516</span> </a>
-<a class="sourceLine" id="cb56-104" data-line-number="104"></a>
-<a class="sourceLine" id="cb56-105" data-line-number="105"><span class="op">$</span>training_offset</a>
-<a class="sourceLine" id="cb56-106" data-line-number="106">[<span class="dv">1</span>] <span class="ot">FALSE</span></a>
-<a class="sourceLine" id="cb56-107" data-line-number="107"></a>
-<a class="sourceLine" id="cb56-108" data-line-number="108"><span class="op">$</span>name</a>
-<a class="sourceLine" id="cb56-109" data-line-number="109">[<span class="dv">1</span>] <span class="st">"solnp"</span></a>
-<a class="sourceLine" id="cb56-110" data-line-number="110"></a>
-<a class="sourceLine" id="cb56-111" data-line-number="111">[<span class="dv">1</span>] <span class="st">"Cross-validated risk:"</span></a>
-<a class="sourceLine" id="cb56-112" data-line-number="112">                          learner coefficients   risk       se  fold_sd</a>
-<a class="sourceLine" id="cb56-113" data-line-number="113"> <span class="dv">1</span><span class="op">:</span><span class="st">                           </span>glm     <span class="fl">0.055565</span> <span class="fl">1.0202</span> <span class="fl">0.023955</span> <span class="fl">0.067500</span></a>
-<a class="sourceLine" id="cb56-114" data-line-number="114"> <span class="dv">2</span><span class="op">:</span><span class="st">                     </span>polspline     <span class="fl">0.055551</span> <span class="fl">1.0208</span> <span class="fl">0.023577</span> <span class="fl">0.067921</span></a>
-<a class="sourceLine" id="cb56-115" data-line-number="115"> <span class="dv">3</span><span class="op">:</span><span class="st">                        </span>enet<span class="fl">.5</span>     <span class="fl">0.055558</span> <span class="fl">1.0131</span> <span class="fl">0.023598</span> <span class="fl">0.065732</span></a>
-<a class="sourceLine" id="cb56-116" data-line-number="116"> <span class="dv">4</span><span class="op">:</span><span class="st">                         </span>ridge     <span class="fl">0.055564</span> <span class="fl">1.0153</span> <span class="fl">0.023739</span> <span class="fl">0.065299</span></a>
-<a class="sourceLine" id="cb56-117" data-line-number="117"> <span class="dv">5</span><span class="op">:</span><span class="st">                         </span>lasso     <span class="fl">0.055558</span> <span class="fl">1.0130</span> <span class="fl">0.023592</span> <span class="fl">0.065840</span></a>
-<a class="sourceLine" id="cb56-118" data-line-number="118"> <span class="dv">6</span><span class="op">:</span><span class="st">                     </span>xgboost50     <span class="fl">0.055583</span> <span class="fl">1.1136</span> <span class="fl">0.025262</span> <span class="fl">0.077580</span></a>
-<a class="sourceLine" id="cb56-119" data-line-number="119"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span>randomforest_screen_glm     <span class="fl">0.055556</span> <span class="fl">1.0173</span> <span class="fl">0.023830</span> <span class="fl">0.069913</span></a>
-<a class="sourceLine" id="cb56-120" data-line-number="120"> <span class="dv">8</span><span class="op">:</span><span class="st"> </span>randomforest_screen_polspline     <span class="fl">0.055573</span> <span class="fl">1.0135</span> <span class="fl">0.023814</span> <span class="fl">0.069240</span></a>
-<a class="sourceLine" id="cb56-121" data-line-number="121"> <span class="dv">9</span><span class="op">:</span><span class="st">    </span>randomforest_screen_enet<span class="fl">.5</span>     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023842</span> <span class="fl">0.070142</span></a>
-<a class="sourceLine" id="cb56-122" data-line-number="122"><span class="dv">10</span><span class="op">:</span><span class="st">     </span>randomforest_screen_ridge     <span class="fl">0.055555</span> <span class="fl">1.0176</span> <span class="fl">0.023855</span> <span class="fl">0.069787</span></a>
-<a class="sourceLine" id="cb56-123" data-line-number="123"><span class="dv">11</span><span class="op">:</span><span class="st">     </span>randomforest_screen_lasso     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023840</span> <span class="fl">0.070155</span></a>
-<a class="sourceLine" id="cb56-124" data-line-number="124"><span class="dv">12</span><span class="op">:</span><span class="st"> </span>randomforest_screen_xgboost50     <span class="fl">0.055546</span> <span class="fl">1.1277</span> <span class="fl">0.026043</span> <span class="fl">0.078673</span></a>
-<a class="sourceLine" id="cb56-125" data-line-number="125"><span class="dv">13</span><span class="op">:</span><span class="st">              </span>lasso_screen_glm     <span class="fl">0.055553</span> <span class="fl">1.0164</span> <span class="fl">0.023542</span> <span class="fl">0.065018</span></a>
-<a class="sourceLine" id="cb56-126" data-line-number="126"><span class="dv">14</span><span class="op">:</span><span class="st">        </span>lasso_screen_polspline     <span class="fl">0.055553</span> <span class="fl">1.0177</span> <span class="fl">0.023520</span> <span class="fl">0.065566</span></a>
-<a class="sourceLine" id="cb56-127" data-line-number="127"><span class="dv">15</span><span class="op">:</span><span class="st">           </span>lasso_screen_enet<span class="fl">.5</span>     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065017</span></a>
-<a class="sourceLine" id="cb56-128" data-line-number="128"><span class="dv">16</span><span class="op">:</span><span class="st">            </span>lasso_screen_ridge     <span class="fl">0.055552</span> <span class="fl">1.0166</span> <span class="fl">0.023553</span> <span class="fl">0.064869</span></a>
-<a class="sourceLine" id="cb56-129" data-line-number="129"><span class="dv">17</span><span class="op">:</span><span class="st">            </span>lasso_screen_lasso     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065020</span></a>
-<a class="sourceLine" id="cb56-130" data-line-number="130"><span class="dv">18</span><span class="op">:</span><span class="st">        </span>lasso_screen_xgboost50     <span class="fl">0.055516</span> <span class="fl">1.1256</span> <span class="fl">0.025939</span> <span class="fl">0.084270</span></a>
-<a class="sourceLine" id="cb56-131" data-line-number="131"><span class="dv">19</span><span class="op">:</span><span class="st">                  </span>SuperLearner           <span class="ot">NA</span> <span class="fl">1.0100</span> <span class="fl">0.023524</span> <span class="fl">0.068184</span></a>
-<a class="sourceLine" id="cb56-132" data-line-number="132">    fold_min_risk fold_max_risk</a>
-<a class="sourceLine" id="cb56-133" data-line-number="133"> <span class="dv">1</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89442</span>        <span class="fl">1.1200</span></a>
-<a class="sourceLine" id="cb56-134" data-line-number="134"> <span class="dv">2</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89892</span>        <span class="fl">1.1255</span></a>
-<a class="sourceLine" id="cb56-135" data-line-number="135"> <span class="dv">3</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88839</span>        <span class="fl">1.1058</span></a>
-<a class="sourceLine" id="cb56-136" data-line-number="136"> <span class="dv">4</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88559</span>        <span class="fl">1.1063</span></a>
-<a class="sourceLine" id="cb56-137" data-line-number="137"> <span class="dv">5</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88842</span>        <span class="fl">1.1060</span></a>
-<a class="sourceLine" id="cb56-138" data-line-number="138"> <span class="dv">6</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96019</span>        <span class="fl">1.2337</span></a>
-<a class="sourceLine" id="cb56-139" data-line-number="139"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88579</span>        <span class="fl">1.1119</span></a>
-<a class="sourceLine" id="cb56-140" data-line-number="140"> <span class="dv">8</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89370</span>        <span class="fl">1.1190</span></a>
-<a class="sourceLine" id="cb56-141" data-line-number="141"> <span class="dv">9</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1137</span></a>
-<a class="sourceLine" id="cb56-142" data-line-number="142"><span class="dv">10</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88620</span>        <span class="fl">1.1128</span></a>
-<a class="sourceLine" id="cb56-143" data-line-number="143"><span class="dv">11</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1136</span></a>
-<a class="sourceLine" id="cb56-144" data-line-number="144"><span class="dv">12</span><span class="op">:</span><span class="st">       </span><span class="fl">1.00223</span>        <span class="fl">1.2465</span></a>
-<a class="sourceLine" id="cb56-145" data-line-number="145"><span class="dv">13</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90204</span>        <span class="fl">1.1156</span></a>
-<a class="sourceLine" id="cb56-146" data-line-number="146"><span class="dv">14</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89742</span>        <span class="fl">1.1162</span></a>
-<a class="sourceLine" id="cb56-147" data-line-number="147"><span class="dv">15</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90184</span>        <span class="fl">1.1154</span></a>
-<a class="sourceLine" id="cb56-148" data-line-number="148"><span class="dv">16</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90120</span>        <span class="fl">1.1146</span></a>
-<a class="sourceLine" id="cb56-149" data-line-number="149"><span class="dv">17</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90183</span>        <span class="fl">1.1154</span></a>
-<a class="sourceLine" id="cb56-150" data-line-number="150"><span class="dv">18</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96251</span>        <span class="fl">1.2327</span></a>
-<a class="sourceLine" id="cb56-151" data-line-number="151"><span class="dv">19</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88036</span>        <span class="fl">1.1041</span></a></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1">sl_fit_summary &lt;-<span class="st"> </span>sl_fit<span class="op">$</span><span class="kw">print</span>()</a>
+<a class="sourceLine" id="cb55-2" data-line-number="2">[<span class="dv">1</span>] <span class="st">"SuperLearner:"</span></a>
+<a class="sourceLine" id="cb55-3" data-line-number="3">List of <span class="dv">8</span></a>
+<a class="sourceLine" id="cb55-4" data-line-number="4"> <span class="op">$</span><span class="st"> </span>glm                <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glm_TRUE"</span></a>
+<a class="sourceLine" id="cb55-5" data-line-number="5"> <span class="op">$</span><span class="st"> </span>polspline          <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_polspline_5"</span></a>
+<a class="sourceLine" id="cb55-6" data-line-number="6"> <span class="op">$</span><span class="st"> </span>enet<span class="fl">.5</span>             <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_0.5_100_TRUE_FALSE"</span></a>
+<a class="sourceLine" id="cb55-7" data-line-number="7"> <span class="op">$</span><span class="st"> </span>ridge              <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_0_100_TRUE_FALSE"</span></a>
+<a class="sourceLine" id="cb55-8" data-line-number="8"> <span class="op">$</span><span class="st"> </span>lasso              <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_glmnet_NULL_deviance_10_1_100_TRUE_FALSE"</span></a>
+<a class="sourceLine" id="cb55-9" data-line-number="9"> <span class="op">$</span><span class="st"> </span>xgboost50          <span class="op">:</span><span class="st"> </span>chr <span class="st">"Lrnr_xgboost_50_1"</span></a>
+<a class="sourceLine" id="cb55-10" data-line-number="10"> <span class="op">$</span><span class="st"> </span>randomforest_screen<span class="op">:</span><span class="st"> </span>chr <span class="st">"Pipeline(Lrnr_screener_importance_5-&gt;Stack)"</span></a>
+<a class="sourceLine" id="cb55-11" data-line-number="11"> <span class="op">$</span><span class="st"> </span>lasso_screen       <span class="op">:</span><span class="st"> </span>chr <span class="st">"Pipeline(Lrnr_screener_coefs_0_NULL_2-&gt;Stack)"</span></a>
+<a class="sourceLine" id="cb55-12" data-line-number="12">[<span class="dv">1</span>] <span class="st">"Lrnr_solnp_TRUE_TRUE_FALSE_1e-05"</span></a>
+<a class="sourceLine" id="cb55-13" data-line-number="13"><span class="op">$</span>pars</a>
+<a class="sourceLine" id="cb55-14" data-line-number="14"> [<span class="dv">1</span>] <span class="fl">0.055565</span> <span class="fl">0.055551</span> <span class="fl">0.055558</span> <span class="fl">0.055564</span> <span class="fl">0.055558</span> <span class="fl">0.055583</span> <span class="fl">0.055556</span> <span class="fl">0.055573</span></a>
+<a class="sourceLine" id="cb55-15" data-line-number="15"> [<span class="dv">9</span>] <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055555</span> <span class="fl">0.055546</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055553</span> <span class="fl">0.055552</span></a>
+<a class="sourceLine" id="cb55-16" data-line-number="16">[<span class="dv">17</span>] <span class="fl">0.055553</span> <span class="fl">0.055516</span></a>
+<a class="sourceLine" id="cb55-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb55-18" data-line-number="18"><span class="op">$</span>convergence</a>
+<a class="sourceLine" id="cb55-19" data-line-number="19">[<span class="dv">1</span>] <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb55-21" data-line-number="21"><span class="op">$</span>values</a>
+<a class="sourceLine" id="cb55-22" data-line-number="22">[<span class="dv">1</span>] <span class="fl">1.01</span> <span class="fl">1.01</span></a>
+<a class="sourceLine" id="cb55-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb55-24" data-line-number="24"><span class="op">$</span>lagrange</a>
+<a class="sourceLine" id="cb55-25" data-line-number="25">           [,<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb55-26" data-line-number="26">[<span class="dv">1</span>,] <span class="fl">-0.0050956</span></a>
+<a class="sourceLine" id="cb55-27" data-line-number="27"></a>
+<a class="sourceLine" id="cb55-28" data-line-number="28"><span class="op">$</span>hessian</a>
+<a class="sourceLine" id="cb55-29" data-line-number="29">      [,<span class="dv">1</span>] [,<span class="dv">2</span>] [,<span class="dv">3</span>] [,<span class="dv">4</span>] [,<span class="dv">5</span>] [,<span class="dv">6</span>] [,<span class="dv">7</span>] [,<span class="dv">8</span>] [,<span class="dv">9</span>] [,<span class="dv">10</span>] [,<span class="dv">11</span>] [,<span class="dv">12</span>] [,<span class="dv">13</span>]</a>
+<a class="sourceLine" id="cb55-30" data-line-number="30"> [<span class="dv">1</span>,]    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-31" data-line-number="31"> [<span class="dv">2</span>,]    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-32" data-line-number="32"> [<span class="dv">3</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-33" data-line-number="33"> [<span class="dv">4</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-34" data-line-number="34"> [<span class="dv">5</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-35" data-line-number="35"> [<span class="dv">6</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-36" data-line-number="36"> [<span class="dv">7</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-37" data-line-number="37"> [<span class="dv">8</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-38" data-line-number="38"> [<span class="dv">9</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-39" data-line-number="39">[<span class="dv">10</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-40" data-line-number="40">[<span class="dv">11</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-41" data-line-number="41">[<span class="dv">12</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-42" data-line-number="42">[<span class="dv">13</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span></a>
+<a class="sourceLine" id="cb55-43" data-line-number="43">[<span class="dv">14</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-44" data-line-number="44">[<span class="dv">15</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-45" data-line-number="45">[<span class="dv">16</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-46" data-line-number="46">[<span class="dv">17</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-47" data-line-number="47">[<span class="dv">18</span>,]    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>    <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-48" data-line-number="48">      [,<span class="dv">14</span>] [,<span class="dv">15</span>] [,<span class="dv">16</span>] [,<span class="dv">17</span>] [,<span class="dv">18</span>]</a>
+<a class="sourceLine" id="cb55-49" data-line-number="49"> [<span class="dv">1</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-50" data-line-number="50"> [<span class="dv">2</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-51" data-line-number="51"> [<span class="dv">3</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-52" data-line-number="52"> [<span class="dv">4</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-53" data-line-number="53"> [<span class="dv">5</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-54" data-line-number="54"> [<span class="dv">6</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-55" data-line-number="55"> [<span class="dv">7</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-56" data-line-number="56"> [<span class="dv">8</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-57" data-line-number="57"> [<span class="dv">9</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-58" data-line-number="58">[<span class="dv">10</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-59" data-line-number="59">[<span class="dv">11</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-60" data-line-number="60">[<span class="dv">12</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-61" data-line-number="61">[<span class="dv">13</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-62" data-line-number="62">[<span class="dv">14</span>,]     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-63" data-line-number="63">[<span class="dv">15</span>,]     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-64" data-line-number="64">[<span class="dv">16</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-65" data-line-number="65">[<span class="dv">17</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span>     <span class="dv">0</span></a>
+<a class="sourceLine" id="cb55-66" data-line-number="66">[<span class="dv">18</span>,]     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">0</span>     <span class="dv">1</span></a>
+<a class="sourceLine" id="cb55-67" data-line-number="67"></a>
+<a class="sourceLine" id="cb55-68" data-line-number="68"><span class="op">$</span>ineqx0</a>
+<a class="sourceLine" id="cb55-69" data-line-number="69"><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb55-70" data-line-number="70"></a>
+<a class="sourceLine" id="cb55-71" data-line-number="71"><span class="op">$</span>nfuneval</a>
+<a class="sourceLine" id="cb55-72" data-line-number="72">[<span class="dv">1</span>] <span class="dv">23</span></a>
+<a class="sourceLine" id="cb55-73" data-line-number="73"></a>
+<a class="sourceLine" id="cb55-74" data-line-number="74"><span class="op">$</span>outer.iter</a>
+<a class="sourceLine" id="cb55-75" data-line-number="75">[<span class="dv">1</span>] <span class="dv">1</span></a>
+<a class="sourceLine" id="cb55-76" data-line-number="76"></a>
+<a class="sourceLine" id="cb55-77" data-line-number="77"><span class="op">$</span>elapsed</a>
+<a class="sourceLine" id="cb55-78" data-line-number="78">Time difference of <span class="fl">0.012526</span> secs</a>
+<a class="sourceLine" id="cb55-79" data-line-number="79"></a>
+<a class="sourceLine" id="cb55-80" data-line-number="80"><span class="op">$</span>vscale</a>
+<a class="sourceLine" id="cb55-81" data-line-number="81"> [<span class="dv">1</span>] <span class="fl">1.01001</span> <span class="fl">0.00001</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
+<a class="sourceLine" id="cb55-82" data-line-number="82">[<span class="dv">10</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
+<a class="sourceLine" id="cb55-83" data-line-number="83">[<span class="dv">19</span>] <span class="fl">1.00000</span> <span class="fl">1.00000</span></a>
+<a class="sourceLine" id="cb55-84" data-line-number="84"></a>
+<a class="sourceLine" id="cb55-85" data-line-number="85"><span class="op">$</span>coefficients</a>
+<a class="sourceLine" id="cb55-86" data-line-number="86">                          glm                     polspline </a>
+<a class="sourceLine" id="cb55-87" data-line-number="87">                     <span class="fl">0.055565</span>                      <span class="fl">0.055551</span> </a>
+<a class="sourceLine" id="cb55-88" data-line-number="88">                       enet<span class="fl">.5</span>                         ridge </a>
+<a class="sourceLine" id="cb55-89" data-line-number="89">                     <span class="fl">0.055558</span>                      <span class="fl">0.055564</span> </a>
+<a class="sourceLine" id="cb55-90" data-line-number="90">                        lasso                     xgboost50 </a>
+<a class="sourceLine" id="cb55-91" data-line-number="91">                     <span class="fl">0.055558</span>                      <span class="fl">0.055583</span> </a>
+<a class="sourceLine" id="cb55-92" data-line-number="92">      randomforest_screen_glm randomforest_screen_polspline </a>
+<a class="sourceLine" id="cb55-93" data-line-number="93">                     <span class="fl">0.055556</span>                      <span class="fl">0.055573</span> </a>
+<a class="sourceLine" id="cb55-94" data-line-number="94">   randomforest_screen_enet<span class="fl">.5</span>     randomforest_screen_ridge </a>
+<a class="sourceLine" id="cb55-95" data-line-number="95">                     <span class="fl">0.055555</span>                      <span class="fl">0.055555</span> </a>
+<a class="sourceLine" id="cb55-96" data-line-number="96">    randomforest_screen_lasso randomforest_screen_xgboost50 </a>
+<a class="sourceLine" id="cb55-97" data-line-number="97">                     <span class="fl">0.055555</span>                      <span class="fl">0.055546</span> </a>
+<a class="sourceLine" id="cb55-98" data-line-number="98">             lasso_screen_glm        lasso_screen_polspline </a>
+<a class="sourceLine" id="cb55-99" data-line-number="99">                     <span class="fl">0.055553</span>                      <span class="fl">0.055553</span> </a>
+<a class="sourceLine" id="cb55-100" data-line-number="100">          lasso_screen_enet<span class="fl">.5</span>            lasso_screen_ridge </a>
+<a class="sourceLine" id="cb55-101" data-line-number="101">                     <span class="fl">0.055553</span>                      <span class="fl">0.055552</span> </a>
+<a class="sourceLine" id="cb55-102" data-line-number="102">           lasso_screen_lasso        lasso_screen_xgboost50 </a>
+<a class="sourceLine" id="cb55-103" data-line-number="103">                     <span class="fl">0.055553</span>                      <span class="fl">0.055516</span> </a>
+<a class="sourceLine" id="cb55-104" data-line-number="104"></a>
+<a class="sourceLine" id="cb55-105" data-line-number="105"><span class="op">$</span>training_offset</a>
+<a class="sourceLine" id="cb55-106" data-line-number="106">[<span class="dv">1</span>] <span class="ot">FALSE</span></a>
+<a class="sourceLine" id="cb55-107" data-line-number="107"></a>
+<a class="sourceLine" id="cb55-108" data-line-number="108"><span class="op">$</span>name</a>
+<a class="sourceLine" id="cb55-109" data-line-number="109">[<span class="dv">1</span>] <span class="st">"solnp"</span></a>
+<a class="sourceLine" id="cb55-110" data-line-number="110"></a>
+<a class="sourceLine" id="cb55-111" data-line-number="111">[<span class="dv">1</span>] <span class="st">"Cross-validated risk:"</span></a>
+<a class="sourceLine" id="cb55-112" data-line-number="112">                          learner coefficients   risk       se  fold_sd</a>
+<a class="sourceLine" id="cb55-113" data-line-number="113"> <span class="dv">1</span><span class="op">:</span><span class="st">                           </span>glm     <span class="fl">0.055565</span> <span class="fl">1.0202</span> <span class="fl">0.023955</span> <span class="fl">0.067500</span></a>
+<a class="sourceLine" id="cb55-114" data-line-number="114"> <span class="dv">2</span><span class="op">:</span><span class="st">                     </span>polspline     <span class="fl">0.055551</span> <span class="fl">1.0208</span> <span class="fl">0.023577</span> <span class="fl">0.067921</span></a>
+<a class="sourceLine" id="cb55-115" data-line-number="115"> <span class="dv">3</span><span class="op">:</span><span class="st">                        </span>enet<span class="fl">.5</span>     <span class="fl">0.055558</span> <span class="fl">1.0131</span> <span class="fl">0.023598</span> <span class="fl">0.065732</span></a>
+<a class="sourceLine" id="cb55-116" data-line-number="116"> <span class="dv">4</span><span class="op">:</span><span class="st">                         </span>ridge     <span class="fl">0.055564</span> <span class="fl">1.0153</span> <span class="fl">0.023739</span> <span class="fl">0.065299</span></a>
+<a class="sourceLine" id="cb55-117" data-line-number="117"> <span class="dv">5</span><span class="op">:</span><span class="st">                         </span>lasso     <span class="fl">0.055558</span> <span class="fl">1.0130</span> <span class="fl">0.023592</span> <span class="fl">0.065840</span></a>
+<a class="sourceLine" id="cb55-118" data-line-number="118"> <span class="dv">6</span><span class="op">:</span><span class="st">                     </span>xgboost50     <span class="fl">0.055583</span> <span class="fl">1.1136</span> <span class="fl">0.025262</span> <span class="fl">0.077580</span></a>
+<a class="sourceLine" id="cb55-119" data-line-number="119"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span>randomforest_screen_glm     <span class="fl">0.055556</span> <span class="fl">1.0173</span> <span class="fl">0.023830</span> <span class="fl">0.069913</span></a>
+<a class="sourceLine" id="cb55-120" data-line-number="120"> <span class="dv">8</span><span class="op">:</span><span class="st"> </span>randomforest_screen_polspline     <span class="fl">0.055573</span> <span class="fl">1.0135</span> <span class="fl">0.023814</span> <span class="fl">0.069240</span></a>
+<a class="sourceLine" id="cb55-121" data-line-number="121"> <span class="dv">9</span><span class="op">:</span><span class="st">    </span>randomforest_screen_enet<span class="fl">.5</span>     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023842</span> <span class="fl">0.070142</span></a>
+<a class="sourceLine" id="cb55-122" data-line-number="122"><span class="dv">10</span><span class="op">:</span><span class="st">     </span>randomforest_screen_ridge     <span class="fl">0.055555</span> <span class="fl">1.0176</span> <span class="fl">0.023855</span> <span class="fl">0.069787</span></a>
+<a class="sourceLine" id="cb55-123" data-line-number="123"><span class="dv">11</span><span class="op">:</span><span class="st">     </span>randomforest_screen_lasso     <span class="fl">0.055555</span> <span class="fl">1.0177</span> <span class="fl">0.023840</span> <span class="fl">0.070155</span></a>
+<a class="sourceLine" id="cb55-124" data-line-number="124"><span class="dv">12</span><span class="op">:</span><span class="st"> </span>randomforest_screen_xgboost50     <span class="fl">0.055546</span> <span class="fl">1.1277</span> <span class="fl">0.026043</span> <span class="fl">0.078673</span></a>
+<a class="sourceLine" id="cb55-125" data-line-number="125"><span class="dv">13</span><span class="op">:</span><span class="st">              </span>lasso_screen_glm     <span class="fl">0.055553</span> <span class="fl">1.0164</span> <span class="fl">0.023542</span> <span class="fl">0.065018</span></a>
+<a class="sourceLine" id="cb55-126" data-line-number="126"><span class="dv">14</span><span class="op">:</span><span class="st">        </span>lasso_screen_polspline     <span class="fl">0.055553</span> <span class="fl">1.0177</span> <span class="fl">0.023520</span> <span class="fl">0.065566</span></a>
+<a class="sourceLine" id="cb55-127" data-line-number="127"><span class="dv">15</span><span class="op">:</span><span class="st">           </span>lasso_screen_enet<span class="fl">.5</span>     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065017</span></a>
+<a class="sourceLine" id="cb55-128" data-line-number="128"><span class="dv">16</span><span class="op">:</span><span class="st">            </span>lasso_screen_ridge     <span class="fl">0.055552</span> <span class="fl">1.0166</span> <span class="fl">0.023553</span> <span class="fl">0.064869</span></a>
+<a class="sourceLine" id="cb55-129" data-line-number="129"><span class="dv">17</span><span class="op">:</span><span class="st">            </span>lasso_screen_lasso     <span class="fl">0.055553</span> <span class="fl">1.0163</span> <span class="fl">0.023544</span> <span class="fl">0.065020</span></a>
+<a class="sourceLine" id="cb55-130" data-line-number="130"><span class="dv">18</span><span class="op">:</span><span class="st">        </span>lasso_screen_xgboost50     <span class="fl">0.055516</span> <span class="fl">1.1256</span> <span class="fl">0.025939</span> <span class="fl">0.084270</span></a>
+<a class="sourceLine" id="cb55-131" data-line-number="131"><span class="dv">19</span><span class="op">:</span><span class="st">                  </span>SuperLearner           <span class="ot">NA</span> <span class="fl">1.0100</span> <span class="fl">0.023524</span> <span class="fl">0.068184</span></a>
+<a class="sourceLine" id="cb55-132" data-line-number="132">    fold_min_risk fold_max_risk</a>
+<a class="sourceLine" id="cb55-133" data-line-number="133"> <span class="dv">1</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89442</span>        <span class="fl">1.1200</span></a>
+<a class="sourceLine" id="cb55-134" data-line-number="134"> <span class="dv">2</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89892</span>        <span class="fl">1.1255</span></a>
+<a class="sourceLine" id="cb55-135" data-line-number="135"> <span class="dv">3</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88839</span>        <span class="fl">1.1058</span></a>
+<a class="sourceLine" id="cb55-136" data-line-number="136"> <span class="dv">4</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88559</span>        <span class="fl">1.1063</span></a>
+<a class="sourceLine" id="cb55-137" data-line-number="137"> <span class="dv">5</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88842</span>        <span class="fl">1.1060</span></a>
+<a class="sourceLine" id="cb55-138" data-line-number="138"> <span class="dv">6</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96019</span>        <span class="fl">1.2337</span></a>
+<a class="sourceLine" id="cb55-139" data-line-number="139"> <span class="dv">7</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88579</span>        <span class="fl">1.1119</span></a>
+<a class="sourceLine" id="cb55-140" data-line-number="140"> <span class="dv">8</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89370</span>        <span class="fl">1.1190</span></a>
+<a class="sourceLine" id="cb55-141" data-line-number="141"> <span class="dv">9</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1137</span></a>
+<a class="sourceLine" id="cb55-142" data-line-number="142"><span class="dv">10</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88620</span>        <span class="fl">1.1128</span></a>
+<a class="sourceLine" id="cb55-143" data-line-number="143"><span class="dv">11</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88593</span>        <span class="fl">1.1136</span></a>
+<a class="sourceLine" id="cb55-144" data-line-number="144"><span class="dv">12</span><span class="op">:</span><span class="st">       </span><span class="fl">1.00223</span>        <span class="fl">1.2465</span></a>
+<a class="sourceLine" id="cb55-145" data-line-number="145"><span class="dv">13</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90204</span>        <span class="fl">1.1156</span></a>
+<a class="sourceLine" id="cb55-146" data-line-number="146"><span class="dv">14</span><span class="op">:</span><span class="st">       </span><span class="fl">0.89742</span>        <span class="fl">1.1162</span></a>
+<a class="sourceLine" id="cb55-147" data-line-number="147"><span class="dv">15</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90184</span>        <span class="fl">1.1154</span></a>
+<a class="sourceLine" id="cb55-148" data-line-number="148"><span class="dv">16</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90120</span>        <span class="fl">1.1146</span></a>
+<a class="sourceLine" id="cb55-149" data-line-number="149"><span class="dv">17</span><span class="op">:</span><span class="st">       </span><span class="fl">0.90183</span>        <span class="fl">1.1154</span></a>
+<a class="sourceLine" id="cb55-150" data-line-number="150"><span class="dv">18</span><span class="op">:</span><span class="st">       </span><span class="fl">0.96251</span>        <span class="fl">1.2327</span></a>
+<a class="sourceLine" id="cb55-151" data-line-number="151"><span class="dv">19</span><span class="op">:</span><span class="st">       </span><span class="fl">0.88036</span>        <span class="fl">1.1041</span></a></code></pre></div>
 <p>From the table of the printed SL fit, we note that the SL had a mean risk of
 1.01 and that
 this ensemble weighted the <code>ranger</code> and <code>glmnet</code> learners highest while not
@@ -1830,7 +1867,7 @@ cross-validation for computational efficiency.</p>
 <p>We also need to specify a loss function to evaluate SL. Documentation for the
 available loss functions can be found in the <a href="https://tlverse.org/sl3/reference/loss_functions.html"><code>sl3</code> Loss
 Function Reference</a>.</p>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">washb_task_new</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/sl3_Task.html">make_sl3_Task</a></span><span class="op">(</span>
   data <span class="op">=</span> <span class="va">washb_data</span>,
   covariates <span class="op">=</span> <span class="va">covars</span>,
@@ -1841,7 +1878,7 @@ Function Reference</a>.</p>
   lrnr_sl <span class="op">=</span> <span class="va">sl_fit</span>, task <span class="op">=</span> <span class="va">washb_task_new</span>, loss_fun <span class="op">=</span> <span class="va">loss_squared_error</span>
 <span class="op">)</span></code></pre></div>
 <p>Let’s take a look at a table summarizing the performance:</p>
-<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">CVsl</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span>
@@ -2346,9 +2383,9 @@ lot of time, and is also incorporated in the <code>randomForest</code> variable 
 measures. However, the permutation approach is risky, so the importance
 function default is to remove and refit.</p>
 <p>Let’s explore the <code>sl3</code> variable importance measurements for the <code>washb</code> data.</p>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">washb_varimp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/importance.html">importance</a></span><span class="op">(</span><span class="va">sl_fit</span>, loss <span class="op">=</span> <span class="va">loss_squared_error</span>, type <span class="op">=</span> <span class="st">"permute"</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/output_type.html">is_latex_output</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
   <span class="va">washb_varimp</span> <span class="op">%&gt;%</span>
     <span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>format <span class="op">=</span> <span class="st">"latex"</span><span class="op">)</span>
@@ -2604,7 +2641,7 @@ asset_khat
 </tbody>
 </table></div>
 </div>
-<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># plot variable importance</span>
 <span class="fu"><a href="https://tlverse.org/sl3/reference/importance_plot.html">importance_plot</a></span><span class="op">(</span>
   <span class="va">washb_varimp</span>,
@@ -2625,7 +2662,7 @@ asset_khat
 <p>Follow the steps below to predict myocardial infarction (<code>mi</code>) using the
 available covariate data. We thank Prof. David Benkeser at Emory University for
 making the this Cardiovascular Health Study (CHS) data accessible.</p>
-<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load the data set</span>
 <span class="va">db_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span>
   <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
@@ -3283,7 +3320,7 @@ SL on unseen data.</li>
 <li>Which covariates are the most predictive of 14-day recurrent stroke,
 according to <code>sl3</code> variable importance measures?</li>
 </ol>
-<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">ist_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
   <span class="st">"https://raw.githubusercontent.com/tlverse/"</span>,
   <span class="st">"tlverse-handbook/master/data/ist_sample.csv"</span>
@@ -3571,7 +3608,7 @@ both referred to as TMLE.
 </h3>
 <p>Here is a potential solution to the <a href="sl3.html#sl3ex1"><code>sl3</code> Exercise 1 – Predicting Myocardial
 Infarction with <code>sl3</code></a>.</p>
-<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">db_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">url</a></span><span class="op">(</span>
   <span class="st">"https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv"</span>
 <span class="op">)</span>
@@ -3632,7 +3669,7 @@ Infarction with <code>sl3</code></a>.</p>
 </h3>
 <p>Here is a potential solution to <a href="sl3.html#sl3ex2"><code>sl3</code> Exercise 2 – Predicting Recurrent
 Ischemic Stroke in an RCT with <code>sl3</code></a>.</p>
-<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ipa-tys.github.io/ROCR/">ROCR</a></span><span class="op">)</span> <span class="co"># for AUC calculation</span>
 
 <span class="va">ist_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
@@ -3731,8 +3768,6 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <a class="nav-link" href="#introduction-2"><span class="header-section-number">6.1</span> Introduction</a><ul class="nav navbar-nav">
 <li><a class="nav-link" href="#candidate-learners-and-ensembling"><span class="header-section-number">6.1.1</span> Candidate learners and ensembling</a></li>
 <li><a class="nav-link" href="#sl3-steps"><span class="header-section-number">6.1.2</span> Step-by-step overview with V-fold cross-validation</a></li>
-<li><a class="nav-link" href="#sl3-theory"><span class="header-section-number">6.1.3</span> Theoretical foundations</a></li>
-<li><a class="nav-link" href="#super-learner-for-prediction">Super Learner for Prediction</a></li>
 </ul>
 </li>
 <li>
@@ -3777,7 +3812,7 @@ Here's a potential solution to the [Exercise 3](#sl3ex3).
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 07, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 15, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
