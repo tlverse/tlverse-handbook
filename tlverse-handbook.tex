@@ -151,8 +151,8 @@
 \DeclareMathOperator{\expit}{expit}
 \DeclareMathOperator{\logit}{logit}
 \newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
-\DeclareMathOperator*{\argmin}{\arg\!\min}
-\DeclarePairedDelimiterX{\norm}[1]{\lVert}{\rVert}{#1}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \usepackage{color}
 \lstset{
   breaklines=true,
@@ -165,7 +165,7 @@
   identifierstyle=\color{blue},
   stringstyle=\color{orange}
 }
-
+\DeclareUnicodeCharacter{2212}{-}
 % setting bookdown frontmatter option
 \frontmatter
 
@@ -199,7 +199,7 @@
 \providecommand{\subtitle}[1]{}
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{June 30, 2021}
+\date{July 15, 2021}
 
 \begin{document}
 \maketitle
@@ -722,7 +722,7 @@ resources}.
 
 \emph{Nima Hejazi} and \emph{Rachael Phillips}
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1160,7 +1160,7 @@ of \(P_0\). We discuss several more complex estimands in later sections.
 \hypertarget{tlverse}{%
 \chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1824,7 +1824,7 @@ numeric & tax71\_82 & 92 & 0.94352 & 0.55261 & 0.15032 & 0.03600 & 0.46100 & 0.5
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -3255,7 +3255,7 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \hypertarget{learning-objectives}{%
 \section*{Learning Objectives}\label{learning-objectives}}
@@ -3267,24 +3267,33 @@ By the end of this chapter you will be able to:
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Select a loss function that is appropriate for the functional parameter to
-  be estimated.
+  Select an objective function that aligns with both the purpose of your
+  analysis and is optimized by the target parameter.
 \item
-  Assemble an ensemble of learners based on the properties that identify what
-  features they support.
+  Assemble a diverse library of learners to be considered in the Super Learner
+  ensemble.
 \item
-  Customize learner tuning parameters to incorporate a diversity of different
-  settings.
+  Customize a learner by modifying it's tuning parameters.
 \item
-  Select a subset of available covariates and pass only those variables to the
-  modeling algorithm.
+  Create several different versions of the same learner by specifying a grid
+  of tuning parameters.
+\item
+  Create covariate screening pipelines in order to pass a screener's output,
+  a subset of covariates, as input for another learner that will model the data
+  using the subset of covariates selected by the screener.
 \item
   Fit an ensemble with nested cross-validation to obtain an estimate of the
   performance of the ensemble itself.
 \item
   Obtain \passthrough{\lstinline!sl3!} variable importance metrics.
 \item
-  Interpret the discrete and continuous Super Learner fits.'`
+  Interpret the fit for discrete and continuous Super Learner's from the
+  cross-validated risk table and the coefficients.
+\item
+  learners in the SL library and should be justified in terms of the prediction
+  problem, statistical model \(\M\), data sparsity (e.g., number of
+  independent samples, number of events for rare binary outcomes), and the number
+  of covariates. The metalearning strategy should be similarly justified.
 \end{enumerate}
 
 \hypertarget{motivation}{%
@@ -3294,24 +3303,25 @@ By the end of this chapter you will be able to:
 \begin{itemize}
 \tightlist
 \item
-  A common task in data analysis is prediction -- using the observed data to
-  learn a function, which can be used to map new input variables into a
-  predicted outcome.
+  A common task in data analysis is prediction -- using the observed data (input
+  variables and outcomes) to learn a function that can map new input variables
+  into a predicted outcome.
 \item
-  For some data, algorithms that can learn a complex function are necessary to
-  adequately model the data. For other data, main terms regression models might
-  fit the data quite well.
+  For some data, algorithms that learn complex relationships between variables
+  are necessary to adequately model the data. For other data, main terms
+  regression models might fit the data quite well.
 \item
   It is generally impossible to know a priori which algorithm will be the best
   for a given data set and prediction problem. It's like picking the winner of
   \emph{The Great British Bake Off} at the start of the first week!
 \item
-  The Super Learner (SL) solves this issue of algorithm selection by allowing
-  an ensemble of algorithms, from the simplest (intercept-only) to most
+  The Super Learner solves this issue of algorithm selection by creating an
+  ensemble of many algorithms, from the simplest (intercept-only) to most
   complex (neural nets, tree-based methods, support vector machines, etc.).
 \item
-  SL works by using cross-validation in a manner that theoretically guarantees
-  the resulting fit will be as good as possible, given the learners provided.
+  Super Learner works by using cross-validation in a manner that theoretically
+  (asymptotically) guarantees the resulting fit will be as good as possible,
+  given the algorithms provided.
 \end{itemize}
 
 \hypertarget{introduction-2}{%
@@ -3328,318 +3338,143 @@ this roadmap define the \emph{statistical estimation problem}, which establish
 \item
   The data \(O\) as a random variable, or equivalently, a realization of a
   particular experiment/study, which has probability distribution \(P_0\). This
-  probablity distribution \(P_0\) of \(O\) is also commonly referred to as the
-  data-generating process (DGP) and the data-generating distribution (DGD).
-  The data structure \(O\) is comprised of variables, such as a vector of
-  covariates \(W\), a treatment or exposure \(A\), and an outcome \(Y\),
-  \(O=(W,A,Y) \sim P_0\). We often observe the random variable \(O\) \(n\) times
-  by repeating the common experiment \(n\) times. For example, the
-  \(O_1,\ldots, O_n\) random variables could result from a randomly sampling \(n\)
-  units from a population, collecting baseline characteristics \(W\), assigning
-  exposure \(A\), and later measuring an outcome \(Y\).
+  is written \(O \sim P_0\), and \(P_0\) is also commonly referred to as the
+  data-generating process (DGP) and also the data-generating distribution
+  (DGD). The data structure \(O\) is comprised of variables, such as a
+  vector of covariates \(W\), a treatment or exposure \(A\), and an outcome \(Y\),
+  \(O=(W,A,Y) \sim P_0\). We often observe the random variable \(O\) \(n\) times, by
+  repeating the common experiment \(n\) times. For example, \(O_1,\ldots, O_n\)
+  random variables could be the result of a random sample of \(n\) subjects from
+  a population, collecting baseline characteristics \(W\), randomly assigning
+  treatment \(A\), and then later measuring an outcome \(Y\).
 \item
-  A statistical model \(\mathcal{M}\) as a set of possible probability
-  distributions that could have given rise to the data, which is specified such
-  that \(P_0\) is known to be an element of \(\mathcal{M}\).
+  A statistical model \(\M\) as a set of possible probability distributions that
+  could have given rise to the data. It's essential for \(\M\) to only
+  constrained by factual subject-matter knowledge in order to guarantee \(P_0\)
+  resides in the statistical model, written \(P_0 \in \M\). Continuing
+  the example from step 1, the following restrictions could be placed on the
+  statistical model: the \(O_1, \ldots, O_n\) observations in the data are
+  independent and identically distributed (i.i.d.), the assignment of
+  treatment \(A\) was random and not based on covariates \(W\).
 \item
-  A translation of the (often causal) scientific question into a function of
-  \(P_0\), the target statistical estimand.
+  A translation of the scientific question of interest into a function of
+  \(P_0\), the target statistical estimand \(\Psi(P_0)\). For example, we might be
+  interested in the average difference in mean outcomes under treatment \(A=1\)
+  versus placebo \(A=0\):
+  \(\Psi(P_0)=E_{P_0}\Big[E_{P_0}(Y|A=1,W)−E_{P_0}(Y|A=0,W)\Big]\). Note
+  that, if the scientific question is causal, then it's translation will
+  produce a target \emph{causal} estimand; another layer of translation,
+  identifiability, is required to express the target causal estimand as a
+  function of the observed data distribution \(P_0\). See \protect\hyperlink{causal}{causal target
+  parameters} for more information on causal quantities, causal models
+  and identifiability.
 \end{enumerate}
 
-Note that, if the scientific question is causal, then it's translation will
-produce a target \emph{causal} estimand. Another layer of translation,
-identifiability, is required to arrive at a target \emph{statistical} estimand. See
-\protect\hyperlink{causal}{causal target parameters} for more detail on causal models and
-identifiability.
+Once the statistical estimation problem has been established, then the estimator
+can be constructed. Estimators (also referred to as ``algorithms'' and ``learners'')
+are functions that take as input the observed data and return as output an
+estimate of \(P_0\), or some feature of \(P_0\) (such as a component of the target
+estimand). We will use the Super Learner (SL) algorithm to estimate a
+prediction function, and then we will use the SL estimator of the prediction
+function to predict outcomes from new input (e.g., covariate/predictor) data.
+Occasionally, the prediction function itself is the target estimand, but more
+commonly, the prediction function is a component of a target estimand.
 
-Once the statistical estimation problem has been defined, then estimator can be
-constructed. SL provides an important step in creating a robust estimator. We
-will use it to obtain an estimator for a desired prediction function, and this
-could be the target statistical estimand, or a component of a target statistical
-estimand. SL is an algorithm that uses cross-validation and a loss function to
-estimate a prediction function based on a weighted combination of a library of
-machine learning algorithms.
+For example, we might want to estimate the prediction function for
+\(E_{P_0}(Y|A,W)\) (the conditional mean outcome, given treatment \(A\) and
+baseline covariates \(W\)), so we can predict what the outcomes would have been
+under a hypothetical scenario where all subjects received treatment \(A=1\). In
+order for this estimator to output predictions that correspond to outcomes in
+a world where all subjects received treatment \(A=1\), we would need to supply
+the estimator with input data that reflects it; specifically, the baseline
+covariate information \(W\) would remain the same treatment as it is in the
+observed data, but the treatment \(A\) would be set to 1 for all individuals,
+regardless of whether or not they actually received it. This learning paradigm
+corresponds to estimation of a component of the target statistical estimand
+mentioned in step 3 above, the \(E_{P_0}(Y|A=1,W)\) component of \(\Psi(P_0)\).
 
-The library of machine learning algorithms in the SL consists of estimators
-(``learners'' in the \passthrough{\lstinline!sl3!} nomenclature) that align with the knowledge about the
-DGP. That is, the learners in the library need to respect the statistical model.
-Also, the library should be able to adapt to a diversity of possible forms for
-the DGP, which can be acheived by including a diversity of learners that range
-from parametric regression models to multi-step algorithms involving screening
-covariates, penalizations, optimizing tuning parameters, etc.
+There are various strategies that estimators can employ to model relationships
+from the observed data, and there is no ``one fits all'' algorithm in the realm
+of real-world data science. However, the statistical performance of algorithms'
+(e.g., mean squared error) can be used to compare them. Therefore, algorithm
+selection should be driven criteria that have been (i) proven to optimize
+relevant statistical properties (e.g., provide theoretical guarantees) and (ii)
+shown to be reliable in practice (e.g., with complex real-world data). The SL
+is an algorithm that is equipped with such a standard, the cross-validation
+criterion \citep{vdl2003unified, vaart2006oracle}, which is described further in
+the \protect\hyperlink{sl3-theory}{``Theoretical foundations''} subsection. Also,
+as an ensemble machine learning algorithm, SL leverages information learned
+from a variety of candidate algorithms by creating a weighted combination of
+them (i.e., metalearning). In summary, SL represents a practical approach for
+principled machine learning. It has been shown to be adaptive and robust, even
+in small samples \citep{polley2010super}.
 
-\begin{VT1}
-\VH{Keep in mind}
-The learners in the SL library should be jusified in terms of the prediction 
-problem, statistical model, data sparsity (e.g., number of independent samples, 
-number of events for rare binary outcomes), and the number of covariates. 
-\end{VT1}
+\hypertarget{candidate-learners-and-ensembling}{%
+\subsection{Candidate learners and ensembling}\label{candidate-learners-and-ensembling}}
 
-The ensembling of the collection of algorithms with weights (``metalearning'' in
-the \passthrough{\lstinline!sl3!} nomenclature) has been shown to be adaptive and robust, even in small
-samples \citep{polley2010super}. Asymptotically (i.e., as the sample size goes to
-infinity), SL is proven to be as accurate as the best possible prediction
-algorithm in the library \citep{vdl2003unified, vaart2006oracle}.
-
-\begin{shortbox}
-\Boxhead{Constructing a library that respects the statistical model}
-Above, it was mentioned that the library should contain functions that are  
-align with the knowledge about the DGP. This means that the candidate algorithms 
-in the library should aim to coincide with subject-matter knowledge about the 
-experiment that generated the data. For example, suppose it is known that the 
-outcome cannot take certain values, e.g., the outcome is always a positive 
-real number. First, the statistical model should be constrained to reflect these 
-outcome bounds. Later, the learners in the SL library should be constructed such 
-that they respect the bounds. This will guarantee that the SL respects the 
-bounds as well, but only if the SL is a discrete SL or an ensemble SL with a 
-convex combination of the weights. For learners that allow link functions 
-(e.g., generalized elastic-net regression models), different link functions can 
-be chosen to match known outcome bounds. If a learner does not support link 
-functions, or some other bounding criteria for model fitting, then there is a 
-possibility that the learner will yield predictions that fall outside of known 
-outcome bounds. In this scenario, the predictions that are not within known 
-bounds could be trucated, which might be fine for learners that seldomly produce 
-predictions which violate the bounds. 
-
-In general, the use of link function(s) is more sensible, since it formulates a 
-model for the function that respects the statistical model, and then optimizes 
-the fit in that model. The truncation option optimizes in a model that's too 
-big, losing information, and then corrects ad hoc. However, it might be 
-limiting to only include learners that support some desired link function 
-(e.g., a library of several logistic regression models), since a diversity of 
-possible DGPs might not be captured by this library. 
-\end{shortbox}
-
-\hypertarget{step-by-step-overview}{%
-\subsection{Step-by-step overview}\label{step-by-step-overview}}
-
-Consider the scenario in which we have \(n\) independent and identically
-distributed observations in the data. Also, let's say \(k\) number of learners
-are included the SL library.
+The set of algorithms considering by the SL (also referred to as ``library'')
+should consist of those that align with what's known about the DGP and what is
+not known about the DGP. In other words, the learners in the library should
+be tailored to respect the statistical model \(\mathcal{M}\), both in terms of
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
-  Create the validation data for the \(V\) folds by breaking up the data evenly
-  into \(V\) disjoint subsets, such that no observation is contained in more
-  than one subset and each subset \(v\) contains about the same number (roughly
-  \(n/V\)) observations.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    If the data contain a rare binary outcome (or highly important binary
-    covariate, such as treatment/exposure), one should consider making the
-    prevalence of this binary outcome in the \(V\) folds similar to the
-    prevalence that exists in the original data. This can be achieved
-    by populating the \passthrough{\lstinline!strata\_ids!} argument in the \passthrough{\lstinline!origami::make\_folds()!}
-    function with the vector of binary outcomes (or important binary
-    covariate). The returned list can then be passed as the \passthrough{\lstinline!folds!} argument
-    in the \passthrough{\lstinline!sl3\_Task!}.
-  \item
-    If the data contain clusters (e.g., repeated measures), then all
-    observations in the same cluster should be placed in the same fold.
-    This can be achieved by populating the \passthrough{\lstinline!cluster\_ids!} argument in the
-    \passthrough{\lstinline!origami::make\_folds()!} function with the vector of cluster identifiers.
-    The returned list can then be passed as the \passthrough{\lstinline!folds!} argument in the
-    \passthrough{\lstinline!sl3\_Task!}.
-  \end{itemize}
+  the restrictions placed on \(\mathcal{M}\), so the candidate algorithms
+  represent functions that align with the knowledge about the DGP, and
 \item
-  For each fold \(v\):
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \item
-    Separate (i) from (ii):
-
-    \begin{enumerate}
-    \def\labelenumiii{\roman{enumiii}.}
-    \tightlist
-    \item
-      The data that was included in the disjoint subset for fold \(v\) in Step
-      1, which contains roughly \(n/V\) total observations. We will refer to
-      this portion of the data as fold \(v\)'s ``validation'' data, and
-      \(n_{\text{validation}}\) as the number of observations in the
-      validation data in the \(v^{\text{th}}\) fold.
-    \end{enumerate}
-  \end{enumerate}
-
-  \begin{enumerate}
-  \def\labelenumii{\roman{enumii}.}
-  \setcounter{enumii}{1}
-  \tightlist
-  \item
-    The data that was \emph{not} included in the disjoint subset for fold \(v\)
-    in Step 1, which contains \(n - n_{\text{validation}}\) total
-    observations. We will refer to this portion of the data as fold \(v\)'s
-    ``training'' data, and \(n_{\text{training}}\) as the number of
-    observations in the training data for the \(v^{\text{th}}\) fold.
-  \end{enumerate}
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \setcounter{enumii}{1}
-  \tightlist
-  \item
-    Fit each of the \(k\) learners on the training data (ii) to obtain \(k\)
-    estimators of the prediction function. Here, each of the \(k\) learners
-    employs their various strategies to map the training data, consisting of
-    \(n_{\text{training}}\) records with input variables (covariates) and an
-    output variable (outcome), into a prediction function.
-  \item
-    Use the \(k\) trained learners created in the previous step to map the
-    validation data covariates, which represent a new set of input variables,
-    into predicted outcomes. This results in an \(n_{validation} \times k\)
-    matrix of so-called ``cross-validated predictions''. Since the \(k\)
-    estimators were not trained using the validation data's outcomes, the
-    predictions based on the validation data's covariate information can be
-    used as a fair means to evaluate the \(k\) estimator's performance.
-  \end{enumerate}
-\item
-  Bind together the rows of all \(V\) \(n_{validation} \times k\) matrices of
-  cross-validated predictions, to obtain an \(n \times k\) matrix of
-  cross-validated predictions. This matrix \(n \times k\) matrix of
-  cross-validated predictions is often referred to as the
-  ``level-one'' or ``meta-level'' dataset.
-\item
-  Retain the observed outcomes (\(Y\)) for all of the \(n\) observations and use
-  them to measure the ``loss'' of each cross-validated prediction
-  (e.g., (\(Y - \hat{Y}^2\)).
-\item
-  For each \(k\) column, take the mean across all of the \(n\) losses, which we
-  call the ``cross-validated empirical risk''. The cross-validated empirical
-  risk provides, for each of the \(k\) learners, a summarized measure of
-  performance across all of the \(n\) observations. Note that if there are
-  observational-level weights in the data, then these will be taken into
-  account (i) in the cross-validated empirical risk via calculation of a
-  weighted mean across all of the \(n\) losses, and (ii) in training the
-  learners, but only for learners that support weights. One can specify
-  observational-level weights in \passthrough{\lstinline!sl3!} by populating \passthrough{\lstinline!weights!} argument in
-  the \passthrough{\lstinline!sl3\_Task!} with the column name in the data (character) that contains
-  them.
-\item
-  Fit the so-called ``metalearner'' to establish the weighted combination (a
-  \(k\)-dimensional vector) of the \(k\) learners. The metalearner
-  is a function that decides on the weights to be assigned to
-  each of the \(k\) learners; taking as input the cross-validated empirical risk
-  for all \(k\) learners (a), or taking as input a loss function and the meta-level dataset (b).
-
-  \begin{enumerate}
-  \def\labelenumii{\alph{enumii}.}
-  \tightlist
-  \item
-    The discrete SL (or cross-validated selector) employs a simple
-    metalearner that takes as input the cross-validated empirical risk for
-    all \(k\) learners. This metalearner assigns weight of 1 to the single
-    learner with smallest cross-validated risk, and a weight of 0 to all
-    other learners.
-  \item
-    The ensemble SL (often referred to as the ``Super Learner'') employs
-    metalearners that take as input the Z matrix, and the loss function of
-    interest (unless the loss is implied by the metalearning function
-    itself). These metalearners assign the weights such that the weighted
-    combination of Z matrix predictions is optimized to minimize the
-    cross-validated empirical risk. This often results in more than one
-    learner having positive weight. Aggressive metalearning (e.g., assigning
-    negative weight) can be problematic, leading to overfitting.
-  \end{enumerate}
-\item
-  Fit the learners (or only the learners with non-zero weight from Step 5)
-  on the entire sample of \(n\) observations, and use the weights that were
-  obtained in Step 5 to get the SL fit. That's it! The SL fit is just all of
-  \(k\) learner fits --- the weights don't come in to play until we obtain the
-  predictions from the SL; where the SL predictions are the weighted
-  combination of the \(k\) learner predictions, as determined by the
-  metalearner. Notice that, we use this rigorous, optimal, and fair procedure
-  to derive the weights from the \(n \times k\) Z matrix of cross-validated
-  predictions; but once we've done that, we capitalize on the entire sample
-  of observations, transitioning our focus to obtaining the best fit possible
-  of our \(k\) learners.
-\item
-  SL predictions, variable importance, and/or a cross-validated SL can be
-  obtained from an SL fit (like most other learners). The cross-validated SL
-  provides an estimate of the performance of the SL on unseen data, and
-  incorporates a outer layer of cross-validation in order to cross-validate
-  this entire procedure.
+  the vastness of \(\mathcal{M}\), so the library is able to adapt to a
+  diversity of possible forms for the DGP, which can be acheived by including
+  a variety of learning strategies (e.g., that range from parametric regression
+  models to multi-step algorithms involving screening covariates,
+  penalizations, optimizing tuning parameters, etc.)
 \end{enumerate}
 
-Below is a figure from {[}ADD REF{]} describing the same step-by-step procedure.
-This figure considers \(k=16\) learners, and in the figure \(p=k\); and the squared
-error loss function, thus mean squared error (MSE) is the risk.
+\hypertarget{example-respecting-known-bounds-on-the-outcome}{%
+\subsubsection{Example: Respecting known bounds on the outcome}\label{example-respecting-known-bounds-on-the-outcome}}
 
-\begin{center}\includegraphics[width=0.8\linewidth]{img/png/SLKaiserNew} \end{center}
+Suppose it is known that the outcome cannot take certain values,
+(e.g., the outcome is always a positive real number). The statistical model
+should be constrained to reflect these outcome bounds, and in order for the
+learners in the library to respect the statistical model, the learners should
+be constructed such that their predictions do not fall outside of the outcome
+bounds. For learners that allow link functions (e.g., generalized elastic-net
+regression models), different link functions can be chosen to match known
+outcome bounds. If a learner does not support link functions, or some other
+bounding criteria during model fitting, then there is a possibility that the
+learner will yield predictions that fall outside of known outcome bounds. In
+this scenario, the predictions that are not within known bounds could be
+truncated, which might be fine for learners that seldomly produce predictions
+that violate known outcome bounds.
 
-\hypertarget{theoretical-foundations-and-further-reading}{%
-\subsection{Theoretical Foundations and Further Reading}\label{theoretical-foundations-and-further-reading}}
+In general, the use of link function(s) is more sensible, since it formulates a
+model for the function that respects the statistical model, and then optimizes
+the fit in that model. The truncation option optimizes in a model that's too
+big, losing information, and then corrects ad hoc. However, it might be
+limiting to only include learners that support some desired link function
+(e.g., a library of several logistic regression models), since a diversity of
+possible DGPs might not be captured by this library.
 
-\begin{itemize}
-\item
-  Cross-validation is proven to be optimal for selection among estimators. This
-  result was established through the oracle inequality for the cross-validation
-  selector among a collection of candidate estimators \citep{vdl2003unified, vaart2006oracle}. The only conditions are that loss function uniformly
-  bounded, which is guaranteed in \passthrough{\lstinline!sl3!}, and that the loss function is \emph{valid}
-  (defined below). (Do we also need for the proportion of validation observation
-  times the number of observations to go to infinity?)
-\item
-  We use a \emph{loss function} \(L\) to assign a measure of performance to each
-  learner \(\psi\) when applied to the data \(O\), and subsequently compare
-  performance across the learners. More generally, \(L\) maps every \(\psi \in \R\)
-  to \(L(\psi) : (O) \mapsto L(\psi)(O)\). We use the terms ``learner'',
-  ``algorithm'', and ``estimator'' interchangeably.
+Recall that SL is a weighted combination of this library of candidate
+algorithms, and not all weighted combinations are created equally. In order to
+ensure that the SL has the same bounds on the predictions as the candidates in
+the library, SL's weighted combination should be a convex combination
+(i.e., weights are non-negative and sum to one). The most simple example of a
+convex combination would be the so-called ``discrete SL'' or
+``cross-validated selector'', which uses a metalearner that assigns a weight of
+one to the \emph{best} candidate algorithm in the library, and a weight of zero to
+all others (where \emph{best} is described in step 4(a) in the \protect\hyperlink{sl3-steps}{step-by-step
+overview} below). More flexible metalearners,
+like the default metalearner in \passthrough{\lstinline!sl3!}, are those that allow multiple algorithms
+to have nonzero weights and still enforce a convex combination.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    It is important to recall that \(\psi\) is an estimator of \(\psi_0\), the
-    unknown and true parameter value under \(P_0\).
-  \item
-    A \emph{valid loss function} will have mean/expectation (i.e., risk) that is
-    minimized at the true value of the parameter \(\psi_0\). Thus, minimizing
-    the expected loss will bring an estimator \(\psi\) closer to the true
-    \(\psi_0\).
-  \item
-    For example, say we observe a learning data set \(O_i=(Y_i,X_i)\), of
-    \(i=1, \ldots, n\) independent and identically distributed observations,
-    where \(Y_i\) is a continuous outcome of interest, \(X_i\) is a set of
-    covariates. Also, let our objective be to estimate the function \(\psi_0: X \mapsto \psi_0(X) = E_0(Y \mid X)\), which is the conditional mean outcome
-    given covariates. This function can be expressed as the minimizer of the
-    expected squared error loss: \(\psi_0 = \text{argmin}_{\psi} E[L(O,\psi(X))]\), where \(L(O, \psi(X)) = (Y - \psi(X))^2\).
-  \item
-    We can estimate the loss by substituting the empirical distribution of
-    the data \(P_n\) for the true and unknown distribution of the observed data
-    \(P_0\).
-  \item
-    Also, we can use the cross-validated risk to empirically determine the
-    relative performance of an estimator (i.e., a candidate learner), and
-    perhaps, how it's performance compares to other estimators.
-  \item
-    Once we have tested different estimators on actual data, and looked at
-    the performance (e.g., MSE of predictions across all learners), we can
-    see which algorithm (or weighted combination) has the lowest risk, and
-    thus is closest to the true \(\psi_0\).
-  \end{itemize}
-\item
-  The \emph{cross-validated empirical risk} of an algorithm is defined as the
-  empirical mean over a validation sample of the loss of the algorithm fitted on
-  the training sample, averaged across the splits of the data.
+\hypertarget{sl3-steps}{%
+\subsection{Step-by-step overview with V-fold cross-validation}\label{sl3-steps}}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    The \emph{discrete Super Learner}, or \emph{cross-validation selector}, is the
-    algorithm in the library that minimizes the cross-validated empirical
-    risk.
-  \item
-    The \emph{continuous/ensemble Super Learner}, often referred to as
-    \emph{Super Learner} is a weighted average of the library of algorithm
-    predictions, where the weights are chosen to minimize the cross-validated
-    empirical risk of the library. This notion of weighted combinations was
-    introduced in \citet{wolpert1992stacked} for neural networks and adapted for
-    regressions in \citet{breiman1996stacked}. Restricting the weights to be positive
-    and sum to one (i.e., a convex combination) has been shown to perform well
-    in practice \citep{polley2010super, vdl2007super}.
-  \end{itemize}
-\end{itemize}
+This section is under construction.
+\#\#\# Theoretical foundations \{\#sl3-theory\}
+This section is under construction.
 
 \hypertarget{sl3-microwave-dinner-implementation}{%
 \section{\texorpdfstring{\texttt{sl3} ``Microwave Dinner'' Implementation}{sl3 ``Microwave Dinner'' Implementation}}\label{sl3-microwave-dinner-implementation}}
@@ -4353,7 +4188,7 @@ $outer.iter
 [1] 1
 
 $elapsed
-Time difference of 0.012338 secs
+Time difference of 0.011929 secs
 
 $vscale
  [1] 1.01001 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
@@ -5703,7 +5538,7 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \hypertarget{learning-objectives-1}{%
 \section{Learning Objectives}\label{learning-objectives-1}}
@@ -6815,7 +6650,7 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -7672,7 +7507,7 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-06-30
+Updated: 2021-07-15
 
 \textbackslash{}begin\{VT1\}
 \VH{Learning Objectives}
