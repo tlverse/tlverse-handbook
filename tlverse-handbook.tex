@@ -199,7 +199,7 @@
 \providecommand{\subtitle}[1]{}
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{July 15, 2021}
+\date{July 24, 2021}
 
 \begin{document}
 \maketitle
@@ -722,7 +722,7 @@ resources}.
 
 \emph{Nima Hejazi} and \emph{Rachael Phillips}
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1160,7 +1160,7 @@ of \(P_0\). We discuss several more complex estimands in later sections.
 \hypertarget{tlverse}{%
 \chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1824,7 +1824,7 @@ numeric & tax71\_82 & 92 & 0.94352 & 0.55261 & 0.15032 & 0.03600 & 0.46100 & 0.5
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -3255,7 +3255,7 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \hypertarget{learning-objectives}{%
 \section*{Learning Objectives}\label{learning-objectives}}
@@ -3265,35 +3265,41 @@ By the end of this chapter you will be able to:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\tightlist
 \item
-  Select an objective function that aligns with both the purpose of your
-  analysis and is optimized by the target parameter.
+  Select an objective function that (i) aligns with the intention of the
+  analysis and (ii) is optimized by the target parameter.
 \item
   Assemble a diverse library of learners to be considered in the Super Learner
-  ensemble.
+  ensemble. In particular, you should be able to:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Customize a learner by modifying it's tuning parameters.
+  \item
+    Create several different versions of the same learner at once by
+    specifying a grid of tuning parameters.
+  \item
+    Curate covariate screening pipelines in order to pass a screener's
+    output, a subset of covariates, as input for another learner that will
+    use the subset of covariates selected by the screener to model the data.
+  \end{enumerate}
 \item
-  Customize a learner by modifying it's tuning parameters.
+  Specify the learner for ensembling (the metalearner) such that it corresponds
+  to your objective function.
 \item
-  Create several different versions of the same learner by specifying a grid
-  of tuning parameters.
-\item
-  Create covariate screening pipelines in order to pass a screener's output,
-  a subset of covariates, as input for another learner that will model the data
-  using the subset of covariates selected by the screener.
-\item
-  Fit an ensemble with nested cross-validation to obtain an estimate of the
-  performance of the ensemble itself.
+  Fit the Super Learner ensemble with nested cross-validation to obtain an
+  estimate of the performance of the ensemble itself on out-of-sample data.
 \item
   Obtain \passthrough{\lstinline!sl3!} variable importance metrics.
 \item
-  Interpret the fit for discrete and continuous Super Learner's from the
+  Interpret the fit for discrete and continuous Super Learners' from the
   cross-validated risk table and the coefficients.
 \item
-  learners in the SL library and should be justified in terms of the prediction
-  problem, statistical model \(\M\), data sparsity (e.g., number of
-  independent samples, number of events for rare binary outcomes), and the number
-  of covariates. The metalearning strategy should be similarly justified.
+  Justify the base library of machine learning algorithms and the ensembling
+  learner in terms of the prediction problem, statistical model \(\M\), data
+  sparsity, and the dimensionality of the covariates.
 \end{enumerate}
 
 \hypertarget{motivation}{%
@@ -3320,7 +3326,7 @@ By the end of this chapter you will be able to:
   complex (neural nets, tree-based methods, support vector machines, etc.).
 \item
   Super Learner works by using cross-validation in a manner that theoretically
-  (asymptotically) guarantees the resulting fit will be as good as possible,
+  (in large samples) guarantees the resulting fit will be as good as possible,
   given the algorithms provided.
 \end{itemize}
 
@@ -3336,9 +3342,9 @@ this roadmap define the \emph{statistical estimation problem}, which establish
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  The data \(O\) as a random variable, or equivalently, a realization of a
-  particular experiment/study, which has probability distribution \(P_0\). This
-  is written \(O \sim P_0\), and \(P_0\) is also commonly referred to as the
+  \textbf{The data \$O\$ as a random variable, or equivalently, a realization of a}
+  \textbf{particular experiment/study, which has probability distribution \(P_0\).}
+  This is written \(O \sim P_0\), and \(P_0\) is also commonly referred to as the
   data-generating process (DGP) and also the data-generating distribution
   (DGD). The data structure \(O\) is comprised of variables, such as a
   vector of covariates \(W\), a treatment or exposure \(A\), and an outcome \(Y\),
@@ -3348,8 +3354,8 @@ this roadmap define the \emph{statistical estimation problem}, which establish
   a population, collecting baseline characteristics \(W\), randomly assigning
   treatment \(A\), and then later measuring an outcome \(Y\).
 \item
-  A statistical model \(\M\) as a set of possible probability distributions that
-  could have given rise to the data. It's essential for \(\M\) to only
+  \textbf{A statistical model \(\M\) as a set of possible probability distributions}
+  \textbf{that could have given rise to the data.} It's essential for \(\M\) to only
   constrained by factual subject-matter knowledge in order to guarantee \(P_0\)
   resides in the statistical model, written \(P_0 \in \M\). Continuing
   the example from step 1, the following restrictions could be placed on the
@@ -3357,10 +3363,10 @@ this roadmap define the \emph{statistical estimation problem}, which establish
   independent and identically distributed (i.i.d.), the assignment of
   treatment \(A\) was random and not based on covariates \(W\).
 \item
-  A translation of the scientific question of interest into a function of
-  \(P_0\), the target statistical estimand \(\Psi(P_0)\). For example, we might be
-  interested in the average difference in mean outcomes under treatment \(A=1\)
-  versus placebo \(A=0\):
+  \textbf{A translation of the scientific question of interest into a function of}
+  \textbf{\(P_0\), the target statistical estimand \(\Psi(P_0)\).} For example, we might
+  be interested in the average difference in mean outcomes under treatment
+  \(A=1\) versus placebo \(A=0\):
   \(\Psi(P_0)=E_{P_0}\Big[E_{P_0}(Y|A=1,W)−E_{P_0}(Y|A=0,W)\Big]\). Note
   that, if the scientific question is causal, then it's translation will
   produce a target \emph{causal} estimand; another layer of translation,
@@ -3371,16 +3377,16 @@ this roadmap define the \emph{statistical estimation problem}, which establish
 \end{enumerate}
 
 Once the statistical estimation problem has been established, then the estimator
-can be constructed. Estimators (also referred to as ``algorithms'' and ``learners'')
-are functions that take as input the observed data and return as output an
-estimate of \(P_0\), or some feature of \(P_0\) (such as a component of the target
+can be constructed. Estimators (also referred to as algorithms and learners)
+are functions that take as input the observed data, and return as output an
+estimate of \(P_0\) or some feature of \(P_0\) (such as a component of the target
 estimand). We will use the Super Learner (SL) algorithm to estimate a
 prediction function, and then we will use the SL estimator of the prediction
 function to predict outcomes from new input (e.g., covariate/predictor) data.
-Occasionally, the prediction function itself is the target estimand, but more
+Occasionally, the prediction function itself is the target estimand; more
 commonly, the prediction function is a component of a target estimand.
 
-For example, we might want to estimate the prediction function for
+Consider an example where we need to estimate the prediction function for
 \(E_{P_0}(Y|A,W)\) (the conditional mean outcome, given treatment \(A\) and
 baseline covariates \(W\)), so we can predict what the outcomes would have been
 under a hypothetical scenario where all subjects received treatment \(A=1\). In
@@ -3401,16 +3407,16 @@ selection should be driven criteria that have been (i) proven to optimize
 relevant statistical properties (e.g., provide theoretical guarantees) and (ii)
 shown to be reliable in practice (e.g., with complex real-world data). The SL
 is an algorithm that is equipped with such a standard, the cross-validation
-criterion \citep{vdl2003unified, vaart2006oracle}, which is described further in
-the \protect\hyperlink{sl3-theory}{``Theoretical foundations''} subsection. Also,
-as an ensemble machine learning algorithm, SL leverages information learned
-from a variety of candidate algorithms by creating a weighted combination of
+criterion, which ensures in large samples that the SL will perform atleast as
+well as the unknown best-performing candidate algorithm \citep{vdl2003unified, vaart2006oracle, vdl2007super}. Also, as an ensemble machine learning
+algorithm, SL leverages information learned from a variety of candidate
+algorithms by creating a weighted combination of
 them (i.e., metalearning). In summary, SL represents a practical approach for
 principled machine learning. It has been shown to be adaptive and robust, even
 in small samples \citep{polley2010super}.
 
 \hypertarget{candidate-learners-and-ensembling}{%
-\subsection{Candidate learners and ensembling}\label{candidate-learners-and-ensembling}}
+\subsection{Candidate Learners and Ensembling}\label{candidate-learners-and-ensembling}}
 
 The set of algorithms considering by the SL (also referred to as ``library'')
 should consist of those that align with what's known about the DGP and what is
@@ -3464,20 +3470,113 @@ the library, SL's weighted combination should be a convex combination
 convex combination would be the so-called ``discrete SL'' or
 ``cross-validated selector'', which uses a metalearner that assigns a weight of
 one to the \emph{best} candidate algorithm in the library, and a weight of zero to
-all others (where \emph{best} is described in step 4(a) in the \protect\hyperlink{sl3-steps}{step-by-step
+all others (where \emph{best} is described in step 4(a) in the \protect\hyperlink{sl3-theory}{step-by-step
 overview} below). More flexible metalearners,
 like the default metalearner in \passthrough{\lstinline!sl3!}, are those that allow multiple algorithms
 to have nonzero weights and still enforce a convex combination.
 
 \hypertarget{sl3-steps}{%
-\subsection{Step-by-step overview with V-fold cross-validation}\label{sl3-steps}}
+\subsection{Fitting the Super Learner}\label{sl3-steps}}
+
+\hypertarget{cross-validation}{%
+\subsubsection{Cross-validation}\label{cross-validation}}
+
+\begin{itemize}
+\tightlist
+\item
+  There are many different cross-validation schemes, which are designed to
+  accommodate different study designs, data structures, and prediction
+  problems. See \protect\hyperlink{causal}{cross-validation} for more detail.
+\end{itemize}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/png/vs} \end{center}
+
+The figure above shows an example of \(V\)-fold cross-validation with \(V=10\)
+folds, and this is the default cross-validation structure in the \passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!}
+package. The darker boxes represent the so-called ``validation data'' and the
+lighter boxes represent the so-called ``training data''. The following details
+are important to notice:
+
+\begin{itemize}
+\tightlist
+\item
+  Across all folds, there are \(V\) (10) copies of the dataset. The only
+  difference between each copy is the coloring, which distinguishes the subset
+  of the data that's considered as the training data from the subset that's
+  considered as the validation data.
+\item
+  Within each fold 1/\(V\) (1/10) of the data is the validation data.
+\item
+  Across all folds, all of the data will be considered as validation data and
+  no observation will be included twice as validation data. Therefore, the
+  total number of validation data observations across all of the folds is
+  equal to the total number of observations in the data.
+\end{itemize}
+
+\hypertarget{step-by-step-procedure-with-v-fold-cross-validation}{%
+\subsubsection{Step-by-step procedure with V-fold Cross-validation}\label{step-by-step-procedure-with-v-fold-cross-validation}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Fit each learner (say there are \(K\) learners) on the whole dataset. We refer
+  to these learners that are trained on the whole dataset as ``full-fit''
+  learners.
+\item
+  Break up the data evenly into \(V\) disjoint subsets. Separately, create
+  \(V\) copies of the data. For each copy \(v\), where \(v=1,\ldots,V\), create the
+  \(V\) folds by labelling the portion of the data that was included in subset
+  \(v\) as the validation sample, and the labelling what's remaining of the data
+  as the training sample.
+\item
+  For each fold \(v\), \(v=1,\ldots,V\), fit each learner (say there are \(K\)
+  learners) on the training sample and predict the validation sample outcomes
+  by providing each fitted learner with the validation sample covariates as
+  input. Notice that each learner will be fit \(V\) times. We refer to these
+  learners that are trained across the \(V\) cross-validation folds as
+  ``cross-validated fit'' learners.
+\item
+  Combine the validation sample predictions from all folds and all learners to
+  create the so-called \(K\) column matrix of ``cross-validated predictions''.
+  This matrix is also commonly referred to as the \(Z\) matrix. Notice that it
+  contains, for each learner, out-of-sample predictions for all of the
+  observations in the data.
+\item
+  Train the metalearner (e.g., a non-negative least squares regression) on
+  data with predictors and outcomes being the \(Z\) matrix and the observed data
+  outcomes, respectively. The metalearner --- just like any ordinary ML
+  algorithm --- estimates the parameters of it's model using the training data
+  and afterwards, the fitted model can be used to obtain predicted outcomes
+  from new input data. What's special about the metalearner is that it's
+  estimated model parameters (e.g., regression coefficients) correspond to
+  it's predictors, which are the variables in the \(Z\) matrix, the \(K\) learners'
+  predictions. Once the metalearner is fit, it can be used to obtain predicted
+  outcomes from new input data; that is, new \(K\) learners predictions' can be
+  supplied to the fitted metalearner in order to obtain predicted outcomes.
+\item
+  The fitted metalearner and the full-fit learners define the weighted
+  combination of the \(K\) learners, finalizing the Super Learner (SL) fit. To
+  obtain SL predictions the full-fit learners' predictions are first obtained
+  and then fed as input to the fitted metalearner; the metalearner's output
+  is the SL predictions.
+\end{enumerate}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{img/png/SLKaiserNew} \end{center}
+
+\hypertarget{sl3-theory}{%
+\subsection{Theoretical foundations}\label{sl3-theory}}
 
 This section is under construction.
-\#\#\# Theoretical foundations \{\#sl3-theory\}
-This section is under construction.
+
+For more detail on Super Learner algorithm we refer the reader to
+\citet{polley2010super} and \citet{vdl2007super}. The optimality results for the
+cross-validation selector among a family of algorithms were established in
+\citet{vdl2003unified} and extended in \citet{vaart2006oracle}.
 
 \hypertarget{sl3-microwave-dinner-implementation}{%
-\section{\texorpdfstring{\texttt{sl3} ``Microwave Dinner'' Implementation}{sl3 ``Microwave Dinner'' Implementation}}\label{sl3-microwave-dinner-implementation}}
+\section*{\texorpdfstring{\texttt{sl3} ``Microwave Dinner'' Implementation}{sl3 ``Microwave Dinner'' Implementation}}\label{sl3-microwave-dinner-implementation}}
+
 
 We begin by illustrating the core functionality of the SL algorithm as
 implemented in \passthrough{\lstinline!sl3!}.
@@ -3489,15 +3588,15 @@ The \passthrough{\lstinline!sl3!} implementation consists of the following steps
 \setcounter{enumi}{-1}
 \tightlist
 \item
-  Load the necessary libraries and data.
+  Load the necessary libraries and data
 \item
-  Define the machine learning task.
+  Define the machine learning task
 \item
-  Make an SL by creating library of base learners and a metalearner.
+  Make an SL by creating library of base learners and a metalearner
 \item
-  Train the SL on the machine learning task.
+  Train the SL on the machine learning task
 \item
-  Obtain predicted values.
+  Obtain predicted values
 \end{enumerate}
 
 \hypertarget{wash-benefits-study-example-1}{%
@@ -3506,11 +3605,12 @@ The \passthrough{\lstinline!sl3!} implementation consists of the following steps
 
 Using the WASH Benefits Bangladesh data, we are interested in predicting
 weight-for-height z-score \passthrough{\lstinline!whz!} using the available covariate data. More
-information on this dataset, and all other data that we will work with in this
-handbook, is contained in \protect\hypertarget{data}{}{Chapter 3}. Let's begin!
+information on this dataset, and all other data that we will work with, are
+described in \href{ihttps://tlverse.org/tlverse-handbook/data.html}{this chapter of the \passthrough{\lstinline!tlverse!}
+handbook}. Let's begin!
 
-\hypertarget{preliminaries-load-the-necessary-libraries-and-data}{%
-\subsection*{Preliminaries: Load the necessary libraries and data}\label{preliminaries-load-the-necessary-libraries-and-data}}
+\hypertarget{load-the-necessary-libraries-and-data}{%
+\subsection*{0. Load the necessary libraries and data}\label{load-the-necessary-libraries-and-data}}
 
 
 First, we will load the relevant \passthrough{\lstinline!R!} packages, set a seed, and load the data.
@@ -3534,10 +3634,14 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
+head(washb_data) %>%
+  kable() %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
 \end{lstlisting}
 
-A quick look at the data:
-
+\begin{table}
+\centering
 \begin{tabular}{r|l|l|r|r|l|r|l|r|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
 \hline
 whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat & Nlt18 & Ncomp & watmin & elec & floor & walls & roof & asset\_wardrobe & asset\_table & asset\_chair & asset\_khat & asset\_chouki & asset\_tv & asset\_refrig & asset\_bike & asset\_moto & asset\_sewmach & asset\_mobile\\
@@ -3555,11 +3659,13 @@ whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat 
 -0.51 & Control & N06531 & 9 & 304 & male & 20 & Secondary (>5y) & 154.20 & Severely Food Insecure & 0 & 3 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
 \hline
 \end{tabular}
+\end{table}
 
-\hypertarget{step-1-define-the-machine-learning-task}{%
-\subsection{Step 1: Define the machine learning task}\label{step-1-define-the-machine-learning-task}}
+\hypertarget{define-the-machine-learning-task}{%
+\subsection*{1. Define the machine learning task}\label{define-the-machine-learning-task}}
 
-To define the machine learning \textbf{``task''} (predict weight-for-height Z-score
+
+To define the machine learning \passthrough{\lstinline!task!} (predict weight-for-height Z-score
 \passthrough{\lstinline!whz!} using the available covariate data), we need to create an \passthrough{\lstinline!sl3\_Task!}
 object.
 
@@ -3569,11 +3675,11 @@ weights, IDs, offset).
 
 Also, if we had missing outcomes, we would need to set \passthrough{\lstinline!drop\_missing\_outcome = TRUE!} when we create the task. In the next analysis, with the \protect\hyperlink{ist}{IST stroke trial
 data}, we do have a missing outcome. In the following chapter, we need to
-estimate this ``missingness mechanism''; which is the conditional probability that
+estimate this missingness mechanism; which is the conditional probably that
 the outcome is observed, given the history (i.e., variables that were measured
 before the missingness). Estimating the missingness mechanism requires learning
-a prediction function that outputs the predicted probability that a unit is
-missing, given their history.
+a prediction function that outputs the predicted probability that a unit
+is missing, given their history.
 
 \begin{lstlisting}[language=R]
 # specify the outcome and covariates
@@ -3648,30 +3754,29 @@ head(washb_task$folds[[1]]$validation_set) # row indexes for fold 1 validation
 [1] 12 21 29 41 43 53
 
 any(
-  washb_task$folds[[1]]$training_set %in%
-    washb_task$folds[[1]]$validation_set
+  washb_task$folds[[1]]$training_set %in% washb_task$folds[[1]]$validation_set
 )
 [1] FALSE
 \end{lstlisting}
 
-\passthrough{\lstinline!R6!} Tip: If you type \passthrough{\lstinline!washb\_task$!} and then press the ``tab'' button (you will
-need to press ``tab'' twice if you're not in RStudio), you can view all of the
+Tip: If you type \passthrough{\lstinline!washb\_task$!} and then press the tab button (you will
+need to press tab twice if you're not in RStudio), you can view all of the
 active and public fields and methods that can be accessed from the \passthrough{\lstinline!washb\_task!}
 object.
 
-\hypertarget{step-2-make-a-super-learner}{%
-\subsection{Step 2: Make a Super Learner}\label{step-2-make-a-super-learner}}
+\hypertarget{make-a-super-learner}{%
+\subsection*{2. Make a Super Learner}\label{make-a-super-learner}}
+
 
 Now that we have defined our machine learning problem with the \passthrough{\lstinline!sl3\_Task!}, we
-are ready to \textbf{``make''} the Super Learner (SL). This requires specification of
+are ready to make the Super Learner (SL). This requires specification of
 
 \begin{itemize}
 \tightlist
 \item
   A set of candidate machine learning algorithms, also commonly referred to as
-  a ``library'' of ``learners''. The set should include a diversity of algorithms
-  that are believed to be consistent with the true data-generating
-  distribution.
+  a library of learners. The set should include a diversity of algorithms
+  that are believed to be consistent with the true data-generating distribution.
 \item
   A metalearner, to ensemble the base learners.
 \end{itemize}
@@ -3736,9 +3841,9 @@ lrn_glm <- make_learner(Lrnr_glm)
 lrn_mean <- Lrnr_mean$new()
 \end{lstlisting}
 
-We can customize learner hyperparameters to incorporate a diversity of
-different settings. Documentation for the learners and their hyperparameters
-can be found in the \href{https://tlverse.org/sl3/reference/index.html\#section-sl-learners}{\passthrough{\lstinline!sl3!} Learners
+We can customize learner hyperparameters to incorporate a diversity of different
+settings. Documentation for the learners and their hyperparameters can be found
+in the \href{https://tlverse.org/sl3/reference/index.html\#section-sl-learners}{\passthrough{\lstinline!sl3!} Learners
 Reference}.
 
 \begin{lstlisting}[language=R]
@@ -3776,10 +3881,10 @@ task for the next learner. We need to create a \passthrough{\lstinline!Pipeline!
 defining learner and another learner that incorporate these terms when fitting
 a model. Let's create a learner pipeline that will fit a linear model with the
 combination of main terms and interactions terms, as specified in
-\passthrough{\lstinline!lrn\_interaction\_main!}.
+\passthrough{\lstinline!lrn\_interaction!}.
 
 \begin{lstlisting}[language=R]
-# we already instantiated a linear model learner above, no need to do it again
+# we already instantiated a linear model learner, no need to do that again
 lrn_glm_interaction <- make_learner(Pipeline, lrn_interaction, lrn_glm)
 lrn_glm_interaction
 [1] "Lrnr_define_interactions_TRUE"
@@ -3859,13 +3964,9 @@ xgb_learners
 [1] "Lrnr_xgboost_100_1_6_0.3"
 \end{lstlisting}
 
-Did you see \passthrough{\lstinline!Lrnr\_caret!} when we called \passthrough{\lstinline!sl3\_list\_learners(c("binomial"))!}?
-All we need to specify to use this popular algorithm as a candidate in our
-SL is the \passthrough{\lstinline!algorithm!} we want to tune, which is passed as \passthrough{\lstinline!method!} to
-\passthrough{\lstinline!caret::train()!}. The default method for parameter selection criterion with is
-set to ``CV'' instead of the \passthrough{\lstinline!caret::train()!} default \passthrough{\lstinline!boot!}. The summary metric
-used to select the optimal model is \passthrough{\lstinline!RMSE!} for continuous outcomes and
-\passthrough{\lstinline!Accuracy!} for categorical and binomial outcomes.
+Did you see \passthrough{\lstinline!Lrnr\_caret!} when we called \passthrough{\lstinline!sl3\_list\_learners(c("binomial"))!}? All
+we need to specify to use this popular algorithm as a candidate in our SL is
+the \passthrough{\lstinline!algorithm!} we want to tune, which is passed as \passthrough{\lstinline!method!} to \passthrough{\lstinline!caret::train()!}.
 
 \begin{lstlisting}[language=R]
 # Unlike xgboost, I have no idea how to tune a neural net or BART machine, so
@@ -3878,7 +3979,7 @@ lrnr_caret_bartMachine <- make_learner(Lrnr_caret,
 )
 \end{lstlisting}
 
-In order to assemble the library of learners, we need to \textbf{``stack''} them
+In order to assemble the library of learners, we need to \passthrough{\lstinline!Stack!} them
 together.
 
 A \passthrough{\lstinline!Stack!} is a special learner and it has the same interface as all other
@@ -3905,7 +4006,9 @@ modify the names of the learners.
 
 \begin{lstlisting}[language=R]
 # named vector of learners first
-learners <- c(lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50)
+learners <- c(
+  lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50
+)
 names(learners) <- c(
   "glm", "polspline", "enet.5", "ridge", "lasso", "xgboost50"
 )
@@ -3917,8 +4020,8 @@ stack
 \end{lstlisting}
 
 We're jumping ahead a bit, but let's check something out quickly. It's
-straightforward, and just one more step, to set up this stack such that all of
-the learners will train in a cross-validated manner.
+straightforward, and just one more step, to set up this stack such that
+all of the learners will train in a cross-validated manner.
 
 \begin{lstlisting}[language=R]
 cv_stack <- Lrnr_cv$new(stack)
@@ -3928,18 +4031,19 @@ cv_stack
 \end{lstlisting}
 
 \hypertarget{screening-algorithms-for-feature-selection}{%
-\subsubsection{Screening Algorithms for Feature Selection}\label{screening-algorithms-for-feature-selection}}
+\subsubsection*{Screening Algorithms for Feature Selection}\label{screening-algorithms-for-feature-selection}}
 
-We can optionally select a subset of available covariates and pass only those
-variables to the modeling algorithm. The current set of learners that can be
-used for prescreening covariates is included below.
+
+We can optionally select a subset of available covariates and pass only
+those variables to the modeling algorithm. The current set of learners that
+can be used for prescreening covariates is included below.
 
 \begin{itemize}
 \tightlist
 \item
   \passthrough{\lstinline!Lrnr\_screener\_importance!} selects \passthrough{\lstinline!num\_screen!} (default = 5) covariates
   based on the variable importance ranking provided by the \passthrough{\lstinline!learner!}. Any
-  learner with an ``importance'' method can be used in \passthrough{\lstinline!Lrnr\_screener\_importance!};
+  learner with an importance method can be used in \passthrough{\lstinline!Lrnr\_screener\_importance!};
   and this currently includes \passthrough{\lstinline!Lrnr\_ranger!}, \passthrough{\lstinline!Lrnr\_randomForest!}, and
   \passthrough{\lstinline!Lrnr\_xgboost!}.
 \item
@@ -3947,8 +4051,8 @@ used for prescreening covariates is included below.
   magnitude of their estimated coefficients in a (possibly regularized) GLM.
   The \passthrough{\lstinline!threshold!} (default = 1e-3) defines the minimum absolute size of the
   coefficients, and thus covariates, to be kept. Also, a \passthrough{\lstinline!max\_retain!} argument
-  can be optionally provided to restrict the number of selected covariates to
-  be no more than \passthrough{\lstinline!max\_retain!}.
+  can be optionally provided to restrict the number of selected covariates to be
+  no more than \passthrough{\lstinline!max\_retain!}.
 \item
   \passthrough{\lstinline!Lrnr\_screener\_correlation!} provides covariate screening procedures by
   running a test of correlation (Pearson default), and then selecting the (1)
@@ -3966,9 +4070,9 @@ importance ranking (ordered by mean decrease in accuracy). To select the top
 \passthrough{\lstinline!Lrnr\_screener\_importance!} with \passthrough{\lstinline!Lrnr\_ranger!} (limiting the number of trees by
 setting \passthrough{\lstinline!ntree = 20!}).
 
-Hang on! Before you think it -- I will confess: Bob Ross and I both know that 20
-trees makes for a lonely forest, and I shouldn't consider it, but these are the
-sacrifices I have to make for this chapter to build in time!
+Hang on! Before you think it -- we will confess: Bob Ross and us both know that
+20 trees makes for a lonely forest, and we shouldn't consider it, but these are
+the sacrifices we make for this chapter to be built in time!
 
 \begin{lstlisting}[language=R]
 miniforest <- Lrnr_ranger$new(
@@ -4002,7 +4106,8 @@ screen_augment_rf
 \end{lstlisting}
 
 Selecting covariates with non-zero lasso coefficients is quite common. Let's
-construct \passthrough{\lstinline!Lrnr\_screener\_coefs!} screener that does just that, and test it out.
+construct \passthrough{\lstinline!Lrnr\_screener\_coefs!} screener that does just that, and test it
+out.
 
 \begin{lstlisting}[language=R]
 # we already instantiated a lasso learner above, no need to do it again
@@ -4011,7 +4116,7 @@ screen_lasso
 [1] "Lrnr_screener_coefs_0_NULL_2"
 \end{lstlisting}
 
-To \textbf{``pipe''} only the selected covariates to the modeling algorithm, we need to
+To pipe only the selected covariates to the modeling algorithm, we need to
 make a \passthrough{\lstinline!Pipeline!}, similar to the one we built for the regression model with
 interaction terms.
 
@@ -4020,8 +4125,7 @@ screen_rf_pipe <- make_learner(Pipeline, screen_rf, stack)
 screen_lasso_pipe <- make_learner(Pipeline, screen_lasso, stack)
 \end{lstlisting}
 
-Now, these learners with no internal screening will be preceded by a screening
-step.
+Now, these learners will be preceded by a screening step.
 
 We also consider the original \passthrough{\lstinline!stack!}, to compare how the feature selection
 methods perform in comparison to the methods without feature selection.
@@ -4043,16 +4147,18 @@ fancy_stack
 \end{lstlisting}
 
 We will use the \href{https://tlverse.org/sl3/reference/default_metalearner.html}{default
-metalearner}, which
-uses \href{https://tlverse.org/sl3/reference/Lrnr_solnp.html}{\passthrough{\lstinline!Lrnr\_solnp()!}} to
+metalearner},
+which uses
+\href{https://tlverse.org/sl3/reference/Lrnr_solnp.html}{\passthrough{\lstinline!Lrnr\_solnp!}} to
 provide fitting procedures for a pairing of \href{https://tlverse.org/sl3/reference/loss_functions.html}{loss
 function} and
-\href{https://tlverse.org/sl3/reference/metalearners.html}{metalearner function}.
-This default metalearner selects a loss and metalearner pairing based on the
-outcome type. Note that any learner can be used as a metalearner.
+\href{https://tlverse.org/sl3/reference/metalearners.html}{metalearner
+function}. This
+default metalearner selects a loss and metalearner pairing based on the outcome
+type. Note that any learner can be used as a metalearner.
 
-Now that we have made a diverse stack of base learners, we are ready to make
-the SL. The SL algorithm fits a metalearner on the validation set
+Now that we have made a diverse stack of base learners, we are ready to make the
+SL. The SL algorithm fits a metalearner on the validation set
 predictions/losses across all folds.
 
 \begin{lstlisting}[language=R]
@@ -4082,21 +4188,23 @@ discrete_sl <- Lrnr_sl$new(
 )
 \end{lstlisting}
 
-\hypertarget{step-3-train-the-super-learner-on-the-machine-learning-task}{%
-\subsection{Step 3: Train the Super Learner on the machine learning task}\label{step-3-train-the-super-learner-on-the-machine-learning-task}}
+\hypertarget{train-the-super-learner-on-the-machine-learning-task}{%
+\subsection*{3. Train the Super Learner on the machine learning task}\label{train-the-super-learner-on-the-machine-learning-task}}
+
 
 The SL algorithm fits a metalearner on the validation-set predictions in a
 cross-validated manner, thereby avoiding overfitting.
 
-Now we are ready to \textbf{``train''} our SL on our \passthrough{\lstinline!sl3\_task!} object, \passthrough{\lstinline!washb\_task!}.
+Now we are ready to \passthrough{\lstinline!train!} our SL on our \passthrough{\lstinline!sl3\_task!} object, \passthrough{\lstinline!washb\_task!}.
 
 \begin{lstlisting}[language=R]
 set.seed(4197)
 sl_fit <- sl$train(washb_task)
 \end{lstlisting}
 
-\hypertarget{step-4-obtain-predicted-values}{%
-\subsection{Step 4: Obtain predicted values}\label{step-4-obtain-predicted-values}}
+\hypertarget{obtain-predicted-values}{%
+\subsection*{4. Obtain predicted values}\label{obtain-predicted-values}}
+
 
 Now that we have fit the SL, we are ready to calculate the predicted outcome
 for each subject.
@@ -4111,117 +4219,7 @@ head(sl_preds)
 We can also obtain a summary of the results.
 
 \begin{lstlisting}[language=R]
-sl_fit_summary <- sl_fit$print()
-[1] "SuperLearner:"
-List of 8
- $ glm                : chr "Lrnr_glm_TRUE"
- $ polspline          : chr "Lrnr_polspline_5"
- $ enet.5             : chr "Lrnr_glmnet_NULL_deviance_10_0.5_100_TRUE_FALSE"
- $ ridge              : chr "Lrnr_glmnet_NULL_deviance_10_0_100_TRUE_FALSE"
- $ lasso              : chr "Lrnr_glmnet_NULL_deviance_10_1_100_TRUE_FALSE"
- $ xgboost50          : chr "Lrnr_xgboost_50_1"
- $ randomforest_screen: chr "Pipeline(Lrnr_screener_importance_5->Stack)"
- $ lasso_screen       : chr "Pipeline(Lrnr_screener_coefs_0_NULL_2->Stack)"
-[1] "Lrnr_solnp_TRUE_TRUE_FALSE_1e-05"
-$pars
- [1] 0.055565 0.055551 0.055558 0.055564 0.055558 0.055583 0.055556 0.055573
- [9] 0.055555 0.055555 0.055555 0.055546 0.055553 0.055553 0.055553 0.055552
-[17] 0.055553 0.055516
-
-$convergence
-[1] 0
-
-$values
-[1] 1.01 1.01
-
-$lagrange
-           [,1]
-[1,] -0.0050956
-
-$hessian
-      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
- [1,]    1    0    0    0    0    0    0    0    0     0     0     0     0
- [2,]    0    1    0    0    0    0    0    0    0     0     0     0     0
- [3,]    0    0    1    0    0    0    0    0    0     0     0     0     0
- [4,]    0    0    0    1    0    0    0    0    0     0     0     0     0
- [5,]    0    0    0    0    1    0    0    0    0     0     0     0     0
- [6,]    0    0    0    0    0    1    0    0    0     0     0     0     0
- [7,]    0    0    0    0    0    0    1    0    0     0     0     0     0
- [8,]    0    0    0    0    0    0    0    1    0     0     0     0     0
- [9,]    0    0    0    0    0    0    0    0    1     0     0     0     0
-[10,]    0    0    0    0    0    0    0    0    0     1     0     0     0
-[11,]    0    0    0    0    0    0    0    0    0     0     1     0     0
-[12,]    0    0    0    0    0    0    0    0    0     0     0     1     0
-[13,]    0    0    0    0    0    0    0    0    0     0     0     0     1
-[14,]    0    0    0    0    0    0    0    0    0     0     0     0     0
-[15,]    0    0    0    0    0    0    0    0    0     0     0     0     0
-[16,]    0    0    0    0    0    0    0    0    0     0     0     0     0
-[17,]    0    0    0    0    0    0    0    0    0     0     0     0     0
-[18,]    0    0    0    0    0    0    0    0    0     0     0     0     0
-      [,14] [,15] [,16] [,17] [,18]
- [1,]     0     0     0     0     0
- [2,]     0     0     0     0     0
- [3,]     0     0     0     0     0
- [4,]     0     0     0     0     0
- [5,]     0     0     0     0     0
- [6,]     0     0     0     0     0
- [7,]     0     0     0     0     0
- [8,]     0     0     0     0     0
- [9,]     0     0     0     0     0
-[10,]     0     0     0     0     0
-[11,]     0     0     0     0     0
-[12,]     0     0     0     0     0
-[13,]     0     0     0     0     0
-[14,]     1     0     0     0     0
-[15,]     0     1     0     0     0
-[16,]     0     0     1     0     0
-[17,]     0     0     0     1     0
-[18,]     0     0     0     0     1
-
-$ineqx0
-NULL
-
-$nfuneval
-[1] 23
-
-$outer.iter
-[1] 1
-
-$elapsed
-Time difference of 0.011929 secs
-
-$vscale
- [1] 1.01001 0.00001 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
-[10] 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000 1.00000
-[19] 1.00000 1.00000
-
-$coefficients
-                          glm                     polspline 
-                     0.055565                      0.055551 
-                       enet.5                         ridge 
-                     0.055558                      0.055564 
-                        lasso                     xgboost50 
-                     0.055558                      0.055583 
-      randomforest_screen_glm randomforest_screen_polspline 
-                     0.055556                      0.055573 
-   randomforest_screen_enet.5     randomforest_screen_ridge 
-                     0.055555                      0.055555 
-    randomforest_screen_lasso randomforest_screen_xgboost50 
-                     0.055555                      0.055546 
-             lasso_screen_glm        lasso_screen_polspline 
-                     0.055553                      0.055553 
-          lasso_screen_enet.5            lasso_screen_ridge 
-                     0.055553                      0.055552 
-           lasso_screen_lasso        lasso_screen_xgboost50 
-                     0.055553                      0.055516 
-
-$training_offset
-[1] FALSE
-
-$name
-[1] "solnp"
-
-[1] "Cross-validated risk:"
+sl_fit$cv_risk(loss_fun = loss_squared_error)
                           learner coefficients   risk       se  fold_sd
  1:                           glm     0.055565 1.0202 0.023955 0.067500
  2:                     polspline     0.055551 1.0208 0.023577 0.067921
@@ -4264,23 +4262,14 @@ $name
 19:       0.88036        1.1041
 \end{lstlisting}
 
-From the table of the printed SL fit, we note that the SL had a mean risk of
-1.01 and that
-this ensemble weighted the \passthrough{\lstinline!ranger!} and \passthrough{\lstinline!glmnet!} learners highest while not
-weighting the \passthrough{\lstinline!mean!} learner highly.
-
-We can also see that the \passthrough{\lstinline!glmnet!} learner had the lowest cross-validated mean
-risk, thus making it the cross-validated selector (or the \emph{discrete} SL). The
-mean risk of the SL is calculated using all of the data, and not a separate
-hold-out, so the SL's mean risk that is reported here is an underestimation.
-
 \hypertarget{cross-validated-super-learner}{%
-\section{Cross-validated Super Learner}\label{cross-validated-super-learner}}
+\section*{Cross-validated Super Learner}\label{cross-validated-super-learner}}
 
-We can cross-validate the SL to see how well the SL performs on unseen data,
-and obtain an estimate of the cross-validated risk of the SL.
 
-This estimation procedure requires an ``outer/external'' layer of
+We can cross-validate the SL to see how well the SL performs on unseen data, and
+obtain an estimate of the cross-validated risk of the SL.
+
+This estimation procedure requires an outer/external layer of
 cross-validation, also called nested cross-validation, which involves setting
 aside a separate holdout sample that we don't use to fit the SL. This external
 cross-validation procedure may also incorporate 10 folds, which is the default
@@ -4288,8 +4277,8 @@ in \passthrough{\lstinline!sl3!}. However, we will incorporate 2 outer/external 
 cross-validation for computational efficiency.
 
 We also need to specify a loss function to evaluate SL. Documentation for the
-available loss functions can be found in the \href{https://tlverse.org/sl3/reference/loss_functions.html}{\passthrough{\lstinline!sl3!} Loss
-Function Reference}.
+available loss functions can be found in the \href{https://tlverse.org/sl3/reference/loss_functions.html}{\passthrough{\lstinline!sl3!} Loss Function
+Reference}.
 
 \begin{lstlisting}[language=R]
 washb_task_new <- make_sl3_Task(
@@ -4301,68 +4290,62 @@ washb_task_new <- make_sl3_Task(
 CVsl <- CV_lrnr_sl(
   lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
 )
+CVsl %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
 \end{lstlisting}
 
-Let's take a look at a table summarizing the performance:
-
-\begin{lstlisting}[language=R]
-if (knitr::is_latex_output()) {
-  CVsl %>%
-    kable(format = "latex")
-} else if (knitr::is_html_output()) {
-  CVsl %>%
-    kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
-    scroll_box(width = "100%", height = "300px")
-}
-\end{lstlisting}
-
+\begin{table}
+\centering
 \begin{tabular}{l|r|r|r|r|r|r}
 \hline
 learner & coefficients & risk & se & fold\_sd & fold\_min\_risk & fold\_max\_risk\\
 \hline
-glm & 0.05555 & 1.0494 & 0.02687 & 0.07973 & 0.99301 & 1.1058\\
+glm & 0.0556 & 1.0494 & 0.0269 & 0.0797 & 0.9930 & 1.1058\\
 \hline
-polspline & 0.05557 & 1.0173 & 0.02354 & 0.06840 & 0.96890 & 1.0656\\
+polspline & 0.0556 & 1.0173 & 0.0235 & 0.0684 & 0.9689 & 1.0656\\
 \hline
-enet.5 & 0.05556 & 1.0239 & 0.02413 & 0.07188 & 0.97310 & 1.0748\\
+enet.5 & 0.0556 & 1.0239 & 0.0241 & 0.0719 & 0.9731 & 1.0748\\
 \hline
-ridge & 0.05557 & 1.0271 & 0.02418 & 0.06797 & 0.97906 & 1.0752\\
+ridge & 0.0556 & 1.0271 & 0.0242 & 0.0680 & 0.9791 & 1.0752\\
 \hline
-lasso & 0.05556 & 1.0243 & 0.02417 & 0.07238 & 0.97314 & 1.0755\\
+lasso & 0.0556 & 1.0243 & 0.0242 & 0.0724 & 0.9731 & 1.0755\\
 \hline
-xgboost50 & 0.05555 & 1.1789 & 0.02668 & 0.00524 & 1.17521 & 1.1826\\
+xgboost50 & 0.0556 & 1.1789 & 0.0267 & 0.0052 & 1.1752 & 1.1826\\
 \hline
-randomforest\_screen\_glm & 0.05555 & 1.0324 & 0.02392 & 0.05939 & 0.99043 & 1.0744\\
+randomforest\_screen\_glm & 0.0556 & 1.0324 & 0.0239 & 0.0594 & 0.9904 & 1.0744\\
 \hline
-randomforest\_screen\_polspline & 0.05556 & 1.0259 & 0.02372 & 0.07722 & 0.97129 & 1.0805\\
+randomforest\_screen\_polspline & 0.0556 & 1.0259 & 0.0237 & 0.0772 & 0.9713 & 1.0805\\
 \hline
-randomforest\_screen\_enet.5 & 0.05555 & 1.0284 & 0.02390 & 0.06515 & 0.98234 & 1.0745\\
+randomforest\_screen\_enet.5 & 0.0556 & 1.0284 & 0.0239 & 0.0651 & 0.9823 & 1.0745\\
 \hline
-randomforest\_screen\_ridge & 0.05555 & 1.0310 & 0.02395 & 0.06113 & 0.98782 & 1.0743\\
+randomforest\_screen\_ridge & 0.0556 & 1.0310 & 0.0239 & 0.0611 & 0.9878 & 1.0743\\
 \hline
-randomforest\_screen\_lasso & 0.05555 & 1.0285 & 0.02390 & 0.06508 & 0.98244 & 1.0745\\
+randomforest\_screen\_lasso & 0.0556 & 1.0284 & 0.0239 & 0.0651 & 0.9824 & 1.0745\\
 \hline
-randomforest\_screen\_xgboost50 & 0.05554 & 1.1721 & 0.02685 & 0.03247 & 1.14913 & 1.1950\\
+randomforest\_screen\_xgboost50 & 0.0555 & 1.1721 & 0.0269 & 0.0325 & 1.1491 & 1.1951\\
 \hline
-lasso\_screen\_glm & 0.05556 & 1.0257 & 0.02381 & 0.05370 & 0.98771 & 1.0636\\
+lasso\_screen\_glm & 0.0556 & 1.0257 & 0.0238 & 0.0537 & 0.9877 & 1.0636\\
 \hline
-lasso\_screen\_polspline & 0.05556 & 1.0267 & 0.02390 & 0.05510 & 0.98771 & 1.0656\\
+lasso\_screen\_polspline & 0.0556 & 1.0267 & 0.0239 & 0.0551 & 0.9877 & 1.0656\\
 \hline
-lasso\_screen\_enet.5 & 0.05556 & 1.0261 & 0.02384 & 0.05463 & 0.98753 & 1.0648\\
+lasso\_screen\_enet.5 & 0.0556 & 1.0261 & 0.0238 & 0.0546 & 0.9875 & 1.0648\\
 \hline
-lasso\_screen\_ridge & 0.05556 & 1.0255 & 0.02383 & 0.05439 & 0.98703 & 1.0639\\
+lasso\_screen\_ridge & 0.0556 & 1.0255 & 0.0238 & 0.0544 & 0.9870 & 1.0640\\
 \hline
-lasso\_screen\_lasso & 0.05556 & 1.0262 & 0.02384 & 0.05464 & 0.98753 & 1.0648\\
+lasso\_screen\_lasso & 0.0556 & 1.0262 & 0.0238 & 0.0546 & 0.9875 & 1.0648\\
 \hline
-lasso\_screen\_xgboost50 & 0.05553 & 1.1519 & 0.02577 & 0.04334 & 1.12129 & 1.1826\\
+lasso\_screen\_xgboost50 & 0.0555 & 1.1519 & 0.0258 & 0.0433 & 1.1213 & 1.1826\\
 \hline
-SuperLearner & NA & 1.0187 & 0.02366 & 0.06090 & 0.97563 & 1.0618\\
+SuperLearner & NA & 1.0187 & 0.0237 & 0.0609 & 0.9756 & 1.0618\\
 \hline
 \end{tabular}
+\end{table}
 
 \hypertarget{variable-importance-measures-with-sl3}{%
-\section{\texorpdfstring{Variable Importance Measures with \texttt{sl3}}{Variable Importance Measures with sl3}}\label{variable-importance-measures-with-sl3}}
+\section*{\texorpdfstring{Variable Importance Measures with \texttt{sl3}}{Variable Importance Measures with sl3}}\label{variable-importance-measures-with-sl3}}
+
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, we like it, and so do our
@@ -4370,11 +4353,10 @@ collaborators, so we created a variable importance function in \passthrough{\lst
 \passthrough{\lstinline!importance!} function returns a table with variables listed in decreasing order
 of importance (i.e., most important on the first row).
 
-The measure of importance in \passthrough{\lstinline!sl3!} is based on a risk ratio, or risk
-difference, between the learner fit with a removed, or permuted, covariate and
-the learner fit with the true covariate, across all covariates. In this manner,
-the larger the risk difference, the more important the variable is in the
-prediction.
+The measure of importance in \passthrough{\lstinline!sl3!} is based on a risk ratio, or risk difference,
+between the learner fit with a removed, or permuted, covariate and the learner
+fit with the true covariate, across all covariates. In this manner, the larger
+the risk difference, the more important the variable is in the prediction.
 
 The intuition of this measure is that it calculates the risk (in terms of the
 average loss in predictive accuracy) of losing one covariate, while keeping
@@ -4382,94 +4364,89 @@ everything else fixed, and compares it to the risk if the covariate was not
 lost. If this risk ratio is one, or risk difference is zero, then losing that
 covariate had no impact, and is thus not important by this measure. We do this
 across all of the covariates. As stated above, we can remove the covariate and
-refit the SL without it, or we just permute the covariate (faster, more risky)
+refit the SL without it, or we just permute the covariate (faster)
 and hope for the shuffling to distort any meaningful information that was
-present in the covariate. This idea of permuting instead of removing saves a
-lot of time, and is also incorporated in the \passthrough{\lstinline!randomForest!} variable importance
-measures. However, the permutation approach is risky, so the importance
-function default is to remove and refit.
+present in the covariate. This idea of permuting instead of removing saves a lot
+of time, and is also incorporated in the \passthrough{\lstinline!randomForest!} variable importance
+measures. However, the permutation approach is risky, so the importance function
+default is to remove and refit.
 
 Let's explore the \passthrough{\lstinline!sl3!} variable importance measurements for the \passthrough{\lstinline!washb!} data.
 
 \begin{lstlisting}[language=R]
 washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
+washb_varimp %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
 \end{lstlisting}
 
-\begin{lstlisting}[language=R]
-if (knitr::is_latex_output()) {
-  washb_varimp %>%
-    kable(format = "latex")
-} else if (knitr::is_html_output()) {
-  washb_varimp %>%
-    kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
-    scroll_box(width = "100%", height = "300px")
-}
-\end{lstlisting}
-
+\begin{table}
+\centering
 \begin{tabular}{l|r}
 \hline
 X & risk\_ratio\\
 \hline
-aged & 1.04130\\
+aged & 1.0413\\
 \hline
-momedu & 1.01392\\
+momedu & 1.0139\\
 \hline
-asset\_refrig & 1.00831\\
+asset\_refrig & 1.0083\\
 \hline
-asset\_chair & 1.00457\\
+asset\_chair & 1.0046\\
 \hline
-month & 1.00316\\
+month & 1.0032\\
 \hline
-momheight & 1.00274\\
+momheight & 1.0027\\
 \hline
-elec & 1.00204\\
+elec & 1.0020\\
 \hline
-tr & 1.00203\\
+tr & 1.0020\\
 \hline
-Nlt18 & 1.00116\\
+Nlt18 & 1.0012\\
 \hline
-momage & 1.00061\\
+momage & 1.0006\\
 \hline
-asset\_chouki & 1.00032\\
+asset\_chouki & 1.0003\\
 \hline
-asset\_mobile & 1.00030\\
+asset\_mobile & 1.0003\\
 \hline
-floor & 1.00021\\
+floor & 1.0002\\
 \hline
-delta\_momheight & 1.00008\\
+delta\_momheight & 1.0001\\
 \hline
-asset\_table & 1.00003\\
+asset\_table & 1.0000\\
 \hline
-Ncomp & 1.00001\\
+Ncomp & 1.0000\\
 \hline
-sex & 1.00000\\
+sex & 1.0000\\
 \hline
-asset\_moto & 0.99999\\
+asset\_moto & 1.0000\\
 \hline
-watmin & 0.99997\\
+watmin & 1.0000\\
 \hline
-walls & 0.99997\\
+walls & 1.0000\\
 \hline
-delta\_momage & 0.99996\\
+delta\_momage & 1.0000\\
 \hline
-roof & 0.99993\\
+roof & 0.9999\\
 \hline
-asset\_tv & 0.99992\\
+asset\_tv & 0.9999\\
 \hline
-hfiacat & 0.99990\\
+hfiacat & 0.9999\\
 \hline
-fracode & 0.99983\\
+fracode & 0.9998\\
 \hline
-asset\_wardrobe & 0.99980\\
+asset\_wardrobe & 0.9998\\
 \hline
-asset\_bike & 0.99978\\
+asset\_bike & 0.9998\\
 \hline
-asset\_sewmach & 0.99978\\
+asset\_sewmach & 0.9998\\
 \hline
-asset\_khat & 0.99965\\
+asset\_khat & 0.9997\\
 \hline
 \end{tabular}
+\end{table}
 
 \begin{lstlisting}[language=R]
 # plot variable importance
@@ -4479,7 +4456,7 @@ importance_plot(
 )
 \end{lstlisting}
 
-\begin{center}\includegraphics[width=0.8\linewidth]{06-sl3_files/figure-latex/varimp-plot-1} \end{center}
+\begin{center}\includegraphics[width=1\linewidth]{06-sl3_files/figure-latex/varimp-plot-1} \end{center}
 
 \hypertarget{sl3-exercises}{%
 \section{Exercises}\label{sl3-exercises}}
@@ -5538,7 +5515,7 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \hypertarget{learning-objectives-1}{%
 \section{Learning Objectives}\label{learning-objectives-1}}
@@ -6650,7 +6627,7 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -7507,7 +7484,7 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-07-15
+Updated: 2021-07-24
 
 \textbackslash{}begin\{VT1\}
 \VH{Learning Objectives}
