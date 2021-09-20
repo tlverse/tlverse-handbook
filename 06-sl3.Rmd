@@ -1190,50 +1190,15 @@ if (knitr::is_latex_output()) {
 4. Fit the metalearning step with the default metalearner.
 5. With the metalearner and base learners, make the Super Learner (SL) and
    train it on the task.
-6. Print your SL fit by calling `print()` with `$`.
-7. Cross-validate your SL fit to see how well it performs on unseen
-   data. Specify a valid loss function to evaluate the SL.
-8. Use the `importance()` function to identify the "most important" predictor of
-   myocardial infarction, according to `sl3` importance metrics.
-
-### Predicting Recurrent Ischemic Stroke in an RCT with `sl3` {#sl3ex2}
-
-For this exercise, we will work with a random sample of 5,000 patients who
-participated in the International Stroke Trial (IST). This data is described in
-[Chapter 3.2 of the `tlverse`
-handbook](https://tlverse.org/tlverse-handbook/data.html#ist).
-
-1. Train a SL to predict recurrent stroke `DRSISC` with the available covariate
-   data (the 25 other variables). Of course, you can consider feature selection
-   in the machine learning algorithms. In this data, the outcome is
-   occasionally missing, so be sure to specify `drop_missing_outcome = TRUE`
-   when defining the task.
-2. Use the SL-based predictions to calculate the area under the ROC curve
-   (AUC).
-3. Calculate the cross-validated AUC to evaluate the performance of the
-   SL on unseen data.
-4. Which covariates are the most predictive of 14-day recurrent stroke,
-   according to `sl3` variable importance measures?
-
-```{r ex-setup2}
-ist_data <- paste0(
-  "https://raw.githubusercontent.com/tlverse/",
-  "tlverse-handbook/master/data/ist_sample.csv"
-) %>% fread()
-
-# number 3 help
-ist_task_CVsl <- make_sl3_Task(
-  data = ist_data,
-  outcome = "DRSISC",
-  covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
-  drop_missing_outcome = TRUE,
-  folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)),
-    fold_fun = folds_vfold,
-    V = 5
-  )
-)
-```
+6. Print the SL fit results by adding `$cv_risk(loss_squared_error)` to your 
+   fit object. The squared error loss is specified here, since that's what is 
+   used by the default metalearner.
+6. Cross-validate your SL fit to see how well it performs on unseen data. 
+   Specify the `loss_squared_error` loss function to evaluate the SL as it's 
+   the same loss that was used by the default metalearner. Print the result.
+7. Use the `importance()` function to identify the "most important" predictor of
+   myocardial infarction, according to `sl3` importance metrics. Print the 
+   result.
 
 <!--
 ## Super Learning of a Conditional Density
@@ -1535,16 +1500,13 @@ sl <- Lrnr_sl$new(
   learners = stack
 )
 sl_fit <- sl$train(chspred_task)
-sl_fit$print()
+sl_fit$cv_risk(loss_squared_error)
 
-CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_loglik_binomial)
+CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
 CVsl
 
-varimp <- importance(sl_fit, type = "permute")
-varimp %>%
-  importance_plot(
-    main = "sl3 Variable Importance for Myocardial Infarction Prediction"
-  )
+varimp <- importance(sl_fit)
+importance_plot(varimp) 
 ```
 
 ### Exercise 2 Solution {#sl3ex2-sol}
