@@ -7,9 +7,10 @@ by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
 Updated: 2021-09-21
 
+\begin{VT1}
+\VH{Learning Objectives}
 
 
-## Learning Objectives{-}
 
 By the end of this chapter you will be able to:
 
@@ -31,7 +32,7 @@ By the end of this chapter you will be able to:
 7. Setup the proper cross-validation structure for the use by the Super Learner
    using the the `origami` `R` package.
 
-
+\end{VT1}
 
 ## Introduction
 
@@ -52,7 +53,8 @@ performance of an algorithm, we introduce the concept of a **loss** function,
 which helps us define the **risk**, also referred to as the **expected
 prediction error**.  
 
-
+\begin{shortbox}
+\Boxhead{Constructing a library that is consistent with the data-generating distribution}
 Our goal, as further specified in the next chapter, will be
 to estimate the true risk of the proposed statistical learning method. Our
 goal(s) consist of:
@@ -61,7 +63,7 @@ goal(s) consist of:
    best one.
 2. Having chosen a winner, estimate the true risk of the proposed
    statistical learning method.
-
+\end{shortbox}
 
 In the following, we propose a method to do so using the observed data and
 **cross-validation** procedure using the `origami` package [@coyle2018origami].
@@ -228,222 +230,24 @@ washb_data <- fread(
 )
 ```
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> whz </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> tr </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> fracode </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> month </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> aged </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> sex </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momage </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momedu </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momheight </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> hfiacat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Nlt18 </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Ncomp </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> watmin </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> elec </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> floor </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> walls </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> roof </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_wardrobe </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_table </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chair </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_khat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chouki </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_tv </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_refrig </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_bike </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_moto </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_sewmach </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_mobile </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 0.00 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 268 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 30 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.40 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.16 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 286 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.75 </td>
-   <td style="text-align:left;"> Moderately Food Insecure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.05 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 264 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.15 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.26 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 252 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.25 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.59 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 336 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.95 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.51 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 304 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 20 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.20 </td>
-   <td style="text-align:left;"> Severely Food Insecure </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-</tbody>
-</table></div>
+
+\begin{tabular}{r|l|l|r|r|l|r|l|r|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat & Nlt18 & Ncomp & watmin & elec & floor & walls & roof & asset\_wardrobe & asset\_table & asset\_chair & asset\_khat & asset\_chouki & asset\_tv & asset\_refrig & asset\_bike & asset\_moto & asset\_sewmach & asset\_mobile\\
+\hline
+0.00 & Control & N05265 & 9 & 268 & male & 30 & Primary (1-5y) & 146.40 & Food Secure & 3 & 11 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.16 & Control & N05265 & 9 & 286 & male & 25 & Primary (1-5y) & 148.75 & Moderately Food Insecure & 2 & 4 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.05 & Control & N08002 & 9 & 264 & male & 25 & Primary (1-5y) & 152.15 & Food Secure & 1 & 10 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.26 & Control & N08002 & 9 & 252 & female & 28 & Primary (1-5y) & 140.25 & Food Secure & 3 & 5 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1\\
+\hline
+-0.59 & Control & N06531 & 9 & 336 & female & 19 & Secondary (>5y) & 150.95 & Food Secure & 2 & 7 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-0.51 & Control & N06531 & 9 & 304 & male & 20 & Secondary (>5y) & 154.20 & Severely Food Insecure & 0 & 3 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+\end{tabular}
 
 Above is a look at the first 30 of the data.
 
@@ -765,10 +569,11 @@ dataset. The AirPassenger dataset in `R` provides monthly totals of
 international airline passengers from 1949 to 1960. This dataset is already of a
 time series class therefore no further class or date manipulation is required.
 
-
+\begin{shortbox}
+\Boxhead{Constructing a library that is consistent with the data-generating distribution}
 **Goal:** we want to forecast the number of airline passengers at time $h$
 horizon using the historical data from 1949 to 1960.
-
+\end{shortbox}
 
 
 ```r
@@ -787,7 +592,9 @@ autoplot(AP) +
 t <- length(AP)
 ```
 
-<img src="05-origami_files/figure-html/plot_airpass-1.png" width="80%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.8\linewidth]{05-origami_files/figure-latex/plot_airpass-1} \end{center}
 
 #### Rolling origin
 
@@ -808,10 +615,14 @@ For the following fold, we train the algorithm on a longer stream of data, 25
 time points, including the original 15 we started with. We then evaluate its
 performance on 10 time points in the future.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_origin.png" alt="Rolling origin CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)Rolling origin CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin} 
+
+}
+
+\caption{Rolling origin CV}(\#fig:unnamed-chunk-1)
+\end{figure}
 
 We illustrate the usage of the rolling origin cross-validation with `origami`
 package below using the function `folds_rolling_origin(n, first_window,
@@ -885,10 +696,14 @@ This setup keeps the training sets comparable over time (and fold) as compared
 to the rolling origin CV. We then evaluate the performance of the proposed
 algorithm on 10 time points in the future.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_window.png" alt="Rolling window CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-2)Rolling window CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window} 
+
+}
+
+\caption{Rolling window CV}(\#fig:unnamed-chunk-2)
+\end{figure}
 
 We illustrate the usage of the rolling window cross-validation with `origami`
 package below using the function `folds_rolling_window(n, window_size,
@@ -951,10 +766,14 @@ using the function `folds_vfold_rolling_origin_pooled(n, t, id, time, V,
 first_window, validation_size, gap, batch)`. In the figure below, we show $V=2$
 $V$-folds, and 2 time-series CV folds.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_origin_v_fold.png" alt="Rolling origin V-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-3)Rolling origin V-fold CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin_v_fold} 
+
+}
+
+\caption{Rolling origin V-fold CV}(\#fig:unnamed-chunk-3)
+\end{figure}
 
 #### Rolling window with v-fold
 
@@ -965,10 +784,14 @@ function `folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size,
 validation_size, gap, batch)`. In the figure below, we show $V=2$ $V$-folds, and
 2 time-series CV folds.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_window_v_fold.png" alt="Rolling window V-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-4)Rolling window V-fold CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window_v_fold} 
+
+}
+
+\caption{Rolling window V-fold CV}(\#fig:unnamed-chunk-4)
+\end{figure}
 
 ## General workflow of `origami`
 
@@ -1064,222 +887,24 @@ covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
 
 Here's a look at the data:
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> whz </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> tr </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> fracode </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> month </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> aged </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> sex </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momage </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momedu </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momheight </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> hfiacat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Nlt18 </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Ncomp </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> watmin </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> elec </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> floor </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> walls </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> roof </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_wardrobe </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_table </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chair </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_khat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chouki </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_tv </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_refrig </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_bike </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_moto </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_sewmach </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_mobile </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 0.00 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 268 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 30 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.40 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.16 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 286 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.75 </td>
-   <td style="text-align:left;"> Moderately Food Insecure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.05 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 264 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.15 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.26 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 252 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.25 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.59 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 336 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.95 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.51 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 304 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 20 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.20 </td>
-   <td style="text-align:left;"> Severely Food Insecure </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-</tbody>
-</table></div>
+
+\begin{tabular}{r|l|l|r|r|l|r|l|r|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat & Nlt18 & Ncomp & watmin & elec & floor & walls & roof & asset\_wardrobe & asset\_table & asset\_chair & asset\_khat & asset\_chouki & asset\_tv & asset\_refrig & asset\_bike & asset\_moto & asset\_sewmach & asset\_mobile\\
+\hline
+0.00 & Control & N05265 & 9 & 268 & male & 30 & Primary (1-5y) & 146.40 & Food Secure & 3 & 11 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.16 & Control & N05265 & 9 & 286 & male & 25 & Primary (1-5y) & 148.75 & Moderately Food Insecure & 2 & 4 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.05 & Control & N08002 & 9 & 264 & male & 25 & Primary (1-5y) & 152.15 & Food Secure & 1 & 10 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.26 & Control & N08002 & 9 & 252 & female & 28 & Primary (1-5y) & 140.25 & Food Secure & 3 & 5 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1\\
+\hline
+-0.59 & Control & N06531 & 9 & 336 & female & 19 & Secondary (>5y) & 150.95 & Food Secure & 2 & 7 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-0.51 & Control & N06531 & 9 & 304 & male & 20 & Secondary (>5y) & 154.20 & Severely Food Insecure & 0 & 3 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+\end{tabular}
 
 We can see the covariates used in the prediction:
 
