@@ -5,12 +5,11 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-07-24
-
-\begin{VT1}
-\VH{Learning Objectives}
+Updated: 2021-09-21
 
 
+
+## Learning Objectives {-}
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
    treatment regimes.
@@ -31,7 +30,7 @@ Updated: 2021-07-24
 9. Define novel shift intervention functions to extend the `tmle3shift` `R`
    package.
 
-\end{VT1}
+
 
 ## Introduction to Stochastic Interventions
 
@@ -260,20 +259,16 @@ give a recipe:
      (\#eq:tmle)
    \end{equation}
 
-<!--
+
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-\begin{figure}
+<div class="figure" style="text-align: center">
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%" />
+<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
+</div>
 
-{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
-}
-
-\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
-\end{figure}
-
--->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
