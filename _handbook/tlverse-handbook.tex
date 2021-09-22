@@ -718,6 +718,21 @@ resources}.
 
 Targeted Learning is all about learning from data. We'll use a few example datasets throughout this book. We introduce them in this chapter.
 
+\hypertarget{learning-objectives}{%
+\section{Learning Objectives}\label{learning-objectives}}
+
+By the end of this chapter you will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Understand the various datasets we'll use as case studies
+\item
+  Have a vague understanding of the kinds of scientific questions we
+  might want to answer with them
+\end{enumerate}
+
 \hypertarget{data-schematic}{%
 \section{Schematic Example}\label{data-schematic}}
 
@@ -732,13 +747,13 @@ data(schematic, package="tlverse")
 Here's a table with a few rows of the data:
 
 \begin{lstlisting}
-    W A        Y
-1: 10 1  4.72968
-2:  6 0 -0.20798
-3:  5 0 -0.25256
-4:  9 0 -2.04532
-5:  5 0 -0.25444
-6:  6 1  0.73052
+   W A        Y
+1 10 1  4.72968
+2  6 0 -0.20798
+3  5 0 -0.25256
+4  9 0 -2.04532
+5  5 0 -0.25444
+6  6 1  0.73052
 \end{lstlisting}
 
 \hypertarget{schematic-variables}{%
@@ -864,7 +879,7 @@ We can describe the data as a set of observations about an individual (it's more
 
 \[O \equiv (W,A,Y)\]
 
-a collection of facts (here \(W\), \(A\), and \(Y\)) about an individual observation \(O\). We think of a set of data as a set of such observations. We think of that observation as a random draw from a distribution of possible observations we denote \(P_0\) (here the subscript \(0\) denotes the real one, we'll use other subscripts to denote theoretical or estimated distributions). We call \(P_0\) the probability distribution or data generating distribution (DGD).
+a collection of facts (here \(W\), \(A\), and \(Y\)) about an individual observation \(O\). We think of a set of data as a set of such observations. We think of that observation as a random draw from a distribution of possible observations we denote \(P_0\) (here the subscript \(0\) denotes the real one, we'll use other subscripts to denote theoretical or estimated distributions). We call \(P_0\) the probability distribution or data generating process (DGP).
 
 How the observation is drawn from the sample is important. That's called the experiment. How to translate between a real world experiment and a probability model is outside the scope of this book. For now, we'll focus on what we call independent and identically distributed (i.i.d.) data. That means that each unit \(O\) got drawn from the same \(P_0\) in the same way. No other sample can change another samples outcome, and all samples get drawn from the same imaginary box. Options and modifications of our methodology are available for for complex and biased samples, repeated measures, and other sampling concerns.
 
@@ -877,7 +892,7 @@ Just like we had a set of observations we called a dataset, we have a set of pos
 
 \[P_0 \in \mathcal{M}\]
 
-To indicate that the true DGD is part of our model. This is important, because if our model doesn't contain the truth, it will be impossible for us to get the right answer, even with infinite data!
+To indicate that the true DGP is part of our model. This is important, because if our model doesn't contain the truth, it will be impossible for us to get the right answer, even with infinite data!
 
 Well, what can we say about \(\mathcal{M}\)? That is, what can we say for sure about what \(P_0\) might look like. Given that I haven't told you much about the data or the experiment, really very little! We'll see in later chapters how some statisticians want to do statistics in small models, that we can be quite sure don't contain \(P_0\) , because it makes the statistics easier. For now we'll just say that \(\mathcal{M}\) is nonparametric, which essentially means that we can't make any assumptions about it.
 
@@ -947,26 +962,232 @@ Current roadmap text goes here
 \hypertarget{tlverse}{%
 \chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
 
+\hypertarget{in-this-chapter-you-will}{%
+\section{In this chapter you will\ldots{}}\label{in-this-chapter-you-will}}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Understand the \passthrough{\lstinline!tlverse!} ecosystem conceptually
+\item
+  Identify the core components of the \passthrough{\lstinline!tlverse!}
+\item
+  Install \passthrough{\lstinline!tlverse!} \passthrough{\lstinline!R!} packages
+\item
+  Understand the Targeted Learning roadmap
+\item
+  Learn about the WASH Benefits example data
+\end{enumerate}
+
+By now you're probably thinking. I thought I bought a book about software. Where's my receipt? I want my money back. Maybe you're reading this online and thinking boy I'm sure glad I didn't buy the print copy. But your patience has paid off. We're finally ready to talk about software.
+
+\hypertarget{what-is-the-tlverse}{%
+\section{\texorpdfstring{What is the \texttt{tlverse}?}{What is the tlverse?}}\label{what-is-the-tlverse}}
+
+The \passthrough{\lstinline!tlverse!} is a new framework for doing Targeted Learning in R, inspired by the \passthrough{\lstinline![tidyverse!} ecosystem{]}(\url{https://tidyverse.org/}) of R packages.
+
+By analogy to the \passthrough{\lstinline![tidyverse](https://tidyverse.org/)!}:
+
+\begin{quote}
+The tidyverse is an opinionated collection of R packages designed for data science. All packages share an underlying design philosophy, grammar, and data structures.
+\end{quote}
+
+So, the \passthrough{\lstinline![tlverse](https://tlverse.org/)!} is
+
+\begin{itemize}
+\tightlist
+\item
+  an opinionated collection of R packages for Targeted Learning
+\item
+  sharing an underlying philosophy, grammar, and set of data structures
+\end{itemize}
+
+\hypertarget{anatomy-of-the-tlverse}{%
+\section{\texorpdfstring{Anatomy of the \texttt{tlverse}}{Anatomy of the tlverse}}\label{anatomy-of-the-tlverse}}
+
+These are the main packages that represent the \textbf{core} of the \passthrough{\lstinline!tlverse!}:
+
+\begin{itemize}
+\tightlist
+\item
+  \passthrough{\lstinline![sl3](https://github.com/tlverse/sl3)!}: Modern Super Learning with Pipelines
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} A modern object-oriented re-implementation of the Super Learner algorithm, employing recently developed paradigms for \passthrough{\lstinline!R!} programming.
+  \item
+    \emph{Why?} A design that leverages modern tools for fast computation, is forward-looking, and can form one of the cornerstones of the \passthrough{\lstinline!tlverse!}.
+  \end{itemize}
+\item
+  \passthrough{\lstinline![tmle3](https://github.com/tlverse/tmle3)!}: An Engine for Targeted Learning
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} A generalized framework that simplifies Targeted Learning by identifying and implementing a series of common statistical estimation procedures.
+  \item
+    \emph{Why?} A common interface and engine that accommodates current algorithmic approaches to Targeted Learning and is still flexible enough to remain the engine even as new techniques are developed.
+  \end{itemize}
+\end{itemize}
+
+In addition to the engines that drive development in the \passthrough{\lstinline!tlverse!}, there are some supporting packages -- in particular, we have two\ldots{}
+
+\begin{itemize}
+\tightlist
+\item
+  \passthrough{\lstinline![origami](https://github.com/tlverse/origami)!}: A Generalized Framework for Cross-Validation
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} A generalized framework for flexible cross-validation
+  \item
+    \emph{Why?} Cross-validation is a key part of ensuring error estimates are honest and preventing overfitting. It is an essential part of the both the Super Learner algorithm and Targeted Learning.
+  \end{itemize}
+\item
+  \passthrough{\lstinline![delayed](https://github.com/tlverse/delayed)!}: Parallelization Framework for Dependent Tasks
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} A framework for delayed computations (futures) based on task dependencies.
+  \item
+    \emph{Why?} Efficient allocation of compute resources is essential when deploying large-scale, computationally intensive algorithms.
+  \end{itemize}
+\end{itemize}
+
+A key principle of the \passthrough{\lstinline!tlverse!} is extensibility. That is, we want to support new Targeted Learning estimators as they are developed. The model for this is new estimators are implemented in additional packages using the core packages above. There are currently two featured examples of this:
+
+\begin{itemize}
+\tightlist
+\item
+  \passthrough{\lstinline![tmle3mopttx](https://github.com/tlverse/tmle3mopttx)!}: Optimal Treatments in \passthrough{\lstinline!tlverse!}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} Learn an optimal rule and estimate the mean outcome under the rule
+  \item
+    \emph{Why?} Optimal Treatment is a powerful tool in precision healthcare and other settings where a one-size-fits-all treatment approach is not appropriate.
+  \end{itemize}
+\item
+  \passthrough{\lstinline![tmle3shift](https://github.com/tlverse/tmle3shift)!}: Shift Interventions in \passthrough{\lstinline!tlverse!}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{What?} Shift interventions for continuous treatments
+  \item
+    \emph{Why?} Not all treatment variables are discrete. Being able to estimate the effects of continuous treatment represents a powerful extension of the Targeted Learning approach.
+  \end{itemize}
+\end{itemize}
+
+\hypertarget{installation}{%
+\section{Installation}\label{installation}}
+
+The \passthrough{\lstinline!tlverse!} ecosystem of packages are currently hosted at \url{https://github.com/tlverse}, not yet on \href{https://cran.r-project.org/}{CRAN}. You can use the \passthrough{\lstinline![usethis!} package{]}(\url{https://usethis.r-lib.org/}) to install them:
+
+\begin{lstlisting}
+install.packages("usethis")usethis::install_github("tlverse/tlverse")
+\end{lstlisting}
+
+The \passthrough{\lstinline!tlverse!} depends on a large number of other packages that are also hosted on GitHub. Because of this, you may see the following error:
+
+\begin{lstlisting}
+Error: HTTP error 403.
+  API rate limit exceeded for 71.204.135.82. (But here's the good news:
+  Authenticated requests get a higher rate limit. Check out the documentation
+  for more details.)
+
+  Rate limit remaining: 0/60
+  Rate limit reset at: 2019-03-04 19:39:05 UTC
+
+  To increase your GitHub API rate limit
+  - Use `usethis::browse_github_pat()` to create a Personal Access Token.
+  - Use `usethis::edit_r_environ()` and add the token as `GITHUB_PAT`.
+\end{lstlisting}
+
+This just means that R tried to install too many packages from GitHub in too short of a window. To fix this, you need to tell R how to use GitHub as your user (you'll need a GitHub user account). Follow these two steps:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Type \passthrough{\lstinline!usethis::browse\_github\_pat()!} in your R console, which will direct you to GitHub's page to create a New Personal Access Token.
+\item
+  Create a Personal Access Token simply by clicking ``Generate token'' at the bottom of the page.
+\item
+  Copy your Personal Access Token, a long string of lowercase letters and numbers.
+\item
+  Type \passthrough{\lstinline!usethis::edit\_r\_environ()!} in your R console, which will open your \passthrough{\lstinline!.Renviron!} file in the source window of RStudio. If you are not able to access your \passthrough{\lstinline!.Renviron!} file with this command, then try inputting \passthrough{\lstinline!Sys.setenv(GITHUB\_PAT = )!} with your Personal Access Token inserted as a string after the equals symbol; and if this does not error, then skip to step 8.
+\item
+  In your \passthrough{\lstinline!.Renviron!} file, type \passthrough{\lstinline!GITHUB\_PAT=!} and then paste your Personal Access Token after the equals symbol with no space.
+\item
+  In your \passthrough{\lstinline!.Renviron!} file, press the enter key to ensure that your \passthrough{\lstinline!.Renviron!} ends with a newline.
+\item
+  Save your \passthrough{\lstinline!.Renviron!} file.
+\item
+  Restart R for changes to take effect. You can restart R via the drop-down menu on the ``Session'' tab. The ``Session'' tab is at the top of the RStudio interface.
+\end{enumerate}
+
+After following these steps, you should be able to successfully install the package which threw the error above.
+
 \hypertarget{origami}{%
 \chapter{Cross-validation}\label{origami}}
 
+\hypertarget{introduction-1}{%
+\section{Introduction}\label{introduction-1}}
+
 \hypertarget{roadmap-review}{%
-\section{Roadmap Review}\label{roadmap-review}}
+\subsection{Roadmap Review}\label{roadmap-review}}
 
 \hypertarget{we-want-to-fit-the-data-to-estimate-q}{%
-\section{We want to fit the data to estimate Q}\label{we-want-to-fit-the-data-to-estimate-q}}
+\subsection{We want to fit the data to estimate Q}\label{we-want-to-fit-the-data-to-estimate-q}}
 
 \hypertarget{we-can-propose-and-test-models}{%
-\section{We can propose and test models}\label{we-can-propose-and-test-models}}
+\subsection{We can propose and test models}\label{we-can-propose-and-test-models}}
+
+\hypertarget{learning-objectives-1}{%
+\section{Learning Objectives}\label{learning-objectives-1}}
+
+By the end of this chapter you will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Differentiate between training, validation and test sets.
+\item
+  Understand the concept of a loss function, risk and cross-validation.
+\item
+  Select a loss function that is appropriate for the functional parameter to be
+  estimated.
+\item
+  Understand and contrast different cross-validation schemes for i.i.d. data.
+\item
+  Understand and contrast different cross-validation schemes for time dependent
+  data.
+\item
+  Setup the proper fold structure, build custom fold-based function, and
+  cross-validate the proposed function using the \passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package.
+\item
+  Setup the proper cross-validation structure for the use by the Super Learner
+  using the the \passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package.
+\end{enumerate}
 
 \hypertarget{schematic-example-1}{%
 \section{schematic example}\label{schematic-example-1}}
 
 \hypertarget{show-overfit-on-test-set}{%
-\section{show overfit on test set}\label{show-overfit-on-test-set}}
+\subsection{show overfit on test set}\label{show-overfit-on-test-set}}
 
 \hypertarget{show-cross-validation}{%
-\section{show cross-validation}\label{show-cross-validation}}
+\subsection{show cross-validation}\label{show-cross-validation}}
+
+\hypertarget{conceptual}{%
+\section{Conceptual}\label{conceptual}}
 
 \hypertarget{washb-example}{%
 \section{washb example}\label{washb-example}}
@@ -977,20 +1198,167 @@ Current roadmap text goes here
 \hypertarget{sl3}{%
 \chapter{Super (Machine) Learning}\label{sl3}}
 
+\hypertarget{introduction-2}{%
+\section{Introduction}\label{introduction-2}}
+
 \hypertarget{roadmap-review-1}{%
-\section{Roadmap Review}\label{roadmap-review-1}}
+\subsection{Roadmap Review}\label{roadmap-review-1}}
 
 \hypertarget{we-still-want-to-fit-the-data-to-estimate-q}{%
-\section{We still want to fit the data to estimate Q}\label{we-still-want-to-fit-the-data-to-estimate-q}}
+\subsection{We still want to fit the data to estimate Q}\label{we-still-want-to-fit-the-data-to-estimate-q}}
 
 \hypertarget{sl3-makes-that-process-easier}{%
-\section{sl3 makes that process easier}\label{sl3-makes-that-process-easier}}
+\subsection{sl3 makes that process easier}\label{sl3-makes-that-process-easier}}
+
+\hypertarget{learning-objectives-2}{%
+\section*{Learning Objectives}\label{learning-objectives-2}}
+
+
+By the end of this chapter you will be able to:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  Select an objective function that (i) aligns with the intention of the
+  analysis and (ii) is optimized by the target parameter.
+\item
+  Assemble a diverse library of learners to be considered in the Super Learner
+  ensemble. In particular, you should be able to:
+
+  \begin{enumerate}
+  \def\labelenumii{\alph{enumii}.}
+  \tightlist
+  \item
+    Customize a learner by modifying it's tuning parameters.
+  \item
+    Create several different versions of the same learner at once by
+    specifying a grid of tuning parameters.
+  \item
+    Curate covariate screening pipelines in order to pass a screener's
+    output, a subset of covariates, as input for another learner that will
+    use the subset of covariates selected by the screener to model the data.
+  \end{enumerate}
+\item
+  Specify the learner for ensembling (the metalearner) such that it corresponds
+  to your objective function.
+\item
+  Fit the Super Learner ensemble with nested cross-validation to obtain an
+  estimate of the performance of the ensemble itself on out-of-sample data.
+\item
+  Obtain \passthrough{\lstinline!sl3!} variable importance metrics.
+\item
+  Interpret the fit for discrete and continuous Super Learners' from the
+  cross-validated risk table and the coefficients.
+\item
+  Justify the base library of machine learning algorithms and the ensembling
+  learner in terms of the prediction problem, statistical model \(\M\), data
+  sparsity, and the dimensionality of the covariates.
+\end{enumerate}
+
+\hypertarget{setup-1}{%
+\section{Setup}\label{setup-1}}
+
+\begin{lstlisting}[language=R]
+library(sl3)
+library(tlverse)
+library(data.table)
+library(ggplot2)
+\end{lstlisting}
 
 \hypertarget{schematic-example-2}{%
-\section{schematic example}\label{schematic-example-2}}
+\section{Schematic Example}\label{schematic-example-2}}
 
-TODO: define glm learners to fit the following:
-EY = 0.2\emph{(-10 } A + W - 0.2\emph{W\^{}2 + 0.4}A*W\^{}2)
+We can define a \passthrough{\lstinline!sl3!} task as follows:
+
+\begin{lstlisting}[language=R]
+data(schematic, package="tlverse")
+task <- make_sl3_Task(schematic, 
+                      covariates=c("A","W"),
+                      outcome="Y")
+\end{lstlisting}
+
+This is a way of organizing data and metadata together. In essence, it's telling
+the \passthrough{\lstinline!tlverse!} about the \emph{Data} step of the roadmap.
+
+Next, we can make some guesses about the \emph{Model} step of the roadmap. This is
+similar to what we did in the {[}\#origami{]} chapter:
+
+\begin{lstlisting}[language=R]
+# this defaults to a linear fit, so ~ A + W in this case
+gl <- make_learner(Lrnr_glm)
+gl_interaction <- make_learner(Lrnr_glm, 
+                               formula = "~ A*W")
+gl_poly2 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2))")
+gl_poly4 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2) + I(W^3) + I (W^4))")
+\end{lstlisting}
+
+We can train one of these on our task and generate predictions:
+
+\begin{lstlisting}[language=R]
+gl_fit <- gl$train(task)
+preds <- gl_fit$predict(task)
+head(preds)
+[1]  1.74048 -0.33978 -0.52219  0.20743 -0.52219  1.01086
+\end{lstlisting}
+
+We can also `\passthrough{\lstinline!ensemble'' these together using a special learner called!}Lrnr\_sl`.
+We'll explain more in a minute what this means.
+
+\begin{lstlisting}[language=R]
+learners <- list(linear = gl, 
+                 interaction = gl_interaction, 
+                 poly2 = gl_poly2,
+                 poly4 = gl_poly4)
+sl <- make_learner(Lrnr_sl, learners)
+sl_fit <- sl$train(task)
+\end{lstlisting}
+
+\passthrough{\lstinline!Lrnr\_sl!} applies cross-validation to all the learners, so we can get
+CV risk estimates, similar to those we generated by hand with origami.
+
+\begin{lstlisting}[language=R]
+sl_fit$cv_risk(loss_squared_error)
+        learner coefficients    risk       se  fold_sd fold_min_risk
+1:       linear    0.0069332 2.06255 0.250298 0.831859      0.729272
+2:  interaction    0.0503607 0.28348 0.037538 0.090305      0.120734
+3:        poly2    0.9427061 0.18797 0.036528 0.088623      0.060315
+4:        poly4    0.0000000 0.20638 0.039118 0.092897      0.078726
+5: SuperLearner           NA 0.18753 0.035458 0.083596      0.061988
+   fold_max_risk
+1:       3.33138
+2:       0.41529
+3:       0.32614
+4:       0.32564
+5:       0.31375
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+data(schematic_grid, package="tlverse")
+grid_task <- make_sl3_Task(schematic_grid, 
+                           covariates=c("A","W"),
+                           outcome="Y")
+
+schematic_grid$sl <- sl_fit$fit_object$full_fit$predict(grid_task)
+library_grid_preds <- sl_fit$fit_object$full_fit$fit_object$learner_fits[[1]]$predict(grid_task)
+sl_grid <- cbind(schematic_grid,library_grid_preds)
+long <- melt(sl_grid, id=c("W","A"),
+             measure=c("sl",names(learners)),
+             variable.name = "type",
+             value.name = "Y")
+
+# TODO: why doesn't this control facet ordering?
+long[,type:=factor(type, levels = c(names(learners),"sl"))]
+schematic[,type:=NULL]
+data(schematic_meta, package="tlverse")
+tlverse::plot_schematic(schematic, long, type="facet")
+\end{lstlisting}
+
+\begin{center}\includegraphics[width=0.8\linewidth]{06-sl3_files/figure-latex/sl3_schematic_plot-1} \end{center}
+
+\hypertarget{conceptual-1}{%
+\section{Conceptual}\label{conceptual-1}}
 
 \hypertarget{washb-example-1}{%
 \section{washb example}\label{washb-example-1}}
@@ -1001,17 +1369,102 @@ EY = 0.2\emph{(-10 } A + W - 0.2\emph{W\^{}2 + 0.4}A*W\^{}2)
 \hypertarget{tmle3}{%
 \chapter{The TMLE Framework}\label{tmle3}}
 
+\hypertarget{introduction-3}{%
+\section{Introduction}\label{introduction-3}}
+
 \hypertarget{roadmap-review-2}{%
-\section{Roadmap Review}\label{roadmap-review-2}}
+\subsection{Roadmap Review}\label{roadmap-review-2}}
 
 \hypertarget{we-want-to-estimate-psi-better}{%
-\section{We want to estimate psi better}\label{we-want-to-estimate-psi-better}}
+\subsection{We want to estimate psi better}\label{we-want-to-estimate-psi-better}}
 
 \hypertarget{we-also-want-inference}{%
-\section{We also want inference}\label{we-also-want-inference}}
+\subsection{We also want inference}\label{we-also-want-inference}}
+
+\hypertarget{learn-tmle}{%
+\section{Learning Objectives}\label{learn-tmle}}
+
+By the end of this chapter, you will be able to
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Understand why we use TMLE for effect estimation.
+\item
+  Use \passthrough{\lstinline!tmle3!} to estimate an Average Treatment Effect (ATE).
+\item
+  Understand how to use \passthrough{\lstinline!tmle3!} ``Specs'' objects.
+\item
+  Fit \passthrough{\lstinline!tmle3!} for a custom set of target parameters.
+\item
+  Use the delta method to estimate transformations of target parameters.
+\end{enumerate}
+
+\hypertarget{setup-2}{%
+\section{Setup}\label{setup-2}}
+
+\begin{lstlisting}[language=R]
+library(sl3)
+library(tmle3)
+library(ggplot2)
+\end{lstlisting}
 
 \hypertarget{schematic-example-3}{%
-\section{schematic example}\label{schematic-example-3}}
+\section{Schematic Example}\label{schematic-example-3}}
+
+We'll load the data like before:
+
+\begin{lstlisting}[language=R]
+data(schematic, package="tlverse")
+\end{lstlisting}
+
+We'll need some learners like before:
+
+\begin{lstlisting}[language=R]
+gl <- make_learner(Lrnr_glm)
+ml <- make_learner(Lrnr_mean)
+gl_interaction <- make_learner(Lrnr_glm, 
+                               formula = "~ A*W")
+gl_poly2 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2))")
+gl_poly4 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2) + I(W^3) + I (W^4))")
+
+Y_learners <- list(linear = gl, 
+                   interaction = gl_interaction, 
+                   poly2 = gl_poly2,
+                   poly4 = gl_poly4)
+sl_Y <- make_learner(Lrnr_sl, Y_learners)
+
+A_learners <- list(mean = ml,
+                   linear = gl)
+sl_A <- make_learner(Lrnr_sl, A_learners)
+
+learner_list <- list(A = sl_A, Y = sl_Y)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+ate_spec <- tmle_ATE(treatment_level = 1,
+                     control_level = 0)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+node_list <- list(W = "W", A = "A", Y = "Y")
+tmle3_fit <- tmle3(ate_spec, schematic, node_list, learner_list)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+print(tmle3_fit)
+A tmle3_Fit that took 1 step(s)
+   type                param init_est tmle_est      se   lower  upper
+1:  ATE ATE[Y_{A=1}-Y_{A=0}]   1.3193   1.3036 0.28075 0.75333 1.8538
+   psi_transformed lower_transformed upper_transformed
+1:          1.3036           0.75333            1.8538
+\end{lstlisting}
+
+\hypertarget{conceptual-2}{%
+\section{Conceptual}\label{conceptual-2}}
 
 \hypertarget{washb-example-2}{%
 \section{washb example}\label{washb-example-2}}

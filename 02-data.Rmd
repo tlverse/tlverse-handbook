@@ -44,13 +44,9 @@ $Y$ — an outcome, in this case it's a continuous measure that has a range roug
 Because it's so simple, it's easy to visualize on a single plot:
 
 ```{r schematic_data, echo = FALSE}
-data(schematic_full, package="tlverse")
-cf_data <- melt(schematic_full,id="W",measure=c("EY0","EY1","EYa"),value.name = "Y")
-cf_data[,A:=factor(variable,levels=c("EY0","EY1","EYa"),labels=c("0","1","Observed"))]
-cf_data <- cf_data[A!="Observed"]
-cf_data$type <- "true"
-cf_mean <- cf_data[,list(Y=mean(Y),W=0),by=list(A,type)]
-plot_schematic(schematic,cf_data,cf_mean)
+data(schematic_grid, package="tlverse")
+data(schematic_meta, package="tlverse")
+tlverse::plot_schematic(schematic, schematic_grid, schematic_meta)
 ```
 
 

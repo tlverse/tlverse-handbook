@@ -1,5 +1,11 @@
 # The TMLE Framework {#tmle3}
 
+## Introduction
+
+### Roadmap Review
+### We want to estimate psi better
+### We also want inference
+
 ## Learning Objectives {#learn-tmle}
 
 By the end of this chapter, you will be able to
@@ -10,11 +16,70 @@ By the end of this chapter, you will be able to
 4. Fit `tmle3` for a custom set of target parameters.
 5. Use the delta method to estimate transformations of target parameters.
 
+## Setup
 
-## Roadmap Review
-## We want to estimate psi better
-## We also want inference
-## schematic example
+<!-- TODO: make it so we can just load tlverse instead of individual packages -->
+```{r tmle3_setup}
+library(sl3)
+library(tmle3)
+library(ggplot2)
+```
+
+## Schematic Example
+
+We'll load the data like before:
+```{r tmle3_schmatic_data}
+data(schematic, package="tlverse")
+```
+
+We'll need some learners like before:
+```{r tmle3_schematic_setup}
+gl <- make_learner(Lrnr_glm)
+ml <- make_learner(Lrnr_mean)
+gl_interaction <- make_learner(Lrnr_glm, 
+                               formula = "~ A*W")
+gl_poly2 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2))")
+gl_poly4 <- make_learner(Lrnr_glm, 
+                         formula = "~ A*(W + I(W^2) + I(W^3) + I (W^4))")
+
+Y_learners <- list(linear = gl, 
+                   interaction = gl_interaction, 
+                   poly2 = gl_poly2,
+                   poly4 = gl_poly4)
+sl_Y <- make_learner(Lrnr_sl, Y_learners)
+
+A_learners <- list(mean = ml,
+                   linear = gl)
+sl_A <- make_learner(Lrnr_sl, A_learners)
+
+learner_list <- list(A = sl_A, Y = sl_Y)
+```
+
+<!-- TODO: explain sl_A -->
+
+<!-- TODO: make this spec return TSMs too (can have option to disable) -->
+```{r tmle3_schematic_spec}
+ate_spec <- tmle_ATE(treatment_level = 1,
+                     control_level = 0)
+```
+
+<!-- TODO: explain node_list -->
+<!-- TODO: check data type of node and learner lists in tmle3 -->
+```{r tmle3_schematic_fit}
+node_list <- list(W = "W", A = "A", Y = "Y")
+tmle3_fit <- tmle3(ate_spec, schematic, node_list, learner_list)
+```
+
+```{r tmle3_schematic_output}
+print(tmle3_fit)
+```
+
+<!-- TODO: plots -->
+
+## Conceptual
+
 ## washb example
+
 ## advanced usage
 
