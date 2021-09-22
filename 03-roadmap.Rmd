@@ -1,0 +1,100 @@
+# The Roadmap for Targeted Learning {#roadmap}
+
+In this chapter you will...
+
+1. Translate scientific questions to statistical questions.
+2. Define a statistical model based on the knowledge of the experiment that generated the data.
+3. Identify a causal parameter as a function of the observed data distribution.
+4. Explain the following causal and statistical assumptions and their implications: i.i.d., consistency, interference, positivity, SUTVA.
+
+## Introduction
+
+The roadmap of statistical learning is concerned with the translation from real-world data applications to a mathematical and statistical formulation of the relevant estimation problem. This involves data as a random variable having a probability distribution, scientific knowledge represented by a statistical model, a statistical target parameter representing an answer to the question of interest, and the notion of an estimator and sampling distribution of the estimator.
+
+## The Roadmap
+
+Following the roadmap is a process of five steps.
+
+1. Data: Data as a random variable with a probability distribution, $O\sim P_0$
+2. Model: The statistical model $\mathcal{M}$ such that $P_0 \in \mathcal{M}$
+3. Parameter: The statistical target parameter $\Psi$ and estimand $\Psi(P_0)$.
+4. Estimation: The estimator $\hat{\Psi}$ and estimand $\hat{\Psi}(P_n)$.
+5. Inference: A measure of uncertainty for the estimate $\hat{\Psi}(P_n)$
+
+## Schematic Example
+
+Remember the schematic from last chapter? Let's start a roadmap for it before going on to talk about the steps in more detail
+
+### Data Step
+
+We can describe the data as a set of observations about an individual (it's more general to say experimental unit) and, for our schematic example, we can denote an observation like so:
+
+$$O \equiv (W,A,Y)$$
+
+a collection of facts (here $W$, $A$, and $Y$)  about an individual observation $O$. We think of a set of data as a set of such observations. We think of that observation as a random draw from a distribution of possible observations we denote $P_0$ (here the subscript $0$ denotes the real one, we'll use other subscripts to denote theoretical or estimated distributions). We call $P_0$ the probability distribution or data generating process (DGP).
+
+How the observation is drawn from the sample is important. That's called the experiment. How to translate between a real world experiment and a probability model is outside the scope of this book. For now, we'll focus on what we call independent and identically distributed (i.i.d.) data. That means that each unit $O$ got drawn from the same $P_0$ in the same way. No other sample can change another samples outcome, and all samples get drawn from the same imaginary box. Options and modifications of our methodology are available for for complex and biased samples, repeated measures, and other sampling concerns.
+
+Luckily for us, we have just such data in our schematic dataset.
+
+### Model Step
+
+Just like we had a set of observations we called a dataset, we have a set of possible probability distributions. You might think we call that a distribution set, but we don't, we call it a model. We denote it $\mathcal{M}$ and we write:
+
+$$P_0 \in \mathcal{M}$$
+
+To indicate that the true DGP is part of our model. This is important, because if our model doesn't contain the truth, it will be impossible for us to get the right answer, even with infinite data!
+
+Well, what can we say about $\mathcal{M}$? That is, what can we say for sure about what $P_0$ might look like. Given that I haven't told you much about the data or the experiment, really very little! We'll see in later chapters how some statisticians want to do statistics in small models, that we can be quite sure don't contain $P_0$ , because it makes the statistics easier. For now we'll just say that $\mathcal{M}$ is nonparametric, which essentially means that we can't make any assumptions about it.
+
+The truth is, we can make a few assumptions based on the observed data types and our belief that we've observed all the values of some of the variables. For example, we think $A$ can only be 0 or 1, and $W$ranges between 1 and 10. It also seems like $Y$ varies in a small range, so we could incorporate that as a modeling assumption if we were fairly confident that that's its true range. We don't often write these things as part of the model explicitly, but they are part of it.
+
+### Parameter Step
+
+We said that we want to know about the effect of the treatment $A$  on the outcome $Y$. There's a lot of ways we could formalize that mathematically, but here's one we like:
+
+$$\Psi_{0,\text{TSM}}=E_W[E_{Y|A,W}[Y|A=1,W]]$$
+
+we call this a Treatment Specific Mean (TSM):
+
+Basically, we want to know the mean of $Y$ for every $W$, when we set $A=1$. We then want to take a mean across $W$s, which we call "marginalizing". We say call this a treatment specific mean because it's the mean outcome $Y$ we'd expect under the specific treatment $A=1$. That tells us something about how treatment affects outcome. However, we'd often like to compare outcomes under two conditions. We can use a pair of TSMs to make an Average Treatment Effect (ATE):
+
+$$\Psi_{0,\text{ATE}}=E_W[E_{Y|A,W}[Y|A=1,W]]- E_W[E_{Y|A,W}[Y|A=0,W]]$$
+
+Many other types of parameters like relative risks and odds ratios can be defined by simple combinations of TSMs. We'll see later how we can use the Delta Method to estimate parameters like these starting with estimates of TSMs.
+
+### Estimation Step
+
+Explain plug-ins here
+
+Say we'll see more in next two chapters
+
+### Inference Step
+
+We'll cover this later
+
+## WASH Benefits Example
+
+### Data Step
+
+We still say $O \equiv (W,A,Y)$, except now $W$  is a vector of many covariates. 
+
+For the purposes of this handbook, we will say that the sample was generated i.i.d as before. This study had a cluster design, so this is not actually the case. We could, with available options, account for the clustering of the data. 
+
+### Model Step
+
+We still don't know anything, so we'll stick with a nonparametric model $\mathcal{M}$.
+
+### Parameter Step
+
+We would like to estimate TSMs for every treatment level, as well as ATEs between some treatment levels and the control treatment.
+
+### Estimation Step
+
+### Inference Step
+
+## Causal Concerns
+
+Current roadmap text goes here
+
+## Exercises

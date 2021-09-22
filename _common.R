@@ -57,11 +57,11 @@ if (knitr:::is_latex_output()) {
   options(digits = 4)
 }
 
-# helper for simpler skimr tables
-skim_no_sparks <- skimr::skim_with(
-  numeric = skimr::sfl(hist = NULL),
-  ts = skimr::sfl(line_graph = NULL)
-)
+# # helper for simpler skimr tables
+# skim_no_sparks <- skimr::skim_with(
+#   numeric = skimr::sfl(hist = NULL),
+#   ts = skimr::sfl(line_graph = NULL)
+# )
 
 # automatically create a bib database for R packages
 knitr::write_bib(c(
