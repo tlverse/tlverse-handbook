@@ -1,0 +1,103 @@
+
+# Meet the Data {#data}
+
+
+Targeted Learning is all about learning from data. We'll use a few example datasets throughout this book. We introduce them in this chapter.
+
+## Learning Objectives
+
+By the end of this chapter you will be able to:
+
+1. Understand the various datasets we'll use as case studies
+2. Have a vague understanding of the kinds of scientific questions we 
+might want to answer with them
+
+## Schematic Example {#data-schematic}
+
+This is an entirely artificial example with three variables that's helpful for illustrating key concepts. 
+
+This dataset is loaded with
+
+```{r load_tlverse_schematic}
+data(schematic, package="tlverse")
+```
+
+Here's a table with a few rows of the data:
+
+<!-- TODO: clean up tables, something wrong with skimr... -->
+```{r schematic_head, echo=FALSE}
+head(schematic)
+```
+
+### Schematic Variables
+
+The variables should be interpreted as follows:
+
+$W$ — a baseline covariate, in this case an integer ranging from 1 to 10. You can think of this as someone's age or some other feature about a person. Usually you have a lot of these, but in this case we have only one.
+
+$A$ — a treatment or intervention, in this case it's either 0 or 1. You can think of this as some treatment we're interested in learning the effects of. We can say that 1 means a person got the treatment and 0 means that a person didn't (they got a placebo or nothing at all)
+
+$Y$ — an outcome, in this case it's a continuous measure that has a range roughly between -4 and 4. You can think of it as some outcome we're interested in, like death. Maybe it's a good outcome, and we hope that by giving the treatment we'll increase it. Maybe it's a bad outcome, and we hope that by giving the treatment we'll decrease it.
+
+
+
+Because it's so simple, it's easy to visualize on a single plot:
+
+```{r schematic_data, echo = FALSE}
+data(schematic_full, package="tlverse")
+cf_data <- melt(schematic_full,id="W",measure=c("EY0","EY1","EYa"),value.name = "Y")
+cf_data[,A:=factor(variable,levels=c("EY0","EY1","EYa"),labels=c("0","1","Observed"))]
+cf_data <- cf_data[A!="Observed"]
+cf_data$type <- "true"
+cf_mean <- cf_data[,list(Y=mean(Y),W=0),by=list(A,type)]
+plot_schematic(schematic,cf_data,cf_mean)
+```
+
+
+
+We want to use the data to figure out the effect of the treatment $A$ on outcome $Y$, while adjusting for covariate(s) $W$ (we'll see what that's important later). Generally speaking, a lot of data questions can be framed this way. Of course, the devil is in the details. We'll see later how important it is to get the details correctly specified.
+
+## WASH Benefits {#data-washb}
+
+These data come from a study of the effect of water quality, sanitation, hand washing, and nutritional interventions on child development in rural Bangladesh (WASH Benefits Bangladesh): a cluster randomized controlled trial [@luby2018effect]. For reference, this trial was registered with ClinicalTrials.gov as NCT01590095. The study enrolled pregnant women in their first or second trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and Tangail districts of central Bangladesh, with an average of eight women per cluster. Groups of eight geographically adjacent clusters were block randomized, using a random number generator, into six intervention groups (all of which received weekly visits from a community health promoter for the first 6 months and every 2 weeks for the next 18 months) and a double-sized control group (no intervention or health promoter visit).  In this book, we concentrate on child growth (size for age) as the outcome of interest
+
+This dataset is loaded with
+
+```{r load_tlverse_washb}
+data(tlverse_washb)
+```
+
+TODO: table
+
+
+The six intervention groups were:
+
+1. chlorinated drinking water;
+2. improved sanitation;
+3. hand-washing with soap;
+4. combined water, sanitation, and hand washing;
+5. improved nutrition through counseling and provision of lipid-based nutrient supplements; and
+6. combined water, sanitation, handwashing, and nutrition.
+
+We have 28 variables measured. This outcome, *Y*, is the weight-for-height Z-score (`whz` in `dat`); the treatment of interest, *A*, is the randomized treatment group (`tr` in `dat`); and the adjustment set, *W*, consists simply of *everything else*. 
+
+
+
+
+
+## International Stroke Trial (Rachael to replace with different dataset for exercises)
+
+The International Stroke Trial database contains individual patient data from the International Stroke Trial (IST), a multi-national randomized trial conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed to assess whether early administration of aspirin, heparin, both aspirin and heparin, or neither influenced the clinical course of acute ischaemic stroke [@sandercock1997international]. The IST dataset includes data on 19,435 patients with acute stroke, with 99% complete follow-up. De-identified data are available for download at https://datashare.is.ed.ac.uk/handle/10283/128. This study is described in more detail in @sandercock2011international. The example data for this handbook considers a sample of 5,000 patients and the binary outcome of recurrent ischemic stroke within 14 days after randomization. Also in this example data, we ensure that we have subjects with a missing outcome.
+
+We have 26 variables measured, and the outcome of interest, *Y*, indicates recurrent ischemic stroke within 14 days after randomization (`DRSISC` in `ist`); the treatment of interest, *A*, is the randomized aspirin vs. no aspirin treatment allocation (`RXASP` in `ist`); and the adjustment set, *W*, consists of all other variables measured at baseline.
+
+This dataset is loaded with
+
+```{r load_tlverse_ist}
+data(tlverse_ist)
+```
+
+Like before, we can summarize the variables measured in the IST sample data set with `skimr`:
+
+TODO: table
+

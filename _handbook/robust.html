@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 1 Robust Statistics and Reproducible Science | Targeted Learning in R</title>
+<meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script>
+</head>
+<body>
+<span class="math inline">
+    \(\DeclareMathOperator{\expit}{expit}\)
+    \(\DeclareMathOperator{\logit}{logit}\)
+    \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
+    \(\newcommand{\indep}{\perp\!\!\!\perp}\)
+    \(\newcommand{\coloneqq}{\mathrel{=}}\)
+    \(\newcommand{\R}{\mathbb{R}}\)
+    \(\newcommand{\E}{\mathbb{E}}\)
+    \(\newcommand{\M}{\mathcal{M}}\)
+    \(\renewcommand{\P}{\mathbb{P}}\)
+    \(\newcommand{\I}{\mathbb{I}}\)
+    \(\newcommand{\1}{\mathbbm{1}}\)
+    </span>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="Causal Data Science with the tlverse Software Ecosystem">Targeted Learning in R</a>:
+        <small class="text-muted">Causal Data Science with the tlverse Software Ecosystem</small>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">About this book</a></li>
+<li><a class="active" href="robust.html"><span class="header-section-number">1</span> Robust Statistics and Reproducible Science</a></li>
+<li><a class="" href="data.html"><span class="header-section-number">2</span> Meet the Data</a></li>
+<li><a class="" href="roadmap.html"><span class="header-section-number">3</span> The Roadmap for Targeted Learning</a></li>
+<li><a class="" href="tlverse.html"><span class="header-section-number">4</span> Welcome to the tlverse</a></li>
+<li><a class="" href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></li>
+<li><a class="" href="tmle3.html"><span class="header-section-number">7</span> The TMLE Framework</a></li>
+<li><a class="" href="r6.html"><span class="header-section-number">8</span> A Primer on the R6 Class System</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tlverse/tlverse-handbook">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="robust" class="section level1" number="1">
+<h1>
+<span class="header-section-number">1</span> Robust Statistics and Reproducible Science<a class="anchor" aria-label="anchor" href="#robust"><i class="fas fa-link"></i></a>
+</h1>
+<!--
+
+test shortbox
+
+
+
+test VT1
+
+-->
+<blockquote>
+<p>“One enemy of robust science is our humanity – our appetite for
+being right, and our tendency to find patterns in noise, to see supporting
+evidence for what we already believe is true, and to ignore the facts that do
+not fit.”</p>
+<p>— <span class="citation">Nature Editorial (Anonymous) (<a href="references.html#ref-naturenews_2015" role="doc-biblioref">2015b</a>)</span></p>
+</blockquote>
+<p>Scientific research is at a unique point in its history. The need to improve
+rigor and reproducibility in our field is greater than ever; corroboration moves
+science forward, yet there is growing alarm that results cannot be reproduced or
+validated, suggesting the possibility that many discoveries may be false
+<span class="citation">(<a href="references.html#ref-baker2016there" role="doc-biblioref">Baker 2016</a>)</span>. Consequences of not meeting this need will result in further
+decline in the rate of scientific progress, the reputation of the sciences, and
+the public’s trust in scientific findings <span class="citation">(<a href="references.html#ref-munafo2017manifesto" role="doc-biblioref">Munafò et al. 2017</a>; <a href="references.html#ref-naturenews2_2015" role="doc-biblioref">Nature Editorial (Anonymous) 2015a</a>)</span>.</p>
+<blockquote>
+<p>“The key question we want to answer when seeing the results of any scientific
+study is whether we can trust the data analysis.”</p>
+<p>— <span class="citation">Peng (<a href="references.html#ref-peng2015reproducibility" role="doc-biblioref">2015</a>)</span></p>
+</blockquote>
+<p>Unfortunately, in its current state, the culture of statistical data analysis
+enables, rather than precludes, the manner in which human bias may affect the
+results of (ideally objective) data analytic efforts. A significant degree of
+human bias enters statistical analysis efforts in the form improper model
+selection. All procedures for estimation and hypothesis testing are derived
+based on a choice of statistical model; thus, obtaining valid estimates and
+statistical inference relies critically on the chosen statistical model
+containing an accurate representation of the process that generated the data.
+Consider, for example, a hypothetical study in which a treatment was assigned to
+a group of patients: Was the treatment assigned randomly or were characteristics
+of the individuals (i.e., baseline covariates) used in making the treatment
+decision? Such knowledge can should be incorporated in the statistical model.
+Alternatively, the data could be from an observational study, in which there is
+no control over the treatment assignment mechanism. In such cases, available
+knowledge about the data-generating process (DGP) is more limited still. If
+this is the case, then the statistical model should contain <em>all</em> possible
+distributions of the data. In practice, however, models are not selected based
+on scientific knowledge available about the DGP; instead, models are often
+selected based on (1) the philosophical leanings of the analyst, (2) the
+relative convenience of implementation of statistical methods admissible within
+the choice of model, and (3) the results of significance testing (i.e.,
+p-values) applied within the choice of model.</p>
+<p>This practice of “cargo-cult statistics — the ritualistic miming of statistics
+rather than conscientious practice,” <span class="citation">(<a href="references.html#ref-stark2018cargo" role="doc-biblioref">Stark and Saltelli 2018</a>)</span> is characterized by
+arbitrary modeling choices, even though these choices often result in different
+answers to the same research question. That is, “increasingly often,
+[statistics] is used instead to aid and abet weak science, a role it can perform
+well when used mechanically or ritually,” as opposed to its original purpose of
+safeguarding against weak science by providing formal techniques for evaluating
+the veracity of a claim using properly collected data <span class="citation">(<a href="references.html#ref-stark2018cargo" role="doc-biblioref">Stark and Saltelli 2018</a>)</span>. This
+presents a fundamental drive behind the epidemic of false findings from which
+scientific research is suffering <span class="citation">(<a href="references.html#ref-vdl2014entering" role="doc-biblioref">van der Laan and Starmans 2014</a>)</span>.</p>
+<blockquote>
+<p>“We suggest that the weak statistical understanding is probably due to
+inadequate”statistics lite” education. This approach does not build up
+appropriate mathematical fundamentals and does not provide scientifically
+rigorous introduction into statistics. Hence, students’ knowledge may remain
+imprecise, patchy, and prone to serious misunderstandings. What this approach
+achieves, however, is providing students with false confidence of being able
+to use inferential tools whereas they usually only interpret the p-value
+provided by black box statistical software. While this educational problem
+remains unaddressed, poor statistical practices will prevail regardless of
+what procedures and measures may be favored and/or banned by editorials.”</p>
+<p>— <span class="citation">Szucs and Ioannidis (<a href="references.html#ref-szucs2017null" role="doc-biblioref">2017</a>)</span></p>
+</blockquote>
+<p>Our team at the University of California, Berkeley is uniquely positioned to
+provide such an education. Spearheaded by Professor Mark van der Laan, and
+spreading rapidly by many of his students and colleagues who have greatly
+enriched the field, the aptly named “Targeted Learning” methodology emphasizes a
+focus of (i.e., “targeting of”) the scientific question at hand, running counter
+to the current culture problem of “convenience statistics,” which opens the door
+to biased estimation, misleading analytic results, and erroneous discoveries.
+Targeted Learning embraces the fundamentals that formalized the field of
+statistics, notably including the notions that a statistical model must
+represent real knowledge about the experiment that generated the data and that a
+target parameter represents what we are seeking to learn from the data as a
+feature of the distribution that generated it <span class="citation">(<a href="references.html#ref-vdl2014entering" role="doc-biblioref">van der Laan and Starmans 2014</a>)</span>. In this way,
+Targeted Learning defines a truth and establishes a principled standard for
+estimation, thereby curtailing our all-too-human biases (e.g., hindsight bias,
+confirmation bias, and outcome bias) from infiltrating our objective analytic
+efforts.</p>
+<blockquote>
+<p>“The key for effective classical [statistical] inference is to have
+well-defined questions and an analysis plan that tests those questions.”</p>
+<p>— <span class="citation">Nosek et al. (<a href="references.html#ref-nosek2018preregistration" role="doc-biblioref">2018</a>)</span></p>
+</blockquote>
+<p>This handbook aims to provide practical training to students, researchers,
+industry professionals, and academicians in the sciences (whether biological,
+physical, economic, or social), public health, statistics, and numerous other
+fields, to equip them with the necessary knowledge and skills to utilize the the
+methodological developments of Targeted Learning — a technique that provides
+tailored pre-specified machines for answering queries — taking advantage of
+estimators that are efficient, minimally biased, and that provide formal
+statistical inference — so that each and every data analysis incorporates
+state-of-the-art statistical methodology, all while ensuring compatibility with
+the guiding principles of computational reproducibility.</p>
+<p>Just as the conscientious use of modern statistical methodology is necessary to
+ensure that scientific practice thrives, robust, well-tested software plays a
+critical role in allowing practitioners to direct access the published results
+of a given scientific investigation. In fact, “an article…in a scientific
+publication is not the scholarship itself, it is merely advertising of the
+scholarship. The actual scholarship is the complete software development
+environment and the complete set of instructions which generated the figures,”
+thus making the availability and adoption of robust statistical software key to
+enhancing the transparency that is an inherent (and assumed) aspect of the
+scientific process <span class="citation">(<a href="references.html#ref-buckheit1995wavelab" role="doc-biblioref">Buckheit and Donoho 1995</a>)</span>.</p>
+<p>For a statistical methodology to be readily accessible in practice, it is
+crucial that it is accompanied by user-friendly software
+<span class="citation">(<a href="references.html#ref-pullenayegum2016knowledge" role="doc-biblioref">Pullenayegum et al. 2016</a>; <a href="references.html#ref-stromberg2004write" role="doc-biblioref">Stromberg et al. 2004</a>)</span>. The <code>tlverse</code> software
+ecosystem, composed of a set of package for the <code>R</code> language and environment for
+statistical computing <span class="citation">(<a href="references.html#ref-R" role="doc-biblioref">R Core Team 2021</a>)</span>, was developed to fulfill this need for the Targeted
+Learning methodological framework. Not only does this suite of software tools
+facilitate computationally reproducible and efficient analyses, it is also a
+tool for Targeted Learning education, since its workflow mirrors the central
+aspects of the statistical methodology. In particular, the programming paradigm
+central to the <code>tlverse</code> ecosystem does not focus on implementing a specific
+estimator or a small set of related estimators. Instead, the focus is on
+exposing the statistical framework of Targeted Learning itself — all software
+packages in the <code>tlverse</code> ecosystem directly model the key objects defined in
+the mathematical and theoretical framework of Targeted Learning. What’s more,
+the <code>tlverse</code> software packages share a core set of design principles centered
+on extensibility, allowing for them all to be used in conjunction with each
+other and even used cohesively as building blocks for formulating sophisticated
+statistical analyses. For an introduction to the Targeted Learning framework, we
+recommend a <a href="https://arxiv.org/abs/2006.07333">recent review paper</a> from
+<span class="citation">Coyle et al. (<a href="references.html#ref-coyle2021targeted" role="doc-biblioref">2021</a>)</span>.</p>
+<p>In this handbook, the reader will embark on a journey through the <code>tlverse</code>
+ecosystem. Guided by <code>R</code> programming exercises, case studies, and
+intuition-building explanations, readers will learn to use a toolbox for
+applying the Targeted Learning statistical methodology, which will translate to
+real-world causal inference analyses. Some preliminaries are required prior to
+this learning endeavor – we have made available a list of <a href="index.html#learn">recommended learning
+resources</a>.</p>
+
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="index.html">About this book</a></div>
+<div class="next"><a href="data.html"><span class="header-section-number">2</span> Meet the Data</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav"><li><a class="nav-link" href="#robust"><span class="header-section-number">1</span> Robust Statistics and Reproducible Science</a></li></ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tlverse/tlverse-handbook/blob/master/01-preface.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tlverse/tlverse-handbook/edit/master/01-preface.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on September 22, 2021.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+</html>

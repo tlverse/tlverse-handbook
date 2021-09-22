@@ -1,0 +1,1085 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
+%
+\documentclass[
+  12pt, krantz2,
+]{krantz}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={Targeted Learning in R},
+  pdfauthor={Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard},
+  colorlinks=true,
+  linkcolor={Maroon},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage{listings}
+\newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+\usepackage{booktabs}
+\usepackage[inline]{enumitem}
+\usepackage{float}
+\usepackage{graphicx}
+%\usepackage[round]{natbib}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage[english]{babel}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage{mathtools,bm,amssymb,amsmath,amsthm}
+\usepackage{multirow}
+\usepackage[titletoc,title]{appendix}
+\usepackage{authblk}
+\usepackage{setspace}
+\usepackage{dsfont}
+\PassOptionsToPackage{utf8x}{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage[bf,singlelinecheck=off]{caption}
+\usepackage{refcount}
+\usepackage{framed,color}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\urlstyle{tt}
+\usepackage[none]{hyphenat} 
+
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\floatpagefraction}{0.75}
+
+\usepackage{makeidx}
+\makeindex
+
+\usepackage{amsthm}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=8pt plus 2pt minus 4pt
+  \thm@postskip=\thm@preskip
+}
+\makeatother
+
+\newtheorem*{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+\AtEndDocument{\refstepcounter{theorem}\label{finalthm}}
+{
+  \theoremstyle{definition}
+  \newtheorem{assumption}{}
+}
+{
+  \theoremstyle{definition}
+  \newtheorem{assumptioniden}{}
+}
+{
+  \theoremstyle{definition}
+  \newtheorem{example}{Example}[section]
+}
+\DeclareMathOperator{\opt}{opt}
+\DeclareMathOperator{\dr}{IF}
+\newcommand{\hopt}{\hat h_{\opt}}
+\newcommand{\supp}{\mathop{\mathrm{supp}}}
+\renewcommand\theassumptioniden{{A}\arabic{assumptioniden}}
+\renewcommand\theassumption{{C}\arabic{assumption}}
+\renewcommand\theexample{\arabic{example}}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{coro}{Corollary}
+\newtheorem{definition}{Definition}
+\DeclareMathOperator{\bern}{Bern}
+\DeclareMathOperator{\var}{Var}
+\DeclareMathOperator{\Rem}{Rem}
+\renewcommand{\P}{\mathbb{P}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\M}{\mathcal{M}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\1}{\mathbbm{1}}
+\DeclareMathOperator{\expit}{expit}
+\DeclareMathOperator{\logit}{logit}
+\newcommand{\indep}{\mbox{$\perp\!\!\!\perp$}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\usepackage{color}
+\lstset{
+  breaklines=true,
+  language=R,
+  showspaces=false, 
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange}
+}
+\DeclareUnicodeCharacter{2212}{-}
+% setting bookdown frontmatter option
+\frontmatter
+
+\usepackage{framed}
+\setlength{\fboxsep}{.8em}
+\usepackage{tcolorbox}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage[]{natbib}
+\bibliographystyle{apalike}
+
+\title{Targeted Learning in R}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Causal Data Science with the tlverse Software Ecosystem}
+\author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
+\date{September 22, 2021}
+
+\begin{document}
+\maketitle
+
+% you may need to leave a few empty pages before the dedication page
+
+%\cleardoublepage\newpage\thispagestyle{empty}\null
+%\cleardoublepage\newpage\thispagestyle{empty}\null
+%\cleardoublepage\newpage
+\thispagestyle{empty}
+
+\begin{center}
+%\includegraphics{images/dedication.pdf}
+\end{center}
+
+\setlength{\abovedisplayskip}{-5pt}
+\setlength{\abovedisplayshortskip}{-5pt}
+
+% setting bookdown mainmatter (e.g., arabic numerals for page numbering)
+\mainmatter
+
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\listoftables
+\listoffigures
+\hypertarget{about-this-book}{%
+\chapter*{About this book}\label{about-this-book}}
+
+
+\emph{Targeted Learning in \passthrough{\lstinline!R!}: Causal Data Science with the \passthrough{\lstinline!tlverse!} Software
+Ecosystem} is an open source, reproducible electronic handbook for applying the
+Targeted Learning methodology in practice using the \href{https://github.com/tlverse}{\passthrough{\lstinline!tlverse!} software
+ecosystem}. This work is currently in an early draft
+phase and is available to facilitate input from the community. To view or
+contribute to the available content, consider visiting the \href{https://github.com/tlverse/tlverse-handbook}{GitHub
+repository}.
+
+\hypertarget{outline}{%
+\section{Outline}\label{outline}}
+
+The contents of this handbook are meant to serve as a reference guide for
+applied research as well as materials that can be taught in a series of short
+courses focused on the applications of Targeted Learning. Each section
+introduces a set of distinct causal questions, motivated by a case study,
+alongside statistical methodology and software for assessing the causal claim of
+interest. The (evolving) set of materials includes
+
+\begin{itemize}
+\tightlist
+\item
+  Motivation: \href{https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/}{Why we need a statistical
+  revolution}
+\item
+  The Roadmap and introductory case study: the WASH Beneifits data
+\item
+  Introduction to the \href{https://tlverse.org}{\passthrough{\lstinline!tlverse!} software
+  ecosystem}
+\item
+  Cross-validation with the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!}}
+  package
+\item
+  Ensemble machine learning with the
+  \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!}} package
+\item
+  Targeted learning for causal inference with the
+  \href{https://github.com/tlverse/tmle3}{\passthrough{\lstinline!tmle3!}} package
+\item
+  Optimal treatments regimes and the
+  \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!}} package
+\item
+  Stochastic treatment regimes and the
+  \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!}} package
+\item
+  Causal mediation analysis with the
+  \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinline!tmle3mediate!}} package
+\item
+  \emph{Coda}: \href{https://senseaboutscienceusa.org/super-learning-and-the-revolution-in-knowledge/}{Why we need a statistical
+  revolution}
+\end{itemize}
+
+\hypertarget{what-this-book-is-not}{%
+\section*{What this book is not}\label{what-this-book-is-not}}
+
+
+The focus of this work is \textbf{not} on providing in-depth technical descriptions
+of current statistical methodology or recent advancements. Instead, the goal is
+to convey key details of state-of-the-art techniques in an manner that is both
+clear and complete, without burdening the reader with extraneous information.
+We hope that the presentations herein will serve as references for researchers
+-- methodologists and domain specialists alike -- that empower them to deploy
+the central tools of Targeted Learning in an efficient manner. For technical
+details and in-depth descriptions of both classical theory and recent advances
+in the field of Targeted Learning, the interested reader is invited to consult
+\citet{vdl2011targeted} and/or \citet{vdl2018targeted} as appropriate. The primary literature
+in statistical causal inference, machine learning, and non/semiparametric theory
+include many of the most recent advances in Targeted Learning and related areas.
+
+\hypertarget{about-the-authors}{%
+\section*{About the authors}\label{about-the-authors}}
+
+
+\hypertarget{mark-van-der-laan}{%
+\subsection*{Mark van der Laan}\label{mark-van-der-laan}}
+
+
+Mark van der Laan, PhD, is Professor of Biostatistics and Statistics at UC
+Berkeley. His research interests include statistical methods in computational
+biology, survival analysis, censored data, adaptive designs, targeted maximum
+likelihood estimation, causal inference, data-adaptive loss-based learning, and
+multiple testing. His research group developed loss-based super learning in
+semiparametric models, based on cross-validation, as a generic optimal tool for
+the estimation of infinite-dimensional parameters, such as nonparametric density
+estimation and prediction with both censored and uncensored data. Building on
+this work, his research group developed targeted maximum likelihood estimation
+for a target parameter of the data-generating distribution in arbitrary
+semiparametric and nonparametric models, as a generic optimal methodology for
+statistical and causal inference. Most recently, Mark's group has focused in
+part on the development of a centralized, principled set of software tools for
+targeted learning, the \passthrough{\lstinline!tlverse!}.
+
+\hypertarget{jeremy-coyle}{%
+\subsection*{Jeremy Coyle}\label{jeremy-coyle}}
+
+
+Jeremy Coyle, PhD, is a consulting data scientist and statistical programmer,
+currently leading the software development effort that has produced the
+\passthrough{\lstinline!tlverse!} ecosystem of R packages and related software tools. Jeremy earned his
+PhD in Biostatistics from UC Berkeley in 2016, primarily under the supervision
+of Alan Hubbard.
+
+\hypertarget{nima-hejazi}{%
+\subsection*{Nima Hejazi}\label{nima-hejazi}}
+
+
+Nima Hejazi is a PhD candidate in biostatistics, working under the collaborative
+direction of Mark van der Laan and Alan Hubbard. Nima is affiliated with UC
+Berkeley's Center for Computational Biology and NIH Biomedical Big Data training
+program, as well as with the Fred Hutchinson Cancer Research Center. Previously,
+he earned an MA in Biostatistics and a BA (with majors in Molecular and Cell
+Biology, Psychology, and Public Health), both at UC Berkeley. His research
+interests fall at the intersection of causal inference and machine learning,
+drawing on ideas from non/semi-parametric estimation in large, flexible
+statistical models to develop efficient and robust statistical procedures for
+evaluating complex target estimands in observational and randomized studies.
+Particular areas of current emphasis include mediation/path analysis,
+outcome-dependent sampling designs, targeted loss-based estimation, and vaccine
+efficacy trials. Nima is also passionate about statistical computing and open
+source software development for applied statistics.
+
+\hypertarget{ivana-malenica}{%
+\subsection*{Ivana Malenica}\label{ivana-malenica}}
+
+
+Ivana Malenica is a PhD student in biostatistics advised by Mark van der Laan.
+Ivana is currently a fellow at the Berkeley Institute for Data Science, after
+serving as a NIH Biomedical Big Data and Freeport-McMoRan Genomic Engine fellow.
+She earned her Master's in Biostatistics and Bachelor's in Mathematics, and
+spent some time at the Translational Genomics Research Institute. Very broadly,
+her research interests span non/semi-parametric theory, probability theory,
+machine learning, causal inference and high-dimensional statistics. Most of her
+current work involves complex dependent settings (dependence through time and
+network) and adaptive sequential designs.
+
+\hypertarget{rachael-phillips}{%
+\subsection*{Rachael Phillips}\label{rachael-phillips}}
+
+
+Rachael Phillips is a PhD student in biostatistics, advised by Alan Hubbard and
+Mark van der Laan. She has an MA in Biostatistics, BS in Biology, and BA in
+Mathematics. A student of targeted learning and causal inference, Rachael's
+research focuses on statistical estimation and inference in realistic
+statistical models. Her current projects involve personalized online machine
+learning from EHR streaming data of vital signs, automated learning with
+highly adaptive lasso, and causal effect estimation for community-level
+interventions. She is also working on an FDA-funded project led Dr.~Susan
+Gruber, A Targeted Learning Framework for Causal Effect Estimation Using
+Real-World Data. Rachael is an active contributor to the \passthrough{\lstinline!hal9001!} and \passthrough{\lstinline!sl3!}
+R packages in the \passthrough{\lstinline!tlverse!}.
+
+\hypertarget{alan-hubbard}{%
+\subsection*{Alan Hubbard}\label{alan-hubbard}}
+
+
+Alan Hubbard is Professor of Biostatistics, former head of the Division of
+Biostatistics at UC Berkeley, and head of data analytics core at UC Berkeley's
+SuperFund research program. His current research interests include causal
+inference, variable importance analysis, statistical machine learning,
+estimation of and inference for data-adaptive statistical target parameters, and
+targeted minimum loss-based estimation. Research in his group is generally
+motivated by applications to problems in computational biology, epidemiology,
+and precision medicine.
+
+\hypertarget{learn}{%
+\section{Learning resources}\label{learn}}
+
+To effectively utilize this handbook, the reader need not be a fully trained
+statistician to begin understanding and applying these methods. However, it is
+highly recommended for the reader to have an understanding of basic statistical
+concepts such as confounding, probability distributions, confidence intervals,
+hypothesis tests, and regression. Advanced knowledge of mathematical statistics
+may be useful but is not necessary. Familiarity with the \passthrough{\lstinline!R!} programming
+language will be essential. We also recommend an understanding of introductory
+causal inference.
+
+For learning the \passthrough{\lstinline!R!} programming language we recommend the following (free)
+introductory resources:
+
+\begin{itemize}
+\tightlist
+\item
+  \href{http://swcarpentry.github.io/r-novice-inflammation/}{Software Carpentry's \emph{Programming with
+  \passthrough{\lstinline!R!}}}
+\item
+  \href{http://swcarpentry.github.io/r-novice-gapminder/}{Software Carpentry's \emph{\passthrough{\lstinline!R!} for Reproducible Scientific
+  Analysis}}
+\item
+  \href{https://r4ds.had.co.nz}{Garret Grolemund and Hadley Wickham's \emph{\passthrough{\lstinline!R!} for Data
+  Science}}
+\end{itemize}
+
+For a general introduction to causal inference, we recommend
+
+\begin{itemize}
+\tightlist
+\item
+  \href{https://www.hsph.harvard.edu/miguel-hernan/causal-inference-book/}{Miguel A. Hernán and James M. Robins' \emph{Causal Inference: What If},
+  2021}
+\item
+  \href{https://www.coursera.org/learn/crash-course-in-causality}{Jason A. Roy's \emph{A Crash Course in Causality: Inferring Causal Effects from
+  Observational Data} on
+  Coursera}
+\end{itemize}
+
+\hypertarget{setup}{%
+\section{Setup instructions}\label{setup}}
+
+\hypertarget{r-and-rstudio}{%
+\subsection{R and RStudio}\label{r-and-rstudio}}
+
+\textbf{R} and \textbf{RStudio} are separate downloads and installations. R is the
+underlying statistical computing environment. RStudio is a graphical integrated
+development environment (IDE) that makes using R much easier and more
+interactive. You need to install R before you install RStudio.
+
+\hypertarget{windows}{%
+\subsubsection{Windows}\label{windows}}
+
+\hypertarget{if-you-already-have-r-and-rstudio-installed}{%
+\paragraph{If you already have R and RStudio installed}\label{if-you-already-have-r-and-rstudio-installed}}
+
+\begin{itemize}
+\tightlist
+\item
+  Open RStudio, and click on ``Help'' \textgreater{} ``Check for updates''. If a new version is
+  available, quit RStudio, and download the latest version for RStudio.
+\item
+  To check which version of R you are using, start RStudio and the first thing
+  that appears in the console indicates the version of R you are
+  running. Alternatively, you can type \passthrough{\lstinline!sessionInfo()!}, which will also display
+  which version of R you are running. Go on the \href{https://cran.r-project.org/bin/windows/base/}{CRAN
+  website} and check whether a
+  more recent version is available. If so, please download and install it. You
+  can \href{https://cran.r-project.org/bin/windows/base/rw-FAQ.html\#How-do-I-UNinstall-R_003f}{check here}
+  for more information on how to remove old versions from your system if you
+  wish to do so.
+\end{itemize}
+
+\hypertarget{if-you-dont-have-r-and-rstudio-installed}{%
+\paragraph{If you don't have R and RStudio installed}\label{if-you-dont-have-r-and-rstudio-installed}}
+
+\begin{itemize}
+\tightlist
+\item
+  Download R from
+  the \href{http://cran.r-project.org/bin/windows/base/release.htm}{CRAN website}.
+\item
+  Run the \passthrough{\lstinline!.exe!} file that was just downloaded
+\item
+  Go to the \href{https://www.rstudio.com/products/rstudio/download/\#download}{RStudio download page}
+\item
+  Under \emph{Installers} select \textbf{RStudio x.yy.zzz - Windows
+  XP/Vista/7/8} (where x, y, and z represent version numbers)
+\item
+  Double click the file to install it
+\item
+  Once it's installed, open RStudio to make sure it works and you don't get any
+  error messages.
+\end{itemize}
+
+\hypertarget{macos-mac-os-x}{%
+\subsubsection{macOS / Mac OS X}\label{macos-mac-os-x}}
+
+\hypertarget{if-you-already-have-r-and-rstudio-installed-1}{%
+\paragraph{If you already have R and RStudio installed}\label{if-you-already-have-r-and-rstudio-installed-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Open RStudio, and click on ``Help'' \textgreater{} ``Check for updates''. If a new version is
+  available, quit RStudio, and download the latest version for RStudio.
+\item
+  To check the version of R you are using, start RStudio and the first thing
+  that appears on the terminal indicates the version of R you are running.
+  Alternatively, you can type \passthrough{\lstinline!sessionInfo()!}, which will also display which
+  version of R you are running. Go on the \href{https://cran.r-project.org/bin/macosx/}{CRAN
+  website} and check whether a more
+  recent version is available. If so, please download and install it.
+\end{itemize}
+
+\hypertarget{if-you-dont-have-r-and-rstudio-installed-1}{%
+\paragraph{If you don't have R and RStudio installed}\label{if-you-dont-have-r-and-rstudio-installed-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  Download R from
+  the \href{http://cran.r-project.org/bin/macosx}{CRAN website}.
+\item
+  Select the \passthrough{\lstinline!.pkg!} file for the latest R version
+\item
+  Double click on the downloaded file to install R
+\item
+  It is also a good idea to install \href{https://www.xquartz.org/}{XQuartz} (needed
+  by some packages)
+\item
+  Go to the \href{https://www.rstudio.com/products/rstudio/download/\#download}{RStudio download
+  page}
+\item
+  Under \emph{Installers} select \textbf{RStudio x.yy.zzz - Mac OS X 10.6+ (64-bit)}
+  (where x, y, and z represent version numbers)
+\item
+  Double click the file to install RStudio
+\item
+  Once it's installed, open RStudio to make sure it works and you don't get any
+  error messages.
+\end{itemize}
+
+\hypertarget{linux}{%
+\subsubsection{Linux}\label{linux}}
+
+\begin{itemize}
+\tightlist
+\item
+  Follow the instructions for your distribution
+  from \href{https://cloud.r-project.org/bin/linux}{CRAN}, they provide information
+  to get the most recent version of R for common distributions. For most
+  distributions, you could use your package manager (e.g., for Debian/Ubuntu run
+  \passthrough{\lstinline!sudo apt-get install r-base!}, and for Fedora \passthrough{\lstinline!sudo yum install R!}), but we
+  don't recommend this approach as the versions provided by this are
+  usually out of date. In any case, make sure you have at least R 3.3.1.
+\item
+  Go to the \href{https://www.rstudio.com/products/rstudio/download/\#download}{RStudio download
+  page}
+\item
+  Under \emph{Installers} select the version that matches your distribution, and
+  install it with your preferred method (e.g., with Debian/Ubuntu \passthrough{\lstinline!sudo dpkg -i   rstudio-x.yy.zzz-amd64.deb!} at the terminal).
+\item
+  Once it's installed, open RStudio to make sure it works and you don't get any
+  error messages.
+\end{itemize}
+
+These setup instructions are adapted from those written for \href{http://www.datacarpentry.org/R-ecology-lesson/}{Data Carpentry: R
+for Data Analysis and Visualization of Ecological
+Data}.
+
+\hypertarget{robust}{%
+\chapter{Robust Statistics and Reproducible Science}\label{robust}}
+
+\begin{quote}
+``One enemy of robust science is our humanity -- our appetite for
+being right, and our tendency to find patterns in noise, to see supporting
+evidence for what we already believe is true, and to ignore the facts that do
+not fit.''
+
+--- \citet{naturenews_2015}
+\end{quote}
+
+Scientific research is at a unique point in its history. The need to improve
+rigor and reproducibility in our field is greater than ever; corroboration moves
+science forward, yet there is growing alarm that results cannot be reproduced or
+validated, suggesting the possibility that many discoveries may be false
+\citep{baker2016there}. Consequences of not meeting this need will result in further
+decline in the rate of scientific progress, the reputation of the sciences, and
+the public's trust in scientific findings \citep{munafo2017manifesto, naturenews2_2015}.
+
+\begin{quote}
+``The key question we want to answer when seeing the results of any scientific
+study is whether we can trust the data analysis.''
+
+--- \citet{peng2015reproducibility}
+\end{quote}
+
+Unfortunately, in its current state, the culture of statistical data analysis
+enables, rather than precludes, the manner in which human bias may affect the
+results of (ideally objective) data analytic efforts. A significant degree of
+human bias enters statistical analysis efforts in the form improper model
+selection. All procedures for estimation and hypothesis testing are derived
+based on a choice of statistical model; thus, obtaining valid estimates and
+statistical inference relies critically on the chosen statistical model
+containing an accurate representation of the process that generated the data.
+Consider, for example, a hypothetical study in which a treatment was assigned to
+a group of patients: Was the treatment assigned randomly or were characteristics
+of the individuals (i.e., baseline covariates) used in making the treatment
+decision? Such knowledge can should be incorporated in the statistical model.
+Alternatively, the data could be from an observational study, in which there is
+no control over the treatment assignment mechanism. In such cases, available
+knowledge about the data-generating process (DGP) is more limited still. If
+this is the case, then the statistical model should contain \emph{all} possible
+distributions of the data. In practice, however, models are not selected based
+on scientific knowledge available about the DGP; instead, models are often
+selected based on (1) the philosophical leanings of the analyst, (2) the
+relative convenience of implementation of statistical methods admissible within
+the choice of model, and (3) the results of significance testing (i.e.,
+p-values) applied within the choice of model.
+
+This practice of ``cargo-cult statistics --- the ritualistic miming of statistics
+rather than conscientious practice,'' \citep{stark2018cargo} is characterized by
+arbitrary modeling choices, even though these choices often result in different
+answers to the same research question. That is, ``increasingly often,
+{[}statistics{]} is used instead to aid and abet weak science, a role it can perform
+well when used mechanically or ritually,'' as opposed to its original purpose of
+safeguarding against weak science by providing formal techniques for evaluating
+the veracity of a claim using properly collected data \citep{stark2018cargo}. This
+presents a fundamental drive behind the epidemic of false findings from which
+scientific research is suffering \citep{vdl2014entering}.
+
+\begin{quote}
+``We suggest that the weak statistical understanding is probably due to
+inadequate''statistics lite" education. This approach does not build up
+appropriate mathematical fundamentals and does not provide scientifically
+rigorous introduction into statistics. Hence, students' knowledge may remain
+imprecise, patchy, and prone to serious misunderstandings. What this approach
+achieves, however, is providing students with false confidence of being able
+to use inferential tools whereas they usually only interpret the p-value
+provided by black box statistical software. While this educational problem
+remains unaddressed, poor statistical practices will prevail regardless of
+what procedures and measures may be favored and/or banned by editorials."
+
+--- \citet{szucs2017null}
+\end{quote}
+
+Our team at the University of California, Berkeley is uniquely positioned to
+provide such an education. Spearheaded by Professor Mark van der Laan, and
+spreading rapidly by many of his students and colleagues who have greatly
+enriched the field, the aptly named ``Targeted Learning'' methodology emphasizes a
+focus of (i.e., ``targeting of'') the scientific question at hand, running counter
+to the current culture problem of ``convenience statistics,'' which opens the door
+to biased estimation, misleading analytic results, and erroneous discoveries.
+Targeted Learning embraces the fundamentals that formalized the field of
+statistics, notably including the notions that a statistical model must
+represent real knowledge about the experiment that generated the data and that a
+target parameter represents what we are seeking to learn from the data as a
+feature of the distribution that generated it \citep{vdl2014entering}. In this way,
+Targeted Learning defines a truth and establishes a principled standard for
+estimation, thereby curtailing our all-too-human biases (e.g., hindsight bias,
+confirmation bias, and outcome bias) from infiltrating our objective analytic
+efforts.
+
+\begin{quote}
+``The key for effective classical {[}statistical{]} inference is to have
+well-defined questions and an analysis plan that tests those questions.''
+
+--- \citet{nosek2018preregistration}
+\end{quote}
+
+This handbook aims to provide practical training to students, researchers,
+industry professionals, and academicians in the sciences (whether biological,
+physical, economic, or social), public health, statistics, and numerous other
+fields, to equip them with the necessary knowledge and skills to utilize the the
+methodological developments of Targeted Learning --- a technique that provides
+tailored pre-specified machines for answering queries --- taking advantage of
+estimators that are efficient, minimally biased, and that provide formal
+statistical inference --- so that each and every data analysis incorporates
+state-of-the-art statistical methodology, all while ensuring compatibility with
+the guiding principles of computational reproducibility.
+
+Just as the conscientious use of modern statistical methodology is necessary to
+ensure that scientific practice thrives, robust, well-tested software plays a
+critical role in allowing practitioners to direct access the published results
+of a given scientific investigation. In fact, ``an article\ldots in a scientific
+publication is not the scholarship itself, it is merely advertising of the
+scholarship. The actual scholarship is the complete software development
+environment and the complete set of instructions which generated the figures,''
+thus making the availability and adoption of robust statistical software key to
+enhancing the transparency that is an inherent (and assumed) aspect of the
+scientific process \citep{buckheit1995wavelab}.
+
+For a statistical methodology to be readily accessible in practice, it is
+crucial that it is accompanied by user-friendly software
+\citep{pullenayegum2016knowledge, stromberg2004write}. The \passthrough{\lstinline!tlverse!} software
+ecosystem, composed of a set of package for the \passthrough{\lstinline!R!} language and environment for
+statistical computing \citep{R}, was developed to fulfill this need for the Targeted
+Learning methodological framework. Not only does this suite of software tools
+facilitate computationally reproducible and efficient analyses, it is also a
+tool for Targeted Learning education, since its workflow mirrors the central
+aspects of the statistical methodology. In particular, the programming paradigm
+central to the \passthrough{\lstinline!tlverse!} ecosystem does not focus on implementing a specific
+estimator or a small set of related estimators. Instead, the focus is on
+exposing the statistical framework of Targeted Learning itself --- all software
+packages in the \passthrough{\lstinline!tlverse!} ecosystem directly model the key objects defined in
+the mathematical and theoretical framework of Targeted Learning. What's more,
+the \passthrough{\lstinline!tlverse!} software packages share a core set of design principles centered
+on extensibility, allowing for them all to be used in conjunction with each
+other and even used cohesively as building blocks for formulating sophisticated
+statistical analyses. For an introduction to the Targeted Learning framework, we
+recommend a \href{https://arxiv.org/abs/2006.07333}{recent review paper} from
+\citet{coyle2021targeted}.
+
+In this handbook, the reader will embark on a journey through the \passthrough{\lstinline!tlverse!}
+ecosystem. Guided by \passthrough{\lstinline!R!} programming exercises, case studies, and
+intuition-building explanations, readers will learn to use a toolbox for
+applying the Targeted Learning statistical methodology, which will translate to
+real-world causal inference analyses. Some preliminaries are required prior to
+this learning endeavor -- we have made available a list of \protect\hyperlink{learn}{recommended learning
+resources}.
+
+\hypertarget{data}{%
+\chapter{Meet the Data}\label{data}}
+
+Targeted Learning is all about learning from data. We'll use a few example datasets throughout this book. We introduce them in this chapter.
+
+\hypertarget{data-schematic}{%
+\section{Schematic Example}\label{data-schematic}}
+
+This is an entirely artificial example with three variables that's helpful for illustrating key concepts.
+
+This dataset is loaded with
+
+\begin{lstlisting}[language=R]
+data(schematic, package="tlverse")
+\end{lstlisting}
+
+Here's a table with a few rows of the data:
+
+\begin{lstlisting}
+    W A        Y
+1: 10 1  4.72968
+2:  6 0 -0.20798
+3:  5 0 -0.25256
+4:  9 0 -2.04532
+5:  5 0 -0.25444
+6:  6 1  0.73052
+\end{lstlisting}
+
+\hypertarget{schematic-variables}{%
+\subsection{Schematic Variables}\label{schematic-variables}}
+
+The variables should be interpreted as follows:
+
+\(W\) --- a baseline covariate, in this case an integer ranging from 1 to 10. You can think of this as someone's age or some other feature about a person. Usually you have a lot of these, but in this case we have only one.
+
+\(A\) --- a treatment or intervention, in this case it's either 0 or 1. You can think of this as some treatment we're interested in learning the effects of. We can say that 1 means a person got the treatment and 0 means that a person didn't (they got a placebo or nothing at all)
+
+\(Y\) --- an outcome, in this case it's a continuous measure that has a range roughly between -4 and 4. You can think of it as some outcome we're interested in, like death. Maybe it's a good outcome, and we hope that by giving the treatment we'll increase it. Maybe it's a bad outcome, and we hope that by giving the treatment we'll decrease it.
+
+Because it's so simple, it's easy to visualize on a single plot:
+
+\begin{center}\includegraphics[width=0.8\linewidth]{02-data_files/figure-latex/schematic_data-1} \end{center}
+
+We want to use the data to figure out the effect of the treatment \(A\) on outcome \(Y\), while adjusting for covariate(s) \(W\) (we'll see what that's important later). Generally speaking, a lot of data questions can be framed this way. Of course, the devil is in the details. We'll see later how important it is to get the details correctly specified.
+
+\hypertarget{data-washb}{%
+\section{WASH Benefits}\label{data-washb}}
+
+These data come from a study of the effect of water quality, sanitation, hand washing, and nutritional interventions on child development in rural Bangladesh (WASH Benefits Bangladesh): a cluster randomized controlled trial \citep{luby2018effect}. For reference, this trial was registered with ClinicalTrials.gov as NCT01590095. The study enrolled pregnant women in their first or second trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and Tangail districts of central Bangladesh, with an average of eight women per cluster. Groups of eight geographically adjacent clusters were block randomized, using a random number generator, into six intervention groups (all of which received weekly visits from a community health promoter for the first 6 months and every 2 weeks for the next 18 months) and a double-sized control group (no intervention or health promoter visit). In this book, we concentrate on child growth (size for age) as the outcome of interest
+
+This dataset is loaded with
+
+\begin{lstlisting}[language=R]
+data(tlverse_washb)
+\end{lstlisting}
+
+TODO: table
+
+The six intervention groups were:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  chlorinated drinking water;
+\item
+  improved sanitation;
+\item
+  hand-washing with soap;
+\item
+  combined water, sanitation, and hand washing;
+\item
+  improved nutrition through counseling and provision of lipid-based nutrient supplements; and
+\item
+  combined water, sanitation, handwashing, and nutrition.
+\end{enumerate}
+
+We have 28 variables measured. This outcome, \emph{Y}, is the weight-for-height Z-score (\passthrough{\lstinline!whz!} in \passthrough{\lstinline!dat!}); the treatment of interest, \emph{A}, is the randomized treatment group (\passthrough{\lstinline!tr!} in \passthrough{\lstinline!dat!}); and the adjustment set, \emph{W}, consists simply of \emph{everything else}.
+
+\hypertarget{international-stroke-trial-rachael-to-replace-with-different-dataset-for-exercises}{%
+\section{International Stroke Trial (Rachael to replace with different dataset for exercises)}\label{international-stroke-trial-rachael-to-replace-with-different-dataset-for-exercises}}
+
+The International Stroke Trial database contains individual patient data from the International Stroke Trial (IST), a multi-national randomized trial conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed to assess whether early administration of aspirin, heparin, both aspirin and heparin, or neither influenced the clinical course of acute ischaemic stroke \citep{sandercock1997international}. The IST dataset includes data on 19,435 patients with acute stroke, with 99\% complete follow-up. De-identified data are available for download at \url{https://datashare.is.ed.ac.uk/handle/10283/128}. This study is described in more detail in \citet{sandercock2011international}. The example data for this handbook considers a sample of 5,000 patients and the binary outcome of recurrent ischemic stroke within 14 days after randomization. Also in this example data, we ensure that we have subjects with a missing outcome.
+
+We have 26 variables measured, and the outcome of interest, \emph{Y}, indicates recurrent ischemic stroke within 14 days after randomization (\passthrough{\lstinline!DRSISC!} in \passthrough{\lstinline!ist!}); the treatment of interest, \emph{A}, is the randomized aspirin vs.~no aspirin treatment allocation (\passthrough{\lstinline!RXASP!} in \passthrough{\lstinline!ist!}); and the adjustment set, \emph{W}, consists of all other variables measured at baseline.
+
+This dataset is loaded with
+
+\begin{lstlisting}[language=R]
+data(tlverse_ist)
+\end{lstlisting}
+
+Like before, we can summarize the variables measured in the IST sample data set with \passthrough{\lstinline!skimr!}:
+
+TODO: table
+
+\hypertarget{roadmap}{%
+\chapter{The Roadmap for Targeted Learning}\label{roadmap}}
+
+In this chapter you will\ldots{}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Translate scientific questions to statistical questions.
+\item
+  Define a statistical model based on the knowledge of the experiment that generated the data.
+\item
+  Identify a causal parameter as a function of the observed data distribution.
+\item
+  Explain the following causal and statistical assumptions and their implications: i.i.d., consistency, interference, positivity, SUTVA.
+\end{enumerate}
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+The roadmap of statistical learning is concerned with the translation from real-world data applications to a mathematical and statistical formulation of the relevant estimation problem. This involves data as a random variable having a probability distribution, scientific knowledge represented by a statistical model, a statistical target parameter representing an answer to the question of interest, and the notion of an estimator and sampling distribution of the estimator.
+
+\hypertarget{the-roadmap}{%
+\section{The Roadmap}\label{the-roadmap}}
+
+Following the roadmap is a process of five steps.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data: Data as a random variable with a probability distribution, \(O\sim P_0\)
+\item
+  Model: The statistical model \(\mathcal{M}\) such that \(P_0 \in \mathcal{M}\)
+\item
+  Parameter: The statistical target parameter \(\Psi\) and estimand \(\Psi(P_0)\).
+\item
+  Estimation: The estimator \(\hat{\Psi}\) and estimand \(\hat{\Psi}(P_n)\).
+\item
+  Inference: A measure of uncertainty for the estimate \(\hat{\Psi}(P_n)\)
+\end{enumerate}
+
+\hypertarget{schematic-example}{%
+\section{Schematic Example}\label{schematic-example}}
+
+Remember the schematic from last chapter? Let's start a roadmap for it before going on to talk about the steps in more detail
+
+\hypertarget{data-step}{%
+\subsection{Data Step}\label{data-step}}
+
+We can describe the data as a set of observations about an individual (it's more general to say experimental unit) and, for our schematic example, we can denote an observation like so:
+
+\[O \equiv (W,A,Y)\]
+
+a collection of facts (here \(W\), \(A\), and \(Y\)) about an individual observation \(O\). We think of a set of data as a set of such observations. We think of that observation as a random draw from a distribution of possible observations we denote \(P_0\) (here the subscript \(0\) denotes the real one, we'll use other subscripts to denote theoretical or estimated distributions). We call \(P_0\) the probability distribution or data generating distribution (DGD).
+
+How the observation is drawn from the sample is important. That's called the experiment. How to translate between a real world experiment and a probability model is outside the scope of this book. For now, we'll focus on what we call independent and identically distributed (i.i.d.) data. That means that each unit \(O\) got drawn from the same \(P_0\) in the same way. No other sample can change another samples outcome, and all samples get drawn from the same imaginary box. Options and modifications of our methodology are available for for complex and biased samples, repeated measures, and other sampling concerns.
+
+Luckily for us, we have just such data in our schematic dataset.
+
+\hypertarget{model-step}{%
+\subsection{Model Step}\label{model-step}}
+
+Just like we had a set of observations we called a dataset, we have a set of possible probability distributions. You might think we call that a distribution set, but we don't, we call it a model. We denote it \(\mathcal{M}\) and we write:
+
+\[P_0 \in \mathcal{M}\]
+
+To indicate that the true DGD is part of our model. This is important, because if our model doesn't contain the truth, it will be impossible for us to get the right answer, even with infinite data!
+
+Well, what can we say about \(\mathcal{M}\)? That is, what can we say for sure about what \(P_0\) might look like. Given that I haven't told you much about the data or the experiment, really very little! We'll see in later chapters how some statisticians want to do statistics in small models, that we can be quite sure don't contain \(P_0\) , because it makes the statistics easier. For now we'll just say that \(\mathcal{M}\) is nonparametric, which essentially means that we can't make any assumptions about it.
+
+The truth is, we can make a few assumptions based on the observed data types and our belief that we've observed all the values of some of the variables. For example, we think \(A\) can only be 0 or 1, and \(W\)ranges between 1 and 10. It also seems like \(Y\) varies in a small range, so we could incorporate that as a modeling assumption if we were fairly confident that that's its true range. We don't often write these things as part of the model explicitly, but they are part of it.
+
+\hypertarget{parameter-step}{%
+\subsection{Parameter Step}\label{parameter-step}}
+
+We said that we want to know about the effect of the treatment \(A\) on the outcome \(Y\). There's a lot of ways we could formalize that mathematically, but here's one we like:
+
+\[\Psi_{0,\text{TSM}}=E_W[E_{Y|A,W}[Y|A=1,W]]\]
+
+we call this a Treatment Specific Mean (TSM):
+
+Basically, we want to know the mean of \(Y\) for every \(W\), when we set \(A=1\). We then want to take a mean across \(W\)s, which we call ``marginalizing''. We say call this a treatment specific mean because it's the mean outcome \(Y\) we'd expect under the specific treatment \(A=1\). That tells us something about how treatment affects outcome. However, we'd often like to compare outcomes under two conditions. We can use a pair of TSMs to make an Average Treatment Effect (ATE):
+
+\[\Psi_{0,\text{ATE}}=E_W[E_{Y|A,W}[Y|A=1,W]]- E_W[E_{Y|A,W}[Y|A=0,W]]\]
+
+Many other types of parameters like relative risks and odds ratios can be defined by simple combinations of TSMs. We'll see later how we can use the Delta Method to estimate parameters like these starting with estimates of TSMs.
+
+\hypertarget{estimation-step}{%
+\subsection{Estimation Step}\label{estimation-step}}
+
+Explain plug-ins here
+
+Say we'll see more in next two chapters
+
+\hypertarget{inference-step}{%
+\subsection{Inference Step}\label{inference-step}}
+
+We'll cover this later
+
+\hypertarget{wash-benefits-example}{%
+\section{WASH Benefits Example}\label{wash-benefits-example}}
+
+\hypertarget{data-step-1}{%
+\subsection{Data Step}\label{data-step-1}}
+
+We still say \(O \equiv (W,A,Y)\), except now \(W\) is a vector of many covariates.
+
+For the purposes of this handbook, we will say that the sample was generated i.i.d as before. This study had a cluster design, so this is not actually the case. We could, with available options, account for the clustering of the data.
+
+\hypertarget{model-step-1}{%
+\subsection{Model Step}\label{model-step-1}}
+
+We still don't know anything, so we'll stick with a nonparametric model \(\mathcal{M}\).
+
+\hypertarget{parameter-step-1}{%
+\subsection{Parameter Step}\label{parameter-step-1}}
+
+We would like to estimate TSMs for every treatment level, as well as ATEs between some treatment levels and the control treatment.
+
+\hypertarget{estimation-step-1}{%
+\subsection{Estimation Step}\label{estimation-step-1}}
+
+\hypertarget{inference-step-1}{%
+\subsection{Inference Step}\label{inference-step-1}}
+
+\hypertarget{causal-concerns}{%
+\section{Causal Concerns}\label{causal-concerns}}
+
+Current roadmap text goes here
+
+\hypertarget{exercises}{%
+\section{Exercises}\label{exercises}}
+
+\hypertarget{tlverse}{%
+\chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
+
+\hypertarget{origami}{%
+\chapter{Cross-validation}\label{origami}}
+
+\hypertarget{roadmap-review}{%
+\section{Roadmap Review}\label{roadmap-review}}
+
+\hypertarget{we-want-to-fit-the-data-to-estimate-q}{%
+\section{We want to fit the data to estimate Q}\label{we-want-to-fit-the-data-to-estimate-q}}
+
+\hypertarget{we-can-propose-and-test-models}{%
+\section{We can propose and test models}\label{we-can-propose-and-test-models}}
+
+\hypertarget{schematic-example-1}{%
+\section{schematic example}\label{schematic-example-1}}
+
+\hypertarget{show-overfit-on-test-set}{%
+\section{show overfit on test set}\label{show-overfit-on-test-set}}
+
+\hypertarget{show-cross-validation}{%
+\section{show cross-validation}\label{show-cross-validation}}
+
+\hypertarget{washb-example}{%
+\section{washb example}\label{washb-example}}
+
+\hypertarget{advanced-usage}{%
+\section{advanced usage}\label{advanced-usage}}
+
+\hypertarget{sl3}{%
+\chapter{Super (Machine) Learning}\label{sl3}}
+
+\hypertarget{roadmap-review-1}{%
+\section{Roadmap Review}\label{roadmap-review-1}}
+
+\hypertarget{we-still-want-to-fit-the-data-to-estimate-q}{%
+\section{We still want to fit the data to estimate Q}\label{we-still-want-to-fit-the-data-to-estimate-q}}
+
+\hypertarget{sl3-makes-that-process-easier}{%
+\section{sl3 makes that process easier}\label{sl3-makes-that-process-easier}}
+
+\hypertarget{schematic-example-2}{%
+\section{schematic example}\label{schematic-example-2}}
+
+TODO: define glm learners to fit the following:
+EY = 0.2\emph{(-10 } A + W - 0.2\emph{W\^{}2 + 0.4}A*W\^{}2)
+
+\hypertarget{washb-example-1}{%
+\section{washb example}\label{washb-example-1}}
+
+\hypertarget{advanced-usage-1}{%
+\section{advanced usage}\label{advanced-usage-1}}
+
+\hypertarget{tmle3}{%
+\chapter{The TMLE Framework}\label{tmle3}}
+
+\hypertarget{roadmap-review-2}{%
+\section{Roadmap Review}\label{roadmap-review-2}}
+
+\hypertarget{we-want-to-estimate-psi-better}{%
+\section{We want to estimate psi better}\label{we-want-to-estimate-psi-better}}
+
+\hypertarget{we-also-want-inference}{%
+\section{We also want inference}\label{we-also-want-inference}}
+
+\hypertarget{schematic-example-3}{%
+\section{schematic example}\label{schematic-example-3}}
+
+\hypertarget{washb-example-2}{%
+\section{washb example}\label{washb-example-2}}
+
+\hypertarget{advanced-usage-2}{%
+\section{advanced usage}\label{advanced-usage-2}}
+
+\hypertarget{r6}{%
+\chapter{\texorpdfstring{A Primer on the \texttt{R6} Class System}{A Primer on the R6 Class System}}\label{r6}}
+
+A central goal of the Targeted Learning statistical paradigm is to estimate
+scientifically relevant parameters in realistic (usually nonparametric) models.
+
+The \passthrough{\lstinline!tlverse!} is designed using basic OOP principles and the \passthrough{\lstinline!R6!} OOP framework.
+While we've tried to make it easy to use the \passthrough{\lstinline!tlverse!} packages without worrying
+much about OOP, it is helpful to have some intuition about how the \passthrough{\lstinline!tlverse!} is
+structured. Here, we briefly outline some key concepts from OOP. Readers
+familiar with OOP basics are invited to skip this section.
+
+\hypertarget{classes-fields-and-methods}{%
+\section{Classes, Fields, and Methods}\label{classes-fields-and-methods}}
+
+The key concept of OOP is that of an object, a collection of data and functions
+that corresponds to some conceptual unit. Objects have two main types of
+elements:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \emph{fields}, which can be thought of as nouns, are information about an object,
+  and
+\item
+  \emph{methods}, which can be thought of as verbs, are actions an object can
+  perform.
+\end{enumerate}
+
+Objects are members of classes, which define what those specific fields and
+methods are. Classes can inherit elements from other classes (sometimes called
+base classes) -- accordingly, classes that are similar, but not exactly the
+same, can share some parts of their definitions.
+
+Many different implementations of OOP exist, with variations in how these
+concepts are implemented and used. R has several different implementations,
+including \passthrough{\lstinline!S3!}, \passthrough{\lstinline!S4!}, reference classes, and \passthrough{\lstinline!R6!}. The \passthrough{\lstinline!tlverse!} uses the \passthrough{\lstinline!R6!}
+implementation. In \passthrough{\lstinline!R6!}, methods and fields of a class object are accessed using
+the \passthrough{\lstinline!$!} operator. For a more thorough introduction to \passthrough{\lstinline!R!}'s various OOP systems,
+see \url{http://adv-r.had.co.nz/OO-essentials.html}, from Hadley Wickham's \emph{Advanced
+R} \citep{wickham2014advanced}.
+
+\hypertarget{object-oriented-programming-python-and-r}{%
+\section{\texorpdfstring{Object Oriented Programming: \texttt{Python} and \texttt{R}}{Object Oriented Programming: Python and R}}\label{object-oriented-programming-python-and-r}}
+
+OO concepts (classes with inherentence) were baked into Python from the first
+published version (version 0.9 in 1991). In contrast, \passthrough{\lstinline!R!} gets its OO ``approach''
+from its predecessor, \passthrough{\lstinline!S!}, first released in 1976. For the first 15 years, \passthrough{\lstinline!S!}
+had no support for classes, then, suddenly, \passthrough{\lstinline!S!} got two OO frameworks bolted on
+in rapid succession: informal classes with \passthrough{\lstinline!S3!} in 1991, and formal classes with
+\passthrough{\lstinline!S4!} in 1998. This process continues, with new OO frameworks being periodically
+released, to try to improve the lackluster OO support in \passthrough{\lstinline!R!}, with reference
+classes (\passthrough{\lstinline!R5!}, 2010) and \passthrough{\lstinline!R6!} (2014). Of these, \passthrough{\lstinline!R6!} behaves most like Python
+classes (and also most like OOP focused languages like C++ and Java), including
+having method definitions be part of class definitions, and allowing objects to
+be modified by reference.
+
+  \bibliography{book.bib,packages.bib}
+
+\backmatter
+\printindex
+
+\end{document}

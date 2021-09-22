@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 2 Meet the Data | Targeted Learning in R</title>
+<meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script>
+</head>
+<body>
+<span class="math inline">
+    \(\DeclareMathOperator{\expit}{expit}\)
+    \(\DeclareMathOperator{\logit}{logit}\)
+    \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
+    \(\newcommand{\indep}{\perp\!\!\!\perp}\)
+    \(\newcommand{\coloneqq}{\mathrel{=}}\)
+    \(\newcommand{\R}{\mathbb{R}}\)
+    \(\newcommand{\E}{\mathbb{E}}\)
+    \(\newcommand{\M}{\mathcal{M}}\)
+    \(\renewcommand{\P}{\mathbb{P}}\)
+    \(\newcommand{\I}{\mathbb{I}}\)
+    \(\newcommand{\1}{\mathbbm{1}}\)
+    </span>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="Causal Data Science with the tlverse Software Ecosystem">Targeted Learning in R</a>:
+        <small class="text-muted">Causal Data Science with the tlverse Software Ecosystem</small>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">About this book</a></li>
+<li><a class="" href="robust.html"><span class="header-section-number">1</span> Robust Statistics and Reproducible Science</a></li>
+<li><a class="active" href="data.html"><span class="header-section-number">2</span> Meet the Data</a></li>
+<li><a class="" href="roadmap.html"><span class="header-section-number">3</span> The Roadmap for Targeted Learning</a></li>
+<li><a class="" href="tlverse.html"><span class="header-section-number">4</span> Welcome to the tlverse</a></li>
+<li><a class="" href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></li>
+<li><a class="" href="tmle3.html"><span class="header-section-number">7</span> The TMLE Framework</a></li>
+<li><a class="" href="r6.html"><span class="header-section-number">8</span> A Primer on the R6 Class System</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tlverse/tlverse-handbook">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="data" class="section level1" number="2">
+<h1>
+<span class="header-section-number">2</span> Meet the Data<a class="anchor" aria-label="anchor" href="#data"><i class="fas fa-link"></i></a>
+</h1>
+<p>Targeted Learning is all about learning from data. We’ll use a few example datasets throughout this book. We introduce them in this chapter.</p>
+<div id="learning-objectives" class="section level2" number="2.1">
+<h2>
+<span class="header-section-number">2.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives"><i class="fas fa-link"></i></a>
+</h2>
+<p>By the end of this chapter you will be able to:</p>
+<ol style="list-style-type: decimal">
+<li>Understand the various datasets we’ll use as case studies</li>
+<li>Have a vague understanding of the kinds of scientific questions we
+might want to answer with them</li>
+</ol>
+</div>
+<div id="data-schematic" class="section level2" number="2.2">
+<h2>
+<span class="header-section-number">2.2</span> Schematic Example<a class="anchor" aria-label="anchor" href="#data-schematic"><i class="fas fa-link"></i></a>
+</h2>
+<p>This is an entirely artificial example with three variables that’s helpful for illustrating key concepts.</p>
+<p>This dataset is loaded with</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">schematic</span>, package<span class="op">=</span><span class="st">"tlverse"</span><span class="op">)</span></code></pre></div>
+<p>Here’s a table with a few rows of the data:</p>
+<!-- TODO: clean up tables, something wrong with skimr... -->
+<pre><code>    W A        Y
+1: 10 1  4.72968
+2:  6 0 -0.20798
+3:  5 0 -0.25256
+4:  9 0 -2.04532
+5:  5 0 -0.25444
+6:  6 1  0.73052</code></pre>
+<div id="schematic-variables" class="section level3" number="2.2.1">
+<h3>
+<span class="header-section-number">2.2.1</span> Schematic Variables<a class="anchor" aria-label="anchor" href="#schematic-variables"><i class="fas fa-link"></i></a>
+</h3>
+<p>The variables should be interpreted as follows:</p>
+<p><span class="math inline">\(W\)</span> — a baseline covariate, in this case an integer ranging from 1 to 10. You can think of this as someone’s age or some other feature about a person. Usually you have a lot of these, but in this case we have only one.</p>
+<p><span class="math inline">\(A\)</span> — a treatment or intervention, in this case it’s either 0 or 1. You can think of this as some treatment we’re interested in learning the effects of. We can say that 1 means a person got the treatment and 0 means that a person didn’t (they got a placebo or nothing at all)</p>
+<p><span class="math inline">\(Y\)</span> — an outcome, in this case it’s a continuous measure that has a range roughly between -4 and 4. You can think of it as some outcome we’re interested in, like death. Maybe it’s a good outcome, and we hope that by giving the treatment we’ll increase it. Maybe it’s a bad outcome, and we hope that by giving the treatment we’ll decrease it.</p>
+<p>Because it’s so simple, it’s easy to visualize on a single plot:</p>
+<div class="inline-figure"><img src="02-data_files/figure-html/schematic_data-1.png" width="80%" style="display: block; margin: auto;"></div>
+<p>We want to use the data to figure out the effect of the treatment <span class="math inline">\(A\)</span> on outcome <span class="math inline">\(Y\)</span>, while adjusting for covariate(s) <span class="math inline">\(W\)</span> (we’ll see what that’s important later). Generally speaking, a lot of data questions can be framed this way. Of course, the devil is in the details. We’ll see later how important it is to get the details correctly specified.</p>
+</div>
+</div>
+<div id="data-washb" class="section level2" number="2.3">
+<h2>
+<span class="header-section-number">2.3</span> WASH Benefits<a class="anchor" aria-label="anchor" href="#data-washb"><i class="fas fa-link"></i></a>
+</h2>
+<p>These data come from a study of the effect of water quality, sanitation, hand washing, and nutritional interventions on child development in rural Bangladesh (WASH Benefits Bangladesh): a cluster randomized controlled trial <span class="citation">(<a href="references.html#ref-luby2018effect" role="doc-biblioref">Tofail et al. 2018</a>)</span>. For reference, this trial was registered with ClinicalTrials.gov as NCT01590095. The study enrolled pregnant women in their first or second trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and Tangail districts of central Bangladesh, with an average of eight women per cluster. Groups of eight geographically adjacent clusters were block randomized, using a random number generator, into six intervention groups (all of which received weekly visits from a community health promoter for the first 6 months and every 2 weeks for the next 18 months) and a double-sized control group (no intervention or health promoter visit). In this book, we concentrate on child growth (size for age) as the outcome of interest</p>
+<p>This dataset is loaded with</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">tlverse_washb</span><span class="op">)</span></code></pre></div>
+<p>TODO: table</p>
+<p>The six intervention groups were:</p>
+<ol style="list-style-type: decimal">
+<li>chlorinated drinking water;</li>
+<li>improved sanitation;</li>
+<li>hand-washing with soap;</li>
+<li>combined water, sanitation, and hand washing;</li>
+<li>improved nutrition through counseling and provision of lipid-based nutrient supplements; and</li>
+<li>combined water, sanitation, handwashing, and nutrition.</li>
+</ol>
+<p>We have 28 variables measured. This outcome, <em>Y</em>, is the weight-for-height Z-score (<code>whz</code> in <code>dat</code>); the treatment of interest, <em>A</em>, is the randomized treatment group (<code>tr</code> in <code>dat</code>); and the adjustment set, <em>W</em>, consists simply of <em>everything else</em>.</p>
+</div>
+<div id="international-stroke-trial-rachael-to-replace-with-different-dataset-for-exercises" class="section level2" number="2.4">
+<h2>
+<span class="header-section-number">2.4</span> International Stroke Trial (Rachael to replace with different dataset for exercises)<a class="anchor" aria-label="anchor" href="#international-stroke-trial-rachael-to-replace-with-different-dataset-for-exercises"><i class="fas fa-link"></i></a>
+</h2>
+<p>The International Stroke Trial database contains individual patient data from the International Stroke Trial (IST), a multi-national randomized trial conducted between 1991 and 1996 (pilot phase between 1991 and 1993) that aimed to assess whether early administration of aspirin, heparin, both aspirin and heparin, or neither influenced the clinical course of acute ischaemic stroke <span class="citation">(<a href="references.html#ref-sandercock1997international" role="doc-biblioref">P. Sandercock et al. 1997</a>)</span>. The IST dataset includes data on 19,435 patients with acute stroke, with 99% complete follow-up. De-identified data are available for download at <a href="https://datashare.is.ed.ac.uk/handle/10283/128" class="uri">https://datashare.is.ed.ac.uk/handle/10283/128</a>. This study is described in more detail in <span class="citation">P. A. Sandercock, Niewada, and Członkowska (<a href="references.html#ref-sandercock2011international" role="doc-biblioref">2011</a>)</span>. The example data for this handbook considers a sample of 5,000 patients and the binary outcome of recurrent ischemic stroke within 14 days after randomization. Also in this example data, we ensure that we have subjects with a missing outcome.</p>
+<p>We have 26 variables measured, and the outcome of interest, <em>Y</em>, indicates recurrent ischemic stroke within 14 days after randomization (<code>DRSISC</code> in <code>ist</code>); the treatment of interest, <em>A</em>, is the randomized aspirin vs. no aspirin treatment allocation (<code>RXASP</code> in <code>ist</code>); and the adjustment set, <em>W</em>, consists of all other variables measured at baseline.</p>
+<p>This dataset is loaded with</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">tlverse_ist</span><span class="op">)</span></code></pre></div>
+<p>Like before, we can summarize the variables measured in the IST sample data set with <code>skimr</code>:</p>
+<p>TODO: table</p>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="robust.html"><span class="header-section-number">1</span> Robust Statistics and Reproducible Science</a></div>
+<div class="next"><a href="roadmap.html"><span class="header-section-number">3</span> The Roadmap for Targeted Learning</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data"><span class="header-section-number">2</span> Meet the Data</a></li>
+<li><a class="nav-link" href="#learning-objectives"><span class="header-section-number">2.1</span> Learning Objectives</a></li>
+<li>
+<a class="nav-link" href="#data-schematic"><span class="header-section-number">2.2</span> Schematic Example</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#schematic-variables"><span class="header-section-number">2.2.1</span> Schematic Variables</a></li></ul>
+</li>
+<li><a class="nav-link" href="#data-washb"><span class="header-section-number">2.3</span> WASH Benefits</a></li>
+<li><a class="nav-link" href="#international-stroke-trial-rachael-to-replace-with-different-dataset-for-exercises"><span class="header-section-number">2.4</span> International Stroke Trial (Rachael to replace with different dataset for exercises)</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tlverse/tlverse-handbook/blob/master/02-data.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tlverse/tlverse-handbook/edit/master/02-data.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on September 22, 2021.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+</html>
