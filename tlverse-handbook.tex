@@ -1,49 +1,65 @@
-\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
-\documentclass[12pt, krantz2,]{krantz}
+\documentclass[
+  12pt, krantz2,
+]{krantz}
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
-\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provides euro and other symbols
-\else % if luatex or xelatex
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
   \usepackage{unicode-math}
-  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 \fi
-% use upquote if available, for straight quotes in verbatim environments
+% Use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-% use microtype if available
-\IfFileExists{microtype.sty}{%
-\usepackage[]{microtype}
-\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\IfFileExists{parskip.sty}{%
-\usepackage{parskip}
-}{% else
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
 \usepackage{xcolor}
-\usepackage{hyperref}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-            pdftitle={Targeted Learning in R},
-            pdfauthor={Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard},
-            colorlinks=true,
-            linkcolor=Maroon,
-            citecolor=Blue,
-            urlcolor=Blue,
-            breaklinks=true}
-\urlstyle{same}  % don't use monospace font for urls
+  pdftitle={Targeted Learning in R},
+  pdfauthor={Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard},
+  colorlinks=true,
+  linkcolor=Maroon,
+  filecolor=Maroon,
+  citecolor=Blue,
+  urlcolor=Blue,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
 \usepackage{listings}
 \newcommand{\passthrough}[1]{#1}
+\lstset{defaultdialect=[5.3]Lua}
+\lstset{defaultdialect=[x86masm]Assembler}
 \usepackage{longtable,booktabs}
-% Fix footnotes in tables (requires footnote package)
-\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -53,25 +69,14 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\setlength{\emergencystretch}{3em}  % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{5}
-% Redefines (sub)paragraphs to behave more like sections
-\ifx\paragraph\undefined\else
-\let\oldparagraph\paragraph
-\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
-\fi
-\ifx\subparagraph\undefined\else
-\let\oldsubparagraph\subparagraph
-\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
-\fi
-
-% set default figure placement to htbp
+% Set default figure placement to htbp
 \makeatletter
 \def\fps@figure{htbp}
 \makeatother
-
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
 \usepackage{booktabs}
 \usepackage[inline]{enumitem}
 \usepackage{float}
@@ -172,12 +177,6 @@
 \usepackage{framed}
 \setlength{\fboxsep}{.8em}
 \usepackage{tcolorbox}
-\usepackage{etoolbox}
-\makeatletter
-\providecommand{\subtitle}[1]{% add subtitle to \maketitle
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
-}
-\makeatother
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage{array}
@@ -196,10 +195,15 @@
 \bibliographystyle{apalike}
 
 \title{Targeted Learning in R}
-\providecommand{\subtitle}[1]{}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{September 21, 2021}
+\date{October 13, 2021}
 
 \begin{document}
 \maketitle
@@ -226,6 +230,8 @@
 \setcounter{tocdepth}{2}
 \tableofcontents
 }
+\listoftables
+\listoffigures
 \hypertarget{about-this-book}{%
 \chapter*{About this book}\label{about-this-book}}
 
@@ -680,7 +686,7 @@ the guiding principles of computational reproducibility.
 Just as the conscientious use of modern statistical methodology is necessary to
 ensure that scientific practice thrives, robust, well-tested software plays a
 critical role in allowing practitioners to direct access the published results
-of a given scientific investigation. In fact, ``an article\ldots{}in a scientific
+of a given scientific investigation. In fact, ``an article\ldots in a scientific
 publication is not the scholarship itself, it is merely advertising of the
 scholarship. The actual scholarship is the complete software development
 environment and the complete set of instructions which generated the figures,''
@@ -722,7 +728,7 @@ resources}.
 
 \emph{Nima Hejazi} and \emph{Rachael Phillips}
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -774,7 +780,7 @@ The roadmap is a five-stage process of defining the following.
 \end{enumerate}
 
 \hypertarget{data-a-random-variable-with-a-probability-distribution-o-sim-p_0}{%
-\subsection*{\texorpdfstring{(1) Data: A random variable with a probability distribution, \(O \sim P_0\)}{(1) Data: A random variable with a probability distribution, O \textbackslash{}sim P\_0}}\label{data-a-random-variable-with-a-probability-distribution-o-sim-p_0}}
+\subsection*{\texorpdfstring{(1) Data: A random variable with a probability distribution, \(O \sim P_0\)}{(1) Data: A random variable with a probability distribution, O \textbackslash sim P\_0}}\label{data-a-random-variable-with-a-probability-distribution-o-sim-p_0}}
 
 
 The data set we are confronted with is the collection of the results of an
@@ -820,7 +826,7 @@ In order to start learning from the data, we next need to ask \emph{``What do we
 about the probability distribution of the data?''} This brings us on to Step 2.
 
 \hypertarget{defining-the-statistical-model-m-such-that-p_0-in-m}{%
-\subsection*{\texorpdfstring{(2) Defining the statistical model \(\M\) such that \(P_0 \in \M\)}{(2) Defining the statistical model \textbackslash{}M such that P\_0 \textbackslash{}in \textbackslash{}M}}\label{defining-the-statistical-model-m-such-that-p_0-in-m}}
+\subsection*{\texorpdfstring{(2) Defining the statistical model \(\M\) such that \(P_0 \in \M\)}{(2) Defining the statistical model \textbackslash M such that P\_0 \textbackslash in \textbackslash M}}\label{defining-the-statistical-model-m-such-that-p_0-in-m}}
 
 
 The statistical model \(\M\) is defined by the question we asked at the end of
@@ -854,7 +860,7 @@ make arbitrary modeling choices. The result is a practice of data science that
 often yields starkly different answers to the same scientific problem, due to
 the differing modeling decisions and assumptions made by different analysts.
 Even in the nascent days of data analysis, it was recognized that it is ``far
-better {[}to develop{]} an approximate answer to the right question\ldots{}than an exact
+better {[}to develop{]} an approximate answer to the right question\ldots than an exact
 answer to the wrong question, which can always be made precise''
 \citep{tukey1962future}, though traditional statistics failed to heed this advice for
 a number of decades \citep{donoho2017fifty}. The Targeted Learning paradigm avoids
@@ -867,7 +873,7 @@ procedure.
 Now, on to Step 3: \emph{``What are we trying to learn from the data?''}
 
 \hypertarget{the-statistical-target-parameter-psi-and-estimand-psip_0}{%
-\subsection*{\texorpdfstring{(3) The statistical target parameter \(\Psi\) and estimand \(\Psi(P_0)\)}{(3) The statistical target parameter \textbackslash{}Psi and estimand \textbackslash{}Psi(P\_0)}}\label{the-statistical-target-parameter-psi-and-estimand-psip_0}}
+\subsection*{\texorpdfstring{(3) The statistical target parameter \(\Psi\) and estimand \(\Psi(P_0)\)}{(3) The statistical target parameter \textbackslash Psi and estimand \textbackslash Psi(P\_0)}}\label{the-statistical-target-parameter-psi-and-estimand-psip_0}}
 
 
 The statistical target parameter, \(\Psi\), is defined as a mapping from the
@@ -893,7 +899,7 @@ quantity we wish to learn from the data. Once we have defined \(O\), \(\M\) and
 \(\Psi(P_0)\) we have formally defined the statistical estimation problem.
 
 \hypertarget{the-estimator-hatpsi-and-estimate-hatpsip_n}{%
-\subsection*{\texorpdfstring{(4) The estimator \(\hat{\Psi}\) and estimate \(\hat{\Psi}(P_n)\)}{(4) The estimator \textbackslash{}hat\{\textbackslash{}Psi\} and estimate \textbackslash{}hat\{\textbackslash{}Psi\}(P\_n)}}\label{the-estimator-hatpsi-and-estimate-hatpsip_n}}
+\subsection*{\texorpdfstring{(4) The estimator \(\hat{\Psi}\) and estimate \(\hat{\Psi}(P_n)\)}{(4) The estimator \textbackslash hat\{\textbackslash Psi\} and estimate \textbackslash hat\{\textbackslash Psi\}(P\_n)}}\label{the-estimator-hatpsi-and-estimate-hatpsip_n}}
 
 
 Typically, we will focus on estimation in realistic, nonparametric models. To
@@ -919,7 +925,7 @@ In order to quantify the uncertainty in our estimate of the target parameter
 distribution of our estimator will be necessary. This brings us to Step 5.
 
 \hypertarget{a-measure-of-uncertainty-for-the-estimate-hatpsip_n}{%
-\subsection*{\texorpdfstring{(5) A measure of uncertainty for the estimate \(\hat{\Psi}(P_n)\)}{(5) A measure of uncertainty for the estimate \textbackslash{}hat\{\textbackslash{}Psi\}(P\_n)}}\label{a-measure-of-uncertainty-for-the-estimate-hatpsip_n}}
+\subsection*{\texorpdfstring{(5) A measure of uncertainty for the estimate \(\hat{\Psi}(P_n)\)}{(5) A measure of uncertainty for the estimate \textbackslash hat\{\textbackslash Psi\}(P\_n)}}\label{a-measure-of-uncertainty-for-the-estimate-hatpsip_n}}
 
 
 Since the estimator \(\hat{\Psi}\) is a function of the empirical distribution
@@ -1160,7 +1166,7 @@ of \(P_0\). We discuss several more complex estimands in later sections.
 \hypertarget{tlverse}{%
 \chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1574,7 +1580,7 @@ study participants. Notice also the uniform distribution of the treatment groups
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -3005,7 +3011,7 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \hypertarget{learning-objectives}{%
 \section*{Learning Objectives}\label{learning-objectives}}
@@ -3839,7 +3845,7 @@ screen_rf
 screen_rf$train(washb_task)
 [1] "Lrnr_screener_importance_5"
 $selected
-[1] "aged"        "month"       "momedu"      "asset_tv"    "asset_chair"
+[1] "aged"      "month"     "tr"        "momheight" "momedu"   
 \end{lstlisting}
 
 An example of how to format \passthrough{\lstinline!Lrnr\_screener\_augment!} is included below for
@@ -3963,7 +3969,7 @@ for each subject.
 # we did it! now we have SL predictions
 sl_preds <- sl_fit$predict()
 head(sl_preds)
-[1] -0.64698 -0.76514 -0.64312 -0.68991 -0.68068 -0.66422
+[1] -0.65442 -0.77055 -0.67359 -0.65109 -0.65577 -0.65673
 \end{lstlisting}
 
 We can also obtain a summary of the results.
@@ -3971,25 +3977,25 @@ We can also obtain a summary of the results.
 \begin{lstlisting}[language=R]
 sl_fit$cv_risk(loss_fun = loss_squared_error)
                           learner coefficients   risk       se  fold_sd
- 1:                           glm     0.055565 1.0202 0.023955 0.067500
- 2:                     polspline     0.055551 1.0208 0.023577 0.067921
- 3:                        enet.5     0.055558 1.0131 0.023598 0.065732
- 4:                         ridge     0.055564 1.0153 0.023739 0.065299
- 5:                         lasso     0.055558 1.0130 0.023592 0.065840
- 6:                     xgboost50     0.055583 1.1136 0.025262 0.077580
- 7:       randomforest_screen_glm     0.055556 1.0173 0.023830 0.069913
- 8: randomforest_screen_polspline     0.055573 1.0135 0.023814 0.069240
- 9:    randomforest_screen_enet.5     0.055555 1.0177 0.023842 0.070142
-10:     randomforest_screen_ridge     0.055555 1.0176 0.023855 0.069787
-11:     randomforest_screen_lasso     0.055555 1.0177 0.023840 0.070155
-12: randomforest_screen_xgboost50     0.055546 1.1277 0.026043 0.078673
-13:              lasso_screen_glm     0.055553 1.0164 0.023542 0.065018
-14:        lasso_screen_polspline     0.055553 1.0177 0.023520 0.065566
-15:           lasso_screen_enet.5     0.055553 1.0163 0.023544 0.065017
-16:            lasso_screen_ridge     0.055552 1.0166 0.023553 0.064869
-17:            lasso_screen_lasso     0.055553 1.0163 0.023544 0.065020
-18:        lasso_screen_xgboost50     0.055516 1.1256 0.025939 0.084270
-19:                  SuperLearner           NA 1.0100 0.023524 0.068184
+ 1:                           glm     0.055571 1.0202 0.023955 0.067500
+ 2:                     polspline     0.055556 1.0208 0.023577 0.067921
+ 3:                        enet.5     0.055564 1.0131 0.023598 0.065732
+ 4:                         ridge     0.055570 1.0153 0.023739 0.065299
+ 5:                         lasso     0.055564 1.0130 0.023592 0.065840
+ 6:                     xgboost50     0.055591 1.1136 0.025262 0.077580
+ 7:       randomforest_screen_glm     0.055546 1.0271 0.024119 0.069913
+ 8: randomforest_screen_polspline     0.055561 1.0236 0.024174 0.068710
+ 9:    randomforest_screen_enet.5     0.055546 1.0266 0.024101 0.070117
+10:     randomforest_screen_ridge     0.055546 1.0268 0.024120 0.069784
+11:     randomforest_screen_lasso     0.055546 1.0266 0.024101 0.070135
+12: randomforest_screen_xgboost50     0.055523 1.1399 0.026341 0.100112
+13:              lasso_screen_glm     0.055559 1.0164 0.023542 0.065018
+14:        lasso_screen_polspline     0.055559 1.0177 0.023520 0.065566
+15:           lasso_screen_enet.5     0.055559 1.0163 0.023544 0.065017
+16:            lasso_screen_ridge     0.055559 1.0166 0.023553 0.064869
+17:            lasso_screen_lasso     0.055559 1.0163 0.023544 0.065020
+18:        lasso_screen_xgboost50     0.055521 1.1256 0.025939 0.084270
+19:                  SuperLearner           NA 1.0135 0.023615 0.067434
     fold_min_risk fold_max_risk
  1:       0.89442        1.1200
  2:       0.89892        1.1255
@@ -3997,19 +4003,19 @@ sl_fit$cv_risk(loss_fun = loss_squared_error)
  4:       0.88559        1.1063
  5:       0.88842        1.1060
  6:       0.96019        1.2337
- 7:       0.88579        1.1119
- 8:       0.89370        1.1190
- 9:       0.88593        1.1137
-10:       0.88620        1.1128
-11:       0.88593        1.1136
-12:       1.00223        1.2465
+ 7:       0.90251        1.1326
+ 8:       0.90167        1.1412
+ 9:       0.90030        1.1319
+10:       0.90068        1.1311
+11:       0.90043        1.1321
+12:       0.92377        1.2549
 13:       0.90204        1.1156
 14:       0.89742        1.1162
 15:       0.90184        1.1154
 16:       0.90120        1.1146
 17:       0.90183        1.1154
 18:       0.96251        1.2327
-19:       0.88036        1.1041
+19:       0.88685        1.1102
 \end{lstlisting}
 
 \hypertarget{cross-validated-super-learner}{%
@@ -4064,31 +4070,31 @@ lasso & 0.0556 & 1.0141 & 0.0236 & 0.0081 & 1.0084 & 1.0198\\
 \hline
 xgboost50 & 0.0556 & 1.1647 & 0.0259 & 0.0025 & 1.1629 & 1.1665\\
 \hline
-randomforest\_screen\_glm & 0.0556 & 1.0204 & 0.0239 & 0.0121 & 1.0118 & 1.0289\\
+randomforest\_screen\_glm & 0.0556 & 1.0245 & 0.0239 & 0.0222 & 1.0088 & 1.0403\\
 \hline
-randomforest\_screen\_polspline & 0.0556 & 1.0161 & 0.0240 & 0.0015 & 1.0151 & 1.0172\\
+randomforest\_screen\_polspline & 0.0555 & 1.0315 & 0.0239 & 0.0231 & 1.0151 & 1.0478\\
 \hline
-randomforest\_screen\_enet.5 & 0.0556 & 1.0204 & 0.0239 & 0.0121 & 1.0118 & 1.0289\\
+randomforest\_screen\_enet.5 & 0.0556 & 1.0240 & 0.0238 & 0.0214 & 1.0089 & 1.0392\\
 \hline
-randomforest\_screen\_ridge & 0.0556 & 1.0204 & 0.0240 & 0.0128 & 1.0114 & 1.0295\\
+randomforest\_screen\_ridge & 0.0556 & 1.0243 & 0.0239 & 0.0218 & 1.0089 & 1.0397\\
 \hline
-randomforest\_screen\_lasso & 0.0556 & 1.0204 & 0.0239 & 0.0120 & 1.0119 & 1.0289\\
+randomforest\_screen\_lasso & 0.0556 & 1.0240 & 0.0238 & 0.0214 & 1.0089 & 1.0392\\
 \hline
-randomforest\_screen\_xgboost50 & 0.0555 & 1.2000 & 0.0273 & 0.0122 & 1.1914 & 1.2087\\
+randomforest\_screen\_xgboost50 & 0.0555 & 1.1798 & 0.0270 & 0.0522 & 1.1430 & 1.2167\\
 \hline
-lasso\_screen\_glm & 0.0555 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0234\\
+lasso\_screen\_glm & 0.0556 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0234\\
 \hline
-lasso\_screen\_polspline & 0.0555 & 1.0247 & 0.0238 & 0.0018 & 1.0235 & 1.0260\\
+lasso\_screen\_polspline & 0.0556 & 1.0247 & 0.0238 & 0.0018 & 1.0235 & 1.0260\\
 \hline
-lasso\_screen\_enet.5 & 0.0555 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0233\\
+lasso\_screen\_enet.5 & 0.0556 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0233\\
 \hline
-lasso\_screen\_ridge & 0.0555 & 1.0233 & 0.0238 & 0.0002 & 1.0231 & 1.0235\\
+lasso\_screen\_ridge & 0.0556 & 1.0233 & 0.0238 & 0.0002 & 1.0231 & 1.0235\\
 \hline
-lasso\_screen\_lasso & 0.0555 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0233\\
+lasso\_screen\_lasso & 0.0556 & 1.0233 & 0.0238 & 0.0001 & 1.0232 & 1.0233\\
 \hline
 lasso\_screen\_xgboost50 & 0.0556 & 1.1265 & 0.0253 & 0.0263 & 1.1079 & 1.1451\\
 \hline
-SuperLearner & NA & 1.0125 & 0.0236 & 0.0024 & 1.0108 & 1.0142\\
+SuperLearner & NA & 1.0144 & 0.0236 & 0.0086 & 1.0083 & 1.0204\\
 \hline
 \end{tabular}
 \end{table}
@@ -4137,63 +4143,63 @@ washb_varimp %>%
 \hline
 X & risk\_ratio\\
 \hline
-aged & 1.0413\\
+aged & 1.0408\\
 \hline
-momedu & 1.0139\\
+momedu & 1.0125\\
 \hline
-asset\_refrig & 1.0083\\
+asset\_refrig & 1.0084\\
 \hline
-asset\_chair & 1.0046\\
+asset\_chair & 1.0044\\
 \hline
 month & 1.0032\\
 \hline
-momheight & 1.0027\\
-\hline
 elec & 1.0020\\
 \hline
-Nlt18 & 1.0012\\
+tr & 1.0017\\
 \hline
-tr & 1.0011\\
+momheight & 1.0013\\
 \hline
-momage & 1.0006\\
+Nlt18 & 1.0010\\
+\hline
+momage & 1.0008\\
+\hline
+floor & 1.0006\\
 \hline
 asset\_chouki & 1.0003\\
 \hline
 asset\_mobile & 1.0003\\
 \hline
-floor & 1.0002\\
+asset\_moto & 1.0002\\
 \hline
 delta\_momheight & 1.0001\\
 \hline
-asset\_table & 1.0000\\
+watmin & 1.0000\\
 \hline
-Ncomp & 1.0000\\
+asset\_table & 1.0000\\
 \hline
 sex & 1.0000\\
 \hline
-asset\_moto & 1.0000\\
-\hline
-watmin & 1.0000\\
-\hline
 walls & 1.0000\\
+\hline
+asset\_tv & 1.0000\\
 \hline
 delta\_momage & 1.0000\\
 \hline
 roof & 0.9999\\
 \hline
-asset\_tv & 0.9999\\
+Ncomp & 0.9999\\
 \hline
 hfiacat & 0.9999\\
 \hline
-fracode & 0.9998\\
+fracode & 0.9999\\
 \hline
 asset\_wardrobe & 0.9998\\
 \hline
-asset\_bike & 0.9998\\
-\hline
 asset\_sewmach & 0.9998\\
 \hline
-asset\_khat & 0.9997\\
+asset\_bike & 0.9998\\
+\hline
+asset\_khat & 0.9996\\
 \hline
 \end{tabular}
 \end{table}
@@ -5218,7 +5224,7 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \hypertarget{learning-objectives-1}{%
 \section{Learning Objectives}\label{learning-objectives-1}}
@@ -5266,13 +5272,13 @@ In particular, patients with renal dysfunction might further deteriorate if
 prescribed Tenofovir, due to the high nephrotoxicity caused by the medication.
 While Tenofovir is still highly effective treatment option for HIV patients, in
 order to maximize the patient's well-being, it would be beneficial to prescribe
-Tenofovir only to individuals with healthy kidney function. Along the same
-lines, one might seek to improve retention in HIV care. In a randomized clinical
-trial, several interventions show efficacy- including appointment reminders
-through text messages, small cash incentives for on time clinic visits, and peer
-health workers. Ideally, we want to improve effectiveness by assigning each
-patient the intervention they are most likely to benefit from, as well as
-improve efficiency by not allocating resources to individuals that do not need
+Tenofovir only to individuals with healthy kidney function. As an another example,
+consider a HIV trial where our goal is to improve retention in HIV care.
+In a randomized clinical trial, several interventions show efficacy- including
+appointment reminders through text messages, small cash incentives for on time
+clinic visits, and peer health workers. Ideally, we want to improve effectiveness
+by assigning each patient the intervention they are most likely to benefit from,
+as well as improve efficiency by not allocating resources to individuals that do not need
 them, or would not benefit from it.
 
 \begin{figure}
@@ -5284,26 +5290,32 @@ them, or would not benefit from it.
 \caption{Dynamic Treatment Regime in a Clinical Setting}\label{fig:unnamed-chunk-1}
 \end{figure}
 
-One opts to administer the intervention to individuals who will profit from it instead,
+One opts to administer the intervention to individuals who will profit from it,
 instead of assigning treatment on a population level. But how do we know which
 intervention works for which patient? This aim motivates a different type of
-intervention, as opposed to the static exposures we described in previous chapters. In
-particular, in this chapter we learn about dynamic or ``individualized''
+intervention, as opposed to the static exposures we described in previous chapters.
+In particular, in this chapter we learn about dynamic or ``individualized''
 interventions that tailor the treatment decision based on the collected
 covariates. Formally, dynamic treatments represent interventions that at each
 treatment-decision stage are allowed to respond to the currently available
-treatment and covariate history.
+treatment and covariate history. A dynamic treatment rule can be thought of as
+a rule where the input is the available set of collected covariates, and the
+output is an individualized treatment for each patient
+\citep[\citet{robins1986}, \citet{moodie2013}]{bembom2007realistic}.
 
 In the statistics community such a treatment strategy is termed an
-\textbf{individualized treatment regime} (ITR), and the (counterfactual) population
-mean outcome under an ITR is the value of the ITR \citep{neyman1990, robins1986, pearl2009}. Even more, suppose one wishes to maximize the population mean of an
+\textbf{individualized treatment regime} (ITR), also known as the optimal
+dynamic treatment rule, optimal treatment regime, optimal strategy,
+and optimal policy \citep[\citet{robins2004}]{murphy2003}. The (counterfactual)
+population mean outcome under an ITR is the value of the ITR \citep[\citet{robins2004}]{murphy2003}.
+Even more, suppose one wishes to maximize the population mean of an
 outcome, where for each individual we have access to some set of measured
 covariates. This means, for example, that we can learn for which individual
 characteristics assigning treatment increases the probability of a beneficial
 outcome. An ITR with the maximal value is referred to as an
 optimal ITR or the \textbf{optimal individualized treatment}. Consequently, the value
-of an optimal ITR is termed the optimal value, or the \textbf{mean under the optimal
-individualized treatment}.
+of an optimal ITR is termed the optimal value, or the
+\textbf{mean under the optimal individualized treatment}.
 
 The problem of estimating the optimal individualized treatment has received much
 attention in the statistics literature over the years, especially with the
@@ -5324,9 +5336,13 @@ don't need to make any assumptions about the relationship of the outcome with
 the treatment and covariates, or the relationship between the treatment and
 covariates. Further, we provide a Targeted Maximum Likelihood Estimator for the
 mean under the optimal individualized treatment that allows us to generate valid
-inference for our parameter, without having any parametric assumptions. For a
-technical presentation of the algorithm, the interested reader is invited to
-further consult \citet{vanderLaanLuedtke15} and \citet{luedtke2016super}.
+inference for our parameter, without having any parametric assumptions.
+
+In the following, we provide a brief overview of the methodology with a focus on
+building intuition for the target parameter and its importance --- aided with simulations,
+data examples and software demonstrations. For more information on the technical aspects
+of the algorithm, further practical advice and overview, the interested reader is invited to
+additionally consult \citet{vanderLaanLuedtke15}, \citet{luedtke2016super}, \citet{montoya2021optimal} and \citet{montoya2021performance}.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -5354,11 +5370,9 @@ which gives each observation weight \(1/n\).
 We use the nonparametric structural equation model (NPSEM) in order to define
 the process that gives rise to the observed (endogenous) and not observed
 (exogenous) variables, as described by \citet{pearl2009causality}. In particular, we
-denote \(U=(U_W,U_A,U_Y)\) as the exogenous random variables, and \(O=(W,A,Y)\) as
-endogenous variables we observe. The joint distribution of exogenous and
-endogenous random variables in \(\mathcal{M}^F\) (defined by the NPSEM) is
-\(P_{U,X}\). We can define the relationships between variables with the following
-structural equations:
+denote \(U=(U_W,U_A,U_Y)\) as the exogenous random variables, drawn from \(U \sim P_U\).
+The endogenous variables, written as \(O=(W,A,Y)\), correspond to the observed data.
+We can define the relationships between variables with the following structural equations:
 \begin{align}
   W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
   \label{eq:npsem-mopttx}
@@ -5372,11 +5386,11 @@ in the case of a randomized trial, we can write the above NPSEM as
 indicating no dependence of treatment on baseline covariates.
 
 The likelihood of the data admits a factorization, implied by the time ordering
-of \(O\). We denote the density of \(O\) as \(p_0\), corresponding to the
+of \(O\). We denote the true density of \(O\) as \(p_0\), corresponding to the
 distribution \(P_0\) and dominating measure \(\mu\).
 \begin{equation}
   p_0(O) = p_{Y,0}(Y \mid A,W) p_{A,0}(A \mid W) p_{W,0}(W) =
-    q_{Y,0}(Y \mid A,W) q_{A,0}(A \mid W) q_{W,0}(W),
+    q_{Y,0}(Y \mid A,W) g_{A,0}(A \mid W) q_{W,0}(W),
   \label{eq:likelihood-factorization-mopttx}
 \end{equation}
 where \(p_{Y,0}(Y|A,W)\) is the conditional density of \(Y\) given \((A, W)\) with
@@ -5393,53 +5407,64 @@ Lastly, we define \(V\) as a subset of the baseline covariates the optimal
 individualized rule depends on, where \(V \in W\). Note that \(V\) could be all of
 \(W\), or an empty set, depending on the subject matter knowledge. In particular,
 a researcher might want to consider known effect modifiers available at the time
-of treatment decision as possible \(V\) covariates. Defining \(V\) allows us to
-consider possibly sub-optimal rules that are easier to estimate, and thereby
-allows for statistical inference for the counterfactual mean outcome under the
-sub-optimal rule.
+of treatment decision as possible \(V\) covariates, or consider dynamic treatment
+rules based on measurements that can be easily obtained in a clinical setting.
+Defining \(V\) as a more restrictive set of baseline covariates lets us consider
+possibly sub-optimal rules that are easier to estimate, and thereby allows for
+statistical inference for the counterfactual mean outcome under the sub-optimal rule;
+we will elaborate on this in later sections.
 
 \hypertarget{defining-the-causal-effect-of-an-optimal-individualized-intervention}{%
 \section{Defining the Causal Effect of an Optimal Individualized Intervention}\label{defining-the-causal-effect-of-an-optimal-individualized-intervention}}
 
-Consider dynamic treatment rules \(d\) in the set of all possible rules
-\(\mathcal{D}\). Then, \(d\) is a function that takes as input \(V\) and outputs a
-treatment decision, \(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}\). We will use dynamic treatment rules, and the corresponding treatment
+Consider dynamic treatment rules, denoted as \(d\), in the set of all possible rules
+\(\mathcal{D}\). Then, in a point treatment setting, \(d\) is a deterministic function
+that takes as input \(V\) and outputs a treatment decision where
+\(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}\).
+We will use dynamic treatment rules, and the corresponding treatment
 decision, to describe an intervention on the treatment mechanism and the
 corresponding outcome under a dynamic treatment rule.
 
 As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM \eqref{eq:npsem-mopttx}. We can define
-counterfactuals \(Y_{d(V)}\) defined by a modified system in which the equation
-for \(A\) is replaced by the rule \(d(V)\), dependent on covariates \(V\). Our
-modified system then takes the following form:
+hypothetical interventions on the NPSEM \eqref{eq:npsem-mopttx}. For a given
+rule \(d\), our modified system then takes the following form:
 \begin{align}
   W &= f_W(U_W) \\ A &= d(V) \\ Y_{d(V)} &= f_Y(d(V), W, U_Y),
   \label{eq:npsem-causal-mopttx}
 \end{align}
 where the dynamic treatment regime may be viewed as an intervention in which \(A\)
-is set equal to a value based on a hypothetical regime \(d(V)\), possibly contrary
-to the fact, and \(Y_{d(V)}\) is the corresponding outcome under \(d(V)\). We
-denote the distribution of the counterfactual quantities as \(P_{0,d(V)}\).
+is set equal to a value based on a hypothetical regime \(d(V)\). The couterfactual outcome
+\(Y_{d(V)}\) denotes the outcome for a patient had their treatment been assigned using the
+dynamic rule \(d(V)\), possibly contrary to the fact. Note that the counterfactual
+outcomes for patients assigned treatment, or given control, are similarly written as
+\(Y_1\) and \(Y_0\). Finally, we denote the distribution of the counterfactual outcomes
+as \(P_{U,X}\), implied by the distribution of exogenous variables \(U\) and structural
+equations \(f\). The set of all possible counterfactual distributions are encompassed
+by the causal model \(\mathcal{M}^F\), where \(P_{U,X} \in \mathcal{M}^F\).
 
 The goal of any causal analysis motivated by such dynamic interventions is to
 estimate a parameter defined as the counterfactual mean of the outcome with
-respect to the modified intervention distribution. That is, subject's outcome
-if, possibly contrary to the fact, the subject received treatment that would
-have been assigned by rule \(d(V)\). We can consider different treatment rules,
-all in the set \(\mathcal{D}\):
+respect to the modified intervention distribution. That is, subject's outcome if,
+possibly contrary to the fact, the subject received treatment that would have been
+assigned by rule \(d(V)\). Equivalently, we ask the following causal question:
+``What is the expected outcome had every subject received treatment according to the
+(optimal) individualized treatment?'' With that in mind, we can consider different
+treatment rules, all in the set \(\mathcal{D}\):
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
   The true rule, \(d_0\), and the corresponding causal parameter
-  \(\E_{U,X}[Y_{d_0(V)}]\);
+  \(\E_{U,X}[Y_{d_0(V)}]\) denoting the expected outcome under the
+  true treatment rule \(d_0(V)\).
 \item
   The estimated rule, \(d_n\), and the corresponding causal parameter
-  \(\E_{U,X}[Y_{d_n(V)}]\).
+  \(\E_{U,X}[Y_{d_n(V)}]\) denoting the expected outcome under the
+  estimated treatment rule \(d_n(V)\).
 \end{enumerate}
 
-In this chapter, we will focus on the estimated rule \(d_n\), and the
-corresponding data-adaptive parameter.
+In this chapter, we will focus on the value under the estimated rule \(d_n\),
+a \textbf{data-adaptive parameter}. Note that its true value depends on the sample!
 
 The optimal individualized rule is the rule with the maximal value:
 \[d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
@@ -5456,11 +5481,11 @@ the estimated optimal individualized rule:
 \hypertarget{identification-and-statistical-estimand}{%
 \subsection{Identification and Statistical Estimand}\label{identification-and-statistical-estimand}}
 
-The optimal individualized rule, as well as the value of a optimal
+The optimal individualized rule, as well as the value of an optimal
 individualized rule, are causal parameters based on the unobserved
 counterfactuals. In order for the causal quantities to be estimated from the
 observed data, they need to be identified with statistical parameters. This step
-of the roadmap requires me make few assumptions:
+of the roadmap requires me make a few assumptions:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5471,19 +5496,17 @@ of the roadmap requires me make few assumptions:
   \emph{Positivity (or overlap)}: \(P_0(\min_{a \in \mathcal{A}} g_0(a \mid W) > 0) = 1\)
 \end{enumerate}
 
-Under the above causal assumptions, we can identify \(P_{0,d}\) with observed data
-using the G-computation formula:
-
-\[P_{0,d_{n, \text{opt}}}(O) = Q_{Y,0}(Y \mid A=d_{n,\text{opt}}(V),W)
-g_0(A=d_{n,\text{opt}}(V) \mid W)Q_{W,0}(W).\]
-The value of an individualized rule can now be expressed as
+Under the above causal assumptions, we can identify the causal target parameter
+with observed data using the G-computation formula. The value of an individualized
+rule can now be expressed as
 
 \[\E_0[Y_{d_n(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],\]
 
-which, under causal assumptions, can is interpreted as the mean outcome if
+which, under causal assumptions, is interpreted as the mean outcome if
 (possibly contrary to fact), treatment was assigned according to the rule.
 Finally, the statistical counterpart to the causal parameter of interest is
 defined as
+
 \[\psi_0 = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].\]
 
 Inference for the optimal value has been shown to be difficult at exceptional
@@ -5506,7 +5529,7 @@ We follow the methodology outlined in \citet{luedtke2016super} and
 Loss-based Estimation (CV-TMLE) \citep{cvtmle2010}. In great generality, we first
 need to estimate the true individual treatment regime, \(d_0(V)\), which
 corresponds to dynamic treatment rule (\(d(V)\)) that takes a subset of covariates
-\(V \in W\) and assigns treatment to each individual based on their observed
+\(V\) and assigns treatment to each individual based on their observed
 covariates \(v\). With the estimate of the true optimal ITR in hand, we can
 estimate its corresponding value.
 
@@ -5514,9 +5537,9 @@ estimate its corresponding value.
 \subsection{Binary treatment}\label{binary-treatment}}
 
 How do we estimate the optimal individualized treatment regime? In the case of a
-binary treatment, a key quantity for optimal ITR is the blip function. One can
+binary treatment, a key quantity for optimal ITR is the \textbf{blip function}. One can
 show that any optimal ITR assigns treatment to individuals falling in strata in
-which the stratum specific average treatment effect, the blip function, is
+which the stratum specific average treatment effect, the blip, is
 positive and does not assign treatment to individuals for which this quantity is
 negative. Therefore for a binary treatment, under causal assumptions, we define
 the blip function as:
@@ -5526,11 +5549,10 @@ or the average treatment effect within a stratum of \(V\). The note that the
 optimal individualized rule can now be derived as \(d_{n,\text{opt}}(V) = \mathbb{I}(\bar{Q}_{0}(V) > 0)\).
 
 The package \passthrough{\lstinline!tmle3mopttx!} relies on using the Super Learner to estimate the blip
-function, as it easily extends to more general categorical treatment. With that
-in mind, the loss function utilized for learning the optimal individualized rule
-corresponds to conditional mean type losses. It is however worth mentioning that
-\citet{luedtke2016super} present three different approaches for learning the optimal
-rule. Namely, they focus on:
+function. With that in mind, the loss function utilized for learning the optimal
+individualized rule corresponds to conditional mean type losses. It is however worth
+mentioning that \citet{luedtke2016super} present three different approaches for learning the
+optimal rule. Namely, they focus on:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5542,8 +5564,13 @@ rule. Namely, they focus on:
   Joint Super Learner of the Blip and Weighted Classification Problem.
 \end{enumerate}
 
-We refer the interested reader to \citet{luedtke2016super} for further reference on
-advantages of each approach.
+A benefit of relying on the blip function, as implemented in \passthrough{\lstinline!tmle3mopttx!}, is that
+one can look at the distribution of the predicted outcomes of the blip for a given
+sample. Having an estimate of the blip allows one to identify patients in the sample
+who benefit the most (or the least) from treatment. Additionally, blip-based approach
+allows for straight-forward extension to the categorical treatment, interpretable rules,
+and OIT under resource constrains, where only a percent of the population can receive
+treatment \citep{luedtke2016resource}.
 
 Relying on the Targeted Maximum Likelihood (TML) estimator and the Super Learner
 estimate of the blip function, we follow the below steps in order to obtain
@@ -5557,23 +5584,28 @@ value of the ITR:
   estimates as \(\bar{Q}_{Y,n}(A,W)\) and \(g_n(A \mid W)\).
 \item
   Apply the doubly robust Augmented-Inverse Probability Weighted (A-IPW)
-  transform to our outcome, where we define:
+  transform to our outcome (double-robust pseudo-outcome), where we define:
   \[D_{\bar{Q}_Y,g,a}(O) \equiv \frac{\mathbb{I}(A=a)}{g(A \mid W)} (Y -
-  \bar{Q}_Y(A,W)) + \bar{Q}_Y(A=a,W)\]
+  \bar{Q}_Y(A,W)) + \bar{Q}_Y(A=a,W).\]
 \end{enumerate}
 
 Note that under the randomization and positivity assumptions we have that
 \(\E[D_{\bar{Q}_Y,g,a}(O) \mid V] = \E[Y_a \mid V]\). We emphasize the double
 robust nature of the A-IPW transform-consistency of \(\E[Y_a \mid V]\) will depend
 on correct estimation of either \(\bar{Q}_{Y,0}(A,W)\) or \(g_0(A \mid W)\). As
-such, in a randomized trial, we are guaranteed a consistent estimate of \(\E[Y_a \mid V]\) even if we get \(\bar{Q}_{Y,0}(A,W)\) wrong!
+such, in a randomized trial, we are guaranteed a consistent estimate of \(\E[Y_a \mid V]\)
+even if we get \(\bar{Q}_{Y,0}(A,W)\) wrong! An alternative to the double-robust pseudo-outcome
+just presented would be single stage Q-learning, where an estimate \(\bar{Q}_{Y,0}(A,W)\)
+is used to predict at \(\bar{Q}_{Y,n}(A=1,W)\) and \(\bar{Q}_{Y,n}(A=0,W)\). This provides
+an estimate of the blip function, \(\bar{Q}_{Y,n}(A=1,W) - \bar{Q}_{Y,n}(A=0,W)\), but
+relies on doing a good job on estimating \(\bar{Q}_{Y,0}(A,W)\).
 
-Using this transform, we can define the following contrast:
-\(D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O)\)
+Using the double-robust pseudo-outcome, we can define the following contrast:
+\(D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O).\)
 
 We estimate the blip function, \(\bar{Q}_{0,a}(V)\), by regressing
 \(D_{\bar{Q}_Y,g}(O)\) on \(V\) using the specified \passthrough{\lstinline!sl3!} library of learners and an
-appropriate loss function.
+appropriate loss function. Finally, we are ready for the final steps.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -5613,24 +5645,24 @@ We implement three different pseudo-blips in \passthrough{\lstinline!tmle3mopttx
   \emph{Blip2} approach corresponds to defining the blip relative to the average of
   all categories. As such, we can define \(\bar{Q}_{0,a}^{pblip-avg}(V)\) as:
   \[\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-    \mathcal{A}} Y_a \mid V)\]
+    \mathcal{A}} Y_a \mid V).\]
   In the case where subject-matter knowledge regarding which reference category
   to use is not available, blip2 might be a viable option.
 \item
   \emph{Blip3} reflects an extension of Blip2, where the average is now a weighted
   average:
   \[\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-    \mathcal{A}} Y_{a} P(A=a \mid V) \mid V)\]
+    \mathcal{A}} Y_{a} P(A=a \mid V) \mid V).\]
 \end{enumerate}
 
 Just like in the binary case, pseudo-blips are estimated by regressing contrasts
 composed using the A-IPW transform on \(V\).
 
-\hypertarget{note-on-inference-and-data-adaptive-parameter}{%
-\subsection{Note on Inference and data-adaptive parameter}\label{note-on-inference-and-data-adaptive-parameter}}
+\hypertarget{technical-note-inference-and-data-adaptive-parameter}{%
+\subsection{Technical Note: Inference and data-adaptive parameter}\label{technical-note-inference-and-data-adaptive-parameter}}
 
 In a randomized trial, statistical inference relies on the second-order
-difference between the estimator of the optimal individualized treatment and the
+difference between the estimate of the optimal individualized treatment and the
 optimal individualized treatment itself to be asymptotically negligible. This is
 a reasonable condition if we consider rules that depend on a small number of
 covariates, or if we are willing to make smoothness assumptions. Alternatively,
@@ -5647,8 +5679,8 @@ asymptotic linearity of the TMLE of the mean under the actual, true optimal
 rule. Practically, the estimated (data-adaptive) rule should be preferred, as
 this possibly sub-optimal rule is the one implemented in the population.
 
-\hypertarget{why-cv-tmle}{%
-\subsection{Why CV-TMLE?}\label{why-cv-tmle}}
+\hypertarget{technical-note-why-cv-tmle}{%
+\subsection{Technical Note: Why CV-TMLE?}\label{technical-note-why-cv-tmle}}
 
 As discussed in \citet{vanderLaanLuedtke15}, CV-TMLE is necessary as the
 non-cross-validated TMLE is biased upward for the mean outcome under the rule,
@@ -5665,7 +5697,7 @@ have been if everybody, contrary to the fact, received treatment that optimized
 their outcome. The optimal individualized treatment regime is a rule that
 optimizes the mean outcome under the dynamic treatment, where the candidate
 rules are restricted to only respond to a user-supplied subset of the baseline
-and intermediate covariates. In essence, our target parameter answers the key
+covariates. In essence, our target parameter answers the key
 aim of precision medicine: allocating the available treatment by tailoring it to
 the individual characteristics of the patient, with the goal of optimizing the
 final outcome.
@@ -5682,6 +5714,7 @@ library(data.table)
 library(sl3)
 library(tmle3)
 library(tmle3mopttx)
+set.seed(111)
 \end{lstlisting}
 
 \hypertarget{simulated-data}{%
@@ -5703,8 +5736,7 @@ data("data_bin")
 \end{lstlisting}
 
 The above composes our observed data structure \(O = (W, A, Y)\). Note that the
-mean under the true optimal rule is \(\psi=0.578\) for this data generating
-distribution.
+truth is \(\psi=0.578\) for this data generating distribution.
 
 To formally express this fact using the \passthrough{\lstinline!tlverse!} grammar introduced by the
 \passthrough{\lstinline!tmle3!} package, we create a single data object and specify the functional
@@ -5723,7 +5755,7 @@ node_list <- list(
 \end{lstlisting}
 
 We now have an observed data structure (\passthrough{\lstinline!data!}) and a specification of the role
-that each variable in the data set plays as the nodes in a DAG.
+that each variable in the dataset plays as the nodes in a DAG.
 
 \hypertarget{constructing-optimal-stacked-regressions-with-sl3}{%
 \subsection{\texorpdfstring{Constructing Optimal Stacked Regressions with \texttt{sl3}}{Constructing Optimal Stacked Regressions with sl3}}\label{constructing-optimal-stacked-regressions-with-sl3}}
@@ -5737,31 +5769,25 @@ Super Learner algorithm of \citet{vdl2007super}.
 
 \begin{lstlisting}[language=R]
 # Define sl3 library and metalearners:
-lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
-lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
-lrn_xgboost_300 <- Lrnr_xgboost$new(nrounds = 300)
 lrn_mean <- Lrnr_mean$new()
 lrn_glm <- Lrnr_glm_fast$new()
+lrn_lasso <- Lrnr_glmnet$new()
 
 ## Define the Q learner:
 Q_learner <- Lrnr_sl$new(
-  learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
-  ),
+  learners = list(lrn_lasso, lrn_mean, lrn_glm),
   metalearner = Lrnr_nnls$new()
 )
 
 ## Define the g learner:
 g_learner <- Lrnr_sl$new(
-  learners = list(lrn_xgboost_100, lrn_glm),
+  learners = list(lrn_lasso, lrn_glm),
   metalearner = Lrnr_nnls$new()
 )
 
 ## Define the B learner:
 b_learner <- Lrnr_sl$new(
-  learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
-  ),
+  learners = list(lrn_lasso,lrn_mean, lrn_glm),
   metalearner = Lrnr_nnls$new()
 )
 \end{lstlisting}
@@ -5792,8 +5818,9 @@ interest simply by calling \passthrough{\lstinline!tmle3\_mopttx\_blip\_revere!}
 \passthrough{\lstinline!V = c("W1", "W2", "W3")!} when initializing the \passthrough{\lstinline!tmle3\_Spec!} object in order to
 communicate that we're interested in learning a rule dependent on \passthrough{\lstinline!V!}
 covariates. Note that we don't have to specify \passthrough{\lstinline!V!}- this will result in a rule
-that is not based on any collected covariates. We also need to specify the type
-of pseudo-blip we will use in this estimation problem, the list of learners used
+that is not based on any collected covariates; we will see an example like this
+shortly. We also need to specify the type
+of (pseudo) blip we will use in this estimation problem, the list of learners used
 to estimate the blip function, whether we want to maximize or minimize the final
 outcome, and few other more advanced features including searching for a less
 complex rule and realistic interventions.
@@ -5803,7 +5830,8 @@ complex rule and realistic interventions.
 tmle_spec <- tmle3_mopttx_blip_revere(
   V = c("W1", "W2", "W3"), type = "blip1",
   learners = learner_list,
-  maximize = TRUE, complex = TRUE, realistic = FALSE
+  maximize = TRUE, complex = TRUE,
+  realistic = FALSE, resource = 1
 )
 \end{lstlisting}
 
@@ -5816,7 +5844,7 @@ object internally.
 
 We elaborate more on the initialization specifications. In initializing the
 specification for the TMLE of our parameter of interest, we have specified the
-set of covariates the rule depends on (\passthrough{\lstinline!V!}), the type of pseudo-blip to use
+set of covariates the rule depends on (\passthrough{\lstinline!V!}), the type of (pseudo) blip to use
 (\passthrough{\lstinline!type!}), and the learners used for estimating the relevant parts of the
 likelihood and the blip function. In addition, we need to specify whether we
 want to maximize the mean outcome under the rule (\passthrough{\lstinline!maximize!}), and whether we
@@ -5830,7 +5858,8 @@ that case, our returned mean under the optimal individualized rule will be based
 on the smaller subset. In addition, we provide an option to search for realistic
 optimal individualized interventions via the \passthrough{\lstinline!realistic!} specification. If
 \passthrough{\lstinline!TRUE!}, only treatments supported by the data will be considered, therefore
-alleviating concerns regarding practical positivity issues. We explore all the
+alleviating concerns regarding practical positivity issues. Finally, we can incorporate
+source constrains by setting \passthrough{\lstinline!resource!} argument to less than 1. We explore all the
 important extensions of \passthrough{\lstinline!tmle3mopttx!} in later sections.
 
 \begin{lstlisting}[language=R]
@@ -5838,14 +5867,89 @@ important extensions of \passthrough{\lstinline!tmle3mopttx!} in later sections.
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.42223  0.56606 0.027015 0.51311 0.61901
-   psi_transformed lower_transformed upper_transformed
-1:         0.56606           0.51311           0.61901
+   type         param init_est tmle_est      se   lower   upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.35553  0.55371 0.02598 0.50279 0.60463         0.55371
+   lower_transformed upper_transformed
+1:           0.50279           0.60463
 \end{lstlisting}
 
-We can see that the estimate of \(psi_0\) is \(0.56\), and that the confidence
-interval covers our true mean under the true optimal individualized treatment.
+By studying the output generated, we can see that the confidence interval covers the
+true parameter, as expected!
+
+\hypertarget{resource-constraint}{%
+\subsubsection{Resource constraint}\label{resource-constraint}}
+
+As mentioned, we can restrict the number of individuals that get the treatment by only
+treating \(k\) percent of samples. With that, only patients with the biggest benefit (according
+to the estimated blip) receive treatment. In order to impose a
+resource constraint, we only have to specify the percent of individuals that can
+get treatment. For example, if \passthrough{\lstinline!resource=1!}, all
+individuals with blip higher than zero will get treatment; if \passthrough{\lstinline!resource=0!},
+noone will be treated.
+
+\begin{lstlisting}[language=R]
+# initialize a tmle specification
+tmle_spec_resource <- tmle3_mopttx_blip_revere(
+  V = c("W1", "W2", "W3"), type = "blip1",
+  learners = learner_list,
+  maximize = TRUE, complex = TRUE,
+  realistic = FALSE, resource = 0.90
+)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# fit the TML estimator
+fit_resource <- tmle3(tmle_spec_resource, data, node_list, learner_list)
+fit_resource
+A tmle3_Fit that took 1 step(s)
+   type         param init_est tmle_est      se   lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.34304  0.55841 0.02612 0.50721 0.6096         0.55841
+   lower_transformed upper_transformed
+1:           0.50721            0.6096
+\end{lstlisting}
+
+We can compare the number of individuals that got treatment with and without the
+resource constraint:
+
+\begin{lstlisting}[language=R]
+# Number of individuals getting treatment (no resource constraint):
+table(tmle_spec$return_rule)
+
+  0   1 
+275 725 
+
+# Number of individuals getting treatment (resource constraint):
+table(tmle_spec_resource$return_rule)
+
+  0   1 
+351 649 
+\end{lstlisting}
+
+\hypertarget{empty-v}{%
+\subsubsection{Empty V}\label{empty-v}}
+
+Below we the show an example where \(V\) is not specified.
+
+\begin{lstlisting}[language=R]
+# initialize a tmle specification
+tmle_spec_V_empty <- tmle3_mopttx_blip_revere(
+  type = "blip1",
+  learners = learner_list,
+  maximize = TRUE, complex = TRUE,
+  realistic = FALSE, resource = 0.90
+)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# fit the TML estimator
+fit_V_empty <- tmle3(tmle_spec_V_empty, data, node_list, learner_list)
+fit_V_empty
+A tmle3_Fit that took 1 step(s)
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.31575  0.51694 0.013528 0.49043 0.54346
+   psi_transformed lower_transformed upper_transformed
+1:         0.51694           0.49043           0.54346
+\end{lstlisting}
 
 \hypertarget{oit-eval-cat}{%
 \section{Evaluating the Causal Effect of an optimal ITR with Categorical Treatment}\label{oit-eval-cat}}
@@ -5876,8 +5980,7 @@ data("data_cat_realistic")
 \end{lstlisting}
 
 The above composes our observed data structure \(O = (W, A, Y)\). Note that the
-mean under the true optimal rule is \(\psi=0.658\), which is the quantity we aim
-to estimate.
+truth is now \(\psi=0.658\), which is the quantity we aim to estimate.
 
 \begin{lstlisting}[language=R]
 # organize data and nodes for tmle3
@@ -5889,15 +5992,35 @@ node_list <- list(
 )
 \end{lstlisting}
 
-We'll now create new ensemble learners using the
-\passthrough{\lstinline!sl3!} learners initialized previously:
+We can see the number of observed categories of treatment below:
 
 \begin{lstlisting}[language=R]
+# organize data and nodes for tmle3
+table(data$A)
+
+  1   2   3 
+ 24 528 448 
+\end{lstlisting}
+
+\hypertarget{constructing-optimal-stacked-regressions-with-sl3-1}{%
+\subsection{\texorpdfstring{Constructing Optimal Stacked Regressions with \texttt{sl3}}{Constructing Optimal Stacked Regressions with sl3}}\label{constructing-optimal-stacked-regressions-with-sl3-1}}
+
+\textbf{QUESTION:} With categorical treatment, what is the dimension of the blip now?
+What is the dimension for the current example? How would we go about estimating it?
+
+We'll now create new ensemble learners using the \passthrough{\lstinline!sl3!} learners initialized previously:
+
+\begin{lstlisting}[language=R]
+# Initialize few of the learners:
+lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
+lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
+lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
+lrn_mean <- Lrnr_mean$new()
+lrn_glm <- Lrnr_glm_fast$new()
+
 ## Define the Q learner, which is just a regular learner:
 Q_learner <- Lrnr_sl$new(
-  learners = list(
-    lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
-  ),
+  learners = list(lrn_xgboost_100, lrn_mean, lrn_glm),
   metalearner = Lrnr_nnls$new()
 )
 
@@ -5905,19 +6028,12 @@ Q_learner <- Lrnr_sl$new(
 # specify the appropriate loss of the multinomial learner:
 mn_metalearner <- make_learner(Lrnr_solnp,
   loss_function = loss_loglik_multinomial,
-  learner_function =
-    metalearner_linear_multinomial
+  learner_function = metalearner_linear_multinomial
 )
-g_learner <- make_learner(
-  Lrnr_sl,
-  list(lrn_xgboost_100, lrn_xgboost_300, lrn_mean),
-  mn_metalearner
-)
+g_learner <- make_learner(Lrnr_sl, list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean), mn_metalearner)
 
 # Define the Blip learner, which is a multivariate learner:
-learners <- list(
-  lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_300, lrn_mean, lrn_glm
-)
+learners <- list(lrn_xgboost_50, lrn_xgboost_100, lrn_xgboost_500, lrn_mean, lrn_glm)
 b_learner <- create_mv_learners(learners = learners)
 \end{lstlisting}
 
@@ -5959,12 +6075,12 @@ ensemble learners into a list object below:
 learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
 \end{lstlisting}
 
-\hypertarget{targeted-estimation-of-the-mean-under-the-optimal-individualized-interventions-effects-1}{%
-\subsection{Targeted Estimation of the Mean under the Optimal Individualized Interventions Effects}\label{targeted-estimation-of-the-mean-under-the-optimal-individualized-interventions-effects-1}}
+\hypertarget{oit-eval-cat-v1}{%
+\subsection{Targeted Estimation of the Mean under the Optimal Individualized Interventions Effects}\label{oit-eval-cat-v1}}
 
 \begin{lstlisting}[language=R]
 # initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
+tmle_spec_cat <- tmle3_mopttx_blip_revere(
   V = c("W1", "W2", "W3", "W4"), type = "blip2",
   learners = learner_list, maximize = TRUE, complex = TRUE,
   realistic = FALSE
@@ -5973,17 +6089,24 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 
 \begin{lstlisting}[language=R]
 # fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-fit
+fit_cat <- tmle3(tmle_spec_cat, data, node_list, learner_list)
+fit_cat
 A tmle3_Fit that took 1 step(s)
    type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.55273  0.61149 0.065326 0.48346 0.73953
+1:  TSM E[Y_{A=NULL}]  0.53783  0.62117 0.065863 0.49208 0.75025
    psi_transformed lower_transformed upper_transformed
-1:         0.61149           0.48346           0.73953
+1:         0.62117           0.49208           0.75025
+
+# How many individuals got assigned each treatment?
+table(tmle_spec_cat$return_rule)
+
+  1   2   3 
+250 432 318 
 \end{lstlisting}
 
-We can see that the estimate of \(psi_0\) is \(0.60\), and that the confidence
-interval covers our true mean under the true optimal individualized treatment.
+We can see that the confidence interval covers the truth!
+
+\textbf{NOTICE the distribution of the assigned treatment! We will need this shortly.}
 
 \hypertarget{extensions-to-causal-effect-of-an-oit}{%
 \section{Extensions to Causal Effect of an OIT}\label{extensions-to-causal-effect-of-an-oit}}
@@ -5994,23 +6117,24 @@ might be interested in a grid of possible sub-optimal rules, corresponding to
 potentially limited knowledge of potential effect modifiers. The second
 extension concerns implementation of a realistic optimal individual
 interventions where certain regimes might be preferred, but due to practical or
-global positivity restraints are not realistic to implement.
+global positivity restraints, are not realistic to implement.
 
-\hypertarget{simpler-rules}{%
-\subsection{Simpler Rules}\label{simpler-rules}}
+\hypertarget{oit-eval-cat-v2}{%
+\subsection{Simpler Rules}\label{oit-eval-cat-v2}}
 
 In order to not only consider the most ambitious fully \(V\)-optimal rule, we
 define \(S\)-optimal rules as the optimal rule that considers all possible subsets
 of \(V\) covariates, with card(\(S\)) \(\leq\) card(\(V\)) and \(\emptyset \in S\). This
 allows us to consider sub-optimal rules that are easier to estimate and
-potentially provide more realistic rules- as such, we allow for statistical
+potentially provide more realistic rules --- as such, we allow for statistical
 inference for the counterfactual mean outcome under the sub-optimal rule.
+Here we also consider static rules, which assign treatment and control to all.
 Within the \passthrough{\lstinline!tmle3mopttx!} paradigm, we just need to change the \passthrough{\lstinline!complex!}
 parameter to \passthrough{\lstinline!FALSE!}:
 
 \begin{lstlisting}[language=R]
 # initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
+tmle_spec_cat_simple <- tmle3_mopttx_blip_revere(
   V = c("W4", "W3", "W2", "W1"), type = "blip2",
   learners = learner_list,
   maximize = TRUE, complex = FALSE, realistic = FALSE
@@ -6019,21 +6143,23 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 
 \begin{lstlisting}[language=R]
 # fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-fit
+fit_cat_simple <- tmle3(tmle_spec_cat_simple, data, node_list, learner_list)
+fit_cat_simple
 A tmle3_Fit that took 1 step(s)
-   type                param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{d(V=W3,W2,W1)}]  0.54382  0.61714 0.070518 0.47893 0.75536
+   type          param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{d(V=W1)}]  0.54336  0.61838 0.060848 0.49912 0.73764
    psi_transformed lower_transformed upper_transformed
-1:         0.61714           0.47893           0.75536
+1:         0.61838           0.49912           0.73764
 \end{lstlisting}
 
-Therefore even though the user specified all baseline covariates as the basis
-for rule estimation, a simpler rule based on only \(W_2\) and \(W_1\) is sufficient
-to maximize the mean under the optimal individualized treatment.
+Even though we specified all baseline covariates as the basis
+for rule estimation, a simpler rule is sufficient to maximize the mean outcome.
 
-\hypertarget{realistic-optimal-individual-regimes}{%
-\subsection{Realistic Optimal Individual Regimes}\label{realistic-optimal-individual-regimes}}
+\textbf{QUESTION:} How does the set of covariates picked by \passthrough{\lstinline!tmle3mopttx!}
+compare to the baseline covariates the true rule depends on?
+
+\hypertarget{oit-eval-cat-v3}{%
+\subsection{Realistic Optimal Individual Regimes}\label{oit-eval-cat-v3}}
 
 In addition to considering less complex rules, \passthrough{\lstinline!tmle3mopttx!} also provides an
 option to estimate the mean under the realistic, or implementable, optimal
@@ -6046,7 +6172,7 @@ the outcome in question while being supported by the data.
 
 \begin{lstlisting}[language=R]
 # initialize a tmle specification
-tmle_spec <- tmle3_mopttx_blip_revere(
+tmle_spec_cat_realistic <- tmle3_mopttx_blip_revere(
   V = c("W4", "W3", "W2", "W1"), type = "blip2",
   learners = learner_list,
   maximize = TRUE, complex = TRUE, realistic = TRUE
@@ -6055,19 +6181,84 @@ tmle_spec <- tmle3_mopttx_blip_revere(
 
 \begin{lstlisting}[language=R]
 # fit the TML estimator
-fit <- tmle3(tmle_spec, data, node_list, learner_list)
-fit
+fit_cat_realistic <- tmle3(tmle_spec_cat_realistic, data, node_list, learner_list)
+fit_cat_realistic
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.54896  0.65453 0.021603 0.61219 0.69687
-   psi_transformed lower_transformed upper_transformed
-1:         0.65453           0.61219           0.69687
+   type         param init_est tmle_est      se   lower   upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.54035  0.65821 0.02135 0.61636 0.70005         0.65821
+   lower_transformed upper_transformed
+1:           0.61636           0.70005
 
 # How many individuals got assigned each treatment?
-table(tmle_spec$return_rule)
+table(tmle_spec_cat_realistic$return_rule)
 
   2   3 
-507 493 
+506 494 
+\end{lstlisting}
+
+\textbf{QUESTION:} Referring back to the data-generating distribution, why do you
+think the distribution of allocated treatment changed from the distribution
+we had under the ``non-realistic''" rule?
+
+\hypertarget{missingness-and-tmle3mopttx}{%
+\subsection{\texorpdfstring{Missingness and \texttt{tmle3mopttx}}{Missingness and tmle3mopttx}}\label{missingness-and-tmle3mopttx}}
+
+In this section, we present how to use the \passthrough{\lstinline!tmle3mopttx!} package when the data is subject
+to missingness. Let's start by add some missingness to our outcome.
+
+\begin{lstlisting}[language=R]
+data_missing <- data_cat_realistic
+
+#Add some random missingless:
+rr <- sample(nrow(data_missing), 100, replace = FALSE)
+data_missing[rr,"Y"]<-NA
+
+summary(data_missing$Y)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+  0.000   0.000   0.000   0.464   1.000   1.000     100 
+\end{lstlisting}
+
+To start, we must first add to our library learners to estimate the missigness
+process.
+
+\begin{lstlisting}[language=R]
+delta_learner <- Lrnr_sl$new(
+  learners = list(lrn_mean, lrn_glm),
+  metalearner = Lrnr_nnls$new()
+)
+
+# specify outcome and treatment regressions and create learner list
+learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner, delta_Y=delta_learner)
+\end{lstlisting}
+
+The \passthrough{\lstinline!learner\_list!} object above specifies the role that each of the ensemble
+learners we've generated is to play in computing initial estimators to be used
+in building a TMLE for the parameter of interest. In particular, it makes
+explicit the fact that our \passthrough{\lstinline!Y!} is used in fitting the outcome regression
+while our \passthrough{\lstinline!A!} is used in fitting our treatment mechanism regression,
+\passthrough{\lstinline!B!} is used in fitting the blip function, and \passthrough{\lstinline!delta\_Y!} fits the missing outcome process.
+
+Now, with the additional estimation step associated with missingness added, we can proceed
+as usual.
+
+\begin{lstlisting}[language=R]
+# initialize a tmle specification
+tmle_spec_cat_miss <- tmle3_mopttx_blip_revere(
+  V = c("W1", "W2", "W3", "W4"), type = "blip2",
+  learners = learner_list, maximize = TRUE, complex = TRUE,
+  realistic = FALSE
+)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# fit the TML estimator
+fit_cat_miss <- tmle3(tmle_spec_cat_miss, data_missing, node_list, learner_list)
+fit_cat_miss
+A tmle3_Fit that took 1 step(s)
+   type                    param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL, delta_Y=1}]  0.53537    0.727 0.061309 0.60683 0.84716
+   psi_transformed lower_transformed upper_transformed
+1:           0.727           0.60683           0.84716
 \end{lstlisting}
 
 \hypertarget{q-learning}{%
@@ -6120,16 +6311,12 @@ individualized treatment.
 \hypertarget{simulated-data-2}{%
 \subsection{Simulated Data}\label{simulated-data-2}}
 
-In order to run \passthrough{\lstinline!tmle3mopttx!} variable importance measure, we need to consider
-covariates to be categorical variables. For illustration purpose, we bin
-baseline covariates corresponding to the data-generating distribution
-\protect\hyperlink{oit-eval}{described previously}:
+For illustration purpose, we bin baseline covariates corresponding to
+the data-generating distribution \protect\hyperlink{oit-eval}{described previously}:
 
 \begin{lstlisting}[language=R]
 # bin baseline covariates to 3 categories:
-data$W1 <- ifelse(data$W1 < quantile(data$W1)[2], 1,
-  ifelse(data$W1 < quantile(data$W1)[3], 2, 3)
-)
+data$W1<-ifelse(data$W1<quantile(data$W1)[2],1,ifelse(data$W1<quantile(data$W1)[3],2,3))
 
 node_list <- list(
   W = c("W3", "W4", "W2"),
@@ -6146,7 +6333,7 @@ we will still properly adjust for all baseline covariates.
 
 In the previous sections we have seen how to obtain a contrast between the mean
 under the optimal individualized rule and the mean under the observed outcome
-for a single covariate- we are now ready to run the variable importance analysis
+for a single covariate --- we are now ready to run the variable importance analysis
 for all of our specified covariates. In order to run the variable importance
 analysis, we first need to initialize a specification for the TMLE of our
 parameter of interest as we have done before. In addition, we need to specify
@@ -6166,9 +6353,9 @@ estimation, and we do not need to specify \passthrough{\lstinline!V!}, \passthro
 in the spec, since they are not important for Q-learning. However, if
 \passthrough{\lstinline!method="SL"!}, which corresponds to learning the optimal individualized
 treatment using the above outlined methodology, then we need to specify the type
-of pseudo-blip we will use in this estimation problem, whether we want to
-maximize or minimize the outcome, complex and realistic rules. Finally, for
-\passthrough{\lstinline!method="SL"!} we also need to communicate that we're interested in learning a
+of (pseudo) blip we will use in this estimation problem, whether we want to
+maximize or minimize the outcome, complex and realistic rules, resource constraint.
+Finally, for \passthrough{\lstinline!method="SL"!} we also need to communicate that we're interested in learning a
 rule dependent on \passthrough{\lstinline!V!} covariates by specifying the \passthrough{\lstinline!V!} argument. For both
 \passthrough{\lstinline!method="Q"!} and \passthrough{\lstinline!method="SL"!}, we need to indicate whether we want to maximize
 or minimize the mean under the optimal individualized rule. Finally, we also
@@ -6179,11 +6366,10 @@ effect).
 
 \begin{lstlisting}[language=R]
 # initialize a tmle specification
-tmle_spec <- tmle3_mopttx_vim(
-  V = c("W2"),
+tmle_spec_vim <- tmle3_mopttx_vim(
+  V=c("W2"),
   type = "blip2",
   learners = learner_list,
-  contrast = "multiplicative",
   maximize = FALSE,
   method = "SL",
   complex = TRUE,
@@ -6193,9 +6379,10 @@ tmle_spec <- tmle3_mopttx_vim(
 
 \begin{lstlisting}[language=R]
 # fit the TML estimator
-vim_results <- tmle3_vim(tmle_spec, data, node_list, learner_list,
+vim_results <- tmle3_vim(tmle_spec_vim, data, node_list, learner_list,
   adjust_for_other_A = TRUE
 )
+
 print(vim_results)
 \end{lstlisting}
 
@@ -6253,7 +6440,7 @@ Questions:
   Define \(V\) as mother's education (\passthrough{\lstinline!momedu!}), current living conditions (\passthrough{\lstinline!floor!}),
   and possession of material items including the refrigerator (\passthrough{\lstinline!asset\_refrig!}).
   Why do you think we use these covariates as \(V\)? Do we want to minimize or
-  maximize the outcome? Which blip type should we use?
+  maximize the outcome? Which (pseudo) blip type should we use?
 \item
   Load the WASH Benefits data, and define the appropriate nodes for treatment
   and outcome. Use all the rest of the covariates as \(W\) except for
@@ -6264,15 +6451,15 @@ Questions:
   the ITR for the main randomized intervention used in the WASH Benefits trial
   with weight-for-height Z-score as the outcome. What's the TMLE value of the
   optimal ITR? How does it change from the initial estimate? Which
-  intervention is the most dominant? Why do you think that is?
+  intervention is the most prominent? Why do you think that is?
 \item
   Using the same formulation as in questions 1 and 2, estimate the realistic
   optimal ITR and the corresponding value of the realistic ITR. Did the results
-  change? Which intervention is the most dominant under realistic rules? Why do
+  change? Which intervention is the most prominent under realistic rules? Why do
   you think that is?
 \item
-  Consider simpler rules for the WASH benefits data example. What set of rules
-  are picked?
+  Consider simpler rules for the WASH benefits data example. Which covariates does the
+  final rule depend on?
 \item
   Change the treatment to a binary variable (\passthrough{\lstinline!asset\_sewmach!}), and estimate the
   value under the ITR in this setting under a \(60\%\) resource constraint. What
@@ -6295,11 +6482,10 @@ Questions:
   from \passthrough{\lstinline!blip1!} to \passthrough{\lstinline!blip2!} when considering categorical treatment? What are some
   of the advantages of each?
 \item
-  Look back at the results generated in the \protect\hyperlink{oit-eval-cat}{section on categorical
-  treatments}, and compare then to the mean under the optimal
-  individualized treatment in the \protect\hyperlink{oit-eval-bin}{section on binary
-  treatments}. Why do you think the estimate is higher under the
-  less complex rule? How does the set of covariates picked by \passthrough{\lstinline!tmle3mopttx!}
+  Look back at the results generated in the \protect\hyperlink{oit-eval-cat-v1}{section on categorical
+  treatments}, and compare them to the mean under the optimal
+  individualized treatment in the \protect\hyperlink{oit-eval-bin-v2}{section on complex categorical
+  treatments}. How does the set of covariates picked by \passthrough{\lstinline!tmle3mopttx!}
   compare to the baseline covariates the true rule depends on?
 \item
   Compare the distribution of treatments assigned under the true optimal
@@ -6330,7 +6516,7 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -6395,7 +6581,7 @@ Consider \(n\) observed units \(O_1, \ldots, O_n\), where each random variable \
 covariates (e.g., age, sex, education level), \(A\) an intervention variable of
 interest (e.g., nutritional supplements), and \(Y\) an outcome of interest (e.g.,
 disease status). Though it need not be the case, let \(A\) be continuous-valued,
-i.e. \(A \in \R\). Let \(O_i \sim \mathcal{P} \in \M\), where \(\M\) is the
+i.e.~\(A \in \R\). Let \(O_i \sim \mathcal{P} \in \M\), where \(\M\) is the
 nonparametric statistical model defined as the set of continuous densities on
 \(O\) with respect to some dominating measure. To formalize the definition of
 stochastic interventions and their corresponding causal effects, we introduce a
@@ -6765,7 +6951,7 @@ object internally (see the \passthrough{\lstinline!tmle3!} documentation for det
 \begin{lstlisting}[language=R]
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338     Pars:  0.94735 0.05265
+Iter: 1 fn: 548.8338     Pars:  0.94736 0.05264
 Iter: 2 fn: 548.8338     Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -6999,7 +7185,7 @@ for \(m_{\beta}(\delta)\) may be expressed \[\sqrt{n}(\beta_n - \beta_0) \to N(0
 \(\text{EIF}_{\beta}(O)\).
 
 \hypertarget{directly-targeting-the-msm-parameter-beta}{%
-\subsubsection{\texorpdfstring{Directly Targeting the MSM Parameter \(\beta\)}{Directly Targeting the MSM Parameter \textbackslash{}beta}}\label{directly-targeting-the-msm-parameter-beta}}
+\subsubsection{\texorpdfstring{Directly Targeting the MSM Parameter \(\beta\)}{Directly Targeting the MSM Parameter \textbackslash beta}}\label{directly-targeting-the-msm-parameter-beta}}
 
 Note that in the above, a working MSM is fit to the individual TML estimates of
 the mean counterfactual outcome under a given value of the shift \(\delta\) in the
@@ -7187,9 +7373,9 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-09-21
+Updated: 2021-10-13
 
-\textbackslash{}begin\{VT1\}
+\textbackslash begin\{VT1\}
 \VH{Learning Objectives}
 
 \begin{enumerate}
@@ -7220,7 +7406,7 @@ Updated: 2021-09-21
   using the \passthrough{\lstinline!tmle3mediate!} \passthrough{\lstinline!R!} package.
 \end{enumerate}
 
-\textbackslash{}end\{VT1\}
+\textbackslash end\{VT1\}
 
 \hypertarget{introduction-to-causal-mediation-analysis}{%
 \section{Introduction to Causal Mediation Analysis}\label{introduction-to-causal-mediation-analysis}}
@@ -7839,7 +8025,7 @@ classes (and also most like OOP focused languages like C++ and Java), including
 having method definitions be part of class definitions, and allowing objects to
 be modified by reference.
 
-\bibliography{book.bib,packages.bib}
+  \bibliography{book.bib,packages.bib}
 
 \backmatter
 \printindex

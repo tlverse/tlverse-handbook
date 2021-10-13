@@ -9,7 +9,7 @@
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
-<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body>
 <span class="math inline">
@@ -69,7 +69,7 @@
 <span class="header-section-number">2</span> The Roadmap for Targeted Learning<a class="anchor" aria-label="anchor" href="#intro"><i class="fas fa-link"></i></a>
 </h1>
 <p><em>Nima Hejazi</em> and <em>Rachael Phillips</em></p>
-<p>Updated: 2021-09-21</p>
+<p>Updated: 2021-10-13</p>
 <div id="learning-objectives" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives"><i class="fas fa-link"></i></a>
 </h2>
@@ -182,8 +182,8 @@ the differing modeling decisions and assumptions made by different analysts.
 Even in the nascent days of data analysis, it was recognized that it is “far
 better [to develop] an approximate answer to the right question…than an exact
 answer to the wrong question, which can always be made precise”
-<span class="citation">(Tukey <a href="references.html#ref-tukey1962future">1962</a>)</span>, though traditional statistics failed to heed this advice for
-a number of decades <span class="citation">(Donoho <a href="references.html#ref-donoho2017fifty">2017</a>)</span>. The Targeted Learning paradigm avoids
+<span class="citation">(Tukey <a href="references.html#ref-tukey1962future" role="doc-biblioref">1962</a>)</span>, though traditional statistics failed to heed this advice for
+a number of decades <span class="citation">(Donoho <a href="references.html#ref-donoho2017fifty" role="doc-biblioref">2017</a>)</span>. The Targeted Learning paradigm avoids
 this bias by defining the statistical model through a representation of the true
 data-generating distribution corresponding to the observed data. The ultimate
 goal is to formulate the statistical estimation problem <em>exactly</em>, so that one
@@ -206,7 +206,9 @@ several untestable assumptions, described in greater detail in the section on
 <p>For a simple example, consider a data set which contains observations of a
 survival time on every subject, for which our question of interest is “What’s
 the probability that someone lives longer than five years?” We have,</p>
-
+<p><span class="math display">\[\begin{equation*}
+  \Psi(P_0) = \P_O(O &gt; 5) = \int_5^{\infty} dP_O(o)
+\end{equation*}\]</span></p>
 <p>This answer to this question is the <strong>estimand, <span class="math inline">\(\Psi(P_0)\)</span></strong>, which is the
 quantity we wish to learn from the data. Once we have defined <span class="math inline">\(O\)</span>, <span class="math inline">\(\M\)</span> and
 <span class="math inline">\(\Psi(P_0)\)</span> we have formally defined the statistical estimation problem.</p>
@@ -308,9 +310,9 @@ experienced. There are different ways of operationalizing the theoretical
 experiments that generate the counterfactual data necessary for describing our
 causal contrasts of interest, including simply assuming that the counterfactual
 outcomes exist in theory for all treatment contrasts of interest
-<span class="citation">(Neyman <a href="references.html#ref-neyman1938contribution">1938</a>; Rubin <a href="references.html#ref-rubin2005causal">2005</a>; Imbens and Rubin <a href="references.html#ref-imbens2015causal">2015</a>)</span> or through
+<span class="citation">(Neyman <a href="references.html#ref-neyman1938contribution" role="doc-biblioref">1938</a>; Rubin <a href="references.html#ref-rubin2005causal" role="doc-biblioref">2005</a>; Imbens and Rubin <a href="references.html#ref-imbens2015causal" role="doc-biblioref">2015</a>)</span> or through
 considering interventions on directed acyclic graphs (DAGs) or nonparametric
-structural equation models (NPSEMs) <span class="citation">(Pearl <a href="references.html#ref-pearl1995causal">1995</a>, <a href="references.html#ref-pearl2009causality">2009</a><a href="references.html#ref-pearl2009causality">a</a>)</span>,
+structural equation models (NPSEMs) <span class="citation">(Pearl <a href="references.html#ref-pearl1995causal" role="doc-biblioref">1995</a>, <a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>)</span>,
 both of which encode the known or hypothesized set of relationships between
 variables in the system under study.</p>
 <div id="the-causal-model" class="section level3 unnumbered">
@@ -323,7 +325,7 @@ introduced below. DAGs are a particularly useful tool for expressing what we
 know about the causal relations among variables in the system under study.
 Ignoring exogenous <span class="math inline">\(U\)</span> terms (explained below), we assume the following ordering
 of the variables in the observed data <span class="math inline">\(O\)</span>. We demonstrate the construction of a
-DAG below using <code>DAGitty</code> <span class="citation">(Textor, Hardt, and Knüppel <a href="references.html#ref-textor2011dagitty">2011</a>)</span>:</p>
+DAG below using <code>DAGitty</code> <span class="citation">(Textor, Hardt, and Knüppel <a href="references.html#ref-textor2011dagitty" role="doc-biblioref">2011</a>)</span>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.dagitty.net">dagitty</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/malcolmbarrett/ggdag">ggdag</a></span><span class="op">)</span>
@@ -520,7 +522,7 @@ of <span class="math inline">\(P_0\)</span>. We discuss several more complex est
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on September 21, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on October 13, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

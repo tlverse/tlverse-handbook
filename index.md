@@ -4,7 +4,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "September 21, 2021"
+date: "October 13, 2021"
 documentclass: krantz
 site: bookdown::bookdown_site
 bibliography: [book.bib, packages.bib]
@@ -189,8 +189,8 @@ produce it.
 
 This book was written using [bookdown](http://bookdown.org/), and the complete
 source is available on [GitHub](https://github.com/tlverse/tlverse-handbook).
-This version of the book was built with R version 4.0.2 (2020-06-22),
-[pandoc](https://pandoc.org/) version 2.2, and the
+This version of the book was built with R version 4.1.1 (2021-08-10),
+[pandoc](https://pandoc.org/) version 2.7.3, and the
 following packages:
 
 
@@ -198,31 +198,31 @@ following packages:
 |:------------|:----------|:--------------------------------------|
 |bookdown     |0.22.3     |Github (rstudio/bookdown\@c8883c9)     |
 |bslib        |0.2.5.9001 |Github (rstudio/bslib\@ae5e994)        |
-|dagitty      |0.3-1      |CRAN (R 4.0.2)                         |
-|data.table   |1.14.0     |CRAN (R 4.0.2)                         |
-|delayed      |0.3.0      |CRAN (R 4.0.2)                         |
-|downlit      |0.2.1      |CRAN (R 4.0.2)                         |
-|dplyr        |1.0.6      |CRAN (R 4.0.2)                         |
-|forecast     |8.15       |CRAN (R 4.0.2)                         |
-|ggdag        |0.2.3      |CRAN (R 4.0.2)                         |
-|ggfortify    |0.4.11     |CRAN (R 4.0.2)                         |
-|ggplot2      |3.3.3      |CRAN (R 4.0.2)                         |
-|kableExtra   |1.3.4      |CRAN (R 4.0.2)                         |
-|knitr        |1.33       |CRAN (R 4.0.2)                         |
-|mvtnorm      |1.1-2      |CRAN (R 4.0.2)                         |
-|origami      |1.0.4      |Github (tlverse/origami\@35e8b79)      |
-|randomForest |4.6-14     |CRAN (R 4.0.2)                         |
-|readr        |1.4.0      |CRAN (R 4.0.2)                         |
-|rmarkdown    |2.8        |CRAN (R 4.0.2)                         |
-|skimr        |2.1.3      |CRAN (R 4.0.2)                         |
-|sl3          |1.4.3      |Github (tlverse/sl3\@5496bfb)          |
-|stringr      |1.4.0      |CRAN (R 4.0.2)                         |
-|tibble       |3.1.2      |CRAN (R 4.0.2)                         |
-|tidyr        |1.1.3      |CRAN (R 4.0.2)                         |
+|dagitty      |0.3-1      |CRAN (R 4.1.1)                         |
+|data.table   |1.14.2     |CRAN (R 4.1.1)                         |
+|delayed      |0.3.0      |CRAN (R 4.1.1)                         |
+|downlit      |0.2.1      |CRAN (R 4.1.1)                         |
+|dplyr        |1.0.7      |CRAN (R 4.1.1)                         |
+|forecast     |8.15       |CRAN (R 4.1.1)                         |
+|ggdag        |0.2.3      |CRAN (R 4.1.1)                         |
+|ggfortify    |0.4.11     |CRAN (R 4.1.1)                         |
+|ggplot2      |3.3.5      |CRAN (R 4.1.1)                         |
+|kableExtra   |1.3.4      |CRAN (R 4.1.1)                         |
+|knitr        |1.33       |CRAN (R 4.1.1)                         |
+|mvtnorm      |1.1-2      |CRAN (R 4.1.1)                         |
+|origami      |1.0.5      |Github (tlverse/origami\@49c69b3)      |
+|randomForest |4.6-14     |CRAN (R 4.1.1)                         |
+|readr        |1.4.0      |CRAN (R 4.1.1)                         |
+|rmarkdown    |2.8        |CRAN (R 4.1.1)                         |
+|skimr        |2.1.3      |CRAN (R 4.1.1)                         |
+|sl3          |1.4.3      |Github (tlverse/sl3\@20834ae)          |
+|stringr      |1.4.0      |CRAN (R 4.1.1)                         |
+|tibble       |3.1.5      |CRAN (R 4.1.1)                         |
+|tidyr        |1.1.4      |CRAN (R 4.1.1)                         |
 |tmle3        |0.2.0      |Github (tlverse/tmle3\@425e21c)        |
-|tmle3mediate |0.0.3      |Github (tlverse/tmle3mediate\@27f8ee7) |
-|tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@9fb1a3b)  |
-|tmle3shift   |0.2.0      |Github (tlverse/tmle3shift\@43f6fc0)   |
+|tmle3mediate |0.0.3      |Github (tlverse/tmle3mediate\@70d1151) |
+|tmle3mopttx  |0.1.0      |Github (tlverse/tmle3mopttx\@54f288f)  |
+|tmle3shift   |0.2.0      |Github (tlverse/tmle3shift\@4ed52b5)   |
 
 -->
 
