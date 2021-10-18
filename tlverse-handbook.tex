@@ -203,7 +203,7 @@
 \makeatother
 \subtitle{Causal Data Science with the tlverse Software Ecosystem}
 \author{Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard}
-\date{October 13, 2021}
+\date{October 18, 2021}
 
 \begin{document}
 \maketitle
@@ -728,7 +728,7 @@ resources}.
 
 \emph{Nima Hejazi} and \emph{Rachael Phillips}
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1166,7 +1166,7 @@ of \(P_0\). We discuss several more complex estimands in later sections.
 \hypertarget{tlverse}{%
 \chapter{\texorpdfstring{Welcome to the \texttt{tlverse}}{Welcome to the tlverse}}\label{tlverse}}
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -1580,7 +1580,7 @@ study participants. Notice also the uniform distribution of the treatment groups
 Based on the \href{https://github.com/tlverse/origami}{\passthrough{\lstinline!origami!} \passthrough{\lstinline!R!} package}
 by \emph{Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips}.
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -3011,7 +3011,7 @@ The arima model with no AR component seems to be a better fit for this data.
 Based on the \href{https://github.com/tlverse/sl3}{\passthrough{\lstinline!sl3!} \passthrough{\lstinline!R!} package} by \emph{Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin}.
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \hypertarget{learning-objectives}{%
 \section*{Learning Objectives}\label{learning-objectives}}
@@ -5224,7 +5224,7 @@ optimal treatments and stochastic shift interventions.
 Based on the \href{https://github.com/tlverse/tmle3mopttx}{\passthrough{\lstinline!tmle3mopttx!} \passthrough{\lstinline!R!} package}
 by \emph{Ivana Malenica, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \hypertarget{learning-objectives-1}{%
 \section{Learning Objectives}\label{learning-objectives-1}}
@@ -6516,7 +6516,7 @@ Questions:
 Based on the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} \passthrough{\lstinline!R!} package}
 by \emph{Nima Hejazi, Jeremy Coyle, and Mark van der Laan}.
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -6524,139 +6524,138 @@ Updated: 2021-10-13
 
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
-   treatment regimes.
-2. Describe how estimating causal effects of stochastic interventions informs a
-   real-world data analysis.
-3. Contrast a population level stochastic intervention policy from a modified
-   treatment policy.
-4. Estimate causal effects under stochastic treatment regimes with the
-   `tmle3shift` `R` package.
-6. Specify a grid of counterfactual shift interventions to be used for defining
-   a set of stochastic intervention policies.
-7. Interpret a set of effect estimates from a grid of counterfactual shift
-   interventions.
-5. Construct marginal structural models to measure variable importance in terms
-   of stochastic interventions, using a grid of shift interventions.
-8. Implement a shift intervention at the individual level, to facilitate
-   shifting each individual to a value that's supported by the data.
-9. Define novel shift intervention functions to extend the `tmle3shift` `R`
-   package.
+   dynamic treatment regimes.
+2. Describe how a real-world data analysis may incorporate assessing the causal
+   effects of stochastic treatment regimes.
+3. Contrast a population-level (general) stochastic treatment regime from an
+   (individualized) modified treatment policy.
+4. Estimate the population-level causal effects of modified treatment policies
+   with the `tmle3shift` `R` package.
+5. Specify and interpret a set of causal effects based upon differing modified
+   treatment policies arising from a grid of counterfactual shifts.
+6. Construct marginal structural models to measure variable importance in terms
+   of stochastic interventions, using a grid of counterfactual shifts.
+7. Implement, with the `tmle3shift` `R` package, modified treatment policies
+   that shift individual units only to the extent supported by the observed
+   data.
 
 \end{VT1}
 
-\hypertarget{introduction-to-stochastic-interventions}{%
-\section{Introduction to Stochastic Interventions}\label{introduction-to-stochastic-interventions}}
+\hypertarget{what-makes-an-intervention-stochastic}{%
+\section{What makes an intervention ``stochastic''?}\label{what-makes-an-intervention-stochastic}}
 
-Stochastic treatment regimes present a relatively simple, yet extremely flexible
-manner by which \emph{realistic} causal effects (and contrasts thereof) may be
-defined. Importantly, stochastic treatment regimes may be applied to nearly
-any manner of treatment variable -- continuous, ordinal, categorical, binary --
-allowing for a rich set of causal effects to be defined through this formalism.
-In this chapter, we examine a simple example of stochastic treatment regimes in
-the context of a continuous treatment variable of interest, defining an
-intuitive causal effect through which to examine stochastic interventions more
-generally. In later sections, we introduce numerous extensions based on this
-broad class of interventions -- from stochastic interventions on binary
-treatment variables to stochastic mediation effects and data-adaptive inference
-for stochastic intervention effects. As a first step to using stochastic
-treatment regimes in practice, we present the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} R
-package}, which features an
-implementation of a recently developed algorithm for computing targeted minimum
-loss-based estimates of a causal effect based on a stochastic treatment regime
-that shifts the natural value of the treatment based on a shifting function
-\(d(A,W)\). For a comprehensive technical presentation of some of the material in
-this chapter, the interested reader is invited to consult \citet{diaz2018stochastic}.
-Additional background on the field of Targeted Learning, as well as prior work
-on stochastic treatment regimes, is available in \citet{vdl2011targeted},
-\citet{vdl2018targeted}, and \citet{diaz2012population}.
+Stochastic treatment regimes, or \emph{stochastic interventions}, constitute a
+relatively simple yet extremely flexible and expressive framework for defining
+\emph{realistic} causal effects. In contrast to intervention regimens discussed
+previously, stochastic interventions may be applied to nearly any manner of
+treatment variable -- continuous, ordinal, categorical, binary -- allowing for a
+rich set of causal effects to be defined through this formalism. This chapter
+focuses on examining a few types of stochastic interventions that may be applied
+to \emph{continuous} treatment variables, to which static and dynamic treatment
+regimes cannot easily be applied.
 
-While stochastic treatment regimes are arguably the most general of the
-classes of interventions through which causal effects may be defined, such
-interventions are conceptually simple.
+In the next chapter, we will introduce two alternative uses of stochastic
+interventions -- a recently formulated intervention applicable to binary
+treatment variables \citep{kennedy2019nonparametric} and the definition of causal
+effects in the presence of post-treatment, or mediating, variables. Here, we
+will focus on the tools provided in the \href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!} R
+package}, which exposes targeted minimum
+loss-based estimators of the causal effects of stochastic interventions that
+additively shift the observed value of the treatment variable. More
+comprehensive, technical presentations of some aspects of the material in this
+chapter appear in \citet{diaz2012population}, \citet{diaz2018stochastic},
+\citet{hejazi2020efficient}, and \citet{hejazi2021semiparametric}.
 
 \hypertarget{data-structure-and-notation-1}{%
 \section{Data Structure and Notation}\label{data-structure-and-notation-1}}
 
-Consider \(n\) observed units \(O_1, \ldots, O_n\), where each random variable \(O = (W, A, Y)\) corresponds to a single observational unit. Let \(W\) denote baseline
-covariates (e.g., age, sex, education level), \(A\) an intervention variable of
-interest (e.g., nutritional supplements), and \(Y\) an outcome of interest (e.g.,
-disease status). Though it need not be the case, let \(A\) be continuous-valued,
-i.e.~\(A \in \R\). Let \(O_i \sim \mathcal{P} \in \M\), where \(\M\) is the
-nonparametric statistical model defined as the set of continuous densities on
-\(O\) with respect to some dominating measure. To formalize the definition of
-stochastic interventions and their corresponding causal effects, we introduce a
-nonparametric structural equation model (NPSEM), based on \citet{pearl2009causality},
+Let us return to the familiar data unit \(O = (W, A, Y)\), where \(W\) denote
+baseline covariates (e.g., age, biological sex, education level), \(A\) a
+treatment variable (e.g., dose of nutritional supplements), and \(Y\) an outcome
+of interest (e.g., disease status). Here, we consider \(A\) that are
+continuous-valued (i.e., \(A \in \R\)) or ordinal with many levels. For a given
+study, we consider observing \(n\) independent and identically distributed units
+\(O_1, \ldots, O_n\).
+
+Following \protect\hyperlink{roadmap}{the roadmap}, let \(O \sim \mathcal{P} \in \M\), where \(\M\)
+is the nonparametric statistical model, minimizing any restrictions on the form
+of the data-generating distribution \(\mathcal{P}\). To formalize the definition
+of stochastic interventions and their corresponding causal effects, we introduce
+a nonparametric structural equation model (NPSEM), based on \citet{pearl2009causality},
 to define how the system changes under posited interventions:
 \begin{align}
-  W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
+  W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y).
   \label{eq:npsem-shift}
 \end{align}
-where the set of structural equations provide a mechanistic model by which the
-observed data \(O\) is assumed to have been generated. There are several standard
-assumptions embedded in the NPSEM -- specifically, a temporal ordering that
-supposes that \(Y\) occurs after \(A\), which occurs after \(W\); each variable (i.e.,
-\(\{W, A, Y\}\)) is assumed to have been generated from its corresponding
-deterministic function (i.e., \(\{f_W, f_A, f_Y\}\)) of the observed variables
-that precede it temporally, as well as an exogenous variable, denoted by \(U\);
-lastly, each exogenous variable is assumed to contain all unobserved causes of
-the corresponding observed variable.
+The set of structural equations provide a mechanistic model describing the
+relationships between variables composing the observed data unit \(O\). The NPSEM
+describes a temporal ordering between the variables (i.e., that \(Y\) occurs after
+\(A\), which occurs after \(W\)); specifies deterministic functions \(\{f_W, f_A, f_Y\}\) generating each variable \(\{W, A, Y\}\) based on those preceding it and
+exogenous (unobserved) variable \(\{U_W, U_A, U_Y\}\); and requires that each
+exogenous variable is assumed to contain all unobserved causes of the
+corresponding observed variable.
 
-The likelihood of the data \(O\) admits a factorization, wherein, for \(p_0^O\),
-the density of \(O\) with respect to the product measure, the density evaluated
-on a particular observation \(o\) may be a written
+We can factorize the likelihood of the data unit \(O\) as follows, revealing
+orthogonal components of the density, \(p_0^O\), when evaluated on a typical
+observation \(o\):
 \begin{equation}
   p_0^O(x) = q^O_{0,Y}(y \mid A = a, W = w) q^O_{0,A}(a \mid W = w)
   q^O_{0,W}(w),
   \label{eq:likelihood-factorization-shift}
 \end{equation}
-where \(q_{0, Y}\) is the conditional density of \(Y\) given \((A, W)\) with respect
+where \(q_{0, Y}\) is the conditional density of \(Y\) given \(\{A, W\}\) with respect
 to some dominating measure, \(q_{0, A}\) is the conditional density of \(A\) given
 \(W\) with respect to dominating measure \(\mu\), and \(q_{0, W}\) is the density of
-\(W\) with respect to dominating measure \(\nu\). Further, for ease of notation, let
+\(W\) with respect to dominating measure \(\nu\). For ease of notation, we let
 \(Q(A, W) = \E[Y \mid A, W]\), \(g(A \mid W) = \P(A \mid W)\), and \(q_W\) the
-marginal distribution of \(W\). These components of the likelihood will be
-essential in developing an understanding of the manner in which stochastic
-treatment regimes perturb a system and how a corresponding causal effect may be
-evaluated. Importantly, the NPSEM parameterizes \(p_0^O\) in terms of the
-distribution of random variables \((O, U)\) modeled by the system of equations. In
-turn, this implies a model for the distribution of counterfactual random
-variables generated by interventions on the data-generating process.
+marginal distribution of \(W\). Importantly, the NPSEM parameterizes \(p_0^O\) in
+terms of the distribution of random variables \((O, U)\) modeled by the system of
+equations. In turn, this implies a model for the distribution of counterfactual
+random variables generated by interventions on the data-generating process.
 
 \hypertarget{defining-the-causal-effect-of-a-stochastic-intervention}{%
 \section{Defining the Causal Effect of a Stochastic Intervention}\label{defining-the-causal-effect-of-a-stochastic-intervention}}
 
-As causal effects are defined in terms of hypothetical interventions on the
-NPSEM \eqref{eq:npsem-shift}, we may consider stochastic interventions in two
-equivalent ways: (1) where the equation \(f_A\), giving rise to \(A\), is replaced
-by a probabilistic mechanism \(g_{\delta}(A \mid W)\) that differs from the
-original \(g(A \mid W)\), or (2) where the observed value \(A\) is replaced by a
-new value \(A_{d(A,W)}\) based on applying a user-defined function \(d(A,W)\) to
-\(A\). In the former case, the \emph{stochastically modified} value of the treatment
-\(A_{\delta}\) is drawn from a user-specified distribution \(g_\delta(A \mid W)\),
-which may depend on the original distribution \(g(A \mid W)\) and is indexed by
-a user-specified parameter \(\delta\). In this case, the stochastically modified
-value of the treatment \(A_{\delta} \sim g_{\delta}(\cdot \mid W)\).
-Alternatively, in the latter case, the stochastic treatment regime may be
-viewed as an intervention in which \(A\) is set equal to a value based on a
-hypothetical regime \(d(A, W)\), where regime \(d\) depends on the treatment level
-\(A\) that would be assigned in the absence of the regime as well as the
-covariates \(W\). In either case, one may view the stochastic intervention as
-generating a counterfactual random variable \(Y_{d(A,W)} := f_Y(d(A,W), W, U_Y) \equiv Y_{g_{\delta}} := f_Y(A_{\delta}, W, U_Y)\), where the counterfactual
-outcome \(Y_{d(A,W)} \sim \mathcal{P}_0^{\delta}\).
+Causal effects are defined in terms of contrasts of hypothetical interventions
+on the NPSEM \eqref{eq:npsem-shift}. Stochastic interventions modifying
+components of the NPSEM may be thought of in two equivalent ways. A
+\emph{general} stochastic intervention replaces the equation \(f_A\), which gives rise
+to \(A\), and defines \(g(A \mid W)\), the conditional density of A, with a
+candidate density \(g_{A_{\delta}}(A \mid W)\). In the absence of the
+intervention, we would consider any given value of \(A\) -- that is, the result of
+evaluating the function \(f_A\) at a given value \(W = w\) -- as the result of a
+random draw from the conditional density \(g(A \mid W)\), that is, \(A_{\delta} \sim g_{\delta}(\cdot \mid W)\). In applying the intervention, we simply remove
+the structural equation \(f_A\), instead drawing the post-intervention value
+\(A_{\delta}\) from the distribution defined by the candidate density
+\(g_{A_{\delta}}(A \mid W)\). The post-intervention value \(A_{\delta}\) is
+stochastically modified in the sense that it has been drawn from an arbitrary
+(in practice, user-defined) distribution.
 
-Stochastic interventions of this second variety may be referred to as depending
-on the \emph{natural value of treatment} or as \emph{modified treatment policies}.
-\citet{haneuse2013estimation} and \citet{young2014identification} provide a discussion of the
-critical differences and similarities in the identification and interpretation
-of these two classes of stochastic intervention. In the sequel, we will
-restrict our attention to a simple stochastic treatment regime that has been
-characterized as a \emph{modified treatment policy} (MTP). Letting \(A\) denote a
-continuous-valued treatment, such as the taking of nutritional supplements
-(e.g., number of vitamin pills) and assume that the distribution of \(A\)
-conditional on \(W = w\) has support in the interval \((l(w), u(w))\). That is, the
-minimum observed number of pills taken \(A\) for an individual with covariates
-\(W = w\) is \(l(w)\); similarly, the maximum is \(u(w)\). Then, a simple stochastic
-intervention, based on a shift \(\delta\), may be defined
+While there are few restrictions on the choice of the candidate post-treatment
+density \(g_{A_{\delta}}(A \mid W)\), in practice, it is often chosen based on
+knowledge of the natural (i.e., intervention-free) density \(g(A \mid W)\). When
+\(g_{A_{\delta}}(A \mid W)\) is \emph{piecewise smooth intvertible}
+\citep{haneuse2013estimation} (see below), there is a direct correspondence between
+the post-intervention density \(g_{A_{\delta}}(A \mid W)\) and a function \(d(A, W; \delta)\) that map an observed pair \(\{A, W\}\) to the post-intervention quantity
+\(A_{\delta}\). In such cases, the stochastic intervention, defined by \(d(A, W; \delta)\), is said to depend on the natural value of treatment and has been
+termed a \emph{modified treatment policy} (MTP) \citep{haneuse2013estimation, diaz2018stochastic, hejazi2021semiparametric}. \citet{haneuse2013estimation} and
+\citet{young2014identification} provide detailed discussions contrasting the
+interpretations of the causal effects under modified treatment policies and
+general stochastic interventions.
+
+\textbackslash begin\{assumption\}{[}Piecewise smooth invertibility{]}
+For each \(w \in \cal W\), assume that the interval
+\(\mathcal{I}(w) = (l(w,), u(w))\) may be partitioned into subintervals
+\(\mathcal{I}_{\delta,j}(w): j = 1, \ldots, J(w)\) such that \(d(a, w)\) is equal
+to some \(d_j(a, w)\) in \(\mathcal{I}_{\delta,j}(w)\) and \(d_j(\cdot,w)\) has
+inverse function \(h_j(\cdot, w)\) with derivative \(h_j'(\cdot, w)\).
+(\#ass:piece\_inv)
+\textbackslash end\{assumption\}
+
+In either case, the stochastic intervention may be viewed as generating a
+counterfactual random variable \(Y_{A_{\delta}} := f_Y(A_{\delta}, W, U_Y)\),
+where the counterfactual outcome \(Y_{A_{\delta}} \sim \mathcal{P}_0^{A_{\delta}}\), defining both \(g_{A_{\delta}}(A \mid W)\) and \(d(A, W; \delta)\). For the remainder of this chapter, we will focus on additive MTPs
+of the form
 \begin{equation}
   d(a, w) =
   \begin{cases}
@@ -6665,75 +6664,78 @@ intervention, based on a shift \(\delta\), may be defined
   \end{cases}
   \label{eq:shift}
 \end{equation}
-where \(0 \leq \delta \leq u(w)\) is an arbitrary pre-specified value that
-defines the degree to which the observed value \(A\) is to be shifted, where
-possible. Such a stochastic treatment regime may be interpreted as the result
-of a clinic policy that encourages individuals to consume \(\delta\) more vitamin
-pills than they would normally, i.e., based on their baseline characteristics.
-The interpretation of this stochastic intervention may be made more interesting
-by allowing the modification \(\delta\) that it engenders to be a function of the
-baseline covariates \(W\), thereby allowing for the number of vitamin pills taken
-to be a function of covariates such as age, sex, comorbidities, etc. This class
-of stochastic interventions was first introduced by \citet{diaz2012population} and has
-been further discussed in \citet{haneuse2013estimation}, \citet{diaz2018stochastic}, and
-\citet{hejazi2020efficient}. Note that this intervention may be written in a manner
-consistent with the first class of stochastic treatment regimes discussed as
-well -- that is, as per \citet{diaz2012population}, \(\P_{\delta}(g_0)(A = a \mid W) = g_0(a - \delta(W) \mid W)\).
+where \(0 \leq \delta \leq u(w)\) defines the degree to which an observed \(A = a\)
+ought to be shifted, in the context of the stratum \(W = w\), and \(l(w)\) and
+\(u(w)\) are the minimum and maximum values of the treatment \(A\) in the stratum
+\(W = w\). Consider, for example, the case where \(A\) denotes a (continuous-valued)
+dosage of nutritional supplements (e.g., number of vitamin pills) and assume
+that the distribution of \(A\) conditional on \(W = w\) has support in the interval
+\((l(w), u(w))\). That is, the minimum number of pills taken for an individual
+with in the covariate stratum defined by \(W = w\) is \(l(w)\); similarly, the
+maximum is \(u(w)\). Such a stochastic intervention may be interpreted as the
+result of a clinic policy encouraging individuals to consume \(\delta\) more
+vitamin pills (\(A \delta\)) than they would normally be recommended (\(A\)) based
+on their baseline characteristics \(W\). This class of stochastic interventions
+was introduced by \citet{diaz2012population} and has been further discussed in
+\citet{haneuse2013estimation}, \citet{diaz2018stochastic}, \citet{hejazi2020efficient}, and
+\citet{hejazi2021semiparametric}. This class of interventions may be expressed as a
+general stochastic intervention, by considering the random draw
+\(\P_{A_{\delta}}(g_{0, A})(A = a \mid W) = g_{0,A}(a - \delta(W) \mid W)\), as
+per \citet{diaz2018stochastic}.
 
-The goal of any causal analysis motivated by such a stochastic intervention is
-to estimate a parameter defined as the counterfactual mean of the outcome with
-respect to the stochastically modified intervention distribution. In
-particular, the target causal estimand of our analysis is \(\psi_{0, \delta} \coloneqq \E_{P_0^{\delta}}\{Y_{d(A,W)}\}\), the mean of the counterfactual
-outcome variable \(Y_{d(A, W)}\). In prior work, \citet{diaz2012population} showed that
-the causal quantity of interest \(\E_0 \{Y_{d(A, W)}\}\) is identified by
-a functional of the distribution of \(O\):
+In order to evaluate the causal effect of our intervention, we consider as a
+parameter of interest the counterfactual mean of the outcome under our
+stochastically modified intervention distribution. This target causal estimand
+is \(\psi_{0, \delta} \coloneqq \E_{P_0^{A_{\delta}}}\{Y_{A_{\delta}}\}\), the
+mean of the counterfactual outcome variable \(Y_{A_{\delta}}\).
+\citet{diaz2018stochastic} showed that \(\psi_{0, \delta}\) may be identified by a
+functional of the distribution of \(O\):
 \begin{align}
-  \psi_{0,d} = \int_{\mathcal{W}} \int_{\mathcal{A}} & \E_{P_0}
+  \psi_{0,\delta} = \int_{\mathcal{W}} \int_{\mathcal{A}} & \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \cdot \\ &q_{0, A}^O(a \mid W = w) \cdot
    q_{0, W}^O(w) d\mu(a)d\nu(w).
   \label{eq:identification2012}
 \end{align}
-If the identification conditions may be assumed to hold, then the statistical
-parameter in \eqref{eq:identification2012} matches exactly the counterfactual
-outcome \(\psi_{0, \delta}\) under such an intervention, allowing for the causal
-effect to be learned from the observed data \(O\). \citet{diaz2012population} provide a
-derivation based on the efficient influence function (EIF) in the nonparametric
-model \(\M\) and develop several estimators of this quantity, including
-substitution, inverse probability weighted (IPW), one-step (OS) and targeted
-maximum likelihood (TML) estimators, allowing for semiparametric-efficient
-estimation and inference on the quantity of interest. As per
-\citet{diaz2018stochastic}, the statistical target parameter may also be denoted
-\(\Psi(P_0) = \E_{P_0}{\overline{Q}(d(A, W), W)}\), where \(\overline{Q}(d(A, W), W)\) is the counterfactual outcome value of a given individual under the
-stochastic intervention distribution.
-
-Although the focus of this work is neither the establishment of identification
-results nor the development of theoretical details, we review the necessary
-identification details for the counterfactual mean under a stochastic
-intervention here, in the interest of completeness. Paraphrasing from
-\citet{diaz2012population} and \citet{diaz2018stochastic}, four standard assumptions are
-necessary in order to establish identifiability of the causal parameter from
-the observed data via the statistical functional -- these are
+Under certain identification conditions, which we will enumerate shortly, the
+statistical parameter in Equation \eqref{eq:identification2012} matches exactly
+the counterfactual mean \(\psi_{0, \delta}\). While this book is not concerned
+with the identification of causal parameters -- that is, establishing
+statistical functionals of the observed data that have causal interpretations
+under certain assumptions -- we review key assumptions for identifying the
+counterfactual mean \(\psi_{0, \delta}\) below.
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  \emph{Consistency}: \(Y^{d(a_i, w_i)}_i = Y_i\) in the event \(A_i = d(a_i, w_i)\),
+  \emph{Consistency}: \(Y^{A_{\delta,i}}_i = Y_i\) in the event \(A_i = d(a_i, w_i)\),
   for \(i = 1, \ldots, n\)
 \item
-  \emph{Stable unit value treatment assumption (SUTVA)}: \(Y^{d(a_i, w_i)}_i\) does
-  not depend on \(d(a_j, w_j)\) for \(i = 1, \ldots, n\) and \(j \neq i\), or lack
-  of interference \citep{rubin1978bayesian, rubin1980randomization}.
+  \emph{No interference}: \(Y^{A_{\delta,i}}_i\) does not depend on \(d(a_j, w_j)\) for
+  \(i = 1, \ldots, n\) and \(j \neq i\).
 \item
-  \emph{Strong ignorability}: \(A_i \indep Y^{d(a_i, w_i)}_i \mid W_i\), for \(i = 1, \ldots, n\).
+  \emph{No unmeasured confounders}: \(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\), for
+  \(i = 1, \ldots, n\). This is the observational study analog to the well-known
+  randomization assumption.
 \item
   \emph{Positivity (or overlap)}: \(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\) for all \(w \in \mathcal{W}\), where \(\mathcal{A}\) denotes the
   support of \(A \mid W = w_i \quad \forall i = 1, \ldots n\).
+  Together, the first and second assumptions have been termed the \emph{stable unit
+  treatment value assumption} (SUTVA) \citep{rubin1978bayesian, rubin1980randomization}.
 \end{enumerate}
 
-With the identification assumptions satisfied, \citet{diaz2012population} and
-\citet{diaz2018stochastic} provide an efficient influence function with respect to
-the nonparametric model \(\M\) as
+\hypertarget{estimating-the-causal-effect-of-a-stochastic-intervention}{%
+\section{Estimating the Causal Effect of a Stochastic Intervention}\label{estimating-the-causal-effect-of-a-stochastic-intervention}}
+
+\citet{diaz2012population} provided a derivation of the efficient influence function
+(EIF), a key quantity required for constructing efficient estimators, in the
+nonparametric model \(\M\) and developed both classical and efficient estimators
+of this quantity, including substitution, inverse probability weighted, one-step
+and targeted maximum likelihood (TML) estimators. Both the one-step and TML
+estimators allow for semiparametric-efficient estimation and inference on the
+target quantity of interest \(\psi_{0, \delta}\). As described by
+\citet{diaz2018stochastic}, the EIF of \(\psi_{0, \delta}\), with respect to the
+nonparametric model \(\M\), is
 \begin{equation}
   D(P_0)(x) = H(a, w)({y - \overline{Q}(a, w)}) +
   \overline{Q}(d(a, w), w) - \Psi(P_0),
@@ -6750,13 +6752,11 @@ which may be reduced to
   H(a,w) = \frac{g_0(a - \delta \mid w)}{g_0(a \mid w)} + 1
   \label{eq:aux-covar-simple-shift}
 \end{equation}
-in the case that the treatment is within the limits that arise from conditioning
-on \(W\), i.e., for \(A_i \in (u(w) - \delta, u(w))\).
-
-The efficient influence function allows the construction of a
-semiparametric-efficient estimators may be constructed. In the sequel, we focus
-on a targeted maximum likelihood (TML) estimator, for which \citet{diaz2018stochastic}
-give a recipe:
+when the treatment \(A\) lies within the limits defined by the covariate strata
+\(W\), that is, for \(A_i \in (u(w) - \delta, u(w))\). The efficient influence
+function allows the construction of a semiparametric-efficient estimators may be
+constructed. In the sequel, we focus on a targeted maximum likelihood (TML)
+estimator, for which \citet{diaz2018stochastic} give a recipe:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -6777,11 +6777,44 @@ give a recipe:
   \(\overline{Q}_n^{\star}\) of the initial estimate
   \(\overline{Q}_{n, \epsilon_n}\):
   \begin{equation}
-    \Psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
+    \psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
     \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
     \label{eq:tmle}
   \end{equation}
 \end{enumerate}
+
+As \protect\hyperlink{tmle3}{discussed previously}, TML estimators are constructed so as to be
+\emph{asymptotically linear} and are usually \emph{doubly robust}. Asymptotic linearity
+means that the asymptotic difference between the estimator \(\psi_n\) and the
+target parameter \(\psi_0\) can be expressed in terms of the EIF, that is,
+\begin{equation}
+  \sqrt{n}(\psi_n - \psi_0) = \frac{1}{\sqrt{n}}\sum_{i=1}^n D(P_0)(O_i) +
+    o_p(1).
+  \label{eq:asymplin-shift}
+\end{equation}
+Together with regularity, asymptotic linearity establishes a class of estimators
+whose asymptotic variance is bounded by the asymptotic variance of the EIF. This
+means that such estimators are solutions to the EIF estimating equation (i.e.,
+plugging the TML estimator \(\psi_n\) into the EIF equation results in a solution
+close to zero) and that their sampling variance may be approximated by the
+variance of the EIF in closed form. This latter fact is computationally
+convenient, as resampling methods (e.g., the bootstrap) are not strictly
+necessary for variance estimation. A central limit theorem establishes that the
+asymptotic distribution of the estimator \(\psi_n\) is centered at \(\psi_0\) and is
+Gaussian:
+\begin{equation}
+  \sqrt{n}(\psi_n - \psi_0) \to \text{Normal}(0, \sigma^2(D(P_0))).
+  \label{eq:tmle-gaussian-shift}
+\end{equation}
+Thus, an estimate \(\sigma_n^2\) of the variance \(\sigma^2(D(P_0))\) may be
+computed
+\begin{equation}
+  \sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i),
+  \label{eq:eif-var-shift}
+\end{equation}
+allowing for Wald-style confidence intervals to be computed as \(\psi_n \pm z_{1 - \alpha/2} \cdot \sigma_n / \sqrt{n}\). Under certain conditions, the resampling
+based on the bootstrap may also be used to compute \(\sigma_n^2\)
+\citep{vdl2011targeted}.
 
 \hypertarget{evaluating-the-causal-effect-of-a-stochastic-intervention}{%
 \section{Evaluating the Causal Effect of a Stochastic Intervention}\label{evaluating-the-causal-effect-of-a-stochastic-intervention}}
@@ -6917,8 +6950,8 @@ head(data)
 The above composes our observed data structure \(O = (W, A, Y)\). To formally
 express this fact using the \passthrough{\lstinline!tlverse!} grammar introduced by the \passthrough{\lstinline!tmle3!} package,
 we create a single data object and specify the functional relationships between
-the nodes in the \emph{directed acyclic graph} (DAG) via \emph{nonparametric structural
-equation models} (NPSEMs), reflected in the node list that we set up:
+the nodes in the \emph{directed acyclic graph} (DAG) via an NPSEM, reflected in the
+node list that we set up.
 
 We now have an observed data structure (\passthrough{\lstinline!data!}) and a specification of the role
 that each variable in the data set plays as the nodes in a DAG.
@@ -6963,79 +6996,26 @@ A tmle3_Fit that took 1 step(s)
 \end{lstlisting}
 
 The \passthrough{\lstinline!print!} method of the resultant \passthrough{\lstinline!tmle\_fit!} object conveniently displays the
-results from computing our TML estimator.
+results of computing our TML estimator \(\psi_n\). The standard error estimate
+is computed based on the estimated EIF.
 
-\hypertarget{statistical-inference-for-targeted-maximum-likelihood-estimates}{%
-\subsection{Statistical Inference for Targeted Maximum Likelihood Estimates}\label{statistical-inference-for-targeted-maximum-likelihood-estimates}}
+\hypertarget{selecting-stable-stochastic-interventions}{%
+\section{Selecting Stable Stochastic Interventions}\label{selecting-stable-stochastic-interventions}}
 
-Recall that the asymptotic distribution of TML estimators has been studied
-thoroughly:
-\[\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^{\star}, g_n) +
-R(\hat{P}^{\star}, P_0),\]
-which, provided the following two conditions,
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  If \(D(\bar{Q}_n^{\star}, g_n)\) converges to \(D(P_0)\) in \(L_2(P_0)\) norm, and
-\item
-  the size of the class of functions considered for estimation of
-  \(\bar{Q}_n^{\star}\) and \(g_n\) is bounded (technically, \(\exists \mathcal{F}\)
-  such that \(D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}\) \emph{whp}, where
-  \(\mathcal{F}\) is a Donsker class),
-  readily admits the conclusion that
-  \(\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)\).
-\end{enumerate}
-
-Under the additional condition that the remainder term \(R(\hat{P}^{\star}, P_0)\)
-decays as \(o_P \left( \frac{1}{\sqrt{n}} \right),\) we have that
-\[\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}}
-\right),\]
-which, by a central limit theorem, establishes a Gaussian limiting distribution
-for the estimator:
-
-\[\sqrt{n}(\psi_n - \psi) \to N(0, V(D(P_0))),\]
-where \(V(D(P_0))\) is the variance of the efficient influence curve (canonical
-gradient) when \(\psi\) admits an asymptotically linear representation.
-
-The above implies that \(\psi_n\) is a \(\sqrt{n}\)-consistent estimator of \(\psi\),
-that it is asymptotically normal (as given above), and that it is locally
-efficient. This allows us to build Wald-type confidence intervals in a
-straightforward manner:
-
-\[\psi_n \pm z_{\alpha} \cdot \frac{\sigma_n}{\sqrt{n}},\]
-where \(\sigma_n^2\) is an estimator of \(V(D(P_0))\). The estimator \(\sigma_n^2\)
-may be obtained using the bootstrap or computed directly via the following
-
-\[\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)\]
-
-Having now re-examined these facts, let's simply examine the results of
-computing our TML estimator:
-
-\hypertarget{extensions-variable-importance-analysis-with-stochastic-interventions}{%
-\section{Extensions: Variable Importance Analysis with Stochastic Interventions}\label{extensions-variable-importance-analysis-with-stochastic-interventions}}
-
-\hypertarget{defining-a-grid-of-counterfactual-interventions}{%
-\subsection{Defining a grid of counterfactual interventions}\label{defining-a-grid-of-counterfactual-interventions}}
-
-In order to specify a \emph{grid} of shifts \(\delta\) to be used in defining a set of
-stochastic intervention policies in an \emph{a priori} manner, let us consider an
-arbitrary scalar \(\delta\) that defines a counterfactual outcome \(\psi_n = Q_n(d(A, W), W)\), where, for simplicity, let \(d(A, W) = A + \delta\). A
-simplified expression of the auxiliary covariate for the TMLE of \(\psi\) is
-\(H_n = \frac{g^{\star}(a \mid w)}{g(a \mid w)}\), where \(g^{\star}(a \mid w)\)
-defines the treatment mechanism with the stochastic intervention implemented.
-Then, to ascertain whether a given choice of the shift \(\delta\) is admissable
-(in the sense of avoiding violations of the positivity assumption), let there
-be a bound \(C(\delta) = \frac{g^{\star}(a \mid w)}{g(a \mid w)} < M\), where
-\(g^{\star}(a \mid w)\) is a function of \(\delta\) in part, and \(M\) is a potentially
-user-specified upper bound of \(C(\delta)\). Then, \(C(\delta)\) is a measure of
-the influence of a given observation, thereby providing a way to limit the
-maximum influence of a given observation (by way of the bound \(M\) placed on
-\(C(\delta)\)) through a choice of the shift \(\delta\).
-
-We formalize and extend the procedure to determine an acceptable set of values
-for the shift \(\delta\) in the sequel. Specifically, let there be a shift \(d(A, W) = A + \delta(A, W)\), where the shift \(\delta(A, W)\) is defined as
+At times, a particular choice of the shift parameter \(\delta\) may lead to
+positivity violations and downstream instability in the estimation process. In
+order to curb such issues, we can make choices of \(\delta\) based on the impact
+of the candidate values on the estimator. Recall that a simplified expression of
+the auxiliary covariate for the TMLE of \(\psi\) is \(H_n = \frac{g(a - \delta \mid w)}{g(a \mid w)}\), where \(g(a - \delta \mid w)\) is defined by the stochastic
+intervention of interest. We can design our stochastic intervention to avoid
+violations of the positivity assumption by by considering a bound \(C(\delta) = \frac{g(a - \delta \mid w)}{g(a \mid w)} < M\), where \(M\) is a potentially
+user-specified upper bound of \(C(\delta)\). Note that \(C(\delta)\) corresponds to
+the inverse weight assigned to the unit with counterfactual treatment value \(A = a + \delta\), natural treatment value \(A = a\), and covariates \(W = w\). So,
+\(C(\delta)\) can be viewed as a measure of the influence that a given observation
+has on the estimator \(\psi_n\). By limiting \(C(\delta)\), whether through a choice
+of \(M\) or \(\delta\), we can limit the potential instability of our estimator. We
+can formalize this procedure by defining the shift function \(\delta(A, W)\) as
+follows.
 \begin{equation}
   \delta(a, w) =
     \begin{cases}
@@ -7044,6 +7024,7 @@ for the shift \(\delta\) in the sequel. Specifically, let there be a shift \(d(A
       \delta_{\text{max}}(a,w), & \delta \geq \delta_{\text{max}}(a,w) \\
       \delta_{\text{min}}(a,w), & \delta \leq \delta_{\text{min}}(a,w) \\
     \end{cases},
+    \label{eq:delta-min-max-shift}
 \end{equation}
 where \[\delta_{\text{max}}(a, w) = \text{argmax}_{\left\{\delta \geq 0,
 \frac{g(a - \delta \mid w)}{g(a \mid w)} \leq M \right\}} \frac{g(a - \delta
@@ -7053,28 +7034,26 @@ where \[\delta_{\text{max}}(a, w) = \text{argmax}_{\left\{\delta \geq 0,
 \mid w)}{g(a \mid w)}.\]
 
 The above provides a strategy for implementing a shift at the level of a given
-observation \((a_i, w_i)\), thereby allowing for all observations to be shifted
-to an appropriate value -- whether \(\delta_{\text{min}}\), \(\delta\), or
-\(\delta_{\text{max}}\).
-
-For the purpose of using such a shift in practice, the present software
-provides the functions \passthrough{\lstinline!shift\_additive\_bounded!} and
-\passthrough{\lstinline!shift\_additive\_bounded\_inv!}, which define a variation of this shift:
+observation \((a_i, w_i)\), thereby allowing for all observations to be shifted to
+an appropriate value, whether \(\delta_{\text{min}}\), \(\delta\), or
+\(\delta_{\text{max}}\). To use such a stochastic intervention in practice, the
+\href{https://github.com/tlverse/tmle3shift}{\passthrough{\lstinline!tmle3shift!}} package implements the
+functions \passthrough{\lstinline!shift\_additive\_bounded!} and \passthrough{\lstinline!shift\_additive\_bounded\_inv!}, which
+define a variation of this strategy:
 \begin{equation}
   \delta(a, w) =
     \begin{cases}
       \delta, & C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
-  \label{eq:shift-simple}
+  \label{eq:shift-bounded-simple}
 \end{equation}
-which corresponds to an intervention in which the natural value of treatment
-of a given observational unit is shifted by a value \(\delta\) in the case that
-the ratio of the intervened density \(g^{\star}(a \mid w)\) to the natural
-density \(g(a \mid w)\) (that is, \(C(\delta)\)) does not exceed a bound \(M\). In
-the case that the ratio \(C(\delta)\) exceeds the bound \(M\), the stochastic
-intervention policy does not apply to the given unit and they remain at their
-natural value of treatment \(a\).
+corresponding to an intervention in which the natural value of treatment \(A = a\)
+is shifted by a value \(\delta\) when the ratio \(C(\delta)\) of the
+post-intervention density \(g(a - \delta \mid w)\) to the natural treatment
+density \(g(a \mid w)\) does not exceed a bound \(M\). When \(C(\delta)\) exceeds the
+bound \(M\), the stochastic intervention exempts the given unit from the treatment
+modification, leaving them to their natural value of treatment \(A = a\).
 
 \hypertarget{initializing-vimshift-through-its-tmle3_spec}{%
 \subsection{\texorpdfstring{Initializing \texttt{vimshift} through its \texttt{tmle3\_Spec}}{Initializing vimshift through its tmle3\_Spec}}\label{initializing-vimshift-through-its-tmle3_spec}}
@@ -7083,8 +7062,10 @@ To start, we will initialize a specification for the TMLE of our parameter of
 interest (called a \passthrough{\lstinline!tmle3\_Spec!} in the \passthrough{\lstinline!tlverse!} nomenclature) simply by calling
 \passthrough{\lstinline!tmle\_shift!}. We specify the argument \passthrough{\lstinline!shift\_grid = seq(-1, 1, by = 1)!}
 when initializing the \passthrough{\lstinline!tmle3\_Spec!} object to communicate that we're interested
-in assessing the mean counterfactual outcome over a grid of shifts -1, 0, 1 on the scale of the treatment \(A\) (note that the numerical
-choice of shift is an arbitrarily chosen set of values for this example).
+in assessing the mean counterfactual outcome over a grid of shifts \(\delta\)
+-1, 0, 1 on the scale of the treatment \(A\) (note that the
+numerical choice of shift is an arbitrarily chosen set of values for this
+example).
 
 \begin{lstlisting}[language=R]
 # what's the grid of shifts we wish to consider?
@@ -7122,90 +7103,79 @@ tmle_fit
 \emph{Remark}: The \passthrough{\lstinline!print!} method of the resultant \passthrough{\lstinline!tmle\_fit!} object conveniently
 displays the results from computing our TML estimator.
 
-\hypertarget{inference-with-marginal-structural-models}{%
-\subsection{Inference with Marginal Structural Models}\label{inference-with-marginal-structural-models}}
+\hypertarget{estimation-and-inference-with-marginal-structural-models}{%
+\subsection{Estimation and Inference with Marginal Structural Models}\label{estimation-and-inference-with-marginal-structural-models}}
 
-Since we consider estimating the mean counterfactual outcome \(\psi_n\) under
-several values of the intervention \(\delta\), taken from the aforementioned
-\(\delta\)-grid, one approach for obtaining inference on a single summary measure
-of these estimated quantities involves leveraging working marginal structural
-models (MSMs). Summarizing the estimates \(\psi_n\) through a working MSM allows
-for inference on the \emph{trend} imposed by a \(\delta\)-grid to be evaluated via a
-simple hypothesis test on a parameter of this working MSM. Letting
-\(\psi_{\delta}(P_0)\) be the mean outcome under a shift \(\delta\) of the
-treatment, we have \(\vec{\psi}_{\delta} = (\psi_{\delta}: \delta)\) with
-corresponding estimators \(\vec{\psi}_{n, \delta} = (\psi_{n, \delta}: \delta)\).
-Further, let \(\beta(\vec{\psi}_{\delta}) = \phi((\psi_{\delta}: \delta))\).
+It can be challenging to select a value of the shift parameter \(\delta\) in
+advance. One solution is to specify a \emph{grid} of such shifts \(\delta\) to be used
+in defining a set of related stochastic interventions \citep{hejazi2020efficient}.
+When we consider estimating the counterfactual mean \(\psi_n\) under several
+choices of \(\delta\), a single summary measure of these estimated quantities can
+be established through working marginal structural models (MSMs). Summarizing
+the estimates \(\psi_n\) through a working MSM allows for inference on the \emph{trend}
+appearing through the grid in \(\delta\), which may be evaluating through a simple
+hypothesis test on the slope parameter \(\beta_0\) of the working MSM. Consider a
+grid of \(\delta\), \(\{\delta_1, \ldots, \delta_k\}\), corresponding to
+counterfactual means \(\{\psi_{n,\delta_1}, \ldots, \psi_{n, \delta_k}\}\). In a
+minor abuse of notation, let \(\psi = (\psi_{\delta}: \delta)\) denote the grid of
+counterfactual means in the grid defined by \(\delta\), with corresponding TML
+estimators \(\psi_n = (\psi_{n,\delta}: \delta)\). The MSM summarizing the change
+in \(\psi_n\) as a function of \(delta\) may be expressed \(m_{\beta}(\psi_{\delta}) = \alpha_0 + \beta_0 \delta\). This simple working model summarizes the changes
+in \(\psi_{\delta}\) as a function of the parameters \((\alpha_0, \beta_0)\), where
+the latter is the slope of the line resulting from projecting the counterfactual
+means onto this simple two-parameter working model.
 
-For a given MSM \(m_{\beta}(\delta)\), we have that
-\[\beta_0 = \text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) -
-m_{\beta}(\delta))^2 h(\delta),\]
-which is the solution to
+This MSM \(m_{\beta}(\delta)\) may more generally be expressed \(\beta_0 = \text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) - m_{\beta}(\delta))^2 h(\delta)\), which is the solution to the estimating equation
 \[u(\beta, (\psi_{\delta}: \delta)) = \sum_{\delta}h(\delta)
 \left(\psi_{\delta}(P_0) - m_{\beta}(\delta) \right) \frac{d}{d\beta}
 m_{\beta}(\delta) = 0.\]
-This then leads to the following expansion
-\[\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta}
-  u(\beta_0, \vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)
-  (\vec{\psi}_n - \vec{\psi}_0),\]
-where we have
-\[\frac{d}{d\beta} u(\beta, \psi) = -\sum_{\delta} h(\delta) \frac{d}{d\beta}
-m_{\beta}(\delta)^t \frac{d}{d\beta} m_{\beta}(\delta)
--\sum_{\delta} h(\delta) m_{\beta}(\delta) \frac{d^2}{d\beta^2}
-m_{\beta}(\delta),\]
-which, in the case of an MSM that is a linear model (since
-\(\frac{d^2}{d\beta^2} m_{\beta}(\delta) = 0\)), reduces simply to
-\[\frac{d}{d\beta} u(\beta, \psi) = -\sum_{\delta} h(\delta) \frac{d}{d\beta}
-m_{\beta}(\delta)^t \frac{d}{d\beta} m_{\beta}(\delta),\]
-and
-\[\frac{d}{d\psi}u(\beta, \psi)(\psi_n - \psi_0) = \sum_{\delta} h(\delta)
-\frac{d}{d\beta} m_{\beta}(\delta) (\psi_n - \psi_0)(\delta),\]
-which we may write in terms of the efficient influence function (EIF) of \(\psi\)
-by using the first order approximation \((\psi_n - \psi_0)(\delta) = \frac{1}{n}\sum_{i = 1}^n \text{EIF}_{\psi_{\delta}}(O_i)\),
-where \(\text{EIF}_{\psi_{\delta}}\) is the efficient influence function (EIF) of
-\(\vec{\psi}\).
-
-Now, say, \(\vec{\psi} = (\psi(\delta): \delta)\) is d-dimensional, then we may
-write the efficient influence function of the MSM parameter \(\beta\) as follows
-\[\text{EIF}_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
-m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
-\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
-\text{EIF}_{\psi_{\delta}}(O),\] where the first term is of dimension
-\(d \times d\) and the second term is of dimension \(d \times 1\). In the above, we
+Now, say, \(\psi = (\psi(\delta): \delta)\) is d-dimensional. We may express the
+EIF of the MSM parameter \(\beta_0\) in terms of the EIFs of the individual
+counterfactual means:
+\begin{equation}
+   D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
+   m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
+   \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
+   D_{\psi_{\delta}}(O).
+   \label{eq:eif-msm-shift}
+\end{equation}
+Here, in Equation \eqref{eq:eif-msm-simple}, the first term is of dimension \(d \times d\) and the second term is of dimension \(d \times 1\). In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
 working MSMs based on GLMs.
 
-Inference for a parameter of an MSM may be obtained by straightforward
-application of the delta method (discussed previously) -- that is, we may
-write the efficient influence function of the MSM parameter \(\beta\) in terms of
-the EIFs of each of the corresponding point estimates. Based on this, inference
-from a working MSM is rather straightforward. To wit, the limiting distribution
-for \(m_{\beta}(\delta)\) may be expressed \[\sqrt{n}(\beta_n - \beta_0) \to N(0,
-\Sigma),\] where \(\Sigma\) is the empirical covariance matrix of
-\(\text{EIF}_{\beta}(O)\).
+Inference for a parameter of a working MSM may be obtained by straightforward
+application of the delta method (n.b., no relation to the shift parameter
+\(\delta\)) -- that is, as a result of expressing the EIF of the MSM parameter
+\(\beta\) in terms of the EIFs of each of the corresponding estimates
+\(\psi_{n,\delta}\). Due to this convenience, inference based on a working MSM is
+straightforward. To wit, the limiting distribution for \(m_{\beta}(\delta)\) may
+be expressed \[\sqrt{n}(\beta_n - \beta_0) \to N(0, \Sigma),\] where \(\Sigma\) is
+the empirical covariance matrix of \(D_{\beta}(O)\). With this, we can not only
+estimate the trend through the counterfactual means across a grid in \(\delta\),
+but we can also evaluate whether the slope estimate is statistically
+significant, in terms of hypothesis tests of the form \(H_0: \beta_0 = 0; H_1: \beta_0 \neq 0\) and corresponding confidence intervals. Note that the parameter
+of interest \(\beta_0\) of the MSM is asymptotically linear (and, in fact, a TML
+estimator) as a consequence of its construction from individual TML estimators.
 
-\hypertarget{directly-targeting-the-msm-parameter-beta}{%
-\subsubsection{\texorpdfstring{Directly Targeting the MSM Parameter \(\beta\)}{Directly Targeting the MSM Parameter \textbackslash beta}}\label{directly-targeting-the-msm-parameter-beta}}
+The strategy just discussed constructs an estimate \(\beta_n\) of the working MSM
+slope \(\beta_0\) by first evaluating the TML estimates of the counterfactual
+means \(\psi_{n,\delta}\) in the grid \(\{delta_1, \ldots, \delta_k\}\); however,
+this is not necessarily the best strategy, especially when giving consideration
+to estimation stability in small samples. In smaller samples, it may be prudent
+to perform TML estimation targeting directly the parameter \(\beta_0\), as opposed
+to constructing it by applying the delta method to several independently
+targeted TML estimates.
 
-Note that in the above, a working MSM is fit to the individual TML estimates of
-the mean counterfactual outcome under a given value of the shift \(\delta\) in the
-supplied grid. The parameter of interest \(\beta\) of the MSM is asymptotically
-linear (and, in fact, a TML estimator) as a consequence of its construction from
-individual TML estimators. In smaller samples, it may be prudent to perform a
-TML estimation procedure that targets the parameter \(\beta\) directly, as opposed
-to constructing it from several independently targeted TML estimates. An
-approach for constructing such an estimator is proposed in the sequel.
-
-Suppose a simple working MSM \(\mathbb{E}Y_{g^0_{\delta}} = \beta_0 + \beta_1 \delta\), then a TML estimator targeting \(\beta_0\) and \(\beta_1\) may be
-constructed as
-\[\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon (H_1(g),
-H_2(g),\] for all \(\delta\), where \(H_1(g)\) is the auxiliary covariate for
-\(\beta_0\) and \(H_2(g)\) is the auxiliary covariate for \(\beta_1\).
-
-To construct a targeted maximum likelihood estimator that directly targets the
-parameters of the working marginal structural model, we may use the
-\passthrough{\lstinline!tmle\_vimshift\_msm!} Spec (instead of the \passthrough{\lstinline!tmle\_vimshift\_delta!} Spec that
-appears above):
+To do so, consider a TML estimator targeting \(\alpha_0\) and \(\beta_0\) (the
+parameters of the working MSM \(m_{\beta}\)), which uses a targeting update step
+of the form \(\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon (H_{\alpha}(g), H_{\beta}(g)\), for all \(\delta\), where \(H_{\alpha}(g)\) is the
+auxiliary covariate for \(\alpha_0\) and \(H_{\beta}(g)\) is the auxiliary covariate
+for \(\beta_0\). Such a TML estimator avoids estimating each of the
+\(\psi_{\delta}\) in the grid directly, instead cleverly concatenating their
+auxiliary covariates into those appropriate for \(\alpha_0\) and \(\beta_0\). To
+construct a targeted maximum likelihood estimator that directly targets the
+parameters of the working MSM, we may use the \passthrough{\lstinline!tmle\_vimshift\_msm!} Spec (instead
+of the \passthrough{\lstinline!tmle\_vimshift\_delta!} Spec).
 
 \begin{lstlisting}[language=R]
 # initialize a tmle specification
@@ -7373,7 +7343,7 @@ Based on the \href{https://github.com/tlverse/tmle3mediate}{\passthrough{\lstinl
 package} by \emph{Nima Hejazi, James
 Duncan, and David McCoy}.
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \textbackslash begin\{VT1\}
 \VH{Learning Objectives}

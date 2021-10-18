@@ -1,6 +1,6 @@
 # Welcome to the `tlverse` {#tlverse}
 
-Updated: 2021-10-13
+Updated: 2021-10-18
 
 \begin{VT1}
 \VH{Learning Objectives}
