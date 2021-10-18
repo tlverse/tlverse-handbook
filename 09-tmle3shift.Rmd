@@ -211,6 +211,8 @@ Together, the first and second assumptions have been termed the _stable unit
 treatment value assumption_ (SUTVA) [@rubin1978bayesian;
 @rubin1980randomization].
 
+## Estimating the Causal Effect of a Stochastic Intervention
+
 @diaz2012population provided a derivation of the efficient influence function
 (EIF), a key quantity required for constructing efficient estimators, in the
 nonparametric model $\M$ and developed both classical and efficient estimators
@@ -254,10 +256,81 @@ estimator, for which @diaz2018stochastic give a recipe:
    $\overline{Q}_n^{\star}$ of the initial estimate
    $\overline{Q}_{n, \epsilon_n}$:
    \begin{equation}
-     \Psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
+     \psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
      \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
      (\#eq:tmle)
    \end{equation}
+
+As [discussed previously](#tmle3), TML estimators are constructed so as to be
+_asymptotically linear_ and are usually _doubly robust_. Asymptotic linearity
+means that the asymptotic difference between the estimator $\psi_n$ and the
+target parameter $\psi_0$ can be expressed in terms of the EIF, that is,
+\begin{equation}
+  \sqrt{n}(\psi_n - \psi_0) = \frac{1}{\sqrt{n}}\sum_{i=1}^n D(P_0)(O_i) +
+    o_p(1).
+  (\#eq:asymplin-shift)
+\end{equation}
+Together with regularity, asymptotic linearity establishes a class of estimators
+whose asymptotic variance is bounded by the asymptotic variance of the EIF. This
+means that such estimators are solutions to the EIF estimating equation (i.e.,
+plugging the TML estimator $\psi_n$ into the EIF equation results in a solution
+close to zero) and that their sampling variance may be approximated by the
+variance of the EIF in closed form. This latter fact is computationally
+convenient, as resampling methods (e.g., the bootstrap) are not strictly
+necessary for variance estimation. A central limit theorem establishes that the
+asymptotic distribution of the estimator $\psi_n$ is centered at $\psi_0$ and is
+Gaussian:
+\begin{equation}
+  \sqrt{n}(\psi_n - \psi_0) \to \text{Normal}(0, \sigma^2(D(P_0))).
+  (\#eq:tmle-gaussian-shift)
+\end{equation}
+Thus, an estimate $\sigma_n^2$ of the variance $\sigma^2(D(P_0))$ may be
+computed
+\begin{equation}
+  \sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i),
+  (\#eq:eif-var-shift)
+\end{equation}
+allowing for Wald-style confidence intervals to be computed as $\psi_n \pm z_{1
+- \alpha/2} \cdot \sigma_n / \sqrt{n}$. Under certain conditions, the resampling
+based on the bootstrap may also be used to compute $\sigma_n^2$
+[@vdl2011targeted].
+
+<!--
+Recall that the asymptotic distribution of TML estimators has been studied
+thoroughly:
+$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^{\star}, g_n) +
+R(\hat{P}^{\star}, P_0),$$
+which, provided the following two conditions,
+
+1. If $D(\bar{Q}_n^{\star}, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
+2. the size of the class of functions considered for estimation of
+   $\bar{Q}_n^{\star}$ and $g_n$ is bounded (technically, $\exists \mathcal{F}$
+   such that $D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}$ _whp_, where
+   $\mathcal{F}$ is a Donsker class),
+readily admits the conclusion that
+$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
+
+Under the additional condition that the remainder term $R(\hat{P}^{\star},
+P_0)$ decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that $$\psi_n
+- \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}} \right),$$
+which, by a central limit theorem, establishes a Gaussian limiting distribution
+for the estimator:
+
+$$\sqrt{n}(\psi_n - \psi) \to N(0, V(D(P_0))),$$ where $V(D(P_0))$ is the
+variance of the efficient influence curve (canonical gradient) when $\psi$
+admits an asymptotically linear representation.
+
+The above implies that $\psi_n$ is a $\sqrt{n}$-consistent estimator of $\psi$,
+that it is asymptotically normal (as given above), and that it is locally
+efficient. This allows us to build Wald-type confidence intervals in a
+straightforward manner:
+
+$$\psi_n \pm z_{\alpha} \cdot \frac{\sigma_n}{\sqrt{n}},$$
+where $\sigma_n^2$ is an estimator of $V(D(P_0))$. The estimator $\sigma_n^2$
+may be obtained using the bootstrap or computed directly via the following
+
+$$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
+-->
 
 `r if (knitr::is_latex_output()) '<!--'`
 
@@ -391,8 +464,8 @@ head(data)
 The above composes our observed data structure $O = (W, A, Y)$. To formally
 express this fact using the `tlverse` grammar introduced by the `tmle3` package,
 we create a single data object and specify the functional relationships between
-the nodes in the _directed acyclic graph_ (DAG) via _nonparametric structural
-equation models_ (NPSEMs), reflected in the node list that we set up:
+the nodes in the _directed acyclic graph_ (DAG) via an NPSEM, reflected in the
+node list that we set up.
 
 We now have an observed data structure (`data`) and a specification of the role
 that each variable in the data set plays as the nodes in a DAG.
@@ -427,72 +500,28 @@ tmle_fit
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
-results from computing our TML estimator.
+results of computing our TML estimator $\psi_n$. The standard error estimate
+is computed based on the estimated EIF.
 
-### Statistical Inference for Targeted Maximum Likelihood Estimates
+## Selecting Stable Stochastic Interventions
 
-Recall that the asymptotic distribution of TML estimators has been studied
-thoroughly:
-$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(\bar{Q}_n^{\star}, g_n) +
-R(\hat{P}^{\star}, P_0),$$
-which, provided the following two conditions,
-
-1. If $D(\bar{Q}_n^{\star}, g_n)$ converges to $D(P_0)$ in $L_2(P_0)$ norm, and
-2. the size of the class of functions considered for estimation of
-   $\bar{Q}_n^{\star}$ and $g_n$ is bounded (technically, $\exists \mathcal{F}$
-   such that $D(\bar{Q}_n^{\star}, g_n) \in \mathcal{F}$ _whp_, where
-   $\mathcal{F}$ is a Donsker class),
-readily admits the conclusion that
-$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
-
-Under the additional condition that the remainder term $R(\hat{P}^{\star}, P_0)$
-decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that
-$$\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}}
-\right),$$
-which, by a central limit theorem, establishes a Gaussian limiting distribution
-for the estimator:
-
-$$\sqrt{n}(\psi_n - \psi) \to N(0, V(D(P_0))),$$
-where $V(D(P_0))$ is the variance of the efficient influence curve (canonical
-gradient) when $\psi$ admits an asymptotically linear representation.
-
-The above implies that $\psi_n$ is a $\sqrt{n}$-consistent estimator of $\psi$,
-that it is asymptotically normal (as given above), and that it is locally
-efficient. This allows us to build Wald-type confidence intervals in a
-straightforward manner:
-
-$$\psi_n \pm z_{\alpha} \cdot \frac{\sigma_n}{\sqrt{n}},$$
-where $\sigma_n^2$ is an estimator of $V(D(P_0))$. The estimator $\sigma_n^2$
-may be obtained using the bootstrap or computed directly via the following
-
-$$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
-
-Having now re-examined these facts, let's simply examine the results of
-computing our TML estimator:
-
-## Extensions: Variable Importance Analysis with Stochastic Interventions
-
-### Defining a grid of counterfactual interventions
-
-In order to specify a _grid_ of shifts $\delta$ to be used in defining a set of
-stochastic intervention policies in an _a priori_ manner, let us consider an
-arbitrary scalar $\delta$ that defines a counterfactual outcome $\psi_n =
-Q_n(d(A, W), W)$, where, for simplicity, let $d(A, W) = A + \delta$. A
-simplified expression of the auxiliary covariate for the TMLE of $\psi$ is
-$H_n = \frac{g^{\star}(a \mid w)}{g(a \mid w)}$, where $g^{\star}(a \mid w)$
-defines the treatment mechanism with the stochastic intervention implemented.
-Then, to ascertain whether a given choice of the shift $\delta$ is admissable
-(in the sense of avoiding violations of the positivity assumption), let there
-be a bound $C(\delta) = \frac{g^{\star}(a \mid w)}{g(a \mid w)} < M$, where
-$g^{\star}(a \mid w)$ is a function of $\delta$ in part, and $M$ is a potentially
-user-specified upper bound of $C(\delta)$. Then, $C(\delta)$ is a measure of
-the influence of a given observation, thereby providing a way to limit the
-maximum influence of a given observation (by way of the bound $M$ placed on
-$C(\delta)$) through a choice of the shift $\delta$.
-
-We formalize and extend the procedure to determine an acceptable set of values
-for the shift $\delta$ in the sequel. Specifically, let there be a shift $d(A,
-W) = A + \delta(A, W)$, where the shift $\delta(A, W)$ is defined as
+At times, a particular choice of the shift parameter $\delta$ may lead to
+positivity violations and downstream instability in the estimation process. In
+order to curb such issues, we can make choices of $\delta$ based on the impact
+of the candidate values on the estimator. Recall that a simplified expression of
+the auxiliary covariate for the TMLE of $\psi$ is $H_n = \frac{g(a - \delta \mid
+w)}{g(a \mid w)}$, where $g(a - \delta \mid w)$ is defined by the stochastic
+intervention of interest. We can design our stochastic intervention to avoid
+violations of the positivity assumption by by considering a bound $C(\delta) =
+\frac{g(a - \delta \mid w)}{g(a \mid w)} < M$, where $M$ is a potentially
+user-specified upper bound of $C(\delta)$. Note that $C(\delta)$ corresponds to
+the inverse weight assigned to the unit with counterfactual treatment value $A =
+a + \delta$, natural treatment value $A = a$, and covariates $W = w$. So,
+$C(\delta)$ can be viewed as a measure of the influence that a given observation
+has on the estimator $\psi_n$. By limiting $C(\delta)$, whether through a choice
+of $M$ or $\delta$, we can limit the potential instability of our estimator. We
+can formalize this procedure by defining the shift function $\delta(A, W)$ as
+follows.
 \begin{equation}
   \delta(a, w) =
     \begin{cases}
@@ -501,6 +530,7 @@ W) = A + \delta(A, W)$, where the shift $\delta(A, W)$ is defined as
       \delta_{\text{max}}(a,w), & \delta \geq \delta_{\text{max}}(a,w) \\
       \delta_{\text{min}}(a,w), & \delta \leq \delta_{\text{min}}(a,w) \\
     \end{cases},
+    (\#eq:delta-min-max-shift)
 \end{equation}
 where $$\delta_{\text{max}}(a, w) = \text{argmax}_{\left\{\delta \geq 0,
 \frac{g(a - \delta \mid w)}{g(a \mid w)} \leq M \right\}} \frac{g(a - \delta
@@ -510,28 +540,26 @@ $$\delta_{\text{min}}(a, w) = \text{argmin}_{\left\{\delta \leq 0,
 \mid w)}{g(a \mid w)}.$$
 
 The above provides a strategy for implementing a shift at the level of a given
-observation $(a_i, w_i)$, thereby allowing for all observations to be shifted
-to an appropriate value -- whether $\delta_{\text{min}}$, $\delta$, or
-$\delta_{\text{max}}$.
-
-For the purpose of using such a shift in practice, the present software
-provides the functions `shift_additive_bounded` and
-`shift_additive_bounded_inv`, which define a variation of this shift:
+observation $(a_i, w_i)$, thereby allowing for all observations to be shifted to
+an appropriate value, whether $\delta_{\text{min}}$, $\delta$, or
+$\delta_{\text{max}}$. To use such a stochastic intervention in practice, the
+[`tmle3shift`](https://github.com/tlverse/tmle3shift) package implements the
+functions `shift_additive_bounded` and `shift_additive_bounded_inv`, which
+define a variation of this strategy:
 \begin{equation}
   \delta(a, w) =
     \begin{cases}
       \delta, & C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
-  (\#eq:shift-simple)
+  (\#eq:shift-bounded-simple)
 \end{equation}
-which corresponds to an intervention in which the natural value of treatment
-of a given observational unit is shifted by a value $\delta$ in the case that
-the ratio of the intervened density $g^{\star}(a \mid w)$ to the natural
-density $g(a \mid w)$ (that is, $C(\delta)$) does not exceed a bound $M$. In
-the case that the ratio $C(\delta)$ exceeds the bound $M$, the stochastic
-intervention policy does not apply to the given unit and they remain at their
-natural value of treatment $a$.
+corresponding to an intervention in which the natural value of treatment $A = a$
+is shifted by a value $\delta$ when the ratio $C(\delta)$ of the
+post-intervention density $g(a - \delta \mid w)$ to the natural treatment
+density $g(a \mid w)$ does not exceed a bound $M$. When $C(\delta)$ exceeds the
+bound $M$, the stochastic intervention exempts the given unit from the treatment
+modification, leaving them to their natural value of treatment $A = a$.
 
 ### Initializing `vimshift` through its `tmle3_Spec`
 
@@ -539,9 +567,10 @@ To start, we will initialize a specification for the TMLE of our parameter of
 interest (called a `tmle3_Spec` in the `tlverse` nomenclature) simply by calling
 `tmle_shift`. We specify the argument `shift_grid = seq(-1, 1, by = 1)`
 when initializing the `tmle3_Spec` object to communicate that we're interested
-in assessing the mean counterfactual outcome over a grid of shifts `r seq(-1,
-1, by = 1)` on the scale of the treatment $A$ (note that the numerical
-choice of shift is an arbitrarily chosen set of values for this example).
+in assessing the mean counterfactual outcome over a grid of shifts $\delta$
+`r seq(-1, 1, by = 1)` on the scale of the treatment $A$ (note that the
+numerical choice of shift is an arbitrarily chosen set of values for this
+example).
 
 ```{r vim_spec_init}
 # what's the grid of shifts we wish to consider?
@@ -578,27 +607,35 @@ tmle_fit
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
 displays the results from computing our TML estimator.
 
-### Inference with Marginal Structural Models
+### Estimation and Inference with Marginal Structural Models
 
-Since we consider estimating the mean counterfactual outcome $\psi_n$ under
-several values of the intervention $\delta$, taken from the aforementioned
-$\delta$-grid, one approach for obtaining inference on a single summary measure
-of these estimated quantities involves leveraging working marginal structural
-models (MSMs). Summarizing the estimates $\psi_n$ through a working MSM allows
-for inference on the _trend_ imposed by a $\delta$-grid to be evaluated via a
-simple hypothesis test on a parameter of this working MSM. Letting
-$\psi_{\delta}(P_0)$ be the mean outcome under a shift $\delta$ of the
-treatment, we have $\vec{\psi}_{\delta} = (\psi_{\delta}: \delta)$ with
-corresponding estimators $\vec{\psi}_{n, \delta} = (\psi_{n, \delta}: \delta)$.
-Further, let $\beta(\vec{\psi}_{\delta}) = \phi((\psi_{\delta}: \delta))$.
+It can be challenging to select a value of the shift parameter $\delta$ in
+advance. One solution is to specify a _grid_ of such shifts $\delta$ to be used
+in defining a set of related stochastic interventions [@hejazi2020efficient].
+When we consider estimating the counterfactual mean $\psi_n$ under several
+choices of $\delta$, a single summary measure of these estimated quantities can
+be established through working marginal structural models (MSMs). Summarizing
+the estimates $\psi_n$ through a working MSM allows for inference on the _trend_
+appearing through the grid in $\delta$, which may be evaluating through a simple
+hypothesis test on the slope parameter $\beta_0$ of the working MSM. Consider a
+grid of $\delta$, $\{\delta_1, \ldots, \delta_k\}$, corresponding to
+counterfactual means $\{\psi_{n,\delta_1}, \ldots, \psi_{n, \delta_k}\}$. In a
+minor abuse of notation, let $\psi = (\psi_{\delta}: \delta)$ denote the grid of
+counterfactual means in the grid defined by $\delta$, with corresponding TML
+estimators $\psi_n = (\psi_{n,\delta}: \delta)$. The MSM summarizing the change
+in $\psi_n$ as a function of $delta$ may be expressed $m_{\beta}(\psi_{\delta})
+= \alpha_0 + \beta_0 \delta$. This simple working model summarizes the changes
+in $\psi_{\delta}$ as a function of the parameters $(\alpha_0, \beta_0)$, where
+the latter is the slope of the line resulting from projecting the counterfactual
+means onto this simple two-parameter working model.
 
-For a given MSM $m_{\beta}(\delta)$, we have that
-$$\beta_0 = \text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) -
-m_{\beta}(\delta))^2 h(\delta),$$
-which is the solution to
+This MSM $m_{\beta}(\delta)$ may more generally be expressed $\beta_0 =
+\text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) - m_{\beta}(\delta))^2
+h(\delta)$, which is the solution to the estimating equation
 $$u(\beta, (\psi_{\delta}: \delta)) = \sum_{\delta}h(\delta)
 \left(\psi_{\delta}(P_0) - m_{\beta}(\delta) \right) \frac{d}{d\beta}
 m_{\beta}(\delta) = 0.$$
+<!--
 This then leads to the following expansion
 $$\beta(\vec{\psi}_n) - \beta(\vec{\psi}_0) \approx -\frac{d}{d\beta}
   u(\beta_0, \vec{\psi}_0)^{-1} \frac{d}{d\psi} u(\beta_0, \psi_0)
@@ -620,48 +657,57 @@ by using the first order approximation $(\psi_n - \psi_0)(\delta) =
 \frac{1}{n}\sum_{i = 1}^n \text{EIF}_{\psi_{\delta}}(O_i)$,
 where $\text{EIF}_{\psi_{\delta}}$ is the efficient influence function (EIF) of
 $\vec{\psi}$.
-
-Now, say, $\vec{\psi} = (\psi(\delta): \delta)$ is d-dimensional, then we may
-write the efficient influence function of the MSM parameter $\beta$ as follows
-$$\text{EIF}_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
-m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
-\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
-\text{EIF}_{\psi_{\delta}}(O),$$ where the first term is of dimension
-$d \times d$ and the second term is of dimension $d \times 1$. In the above, we
+-->
+Now, say, $\psi = (\psi(\delta): \delta)$ is d-dimensional. We may express the
+EIF of the MSM parameter $\beta_0$ in terms of the EIFs of the individual
+counterfactual means:
+\begin{equation}
+   D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
+   m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
+   \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
+   D_{\psi_{\delta}}(O).
+   (\#eq:eif-msm-shift)
+\end{equation}
+Here, in Equation \@ref(eq:eif-msm-simple), the first term is of dimension $d
+\times d$ and the second term is of dimension $d \times 1$. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
 working MSMs based on GLMs.
 
-Inference for a parameter of an MSM may be obtained by straightforward
-application of the delta method (discussed previously) -- that is, we may
-write the efficient influence function of the MSM parameter $\beta$ in terms of
-the EIFs of each of the corresponding point estimates. Based on this, inference
-from a working MSM is rather straightforward. To wit, the limiting distribution
-for $m_{\beta}(\delta)$ may be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0,
-\Sigma),$$ where $\Sigma$ is the empirical covariance matrix of
-$\text{EIF}_{\beta}(O)$.
+Inference for a parameter of a working MSM may be obtained by straightforward
+application of the delta method (n.b., no relation to the shift parameter
+$\delta$) -- that is, as a result of expressing the EIF of the MSM parameter
+$\beta$ in terms of the EIFs of each of the corresponding estimates
+$\psi_{n,\delta}$. Due to this convenience, inference based on a working MSM is
+straightforward. To wit, the limiting distribution for $m_{\beta}(\delta)$ may
+be expressed $$\sqrt{n}(\beta_n - \beta_0) \to N(0, \Sigma),$$ where $\Sigma$ is
+the empirical covariance matrix of $D_{\beta}(O)$. With this, we can not only
+estimate the trend through the counterfactual means across a grid in $\delta$,
+but we can also evaluate whether the slope estimate is statistically
+significant, in terms of hypothesis tests of the form $H_0: \beta_0 = 0; H_1:
+\beta_0 \neq 0$ and corresponding confidence intervals. Note that the parameter
+of interest $\beta_0$ of the MSM is asymptotically linear (and, in fact, a TML
+estimator) as a consequence of its construction from individual TML estimators.
 
-#### Directly Targeting the MSM Parameter $\beta$
+The strategy just discussed constructs an estimate $\beta_n$ of the working MSM
+slope $\beta_0$ by first evaluating the TML estimates of the counterfactual
+means $\psi_{n,\delta}$ in the grid $\{delta_1, \ldots, \delta_k\}$; however,
+this is not necessarily the best strategy, especially when giving consideration
+to estimation stability in small samples. In smaller samples, it may be prudent
+to perform TML estimation targeting directly the parameter $\beta_0$, as opposed
+to constructing it by applying the delta method to several independently
+targeted TML estimates.
 
-Note that in the above, a working MSM is fit to the individual TML estimates of
-the mean counterfactual outcome under a given value of the shift $\delta$ in the
-supplied grid. The parameter of interest $\beta$ of the MSM is asymptotically
-linear (and, in fact, a TML estimator) as a consequence of its construction from
-individual TML estimators. In smaller samples, it may be prudent to perform a
-TML estimation procedure that targets the parameter $\beta$ directly, as opposed
-to constructing it from several independently targeted TML estimates. An
-approach for constructing such an estimator is proposed in the sequel.
-
-Suppose a simple working MSM $\mathbb{E}Y_{g^0_{\delta}} = \beta_0 + \beta_1
-\delta$, then a TML estimator targeting $\beta_0$ and $\beta_1$ may be
-constructed as
-$$\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon (H_1(g),
-H_2(g),$$ for all $\delta$, where $H_1(g)$ is the auxiliary covariate for
-$\beta_0$ and $H_2(g)$ is the auxiliary covariate for $\beta_1$.
-
-To construct a targeted maximum likelihood estimator that directly targets the
-parameters of the working marginal structural model, we may use the
-`tmle_vimshift_msm` Spec (instead of the `tmle_vimshift_delta` Spec that
-appears above):
+To do so, consider a TML estimator targeting $\alpha_0$ and $\beta_0$ (the
+parameters of the working MSM $m_{\beta}$), which uses a targeting update step
+of the form $\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon
+(H_{\alpha}(g), H_{\beta}(g)$, for all $\delta$, where $H_{\alpha}(g)$ is the
+auxiliary covariate for $\alpha_0$ and $H_{\beta}(g)$ is the auxiliary covariate
+for $\beta_0$. Such a TML estimator avoids estimating each of the
+$\psi_{\delta}$ in the grid directly, instead cleverly concatenating their
+auxiliary covariates into those appropriate for $\alpha_0$ and $\beta_0$. To
+construct a targeted maximum likelihood estimator that directly targets the
+parameters of the working MSM, we may use the `tmle_vimshift_msm` Spec (instead
+of the `tmle_vimshift_delta` Spec).
 
 ```{r vim_targeted_msm_fit, eval=FALSE}
 # initialize a tmle specification
