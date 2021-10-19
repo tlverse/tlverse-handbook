@@ -1,4 +1,4 @@
-# A Primer on the `R6` Class System {#r6}
+# `R6` Class System Primer {#r6}
 
 A central goal of the Targeted Learning statistical paradigm is to estimate
 scientifically relevant parameters in realistic (usually nonparametric) models.
