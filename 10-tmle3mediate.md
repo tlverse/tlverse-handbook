@@ -48,7 +48,7 @@ modern causal mediation analysis can be traced back to work on path analysis
 [@wright1934method]. In recent decades, renewed interest has resulted in the
 formulation of novel direct and indirect effects within both the potential
 outcomes and nonparametric structural equation modeling frameworks
-[@robins1986new; pearl1995causal; @pearl2000causality; @spirtes2000causation;
+[@robins1986new; @pearl1995causal; @pearl2000causality; @spirtes2000causation;
 @dawid2000causal]. Generally, the indirect effect (IE) is the portion of the
 total effect found to work _through_ mediating variables, while the direct
 effect (DE) encompasses _all other components_ of the total effect, including
@@ -84,7 +84,7 @@ $\M$ is the nonparametric statistical model that places no assumptions on the
 form of the data-generating distribution $P$.
 
 As in preceding chapters, a nonparametric structural equation model (NPSEM)
-[@pearl2000causality] helps to formalize the definition of our counterfactual
+[@pearl2009causality] helps to formalize the definition of our counterfactual
 variables:
 \begin{align}
   W &= f_W(U_W) \\
@@ -101,8 +101,8 @@ $A$ happens next, based on both $W$ and exogenous factors $U_A$; then come the
 mediators $Z$, which depend on $A$, $W$, and another set of exogenous factors
 $U_Z$; and finally appears the outcome $Y$. We assume neither access to the set
 of exogenous factors $\{U_W, U_A, U_Z, U_Y\}$ nor knowledge of the forms of the
-deterministic generating functions $\{f_W, f_A, f_Z, f_Y\}$. The NPSEM
-corresponds to the following DAG:
+deterministic generating functions $\{f_W, f_A, f_Z, f_Y\}$. The NPSEM encodes
+the following DAG:
 
 
 ```r
@@ -145,13 +145,12 @@ particular observation $o$, in terms of several orthogonal components:
     &q^O_{0,W}(w).\\
   (\#eq:likelihood-factorization-mediate)
 \end{align}
-In Equation \@ref(eq:nlikelihood-factorization-mediate), $q_{0, Y}$ is the
+In Equation \@ref(eq:likelihood-factorization-mediate), $q_{0, Y}$ is the
 conditional density of $Y$ given $\{Z, A, W\}$, $q_{0, Z}$ is the conditional
 density of $Z$ given $\{A, W\}$, $q_{0, A}$ is the conditional density of $A$
 given $W$, and $q_{0, W}$ is the marginal density of $W$. For convenience and
-consistency of notation, we will return to using $\bar{Q}_Y(Z, A, W) := \E[Y
-\mid Z, A, W]$, $Q_Z(A, W) := \P[Z \mid A, W]$, and $g(A \mid W) := \P(A \mid
-W)$.
+consistency of notation, we will define $\bar{Q}_Y(Z, A, W) := \E[Y \mid Z, A,
+W]$, $Q_Z(A, W) := \P[Z \mid A, W]$, and $g(A \mid W) := \P(A \mid W)$.
 
 Finally, note that we have explicitly excluded potential confounders of the
 mediator-outcome relationship affected by exposure (i.e., variables affected by
@@ -161,7 +160,7 @@ efforts to develop definitions of causal direct and indirect effects explicitly
 disallowed such a form of confounding. While we will refrain from discussing the
 matter further, the interested reader may consult recent advances in the vast
 literature on causal mediation analysis, including _interventional_ direct and
-indirect effects [@didelez2006direct; @vanderweele2014effect; @lok2016defining,
+indirect effects [@didelez2006direct; @vanderweele2014effect; @lok2016defining;
 @vansteelandt2017interventional; @rudolph2017robust; @nguyen2019clarifying],
 whose identification is robust to this complex form of post-treatment
 confounding. Within this thread of the literature, @diaz2020nonparametric and
@@ -199,7 +198,7 @@ the standard assumptions of consistency and no interference (SUTVA):
    assumption required for static interventions, [discussed previously](#tmle3).
 3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
    $w \in \mathcal{W}$, the conditional mediator density is bounded away from
-   zero by a small factor $\epsilon > 0$ -- that is, $\epsilon < Q_Z(z \mid a,
+   zero by a small factor $\epsilon > 0$, that is, $\epsilon < Q_Z(z \mid a,
    w)$. Essentially, this requires that the conditional mediator density be
    bounded away from zero for all $\{z, a, w\}$ in their joint support
    $\mathcal{Z} \times \mathcal{A} \times \mathcal{W}$, which is to say that it
