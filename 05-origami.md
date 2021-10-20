@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
-Updated: 2021-10-19
+Updated: 2021-10-20
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -832,7 +832,7 @@ After defining folds, `cross_validate` can be used to map the `cv_fun` across
 the `folds` using `future_lapply`. This means that it can be easily parallelized
 by specifying a parallelization scheme (i.e., a `plan` from the [future
 parallelization framework for `R`](https://Cran.R-project.org/package=future)
-[@bengtsson2020unifying]). The application of `cross_validate` generates a list
+[@bengtsson2021unifying]). The application of `cross_validate` generates a list
 of results. As described above, each call to `cv_fun` itself returns a list of
 results, with different elements for each type of result we care about. The main
 loop generates a list of these individual lists of results (a sort of
