@@ -47,7 +47,7 @@ modern causal mediation analysis can be traced back to work on path analysis
 [@wright1934method]. In recent decades, renewed interest has resulted in the
 formulation of novel direct and indirect effects within both the potential
 outcomes and nonparametric structural equation modeling frameworks
-[@robins1986new; @pearl1995causal; @pearl2000causality; @spirtes2000causation;
+[@robins1986new; @pearl1995causal; @pearl2009causality; @spirtes2000causation;
 @dawid2000causal]. Generally, the indirect effect (IE) is the portion of the
 total effect found to work _through_ mediating variables, while the direct
 effect (DE) encompasses _all other components_ of the total effect, including
@@ -80,7 +80,7 @@ outcome; the new post-treatment variable $Z$ represents a (possibly
 multivariate) set of mediators. Avoiding assumptions unsupported by background
 scientific knowledge, we assume only that $O \sim \mathcal{P} \in \M$, where
 $\M$ is the nonparametric statistical model that places no assumptions on the
-form of the data-generating distribution $P$.
+form of the data-generating distribution $\mathcal{P}$.
 
 As in preceding chapters, a nonparametric structural equation model (NPSEM)
 [@pearl2009causality] helps to formalize the definition of our counterfactual
@@ -177,7 +177,8 @@ treatment $A \in \{0, 1\}$ on the outcome $Y$ through the mediators $Z$, while
 the natural direct effect (NDE) measures the effect of the treatment on the
 outcome _through all other paths_. Identification of the natural direct and
 indirect effects requires the following non-testable causal assumptions, beyond
-the standard assumptions of consistency and no interference (SUTVA):
+the standard assumptions of consistency and no interference (i.e., SUTVA
+[@rubin1978bayesian; @rubin1980randomization]):
 
 1. _Exchangeability_: $Y(a, z) \indep (A, Z) \mid W$, which further implies that
    $\E\{Y(a, z) \mid A=a, W=w, Z=z\} \equiv \E\{Y(a, z) \mid W=w\}$. This is a
@@ -191,10 +192,10 @@ the standard assumptions of consistency and no interference (SUTVA):
    $\xi < g(a \mid w) < 1 - \xi$. This mirrors the standard positivity
    assumption required for static interventions, [discussed previously](#tmle3).
 3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
-   $w \in \mathcal{W}$, the conditional mediator density is bounded away from
-   zero by a small factor $\epsilon > 0$, that is, $\epsilon < Q_Z(z \mid a,
-   w)$. Essentially, this requires that the conditional mediator density be
-   bounded away from zero for all $\{z, a, w\}$ in their joint support
+   $w \in \mathcal{W}$, the conditional mediator density must be bounded away
+   from zero by a small factor $\epsilon > 0$, specifically, $\epsilon < Q_Z(z
+   \mid a, w)$. Essentially, this requires that the conditional mediator density
+   be bounded away from zero for all $\{z, a, w\}$ in their joint support
    $\mathcal{Z} \times \mathcal{A} \times \mathcal{W}$, which is to say that it
    must be possible to observe any given mediator value across all strata.
 4. _Cross-world counterfactual independence_: For all $a \neq a'$, where $a, a'
@@ -208,7 +209,7 @@ the standard assumptions of consistency and no interference (SUTVA):
 
 While the first three assumptions may be familiar based on their simpler analogs
 discussed in preceding chapters, the last assumption is unique to the NDE and
-NIE. The _cross-world_ counterfactual independence (i.e., independence of the
+NIE. The _cross-world_ counterfactual independence (i.e., independence of
 counterfactuals indexed by distinct interventions) is, in fact, a serious
 limitation to the scientific relevance of these effect definitions, as the NDE
 and NIE are unidentifiable in randomized trials [@robins2010alternative],
@@ -218,8 +219,8 @@ attempts have been made to weaken this last assumption [@petersen2006estimation;
 @imai2010identification; @vansteelandt2012imputation; @vansteelandt2012natural],
 these results either impose stringent modeling assumptions or propose
 alternative interpretations of the natural effects. Since the NDE and NIE remain
-widely used in modern applications of causal mediation analysis, so we next turn
-to reviewing their estimation.
+widely used in modern applications of causal mediation analysis, so we next
+review their estimation.
 
 ### Estimating the Natural Direct Effect
 
