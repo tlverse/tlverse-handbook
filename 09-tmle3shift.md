@@ -30,19 +30,18 @@ Updated: 2021-10-20
 
 \end{VT1}
 
-## What makes an intervention "stochastic"?
+## Why _Stochastic_ Interventions?
 
 Stochastic treatment regimes, or _stochastic interventions_, constitute a
 relatively simple yet extremely flexible and expressive framework for defining
 _realistic_ causal effects. In contrast to intervention regimens discussed
 previously, stochastic interventions may be applied to nearly any manner of
-treatment variable -- continuous, ordinal, categorical, binary -- allowing for a
-rich set of causal effects to be defined through this formalism. This chapter
-focuses on examining a few types of stochastic interventions that may be applied
-to _continuous_ treatment variables, to which static and dynamic treatment
-regimes cannot easily be applied. Notably, the resultant causal effects
-conveniently are endowed with an interpretation echoing that of ordinary
-regression adjustment.
+treatment variable -- binary, ordinal, continuous -- allowing for a rich set of
+causal effects to be defined through this formalism. This chapter focuses on
+examining a few types of stochastic interventions that may be applied to
+_continuous_ treatment variables, to which static and dynamic treatment regimes
+cannot easily be applied. Notably, the resultant causal effects conveniently are
+endowed with an interpretation echoing that of ordinary regression adjustment.
 
 In the next chapter, we will introduce two alternative uses of stochastic
 interventions -- a recently formulated intervention applicable to binary
@@ -51,7 +50,7 @@ effects in the presence of post-treatment, or mediating, variables. Here, we
 will focus on the tools provided in the [`tmle3shift` R
 package](https://github.com/tlverse/tmle3shift), which exposes targeted minimum
 loss-based estimators of the causal effects of stochastic interventions that
-additively shift the observed value of the treatment variable.  More
+additively shift the observed value of the treatment variable. More
 comprehensive, technical presentations of some aspects of the material in this
 chapter appear in @diaz2012population, @diaz2018stochastic,
 @hejazi2020efficient, and @hejazi2021semiparametric.
