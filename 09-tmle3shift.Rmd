@@ -12,54 +12,47 @@ Updated: `r Sys.Date()`
 `r if (knitr::is_html_output()) '## Learning Objectives {-}'`
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
-   treatment regimes.
-2. Describe how estimating causal effects of stochastic interventions informs a
-   real-world data analysis.
-3. Contrast a population level stochastic intervention policy from a modified
-   treatment policy.
-4. Estimate causal effects under stochastic treatment regimes with the
-   `tmle3shift` `R` package.
-6. Specify a grid of counterfactual shift interventions to be used for defining
-   a set of stochastic intervention policies.
-7. Interpret a set of effect estimates from a grid of counterfactual shift
-   interventions.
-5. Construct marginal structural models to measure variable importance in terms
-   of stochastic interventions, using a grid of shift interventions.
-8. Implement a shift intervention at the individual level, to facilitate
-   shifting each individual to a value that's supported by the data.
-9. Define novel shift intervention functions to extend the `tmle3shift` `R`
-   package.
+   dynamic treatment regimes.
+2. Describe how a real-world data analysis may incorporate assessing the causal
+   effects of stochastic treatment regimes.
+3. Contrast a population-level (general) stochastic treatment regime from an
+   (individualized) modified treatment policy.
+4. Estimate the population-level causal effects of modified treatment policies
+   with the `tmle3shift` `R` package.
+5. Specify and interpret a set of causal effects based upon differing modified
+   treatment policies arising from a grid of counterfactual shifts.
+6. Construct marginal structural models to measure variable importance in terms
+   of stochastic interventions, using a grid of counterfactual shifts.
+7. Implement, with the `tmle3shift` `R` package, modified treatment policies
+   that shift individual units only to the extent supported by the observed
+   data.
 
 `r if (knitr::is_latex_output()) '\\end{VT1}'`
 
-## Introduction to Stochastic Interventions
+## Why _Stochastic_ Interventions?
 
-Stochastic treatment regimes present a relatively simple, yet extremely flexible
-manner by which _realistic_ causal effects (and contrasts thereof) may be
-defined. Importantly, stochastic treatment regimes may be applied to nearly
-any manner of treatment variable -- continuous, ordinal, categorical, binary --
-allowing for a rich set of causal effects to be defined through this formalism.
-In this chapter, we examine a simple example of stochastic treatment regimes in
-the context of a continuous treatment variable of interest, defining an
-intuitive causal effect through which to examine stochastic interventions more
-generally. In later sections, we introduce numerous extensions based on this
-broad class of interventions -- from stochastic interventions on binary
-treatment variables to stochastic mediation effects and data-adaptive inference
-for stochastic intervention effects. As a first step to using stochastic
-treatment regimes in practice, we present the [`tmle3shift` R
-package](https://github.com/tlverse/tmle3shift), which features an
-implementation of a recently developed algorithm for computing targeted minimum
-loss-based estimates of a causal effect based on a stochastic treatment regime
-that shifts the natural value of the treatment based on a shifting function
-$d(A,W)$. For a comprehensive technical presentation of some of the material in
-this chapter, the interested reader is invited to consult @diaz2018stochastic.
-Additional background on the field of Targeted Learning, as well as prior work
-on stochastic treatment regimes, is available in @vdl2011targeted,
-@vdl2018targeted, and @diaz2012population.
+Stochastic treatment regimes, or _stochastic interventions_, constitute a
+relatively simple yet extremely flexible and expressive framework for defining
+_realistic_ causal effects. In contrast to intervention regimens discussed
+previously, stochastic interventions may be applied to nearly any manner of
+treatment variable -- binary, ordinal, continuous -- allowing for a rich set of
+causal effects to be defined through this formalism. This chapter focuses on
+examining a few types of stochastic interventions that may be applied to
+_continuous_ treatment variables, to which static and dynamic treatment regimes
+cannot easily be applied. Notably, the resultant causal effects conveniently are
+endowed with an interpretation echoing that of ordinary regression adjustment.
 
-While stochastic treatment regimes are arguably the most general of the
-classes of interventions through which causal effects may be defined, such
-interventions are conceptually simple.
+In the next chapter, we will introduce two alternative uses of stochastic
+interventions -- a recently formulated intervention applicable to binary
+treatment variables [@kennedy2019nonparametric] and the definition of causal
+effects in the presence of post-treatment, or mediating, variables. Here, we
+will focus on the tools provided in the [`tmle3shift` R
+package](https://github.com/tlverse/tmle3shift), which exposes targeted minimum
+loss-based estimators of the causal effects of stochastic interventions that
+additively shift the observed value of the treatment variable. More
+comprehensive, technical presentations of some aspects of the material in this
+chapter appear in @diaz2012population, @diaz2018stochastic,
+@hejazi2020efficient, and @hejazi2021semiparametric.
 
 ## Data Structure and Notation
 
@@ -78,7 +71,7 @@ interventions and their corresponding causal effects, we introduce a structural
 causal model (SCM), based on @pearl2009causality, to define how the system
 changes under posited interventions:
 \begin{align}
-  W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
+  W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y).
   (\#eq:npsem-shift)
 \end{align}
 The set of structural equations provide a mechanistic model describing the
@@ -165,35 +158,37 @@ remainder of this chapter, we will focus on additive MTPs of the form
 \begin{equation}
   d(a, w) =
   \begin{cases}
-    a - \delta & \text{if } a > l(w) + \delta \\
-    a & \text{if } a \leq l(w) + \delta,
+    a + \delta & \text{if } a + \delta \leq u(w) \\
+    a & \text{if } a + \delta > u(w),
   \end{cases}
   (\#eq:shift)
 \end{equation}
-where $0 \leq \delta \leq u(w)$ is an arbitrary pre-specified value that
-defines the degree to which the observed value $A$ is to be shifted, where
-possible. Such a stochastic treatment regime may be interpreted as the result
-of a clinic policy that encourages individuals to consume $\delta$ more vitamin
-pills than they would normally, i.e., based on their baseline characteristics.
-The interpretation of this stochastic intervention may be made more interesting
-by allowing the modification $\delta$ that it engenders to be a function of the
-baseline covariates $W$, thereby allowing for the number of vitamin pills taken
-to be a function of covariates such as age, sex, comorbidities, etc. This class
-of stochastic interventions was first introduced by @diaz2012population and has
-been further discussed in @haneuse2013estimation, @diaz2018stochastic, and
-@hejazi2020efficient. Note that this intervention may be written in a manner
-consistent with the first class of stochastic treatment regimes discussed as
-well -- that is, as per @diaz2012population, $\P_{\delta}(g_0)(A = a \mid W) =
-g_0(a - \delta(W) \mid W)$.
+where $\delta \in \mathbb{R}^{+}$ defines the degree to which an observed $A = a$
+ought to be shifted, in the context of the stratum $W = w$, and $l(w)$ and
+$u(w)$ are the minimum and maximum values of the treatment $A$ in the stratum
+$W = w$. Consider, for example, the case where $A$ denotes a (continuous-valued)
+dosage of nutritional supplements (e.g., number of vitamin pills) and assume
+that the distribution of $A$ conditional on $W = w$ has support in the interval
+$(l(w), u(w))$. That is, the minimum number of pills taken for an individual
+with in the covariate stratum defined by $W = w$ is $l(w)$; similarly, the
+maximum is $u(w)$. Such a stochastic intervention may be interpreted as the
+result of a clinic policy encouraging individuals to consume $\delta$ more
+vitamin pills ($A \delta$) than they would normally be recommended ($A$) based
+on their baseline characteristics $W$. This class of stochastic interventions
+was introduced by @diaz2012population and has been further discussed in
+@haneuse2013estimation, @diaz2018stochastic, @hejazi2020efficient, and
+@hejazi2021semiparametric. This class of interventions may be expressed as a
+general stochastic intervention, as per @diaz2012population, by considering the
+random draw $\P_{A_{\delta}}(g_{0, A})(A = a \mid W) = g_{0,A}(a - \delta(W)
+\mid W)$.
 
-The goal of any causal analysis motivated by such a stochastic intervention is
-to estimate a parameter defined as the counterfactual mean of the outcome with
-respect to the stochastically modified intervention distribution. In
-particular, the target causal estimand of our analysis is $\psi_{0, \delta}
-\coloneqq \E_{P_0^{\delta}}\{Y_{d(A,W)}\}$, the mean of the counterfactual
-outcome variable $Y_{d(A, W)}$. In prior work, @diaz2012population showed that
-the causal quantity of interest $\E_0 \{Y_{d(A, W)}\}$ is identified by
-a functional of the distribution of $O$:
+In order to evaluate the causal effect of our intervention, we consider as a
+parameter of interest the counterfactual mean of the outcome under our
+stochastically modified intervention distribution. This target causal estimand
+is $\psi_{0, \delta} \coloneqq \E_{P_0^{A_{\delta}}}\{Y_{A_{\delta}}\}$, the
+mean of the counterfactual outcome variable $Y_{A_{\delta}}$.
+@diaz2018stochastic showed that $\psi_{0, \delta}$ may be identified by a
+functional of the distribution of $O$:
 \begin{align}
   \psi_{0,\delta} = \int_{\mathcal{W}} \int_{\mathcal{A}} & \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \nonumber \\ &q_{0, A}(a \mid W = w)
@@ -268,7 +263,7 @@ which @diaz2018stochastic give the following recipe:
    $\overline{Q}_n^{\star}$ of the initial estimate
    $\overline{Q}_{n, \epsilon_n}$:
    \begin{equation}
-     \Psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
+     \psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
      \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
      (\#eq:tmle)
    \end{equation}
@@ -488,8 +483,8 @@ To start, we will initialize a specification for the TMLE of our parameter of
 interest (called a `tmle3_Spec` in the `tlverse` nomenclature) simply by calling
 `tmle_shift`. We specify the argument `shift_val = 0.5` when initializing the
 `tmle3_Spec` object to communicate that we're interested in a shift of $0.5$ on
-the scale of the treatment $A$ -- that is, we specify $\delta = 0.5$ (note that
-this is an arbitrarily chosen value for this example).
+the scale of the treatment $A$ -- that is, we specify $\delta = 0.5$ (an
+arbitrarily chosen value for this example).
 
 ```{r spec_init-shift}
 # initialize a tmle specification
@@ -543,6 +538,7 @@ can formalize this procedure by defining a new shift function $\delta(A, W)$:
       \delta_{\text{max}}(a,w), & \delta \geq \delta_{\text{max}}(a,w) \\
       \delta_{\text{min}}(a,w), & \delta \leq \delta_{\text{min}}(a,w) \\
     \end{cases},
+    (\#eq:delta-min-max-shift)
 \end{equation}
 where $$\delta_{\text{max}}(a, w) = \text{argmax}_{\left\{\delta \geq 0,
 \frac{g(a - \delta \mid w)}{g(a \mid w)} \leq M \right\}} \frac{g(a - \delta
@@ -552,28 +548,25 @@ $$\delta_{\text{min}}(a, w) = \text{argmin}_{\left\{\delta \leq 0,
 \mid w)}{g(a \mid w)}.$$
 
 The above provides a strategy for implementing a shift at the level of a given
-observation $(a_i, w_i)$, thereby allowing for all observations to be shifted
-to an appropriate value -- whether $\delta_{\text{min}}$, $\delta$, or
-$\delta_{\text{max}}$.
-
-For the purpose of using such a shift in practice, the present software
-provides the functions `shift_additive_bounded` and
-`shift_additive_bounded_inv`, which define a variation of this shift:
+observation $(a_i, w_i)$, thereby allowing for all observations to be shifted to
+an appropriate value, whether $\delta_{\text{min}}$, $\delta$, or
+$\delta_{\text{max}}$. The [`tmle3shift`](https://github.com/tlverse/tmle3shift)
+package implements the functions `shift_additive_bounded` and
+`shift_additive_bounded_inv`, which define a variation of this strategy:
 \begin{equation}
   \delta(a, w) =
     \begin{cases}
       \delta, & C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
-  (\#eq:shift-simple)
+  (\#eq:shift-bounded-simple)
 \end{equation}
-which corresponds to an intervention in which the natural value of treatment
-of a given observational unit is shifted by a value $\delta$ in the case that
-the ratio of the intervened density $g^{\star}(a \mid w)$ to the natural
-density $g(a \mid w)$ (that is, $C(\delta)$) does not exceed a bound $M$. In
-the case that the ratio $C(\delta)$ exceeds the bound $M$, the stochastic
-intervention policy does not apply to the given unit and they remain at their
-natural value of treatment $a$.
+corresponding to an intervention in which the natural value of treatment $A = a$
+is shifted by a value $\delta$ when the ratio $C(\delta)$ of the
+post-intervention density $g(a - \delta \mid w)$ to the natural treatment
+density $g(a \mid w)$ does not exceed a bound $M$. When $C(\delta)$ exceeds the
+bound $M$, the stochastic intervention exempts the given unit from the treatment
+modification, leaving them to their natural value of treatment $A = a$.
 
 ### Initializing `vimshift` through its `tmle3_Spec`
 
@@ -581,9 +574,9 @@ To start, we will initialize a specification for the TMLE of our parameter of
 interest (called a `tmle3_Spec` in the `tlverse` nomenclature) simply by calling
 `tmle_shift`. We specify the argument `shift_grid = seq(-1, 1, by = 1)`
 when initializing the `tmle3_Spec` object to communicate that we're interested
-in assessing the mean counterfactual outcome over a grid of shifts `r seq(-1,
-1, by = 1)` on the scale of the treatment $A$ (note that the numerical
-choice of shift is an arbitrarily chosen set of values for this example).
+in assessing the mean counterfactual outcome over a grid of shifts $\delta \in
+\{-1, 0, 1\}$ on the scale of the treatment $A$ (n.b., we make an arbitrary
+choice of shift values for this example).
 
 ```{r vim_spec_init}
 # what's the grid of shifts we wish to consider?
