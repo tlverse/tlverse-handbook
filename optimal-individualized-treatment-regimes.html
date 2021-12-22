@@ -71,7 +71,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3mopttx"><code>tmle3mopttx</code> <code>R</code> package</a>
 by <em>Ivana Malenica, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-10-20</p>
+<p>Updated: 2021-12-22</p>
 <div id="learning-objectives-4" class="section level2">
 <h2>
 <span class="header-section-number">8.1</span> Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-4"><i class="fas fa-link"></i></a>
@@ -93,6 +93,7 @@ rules, or “simple” rules, and recognize the practical benefit of these rules
 <li>Construct “realistic” optimal individualized treatment regimes that respect
 real data and subject-matter knowledge limitations on interventions by
 only considering interventions that are supported by the data.</li>
+<li>Interpret the estimated optimal individualized treatment rule.</li>
 <li>Measure variable importance as defined in terms of the optimal individualized
 treatment interventions.</li>
 </ol>
@@ -172,7 +173,8 @@ inference for our parameter, without having any parametric assumptions.</p>
 building intuition for the target parameter and its importance — aided with simulations,
 data examples and software demonstrations. For more information on the technical aspects
 of the algorithm, further practical advice and overview, the interested reader is invited to
-additionally consult <span class="citation">van der Laan and Luedtke (<a href="references.html#ref-vanderLaanLuedtke15" role="doc-biblioref">2015</a>)</span>, <span class="citation">Luedtke and van der Laan (<a href="references.html#ref-luedtke2016super" role="doc-biblioref">2016</a>)</span>, <span class="citation">Montoya, Laan, et al. (<a href="references.html#ref-montoya2021optimal" role="doc-biblioref">2021</a>)</span> and <span class="citation">Montoya, Skeem, et al. (<a href="references.html#ref-montoya2021performance" role="doc-biblioref">2021</a>)</span>.</p>
+additionally consult <span class="citation">van der Laan and Luedtke (<a href="references.html#ref-vanderLaanLuedtke15" role="doc-biblioref">2015</a>)</span>, <span class="citation">Luedtke and van der Laan (<a href="references.html#ref-luedtke2016super" role="doc-biblioref">2016</a>)</span>, <span class="citation">Montoya, Laan, et al. (<a href="references.html#ref-montoya2021optimal" role="doc-biblioref">2021</a>)</span> and
+<span class="citation">Montoya, Skeem, et al. (<a href="references.html#ref-montoya2021performance" role="doc-biblioref">2021</a>)</span>.</p>
 <hr>
 </div>
 <div id="data-structure-and-notation" class="section level2">
@@ -187,16 +189,19 @@ as the final outcome. In particular, we define <span class="math inline">\(A \in
 Note that we treat <span class="math inline">\(W\)</span> as vector-valued, representing all of our collected
 baseline covariates. Therefore, for a single random individual <span class="math inline">\(i\)</span>, we have that
 their observed data is <span class="math inline">\(O_i\)</span>: with corresponding baseline covariates <span class="math inline">\(W_i\)</span>,
-treatment <span class="math inline">\(A_i\)</span>, and final outcome <span class="math inline">\(Y_i\)</span>. We say that <span class="math inline">\(O \sim P_0\)</span>, or that all
+treatment <span class="math inline">\(A_i\)</span>, and final outcome <span class="math inline">\(Y_i\)</span>. Let <span class="math inline">\(O^n = \{O_i\}_{i=1}^n\)</span> denote
+<span class="math inline">\(n\)</span> observed samples. Then, we say that <span class="math inline">\(O^n \sim P_0\)</span>, or that all
 data was drawn from some true probability distribution <span class="math inline">\(P_0\)</span>. Let <span class="math inline">\(\mathcal{M}\)</span>
-denote a statistical model, with <span class="math inline">\(P_0 \in \mathcal{M}\)</span>. We emphasize that we
-make no assumptions about the distribution of <span class="math inline">\(P_0\)</span>, hence <span class="math inline">\(\mathcal{M}\)</span> is a
-fully nonparametric model. As previously mentioned, this means that we make no
-assumptions on the relationship between variables, but might be able to say
-something about the relationship of <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>, as is the case of a randomized
-trial. As in previous chapters, we denote <span class="math inline">\(P_n\)</span> as the empirical distribution
+denote a statistical model for the probability distribution of the data that is
+nonparametric, beyond possible knowledge of the treatment mechanism. In words, this
+means that we make no assumptions on the relationship between variables, but might
+be able to say something about the relationship of <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span>, as is the case in
+a randomized trial. In general, the more we know, or are willing to assume about the
+experiment that produces the data, the smaller the model. The true data generating
+distribution <span class="math inline">\(P_0\)</span> is part of the statistical model <span class="math inline">\(\mathcal{M}\)</span>, and we write
+<span class="math inline">\(P_0 \in \mathcal{M}\)</span>. As in previous chapters, we denote <span class="math inline">\(P_n\)</span> as the empirical distribution
 which gives each observation weight <span class="math inline">\(1/n\)</span>.</p>
-<p>We use the nonparametric structural equation model (NPSEM) in order to define
+<p>We use the structural equation model (SEM) in order to define
 the process that gives rise to the observed (endogenous) and not observed
 (exogenous) variables, as described by <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>)</span>. In particular, we
 denote <span class="math inline">\(U=(U_W,U_A,U_Y)\)</span> as the exogenous random variables, drawn from <span class="math inline">\(U \sim P_U\)</span>.
@@ -206,13 +211,15 @@ We can define the relationships between variables with the following structural 
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y),
   \tag{8.1}
 \end{align}\]</span>
-where the collection <span class="math inline">\(f=(f_W,f_A,f_Y)\)</span> denotes unspecified functions. Note that
+where the collection <span class="math inline">\(f=(f_W,f_A,f_Y)\)</span> denotes unspecified functions, beyond possible
+knowledge of the treatment mechanism function, <span class="math inline">\(f_A\)</span>. Note that
 in the case of a randomized trial, we can write the above NPSEM as
 <span class="math display" id="eq:npsem-rt-mopttx">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= U_A \\ Y &amp;= f_Y(A, W, U_Y),
   \tag{8.2}
 \end{align}\]</span>
-indicating no dependence of treatment on baseline covariates.</p>
+where <span class="math inline">\(U_A\)</span> has a known distribution and <span class="math inline">\(U_A\)</span> is independent of <span class="math inline">\(U_W\)</span>. We will discuss
+this more in later sections on identifiability.</p>
 <p>The likelihood of the data admits a factorization, implied by the time ordering
 of <span class="math inline">\(O\)</span>. We denote the true density of <span class="math inline">\(O\)</span> as <span class="math inline">\(p_0\)</span>, corresponding to the
 distribution <span class="math inline">\(P_0\)</span> and dominating measure <span class="math inline">\(\mu\)</span>.
@@ -223,11 +230,13 @@ distribution <span class="math inline">\(P_0\)</span> and dominating measure <sp
 \end{equation}\]</span>
 where <span class="math inline">\(p_{Y,0}(Y|A,W)\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A, W)\)</span> with
 respect to some dominating measure <span class="math inline">\(\mu_Y\)</span>, <span class="math inline">\(p_{A,0}\)</span> is the conditional density
-of <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_A\)</span>, and <span class="math inline">\(p_{W,0}\)</span> is
-the density of <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_W\)</span>. Consequently, we
-define <span class="math inline">\(P_{Y,0}(Y \mid A, W) = Q_{Y,0}(Y \mid A,W)\)</span>, <span class="math inline">\(P_{A,0}(A \mid W) = g_0(A \mid W)\)</span> and <span class="math inline">\(P_{W,0}(W)=Q_{W,0}(W)\)</span> as the corresponding conditional
+of <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span> with respect to a counting measure <span class="math inline">\(\mu_A\)</span>, and <span class="math inline">\(p_{W,0}\)</span> is
+the density of <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu_W\)</span>. In order to
+match relevant Targeted Learning literature, we also
+write <span class="math inline">\(P_{Y,0}(Y \mid A, W) = Q_{Y,0}(Y \mid A,W)\)</span>, <span class="math inline">\(P_{A,0}(A \mid W) = g_0(A \mid W)\)</span>
+and <span class="math inline">\(P_{W,0}(W)=Q_{W,0}(W)\)</span> as the corresponding conditional
 distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>, treatment mechanism <span class="math inline">\(A\)</span> given <span class="math inline">\(W\)</span>, and
-distribution of baseline covariates. For notational simplicity, we also define
+distribution of baseline covariates. For notational simplicity, we additionally define
 <span class="math inline">\(\bar{Q}_{Y,0}(A,W) \equiv \E_0[Y \mid A,W]\)</span> as the conditional expectation of
 <span class="math inline">\(Y\)</span> given <span class="math inline">\((A,W)\)</span>.</p>
 <p>Lastly, we define <span class="math inline">\(V\)</span> as a subset of the baseline covariates the optimal
@@ -235,8 +244,8 @@ individualized rule depends on, where <span class="math inline">\(V \in W\)</spa
 <span class="math inline">\(W\)</span>, or an empty set, depending on the subject matter knowledge. In particular,
 a researcher might want to consider known effect modifiers available at the time
 of treatment decision as possible <span class="math inline">\(V\)</span> covariates, or consider dynamic treatment
-rules based on measurements that can be easily obtained in a clinical setting.
-Defining <span class="math inline">\(V\)</span> as a more restrictive set of baseline covariates lets us consider
+rules based on measurments that can be easily obtained in a clinical setting.
+Defining <span class="math inline">\(V\)</span> as a more restrictive set of baseline covariates allows us to consider
 possibly sub-optimal rules that are easier to estimate, and thereby allows for
 statistical inference for the counterfactual mean outcome under the sub-optimal rule;
 we will elaborate on this in later sections.</p>
@@ -248,12 +257,11 @@ we will elaborate on this in later sections.</p>
 <p>Consider dynamic treatment rules, denoted as <span class="math inline">\(d\)</span>, in the set of all possible rules
 <span class="math inline">\(\mathcal{D}\)</span>. Then, in a point treatment setting, <span class="math inline">\(d\)</span> is a deterministic function
 that takes as input <span class="math inline">\(V\)</span> and outputs a treatment decision where
-<span class="math inline">\(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}\)</span>.
-We will use dynamic treatment rules, and the corresponding treatment
-decision, to describe an intervention on the treatment mechanism and the
-corresponding outcome under a dynamic treatment rule.</p>
+<span class="math inline">\(V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \}\)</span>. We will use dynamic treatment rules,
+and the corresponding treatment decision, to describe an intervention on the
+treatment mechanism and the corresponding outcome under a dynamic treatment rule.</p>
 <p>As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM <a href="optimal-individualized-treatment-regimes.html#eq:npsem-mopttx">(8.1)</a>. For a given
+hypothetical interventions on the SEM <a href="optimal-individualized-treatment-regimes.html#eq:npsem-mopttx">(8.1)</a>. For a given
 rule <span class="math inline">\(d\)</span>, our modified system then takes the following form:
 <span class="math display" id="eq:npsem-causal-mopttx">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= d(V) \\ Y_{d(V)} &amp;= f_Y(d(V), W, U_Y),
@@ -262,11 +270,11 @@ rule <span class="math inline">\(d\)</span>, our modified system then takes the 
 where the dynamic treatment regime may be viewed as an intervention in which <span class="math inline">\(A\)</span>
 is set equal to a value based on a hypothetical regime <span class="math inline">\(d(V)\)</span>. The couterfactual outcome
 <span class="math inline">\(Y_{d(V)}\)</span> denotes the outcome for a patient had their treatment been assigned using the
-dynamic rule <span class="math inline">\(d(V)\)</span>, possibly contrary to the fact. Note that the counterfactual
-outcomes for patients assigned treatment, or given control, are similarly written as
-<span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_0\)</span>. Finally, we denote the distribution of the counterfactual outcomes
+dynamic rule <span class="math inline">\(d(V)\)</span>, possibly contrary to the fact. Similarly, the counterfactual
+outcomes had all patients been assigned treatment (<span class="math inline">\(A=1\)</span>), or given control (<span class="math inline">\(A=0\)</span>), are
+written as <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_0\)</span>. Finally, we denote the distribution of the counterfactual outcomes
 as <span class="math inline">\(P_{U,X}\)</span>, implied by the distribution of exogenous variables <span class="math inline">\(U\)</span> and structural
-equations <span class="math inline">\(f\)</span>. The set of all possible counterfactual distributions are encompassed
+equations <span class="math inline">\(f\)</span>. The set of all possible counterfactual distributions are encompased
 by the causal model <span class="math inline">\(\mathcal{M}^F\)</span>, where <span class="math inline">\(P_{U,X} \in \mathcal{M}^F\)</span>.</p>
 <p>The goal of any causal analysis motivated by such dynamic interventions is to
 estimate a parameter defined as the counterfactual mean of the outcome with
@@ -274,24 +282,26 @@ respect to the modified intervention distribution. That is, subject’s outcome 
 possibly contrary to the fact, the subject received treatment that would have been
 assigned by rule <span class="math inline">\(d(V)\)</span>. Equivalently, we ask the following causal question:
 “What is the expected outcome had every subject received treatment according to the
-(optimal) individualized treatment?” With that in mind, we can consider different
+(optimal) individualized treatment?” In order to estimate the optimal individualized
+treatment, we set the following optimization problem:</p>
+<p><span class="math display">\[d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
+\E_{P_{U,X}}[Y_{d(V)}], \]</span>
+where the optimal individualized rule is the rule with the maximal value. We note that, in case
+the problem at hand requires minimizing the mean of an outcome, our optimal individualized
+rule will be the rule with the minimal value instead.</p>
+<p>With that in mind, we can consider different
 treatment rules, all in the set <span class="math inline">\(\mathcal{D}\)</span>:</p>
 <ol style="list-style-type: decimal">
-<li><p>The true rule, <span class="math inline">\(d_0\)</span>, and the corresponding causal parameter
-<span class="math inline">\(\E_{U,X}[Y_{d_0(V)}]\)</span> denoting the expected outcome under the
-true treatment rule <span class="math inline">\(d_0(V)\)</span>.</p></li>
-<li><p>The estimated rule, <span class="math inline">\(d_n\)</span>, and the corresponding causal parameter
-<span class="math inline">\(\E_{U,X}[Y_{d_n(V)}]\)</span> denoting the expected outcome under the
-estimated treatment rule <span class="math inline">\(d_n(V)\)</span>.</p></li>
+<li><p>The true rule, <span class="math inline">\(d_{0,\text{opt}}\)</span>, and the corresponding causal parameter
+<span class="math inline">\(\E_{U,X}[Y_{d_{0,\text{opt}}(V)}]\)</span> denoting the expected outcome under the
+true optimal treatment rule <span class="math inline">\(d_{0,\text{opt}}(V)\)</span>.</p></li>
+<li><p>The estimated rule, <span class="math inline">\(d_{n,\text{opt}}\)</span>, and the corresponding causal parameter
+<span class="math inline">\(\E_{U,X}[Y_{d_{n,\text{opt}}(V)}]\)</span> denoting the expected outcome under the
+estimated optimal treatment rule <span class="math inline">\(d_{n,\text{opt}}(V)\)</span>.</p></li>
 </ol>
-<p>In this chapter, we will focus on the value under the estimated rule <span class="math inline">\(d_n\)</span>,
-a <strong>data-adaptive parameter</strong>. Note that its true value depends on the sample!</p>
-<p>The optimal individualized rule is the rule with the maximal value:
-<span class="math display">\[d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
-\E_{P_{U,X}}[Y_{d(V)}]\]</span>.</p>
-<p>We note that, in case the problem at hand requires minimizing the mean of an
-outcome, our optimal individualized rule will be the rule with the minimal value
-instead. Our causal target parameter of interest is the expected outcome under
+<p>In this chapter, we will focus on the value under the estimated optimal rule <span class="math inline">\(d_{n,\text{opt}}\)</span>,
+a <strong>data-adaptive parameter</strong>. Note that its true value depends on the sample! Finally,
+our causal target parameter of interest is the expected outcome under
 the estimated optimal individualized rule:</p>
 <p><span class="math display">\[\Psi_{d_{n, \text{opt}}(V)}(P_{U,X}) \coloneqq \E_{P_{U,X}}[Y_{d_{n,
 \text{opt}}(V)}].\]</span></p>
@@ -303,26 +313,28 @@ the estimated optimal individualized rule:</p>
 individualized rule, are causal parameters based on the unobserved
 counterfactuals. In order for the causal quantities to be estimated from the
 observed data, they need to be identified with statistical parameters. This step
-of the roadmap requires me make a few assumptions:</p>
+of the roadmap requires we make a few assumptions:</p>
 <ol style="list-style-type: decimal">
 <li>
-<em>Strong ignorability</em>: <span class="math inline">\(A \indep Y^{d_n(v)} \mid W\)</span>, for all <span class="math inline">\(a \in \mathcal{A}\)</span>.</li>
+<em>Strong ignorability</em>: <span class="math inline">\(A \indep Y^{d_{n, \text{opt}}(v)} \mid W\)</span>, for all <span class="math inline">\(a \in \mathcal{A}\)</span>.</li>
 <li>
 <em>Positivity (or overlap)</em>: <span class="math inline">\(P_0(\min_{a \in \mathcal{A}} g_0(a \mid W) &gt; 0) = 1\)</span>
 </li>
 </ol>
-<p>Under the above causal assumptions, we can identify the causal target parameter
+<p>Under the above assumptions, we can identify the causal target parameter
 with observed data using the G-computation formula. The value of an individualized
 rule can now be expressed as</p>
-<p><span class="math display">\[\E_0[Y_{d_n(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],\]</span></p>
-<p>which, under causal assumptions, is interpreted as the mean outcome if
-(possibly contrary to fact), treatment was assigned according to the rule.
+<p><span class="math display">\[\E_0[Y_{d_{n, \text{opt}}(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n, \text{opt}}(V),W)],\]</span></p>
+<p>which, under assumptions, is interpreted as the mean outcome if
+(possibly contrary to fact), treatment was assigned according to the optimal rule.
 Finally, the statistical counterpart to the causal parameter of interest is
 defined as</p>
 <p><span class="math display">\[\psi_0 = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].\]</span></p>
 <p>Inference for the optimal value has been shown to be difficult at exceptional
-laws, defined as probability distributions for which treatment is neither
-beneficial nor harmful. Inference is similarly difficult in finite samples if
+laws, defined as probability distributions for which there is a positive
+probability on a set of <span class="math inline">\(W\)</span> values for which conditional expectation of <span class="math inline">\(Y\)</span>
+given <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> is constant in <span class="math inline">\(a\)</span> - so all treatments are equally
+benefitial. Inference is similarly difficult in finite samples if
 the treatment effect is very small in all strata, even though valid asymptotic
 estimators exist in this setting. With that in mind, we address the estimation
 problem under the assumption of non-exceptional laws in effect.</p>
@@ -337,7 +349,7 @@ initial estimate of <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> <spa
 <span class="citation">(van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super" role="doc-biblioref">2007</a>)</span>, and estimate its value with cross-validated Targeted Minimum
 Loss-based Estimation (CV-TMLE) <span class="citation">(Zheng and van der Laan <a href="references.html#ref-cvtmle2010" role="doc-biblioref">2010</a>)</span>. In great generality, we first
 need to estimate the true individual treatment regime, <span class="math inline">\(d_0(V)\)</span>, which
-corresponds to dynamic treatment rule (<span class="math inline">\(d(V)\)</span>) that takes a subset of covariates
+corresponds to dynamic treatment rule that takes a subset of covariates
 <span class="math inline">\(V\)</span> and assigns treatment to each individual based on their observed
 covariates <span class="math inline">\(v\)</span>. With the estimate of the true optimal ITR in hand, we can
 estimate its corresponding value.</p>
@@ -356,16 +368,18 @@ the blip function as:
 <span class="math display">\[\bar{Q}_0(V) \equiv \E_0[Y_1-Y_0 \mid V] \equiv \E_0[\bar{Q}_{Y,0}(1,W) -
 \bar{Q}_{Y,0}(0,W) \mid V],\]</span>
 or the average treatment effect within a stratum of <span class="math inline">\(V\)</span>. The note that the
-optimal individualized rule can now be derived as <span class="math inline">\(d_{n,\text{opt}}(V) = \mathbb{I}(\bar{Q}_{0}(V) &gt; 0)\)</span>.</p>
+optimal individualized rule can now be derived as <span class="math inline">\(d_{n,\text{opt}}(V) = \mathbb{I}(\bar{Q}_{n}(V) &gt; 0)\)</span>.</p>
 <p>The package <code>tmle3mopttx</code> relies on using the Super Learner to estimate the blip
 function. With that in mind, the loss function utilized for learning the optimal
 individualized rule corresponds to conditional mean type losses. It is however worth
-mentioning that <span class="citation">Luedtke and van der Laan (<a href="references.html#ref-luedtke2016super" role="doc-biblioref">2016</a>)</span> present three different approaches for learning the
-optimal rule. Namely, they focus on:</p>
+mentioning that <span class="citation">Luedtke and van der Laan (<a href="references.html#ref-luedtke2016super" role="doc-biblioref">2016</a>)</span> present three different approaches for learning the optimal
+rule. Namely, they focus on:</p>
 <ol style="list-style-type: decimal">
-<li><p>Super Learning the Blip Function,</p></li>
-<li><p>Super Learning the Weighted Classification Problem,</p></li>
-<li><p>Joint Super Learner of the Blip and Weighted Classification Problem.</p></li>
+<li><p>Super Learner of the blip function using the squared error loss,</p></li>
+<li><p>Super Learner of <span class="math inline">\(d_0\)</span> using the weighted classification loss function,</p></li>
+<li><p>Super Learner of <span class="math inline">\(d_0\)</span> that uses a library of candidate estimators that are
+implied by estimators of the blip as well as estimators that directly go for
+<span class="math inline">\(d_0\)</span> through weighted classification.</p></li>
 </ol>
 <p>A benefit of relying on the blip function, as implemented in <code>tmle3mopttx</code>, is that
 one can look at the distribution of the predicted outcomes of the blip for a given
@@ -388,7 +402,7 @@ transform to our outcome (double-robust pseudo-outcome), where we define:
 </ol>
 <p>Note that under the randomization and positivity assumptions we have that
 <span class="math inline">\(\E[D_{\bar{Q}_Y,g,a}(O) \mid V] = \E[Y_a \mid V]\)</span>. We emphasize the double
-robust nature of the A-IPW transform-consistency of <span class="math inline">\(\E[Y_a \mid V]\)</span> will depend
+robust nature of the A-IPW transform — consistency of <span class="math inline">\(\E[Y_a \mid V]\)</span> will depend
 on correct estimation of either <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> or <span class="math inline">\(g_0(A \mid W)\)</span>. As
 such, in a randomized trial, we are guaranteed a consistent estimate of <span class="math inline">\(\E[Y_a \mid V]\)</span>
 even if we get <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span> wrong! An alternative to the double-robust pseudo-outcome
@@ -397,14 +411,14 @@ is used to predict at <span class="math inline">\(\bar{Q}_{Y,n}(A=1,W)\)</span> 
 an estimate of the blip function, <span class="math inline">\(\bar{Q}_{Y,n}(A=1,W) - \bar{Q}_{Y,n}(A=0,W)\)</span>, but
 relies on doing a good job on estimating <span class="math inline">\(\bar{Q}_{Y,0}(A,W)\)</span>.</p>
 <p>Using the double-robust pseudo-outcome, we can define the following contrast:
-<span class="math inline">\(D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O).\)</span></p>
+<span class="math display">\[D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O).\]</span></p>
 <p>We estimate the blip function, <span class="math inline">\(\bar{Q}_{0,a}(V)\)</span>, by regressing
 <span class="math inline">\(D_{\bar{Q}_Y,g}(O)\)</span> on <span class="math inline">\(V\)</span> using the specified <code>sl3</code> library of learners and an
 appropriate loss function. Finally, we are ready for the final steps.</p>
 <ol start="3" style="list-style-type: decimal">
-<li>Our estimated rule corresponds to <span class="math inline">\(\text{argmax}_{a \in \mathcal{A}} \bar{Q}_{0,a}(V)\)</span>.</li>
-<li>We obtain inference for the mean outcome under the estimated optimal rule
-using CV-TMLE.</li>
+<li><p>Our estimated rule corresponds to <span class="math inline">\(\text{argmax}_{a \in \mathcal{A}} \bar{Q}_{0,a}(V)\)</span>.</p></li>
+<li><p>We obtain inference for the mean outcome under the estimated optimal rule
+using CV-TMLE.</p></li>
 </ol>
 </div>
 <div id="categorical-treatment" class="section level3">
@@ -423,20 +437,20 @@ categories, <span class="math inline">\(n_A\)</span>. As such, we define it as:
 <li><p><em>Blip1</em> corresponds to choosing a reference category of treatment, and
 defining the blip for all other categories relative to the specified
 reference. Hence we have that:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-ref}(V) \equiv \E_0(Y_a-Y_0 \mid V)\]</span> where <span class="math inline">\(Y_0\)</span> is
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-ref}(V) \equiv \E_0[Y_a-Y_0 \mid V]\]</span> where <span class="math inline">\(Y_0\)</span> is
 the specified reference category with <span class="math inline">\(A=0\)</span>. Note that, for the case of
 binary treatment, this strategy reduces to the approach described for the
 binary setup.</p></li>
 <li><p><em>Blip2</em> approach corresponds to defining the blip relative to the average of
 all categories. As such, we can define <span class="math inline">\(\bar{Q}_{0,a}^{pblip-avg}(V)\)</span> as:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-  \mathcal{A}} Y_a \mid V).\]</span>
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0 [Y_a - \frac{1}{n_A} \sum_{a \in
+  \mathcal{A}} Y_a \mid V].\]</span>
 In the case where subject-matter knowledge regarding which reference category
 to use is not available, blip2 might be a viable option.</p></li>
 <li><p><em>Blip3</em> reflects an extension of Blip2, where the average is now a weighted
 average:
-<span class="math display">\[\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-  \mathcal{A}} Y_{a} P(A=a \mid V) \mid V).\]</span></p></li>
+<span class="math display">\[\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0 [ Y_a - \frac{1}{n_A} \sum_{a \in
+  \mathcal{A}} Y_{a} P(A=a \mid V) \mid V ].\]</span></p></li>
 </ol>
 <p>Just like in the binary case, pseudo-blips are estimated by regressing contrasts
 composed using the A-IPW transform on <span class="math inline">\(V\)</span>.</p>
@@ -501,6 +515,8 @@ we’ll use and set a seed:</p>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/sl3">sl3</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3">tmle3</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3mopttx">tmle3mopttx</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span>
+
 <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">111</span><span class="op">)</span></code></pre></div>
 <div id="simulated-data" class="section level3">
 <h3>
@@ -523,7 +539,7 @@ truth is <span class="math inline">\(\psi=0.578\)</span> for this data generatin
 <p>To formally express this fact using the <code>tlverse</code> grammar introduced by the
 <code>tmle3</code> package, we create a single data object and specify the functional
 relationships between the nodes in the <em>directed acyclic graph</em> (DAG) via
-<em>nonparametric structural equation models</em> (NPSEMs), reflected in the node list
+<em>structural equation models</em> (SEMs), reflected in the node list
 that we set up:</p>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># organize data and nodes for tmle3</span>
@@ -548,6 +564,10 @@ may be fit with ensemble learning, using the cross-validation framework of the
 Super Learner algorithm of <span class="citation">van der Laan, Polley, and Hubbard (<a href="references.html#ref-vdl2007super" role="doc-biblioref">2007</a>)</span>.</p>
 <div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Define sl3 library and metalearners:</span>
+<span class="va">lrn_xgboost_50</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
+<span class="va">lrn_xgboost_100</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>
+<span class="va">lrn_xgboost_500</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">500</span><span class="op">)</span>
+
 <span class="va">lrn_mean</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_mean.html">Lrnr_mean</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="va">lrn_glm</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_glm_fast.html">Lrnr_glm_fast</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="va">lrn_lasso</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_glmnet.html">Lrnr_glmnet</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
@@ -579,7 +599,7 @@ standard notation by bundling the ensemble learners into a list object below:</p
 <p>The <code>learner_list</code> object above specifies the role that each of the ensemble
 learners we’ve generated is to play in computing initial estimators. Recall that
 we need initial estimators of relevant parts of the likelihood in order to
-building a TMLE for the parameter of interest. In particular, <code>learner_list</code>
+build a TMLE for the parameter of interest. In particular, <code>learner_list</code>
 makes explicit the fact that our <code>Y</code> is used in fitting the outcome regression,
 while <code>A</code> is used in fitting the treatment mechanism regression, and finally <code>B</code>
 is used in fitting the blip function.</p>
@@ -592,13 +612,13 @@ is used in fitting the blip function.</p>
 interest simply by calling <code>tmle3_mopttx_blip_revere</code>. We specify the argument
 <code>V = c("W1", "W2", "W3")</code> when initializing the <code>tmle3_Spec</code> object in order to
 communicate that we’re interested in learning a rule dependent on <code>V</code>
-covariates. Note that we don’t have to specify <code>V</code>- this will result in a rule
+covariates. Note that we don’t have to specify <code>V</code> — this will result in a rule
 that is not based on any collected covariates; we will see an example like this
 shortly. We also need to specify the type
 of (pseudo) blip we will use in this estimation problem, the list of learners used
 to estimate the blip function, whether we want to maximize or minimize the final
 outcome, and few other more advanced features including searching for a less
-complex rule and realistic interventions.</p>
+complex rule, realistic interventions and possible resource constraints.</p>
 <div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
 <span class="va">tmle_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_blip_revere.html">tmle3_mopttx_blip_revere</a></span><span class="op">(</span>
@@ -641,12 +661,12 @@ important extensions of <code>tmle3mopttx</code> in later sections.</p>
 <span id="cb87-7"><a href="optimal-individualized-treatment-regimes.html#cb87-7"></a>   lower_transformed upper_transformed</span>
 <span id="cb87-8"><a href="optimal-individualized-treatment-regimes.html#cb87-8"></a><span class="dv">1</span><span class="op">:</span><span class="st">           </span><span class="fl">0.50279</span>           <span class="fl">0.60463</span></span></code></pre></div>
 <p>By studying the output generated, we can see that the confidence interval covers the
-true parameter, as expected!</p>
+true parameter, as expected.</p>
 <div id="resource-constraint" class="section level4">
 <h4>
 <span class="header-section-number">8.6.3.1</span> Resource constraint<a class="anchor" aria-label="anchor" href="#resource-constraint"><i class="fas fa-link"></i></a>
 </h4>
-<p>As mentioned, we can restrict the number of individuals that get the treatment by only
+<p>We can restrict the number of individuals that get the treatment by only
 treating <span class="math inline">\(k\)</span> percent of samples. With that, only patients with the biggest benefit (according
 to the estimated blip) receive treatment. In order to impose a
 resource constraint, we only have to specify the percent of individuals that can
@@ -687,7 +707,8 @@ resource constraint:</p>
 <h4>
 <span class="header-section-number">8.6.3.2</span> Empty V<a class="anchor" aria-label="anchor" href="#empty-v"><i class="fas fa-link"></i></a>
 </h4>
-<p>Below we the show an example where <span class="math inline">\(V\)</span> is not specified.</p>
+<p>Below we the show an example where <span class="math inline">\(V\)</span> is not specified, under the
+resource constraint.</p>
 <div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
 <span class="va">tmle_spec_V_empty</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_blip_revere.html">tmle3_mopttx_blip_revere</a></span><span class="op">(</span>
@@ -720,20 +741,20 @@ as how we construct our learners.</p>
 <h3>
 <span class="header-section-number">8.7.1</span> Simulated Data<a class="anchor" aria-label="anchor" href="#simulated-data-1"><i class="fas fa-link"></i></a>
 </h3>
-<p>First, we load the simulated data. Here, our data generating distribution was
+<p>First, we load the simulated data. Our data generating distribution is
 of the following form:
 <span class="math display">\[\begin{align*}
   W &amp;\sim \mathcal{N}(\bf{0},I_{4 \times 4})\\
   \P(A=a \mid W) &amp;= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) -
-    3I(A=2)(2W_1+0.5) +
-    3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
+  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - \\
+    3I(A=2)(2W_1+0.5) + \\
+    3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1) \\
 \end{align*}\]</span></p>
 <p>We can just load the data available as part of the package as follows:</p>
 <div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"data_cat_realistic"</span><span class="op">)</span></code></pre></div>
 <p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. Note that the
-truth is now <span class="math inline">\(\psi=0.658\)</span>, which is the quantity we aim to estimate.</p>
+truth is now <span class="math inline">\(\psi_0=0.658\)</span>, which is the quantity we aim to estimate.</p>
 <div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># organize data and nodes for tmle3</span>
 <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data_cat_realistic</span>
@@ -755,7 +776,8 @@ truth is now <span class="math inline">\(\psi=0.658\)</span>, which is the quant
 </h3>
 <p><strong>QUESTION:</strong> With categorical treatment, what is the dimension of the blip now?
 What is the dimension for the current example? How would we go about estimating it?</p>
-<p>We’ll now create new ensemble learners using the <code>sl3</code> learners initialized previously:</p>
+<p>We will now create new ensemble learners using the
+<code>sl3</code> learners initialized previously:</p>
 <div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Initialize few of the learners:</span>
 <span class="va">lrn_xgboost_50</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_xgboost.html">Lrnr_xgboost</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>nrounds <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
@@ -784,7 +806,7 @@ What is the dimension for the current example? How would we go about estimating 
 <p>As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression, propensity score, and
 the blip function. Note that we need to estimate <span class="math inline">\(g_0(A \mid W)\)</span> for a
-categorical <span class="math inline">\(A\)</span> – therefore, we use the multinomial Super Learner option
+categorical <span class="math inline">\(A\)</span> — therefore, we use the multinomial Super Learner option
 available within the <code>sl3</code> package with learners that can address multi-class
 classification problems. In order to see which learners can be used to estimate
 <span class="math inline">\(g_0(A \mid W)\)</span> in <code>sl3</code>, we run the following:</p>
@@ -802,11 +824,11 @@ classification problems. In order to see which learners can be used to estimate
 <span id="cb97-12"><a href="optimal-individualized-treatment-regimes.html#cb97-12"></a>[<span class="dv">19</span>] <span class="st">"Lrnr_ranger"</span>               <span class="st">"Lrnr_rpart"</span>               </span>
 <span id="cb97-13"><a href="optimal-individualized-treatment-regimes.html#cb97-13"></a>[<span class="dv">21</span>] <span class="st">"Lrnr_screener_correlation"</span> <span class="st">"Lrnr_solnp"</span>               </span>
 <span id="cb97-14"><a href="optimal-individualized-treatment-regimes.html#cb97-14"></a>[<span class="dv">23</span>] <span class="st">"Lrnr_svm"</span>                  <span class="st">"Lrnr_xgboost"</span>             </span></code></pre></div>
-<p>Note that since the corresponding blip will be vector valued, we will have a
+<p>Since the corresponding blip will be vector valued, we will have a
 column for each additional level of treatment. As such, we need to create
 multivariate learners with the helper function <code>create_mv_learners</code> that takes a
 list of initialized learners as input.</p>
-<p>We make the above explicit with respect to standard notation by bundling the
+<p>We make the above explicit with respect to the standard notation by bundling the
 ensemble learners into a list object below:</p>
 <div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># specify outcome and treatment regressions and create learner list</span>
@@ -837,7 +859,7 @@ ensemble learners into a list object below:</p>
 <span id="cb100-12"><a href="optimal-individualized-treatment-regimes.html#cb100-12"></a></span>
 <span id="cb100-13"><a href="optimal-individualized-treatment-regimes.html#cb100-13"></a>  <span class="dv">1</span>   <span class="dv">2</span>   <span class="dv">3</span> </span>
 <span id="cb100-14"><a href="optimal-individualized-treatment-regimes.html#cb100-14"></a><span class="dv">250</span> <span class="dv">432</span> <span class="dv">318</span> </span></code></pre></div>
-<p>We can see that the confidence interval covers the truth!</p>
+<p>We can see that the confidence interval covers the truth.</p>
 <p><strong>NOTICE the distribution of the assigned treatment! We will need this shortly.</strong></p>
 </div>
 </div>
@@ -858,13 +880,13 @@ global positivity restraints, are not realistic to implement.</p>
 </h3>
 <p>In order to not only consider the most ambitious fully <span class="math inline">\(V\)</span>-optimal rule, we
 define <span class="math inline">\(S\)</span>-optimal rules as the optimal rule that considers all possible subsets
-of <span class="math inline">\(V\)</span> covariates, with card(<span class="math inline">\(S\)</span>) <span class="math inline">\(\leq\)</span> card(<span class="math inline">\(V\)</span>) and <span class="math inline">\(\emptyset \in S\)</span>. This
-allows us to consider sub-optimal rules that are easier to estimate and
-potentially provide more realistic rules — as such, we allow for statistical
-inference for the counterfactual mean outcome under the sub-optimal rule.
-Here we also consider static rules, which assign treatment and control to all.
-Within the <code>tmle3mopttx</code> paradigm, we just need to change the <code>complex</code>
-parameter to <code>FALSE</code>:</p>
+of <span class="math inline">\(V\)</span> covariates, with card(<span class="math inline">\(S\)</span>) <span class="math inline">\(\leq\)</span> card(<span class="math inline">\(V\)</span>) and <span class="math inline">\(\emptyset \in S\)</span>. In
+particular, this allows us to define a Super Learner for <span class="math inline">\(d_0\)</span> that includes
+a range of estimators from very simple (e.g., statis rules) to more complex
+(e.g. full <span class="math inline">\(V\)</span>), and let the discrete Super Learner select a simple rule when
+appropriate. This allows us to consider sub-optimal rules that are easier to estimate and
+potentially provide more realistic rules. Within the <code>tmle3mopttx</code> paradigm, we just need
+to change the <code>complex</code> parameter to <code>FALSE</code>:</p>
 <div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
 <span class="va">tmle_spec_cat_simple</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_blip_revere.html">tmle3_mopttx_blip_revere</a></span><span class="op">(</span>
@@ -927,7 +949,7 @@ we had under the “non-realistic”" rule?</p>
 <span class="header-section-number">8.8.3</span> Missingness and <code>tmle3mopttx</code><a class="anchor" aria-label="anchor" href="#missingness-and-tmle3mopttx"><i class="fas fa-link"></i></a>
 </h3>
 <p>In this section, we present how to use the <code>tmle3mopttx</code> package when the data is subject
-to missingness. Let’s start by add some missingness to our outcome.</p>
+to missingness in <span class="math inline">\(Y\)</span>. Let’s start by add some missingness to our outcome, first.</p>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="optimal-individualized-treatment-regimes.html#cb105-1"></a>data_missing &lt;-<span class="st"> </span>data_cat_realistic</span>
 <span id="cb105-2"><a href="optimal-individualized-treatment-regimes.html#cb105-2"></a></span>
 <span id="cb105-3"><a href="optimal-individualized-treatment-regimes.html#cb105-3"></a><span class="co">#Add some random missingless:</span></span>
@@ -937,8 +959,8 @@ to missingness. Let’s start by add some missingness to our outcome.</p>
 <span id="cb105-7"><a href="optimal-individualized-treatment-regimes.html#cb105-7"></a><span class="kw">summary</span>(data_missing<span class="op">$</span>Y)</span>
 <span id="cb105-8"><a href="optimal-individualized-treatment-regimes.html#cb105-8"></a>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA<span class="st">'s </span></span>
 <span id="cb105-9"><a href="optimal-individualized-treatment-regimes.html#cb105-9"></a><span class="st">  0.000   0.000   0.000   0.464   1.000   1.000     100 </span></span></code></pre></div>
-<p>To start, we must first add to our library learners to estimate the missigness
-process.</p>
+<p>To start, we must first add to our library — we now also need to estimate the
+missigness process as well.</p>
 <div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">delta_learner</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">lrn_mean</span>, <span class="va">lrn_glm</span><span class="op">)</span>,
@@ -948,13 +970,13 @@ process.</p>
 <span class="co"># specify outcome and treatment regressions and create learner list</span>
 <span class="va">learner_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>Y <span class="op">=</span> <span class="va">Q_learner</span>, A <span class="op">=</span> <span class="va">g_learner</span>, B <span class="op">=</span> <span class="va">b_learner</span>, delta_Y<span class="op">=</span><span class="va">delta_learner</span><span class="op">)</span></code></pre></div>
 <p>The <code>learner_list</code> object above specifies the role that each of the ensemble
-learners we’ve generated is to play in computing initial estimators to be used
-in building a TMLE for the parameter of interest. In particular, it makes
-explicit the fact that our <code>Y</code> is used in fitting the outcome regression
-while our <code>A</code> is used in fitting our treatment mechanism regression,
-<code>B</code> is used in fitting the blip function, and <code>delta_Y</code> fits the missing outcome process.</p>
-<p>Now, with the additional estimation step associated with missingness added, we can proceed
-as usual.</p>
+learners we’ve generated is to play in computing the initial estimators needed
+for building the TMLE for the parameter of interest. In particular, it makes
+explicit the fact that <code>Y</code> is used in fitting the outcome regression
+while <code>A</code> is used in fitting our treatment mechanism regression,
+<code>B</code> for fitting the blip function, and <code>delta_Y</code> fits the missing outcome process.</p>
+<p>Now, with the additional estimation step associated with missingness added, we can
+proceed as usual.</p>
 <div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
 <span class="va">tmle_spec_cat_miss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/tmle3mopttx/man/tmle3_mopttx_blip_revere.html">tmle3_mopttx_blip_revere</a></span><span class="op">(</span>
@@ -1013,9 +1035,9 @@ maximizes (or minimizes) the population mean outcome the most under an optimal
 individualized treatment out of all other considered covariates under optimal
 assignment might be considered <em>more important</em> for the outcome. To put it in
 context, perhaps optimal allocation of treatment 1, denoted <span class="math inline">\(A_1\)</span>, results in a
-larger mean outcome than optimal allocation of another treatment (<span class="math inline">\(A_2\)</span>).
+larger mean outcome than optimal allocation of another treatment 2, denoted <span class="math inline">\(A_2\)</span>.
 Therefore, we would label <span class="math inline">\(A_1\)</span> as having a higher variable importance with
-regard to maximizing (minimizing) the mean outcome under the optimal
+regard to maximizing (or minimizing) the mean outcome under the optimal
 individualized treatment.</p>
 <div id="simulated-data-2" class="section level3">
 <h3>
@@ -1032,7 +1054,7 @@ the data-generating distribution <a href="#oit-eval">described previously</a>:</
   A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"W1"</span>, <span class="st">"A"</span><span class="op">)</span>,
   Y <span class="op">=</span> <span class="st">"Y"</span>
 <span class="op">)</span></code></pre></div>
-<p>Note that our node list now includes <span class="math inline">\(W_1\)</span> as treatments as well! Don’t worry,
+<p>Our node list now includes <span class="math inline">\(W_1\)</span> as treatments as well! Don’t worry,
 we will still properly adjust for all baseline covariates.</p>
 </div>
 <div id="variable-importance-using-targeted-estimation-of-the-value-of-the-itr" class="section level3">
@@ -1081,13 +1103,21 @@ effect).</p>
   complex <span class="op">=</span> <span class="cn">TRUE</span>,
   realistic <span class="op">=</span> <span class="cn">FALSE</span>
 <span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># fit the TML estimator</span>
-<span class="va">vim_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3_vim.html">tmle3_vim</a></span><span class="op">(</span><span class="va">tmle_spec_vim</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span>,
-  adjust_for_other_A <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">vim_results</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="optimal-individualized-treatment-regimes.html#cb112-1"></a><span class="co"># fit the TML estimator</span></span>
+<span id="cb112-2"><a href="optimal-individualized-treatment-regimes.html#cb112-2"></a>vim_results &lt;-<span class="st"> </span><span class="kw">tmle3_vim</span>(tmle_spec_vim, data, node_list, learner_list,</span>
+<span id="cb112-3"><a href="optimal-individualized-treatment-regimes.html#cb112-3"></a>  <span class="dt">adjust_for_other_A =</span> <span class="ot">TRUE</span></span>
+<span id="cb112-4"><a href="optimal-individualized-treatment-regimes.html#cb112-4"></a>)</span>
+<span id="cb112-5"><a href="optimal-individualized-treatment-regimes.html#cb112-5"></a></span>
+<span id="cb112-6"><a href="optimal-individualized-treatment-regimes.html#cb112-6"></a><span class="kw">print</span>(vim_results)</span>
+<span id="cb112-7"><a href="optimal-individualized-treatment-regimes.html#cb112-7"></a>   type                param    init_est  tmle_est       se      lower</span>
+<span id="cb112-8"><a href="optimal-individualized-treatment-regimes.html#cb112-8"></a><span class="dv">1</span><span class="op">:</span><span class="st">  </span>ATE E[Y_{A=<span class="ot">NULL</span>}] <span class="op">-</span><span class="st"> </span>E[Y]  <span class="fl">0.00066272</span>  <span class="fl">0.040712</span> <span class="fl">0.016866</span>  <span class="fl">0.0076547</span></span>
+<span id="cb112-9"><a href="optimal-individualized-treatment-regimes.html#cb112-9"></a><span class="dv">2</span><span class="op">:</span><span class="st">  </span>ATE E[Y_{A=<span class="ot">NULL</span>}] <span class="op">-</span><span class="st"> </span>E[Y] <span class="fl">-0.01042913</span> <span class="fl">-0.039754</span> <span class="fl">0.022095</span> <span class="fl">-0.0830588</span></span>
+<span id="cb112-10"><a href="optimal-individualized-treatment-regimes.html#cb112-10"></a>       upper psi_transformed lower_transformed upper_transformed  A           W</span>
+<span id="cb112-11"><a href="optimal-individualized-treatment-regimes.html#cb112-11"></a><span class="dv">1</span><span class="op">:</span><span class="st"> </span><span class="fl">0.0737684</span>        <span class="fl">0.040712</span>         <span class="fl">0.0076547</span>         <span class="fl">0.0737684</span>  A W3,W4,W2,W1</span>
+<span id="cb112-12"><a href="optimal-individualized-treatment-regimes.html#cb112-12"></a><span class="dv">2</span><span class="op">:</span><span class="st"> </span><span class="fl">0.0035505</span>       <span class="fl">-0.039754</span>        <span class="fl">-0.0830588</span>         <span class="fl">0.0035505</span> W1  W3,W4,W2,A</span>
+<span id="cb112-13"><a href="optimal-individualized-treatment-regimes.html#cb112-13"></a>    Z_stat      p_nz p_nz_corrected</span>
+<span id="cb112-14"><a href="optimal-individualized-treatment-regimes.html#cb112-14"></a><span class="dv">1</span><span class="op">:</span><span class="st">  </span><span class="fl">2.4138</span> <span class="fl">0.0078932</span>       <span class="fl">0.015786</span></span>
+<span id="cb112-15"><a href="optimal-individualized-treatment-regimes.html#cb112-15"></a><span class="dv">2</span><span class="op">:</span><span class="st"> </span><span class="fl">-1.7993</span> <span class="fl">0.0359882</span>       <span class="fl">0.035988</span></span></code></pre></div>
 <p>The final result of <code>tmle3_vim</code> with the <code>tmle3mopttx</code> spec is an ordered list
 of mean outcomes under the optimal individualized treatment for all categorical
 covariates in our dataset.</p>
@@ -1261,7 +1291,7 @@ Q-learning. How do the results change and why?</p></li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on October 20, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on December 22, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

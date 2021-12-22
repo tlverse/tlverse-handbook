@@ -71,7 +71,7 @@
 <p><em>Nima Hejazi</em></p>
 <p>Based on the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>
 by <em>Nima Hejazi, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-10-20</p>
+<p>Updated: 2021-12-22</p>
 <div id="learning-objectives-5" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-5"><i class="fas fa-link"></i></a>
 </h2>
@@ -130,18 +130,18 @@ of interest (e.g., disease status). Here, we consider <span class="math inline">
 continuous-valued (i.e., <span class="math inline">\(A \in \R\)</span>) or ordinal with many levels. For a given
 study, we consider observing <span class="math inline">\(n\)</span> independent and identically distributed units
 <span class="math inline">\(O_1, \ldots, O_n\)</span>.</p>
-<p>Following <a href="intro.html#roadmap">the roadmap</a>, let <span class="math inline">\(O \sim \mathcal{P} \in \M\)</span>, where <span class="math inline">\(\M\)</span>
-is the nonparametric statistical model, minimizing any restrictions on the form
-of the data-generating distribution <span class="math inline">\(\mathcal{P}\)</span>. To formalize the definition
-of stochastic interventions and their corresponding causal effects, we introduce
-a nonparametric structural equation model (NPSEM), based on <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>)</span>,
-to define how the system changes under posited interventions:
+<p>Following <a href="intro.html#roadmap">the roadmap</a>, let <span class="math inline">\(O \sim P \in \M\)</span>, where <span class="math inline">\(\M\)</span> is the
+nonparametric statistical model, minimizing any restrictions on the form of the
+data-generating distribution <span class="math inline">\(P\)</span>. To formalize the definition of stochastic
+interventions and their corresponding causal effects, we introduce a structural
+causal model (SCM), based on <span class="citation">Pearl (<a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>)</span>, to define how the system
+changes under posited interventions:
 <span class="math display" id="eq:npsem-shift">\[\begin{align}
   W &amp;= f_W(U_W) \\ A &amp;= f_A(W, U_A) \\ Y &amp;= f_Y(A, W, U_Y).
   \tag{9.1}
 \end{align}\]</span>
 The set of structural equations provide a mechanistic model describing the
-relationships between variables composing the observed data unit <span class="math inline">\(O\)</span>. The NPSEM
+relationships between variables composing the observed data unit <span class="math inline">\(O\)</span>. The SCM
 describes a temporal ordering between the variables (i.e., that <span class="math inline">\(Y\)</span> occurs after
 <span class="math inline">\(A\)</span>, which occurs after <span class="math inline">\(W\)</span>); specifies deterministic functions <span class="math inline">\(\{f_W, f_A, f_Y\}\)</span> generating each variable <span class="math inline">\(\{W, A, Y\}\)</span> based on those preceding it and
 exogenous (unobserved) variable <span class="math inline">\(\{U_W, U_A, U_Y\}\)</span>; and requires that each
@@ -151,17 +151,15 @@ corresponding observed variable.</p>
 orthogonal components of the density, <span class="math inline">\(p_0^O\)</span>, when evaluated on a typical
 observation <span class="math inline">\(o\)</span>:
 <span class="math display" id="eq:likelihood-factorization-shift">\[\begin{equation}
-  p_0^O(x) = q^O_{0,Y}(y \mid A = a, W = w) q^O_{0,A}(a \mid W = w)
-  q^O_{0,W}(w),
+  p_0(x) = q_{0,Y}(y \mid A = a, W = w) g_{0,A}(a \mid W = w) q_{0,W}(w),
   \tag{9.2}
 \end{equation}\]</span>
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\(\{A, W\}\)</span> with respect
-to some dominating measure, <span class="math inline">\(q_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
+to some dominating measure, <span class="math inline">\(g_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(q_{0, W}\)</span> is the density of
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\nu\)</span>. In the interest of continuing to
-use familiar notation, we let <span class="math inline">\(Q(A, W) = \E[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = \P(A \mid W)\)</span>, and <span class="math inline">\(q_W\)</span> the marginal distribution of <span class="math inline">\(W\)</span>. Importantly, the NPSEM
-parameterizes <span class="math inline">\(p_0^O\)</span> in terms of the distribution of random variables <span class="math inline">\((O, U)\)</span>
-modeled by the system of equations. In turn, this implies a model for the
+use familiar notation, we let <span class="math inline">\(Q(A, W) = \E[Y \mid A, W]\)</span>, <span class="math inline">\(g(A \mid W) = g_{A}(A \mid W)\)</span>, and <span class="math inline">\(q_W\)</span> the marginal distribution of <span class="math inline">\(W\)</span>. Importantly, the
+SCM parameterizes <span class="math inline">\(p_0\)</span> in terms of the distribution of random variables <span class="math inline">\((O, U)\)</span> modeled by the system of equations. In turn, this implies a model for the
 distribution of counterfactual random variables generated by interventions on
 the data-generating process.</p>
 </div>
@@ -170,8 +168,8 @@ the data-generating process.</p>
 <span class="header-section-number">9.3</span> Defining the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#defining-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <p>Causal effects are defined in terms of contrasts of hypothetical interventions
-on the NPSEM <a href="stochastic-treatment-regimes.html#eq:npsem-shift">(9.1)</a>. Stochastic interventions modifying
-components of the NPSEM may be thought of in two equivalent ways. A <em>general</em>
+on the SCM <a href="stochastic-treatment-regimes.html#eq:npsem-shift">(9.1)</a>. Stochastic interventions modifying
+components of the SCM may be thought of in two equivalent ways. A <em>general</em>
 stochastic intervention replaces the equation <span class="math inline">\(f_A\)</span>, which gives rise to <span class="math inline">\(A\)</span>,
 and <span class="math inline">\(g(A \mid W)\)</span>, the natural conditional density of A, with a candidate
 density <span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span>. In the absence of the intervention, we would
@@ -186,8 +184,8 @@ post-intervention value <span class="math inline">\(A_{\delta}\)</span> is stoch
 that it has been drawn from an arbitrary (in practice, user-defined)
 distribution. Note that the familiar case of static interventions can be
 recovered by choosing degenerate candidate distributions, which place all mass
-on just a single value. <span class="citation">Stock (<a href="references.html#ref-stock1989nonparametric" role="doc-biblioref">1989</a>)</span> first considered the estimation
-of the total effects of stochastic interventions of this form.</p>
+on just a single value. <span class="citation">Stock (<a href="references.html#ref-stock1989nonparametric" role="doc-biblioref">1989</a>)</span> first considered estimating the
+total effects of such stochastic interventions.</p>
 <p>While there are few restrictions on the choice of the candidate post-treatment
 density <span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span>, in practice, it is often chosen based on
 knowledge of the natural (or pre-intervention) density <span class="math inline">\(g(A \mid W)\)</span>. When
@@ -206,11 +204,12 @@ function <span class="math inline">\(h_j(\cdot, w; \delta)\)</span> with derivat
 <!-- TODO: explain this
 Essentially, for a given $d(A,W; \delta)$ to exhibit this property, the
 -->
-<p>In either case, the stochastic intervention generates a counterfactual random
-variable <span class="math inline">\(Y_{A_{\delta}} := f_Y(A_{\delta}, W, U_Y)\)</span>, where the counterfactual
-outcome <span class="math inline">\(Y_{A_{\delta}} \sim \mathcal{P}_0^{A_{\delta}}\)</span>, defining both
-<span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span> and <span class="math inline">\(d(A, W; \delta)\)</span>. For the remainder of this
-chapter, we will focus on additive MTPs of the form
+<p>A stochastic intervention generates a counterfactual random variable
+<span class="math inline">\(Y_{A_{\delta}} := f_Y(A_{\delta}, W, U_Y)\)</span>, where the counterfactual outcome
+<span class="math inline">\(Y_{A_{\delta}} \sim \mathcal{P}_0^{A_{\delta}}\)</span> arises from replacing the
+natural value of <span class="math inline">\(A\)</span> with <span class="math inline">\(A_{\delta}\)</span> (whether as a draw from
+<span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span> or by evaluating <span class="math inline">\(d(A, W; \delta)\)</span>). For the
+remainder of this chapter, we will focus on additive MTPs of the form
 <span class="math display" id="eq:shift">\[\begin{equation}
   d(a, w) =
   \begin{cases}
@@ -245,8 +244,8 @@ mean of the counterfactual outcome variable <span class="math inline">\(Y_{A_{\d
 functional of the distribution of <span class="math inline">\(O\)</span>:
 <span class="math display" id="eq:identification2012">\[\begin{align}
   \psi_{0,\delta} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \E_{P_0}
-   \{Y \mid A = d(a, w), W = w\} \cdot \\ &amp;q_{0, A}^O(a \mid W = w) \cdot
-   q_{0, W}^O(w) d\mu(a)d\nu(w).
+   \{Y \mid A = d(a, w), W = w\} \nonumber \\ &amp;q_{0, A}(a \mid W = w)
+   q_{0, W}(w) d\mu(a)d\nu(w).
   \tag{9.4}
 \end{align}\]</span>
 Under certain identification conditions, which we will enumerate shortly, the
@@ -255,15 +254,14 @@ the counterfactual mean <span class="math inline">\(\psi_{0, \delta}\)</span>. W
 with the identification of causal parameters – that is, establishing
 statistical functionals of the observed data that have causal interpretations
 under certain assumptions – we review key assumptions for identifying the
-counterfactual mean <span class="math inline">\(\psi_{0, \delta}\)</span> below.</p>
+counterfactual mean <span class="math inline">\(\psi_{0, \delta}\)</span> below. As the SCM introduced prior
+generates independent and identically distributed units <span class="math inline">\(O\)</span>, the common
+identification assumptions of consistency (<span class="math inline">\(Y^{A_{\delta,i}}_i = Y_i\)</span> in the
+event <span class="math inline">\(A_i = d(a_i, w_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>) and lack of interference
+(<span class="math inline">\(Y^{A_{\delta,i}}_i\)</span> does not depend on <span class="math inline">\(d(a_j, w_j)\)</span> for <span class="math inline">\(i = 1, \ldots, n\)</span>
+and <span class="math inline">\(j \neq i\)</span>) hold. Beyond these, we require no unmeasured confounding (the
+analog to the randomization assumption in observational studies) and positivity.</p>
 <ol style="list-style-type: decimal">
-<li>
-<em>Consistency</em>: <span class="math inline">\(Y^{A_{\delta,i}}_i = Y_i\)</span> in the event <span class="math inline">\(A_i = d(a_i, w_i)\)</span>,
-for <span class="math inline">\(i = 1, \ldots, n\)</span>
-</li>
-<li>
-<em>No interference</em>: <span class="math inline">\(Y^{A_{\delta,i}}_i\)</span> does not depend on <span class="math inline">\(d(a_j, w_j)\)</span> for
-<span class="math inline">\(i = 1, \ldots, n\)</span> and <span class="math inline">\(j \neq i\)</span>.</li>
 <li>
 <em>No unmeasured confounders</em>: <span class="math inline">\(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\)</span>, for
 <span class="math inline">\(i = 1, \ldots, n\)</span>. This is the observational study analog to the well-known
@@ -272,8 +270,6 @@ randomization assumption.</li>
 <em>Positivity (or overlap)</em>: <span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the
 support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</li>
 </ol>
-<p>Together, the first and second assumptions have been termed the <em>stable unit
-treatment value assumption</em> (SUTVA) <span class="citation">(Rubin <a href="references.html#ref-rubin1978bayesian" role="doc-biblioref">1978</a>, <a href="references.html#ref-rubin1980randomization" role="doc-biblioref">1980</a>)</span>.</p>
 </div>
 <div id="estimating-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
@@ -306,18 +302,20 @@ which may be reduced to
 \end{equation}\]</span>
 when the treatment <span class="math inline">\(A\)</span> lies within the limits defined by the covariate strata
 <span class="math inline">\(W\)</span>, that is, for <span class="math inline">\(A_i \in (u(w) - \delta, u(w))\)</span>. The efficient influence
-function allows the construction of a semiparametric-efficient estimators may be
-constructed. In the sequel, we focus on a targeted maximum likelihood (TML)
-estimator, for which <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">2018</a>)</span> give a recipe:</p>
+function is a key ingredient in the construction of semiparametric-efficient
+estimators. Next, we focus on a targeted maximum likelihood (TML) estimator, for
+which <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">2018</a>)</span> give the following recipe:</p>
 <ol style="list-style-type: decimal">
 <li>Construct initial estimators <span class="math inline">\(g_n\)</span> of <span class="math inline">\(g_0(A, W)\)</span> and <span class="math inline">\(Q_n\)</span> of
-<span class="math inline">\(\overline{Q}_0(A, W)\)</span>, perhaps using data-adaptive regression techniques.</li>
+<span class="math inline">\(\overline{Q}_0(A, W)\)</span>, ideally using data-adaptive regression techniques.</li>
 <li>For each observation <span class="math inline">\(i\)</span>, compute an estimate <span class="math inline">\(H_n(a_i, w_i)\)</span> of the
 auxiliary covariate <span class="math inline">\(H(a_i,w_i)\)</span>.</li>
-<li>Estimate the parameter <span class="math inline">\(\epsilon\)</span> in the logistic regression model
+<li>Construct the one-dimensional logistic regression model,
 <span class="math display">\[ \text{logit}\overline{Q}_{\epsilon, n}(a, w) =
 \text{logit}\overline{Q}_n(a, w) + \epsilon H_n(a, w),\]</span>
-or an alternative regression model incorporating weights.</li>
+or an analogous regression model incorporating <span class="math inline">\(H_n\)</span> as weights. Estimate the
+regression model’s parameter <span class="math inline">\(\epsilon\)</span>, obtaining <span class="math inline">\(\epsilon_n\)</span>. The outcome
+of this regression model yields <span class="math inline">\(\overline{Q}_n^{\star}\)</span>.</li>
 <li>Compute TML estimator <span class="math inline">\(\Psi_n\)</span> of the target parameter, defining update
 <span class="math inline">\(\overline{Q}_n^{\star}\)</span> of the initial estimate
 <span class="math inline">\(\overline{Q}_{n, \epsilon_n}\)</span>:
@@ -338,15 +336,15 @@ target parameter <span class="math inline">\(\psi_0\)</span> can be expressed in
   \tag{9.9}
 \end{equation}\]</span>
 Together with regularity, asymptotic linearity establishes a class of estimators
-whose asymptotic variance is bounded by the asymptotic variance of the EIF. This
-means that such estimators are solutions to the EIF estimating equation (i.e.,
-plugging the TML estimator <span class="math inline">\(\psi_n\)</span> into the EIF equation results in a solution
-close to zero) and that their sampling variance may be approximated by the
-variance of the EIF in closed form. This latter fact is computationally
-convenient, as resampling methods (e.g., the bootstrap) are not strictly
-necessary for variance estimation. A central limit theorem establishes that the
-asymptotic distribution of the estimator <span class="math inline">\(\psi_n\)</span> is centered at <span class="math inline">\(\psi_0\)</span> and is
-Gaussian:
+whose asymptotic variance is bounded from below by the asymptotic variance of
+the EIF. This means that such estimators are solutions to the EIF estimating
+equation (i.e., plugging the TML estimator <span class="math inline">\(\psi_n\)</span> into the EIF equation
+results in a solution close to zero) and that their sampling variance may be
+approximated by the variance of the EIF in closed form. This latter fact is
+computationally convenient, as resampling methods (e.g., the bootstrap) are not
+strictly necessary for variance estimation. A central limit theorem establishes
+that the asymptotic distribution of the estimator <span class="math inline">\(\psi_n\)</span> is centered at
+<span class="math inline">\(\psi_0\)</span> and is Gaussian:
 <span class="math display" id="eq:tmle-gaussian-shift">\[\begin{equation}
   \sqrt{n}(\psi_n - \psi_0) \to \text{Normal}(0, \sigma^2(D(P_0))).
   \tag{9.10}
@@ -354,7 +352,8 @@ Gaussian:
 Thus, an estimate <span class="math inline">\(\sigma_n^2\)</span> of the variance <span class="math inline">\(\sigma^2(D(P_0))\)</span> may be
 computed
 <span class="math display" id="eq:eif-var-shift">\[\begin{equation}
-  \sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i),
+  \sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\overline{Q}_n^{\star},
+  g_n)(O_i),
   \tag{9.11}
 \end{equation}\]</span>
 allowing for Wald-style confidence intervals at coverage level <span class="math inline">\((1 - \alpha)\)</span> to
@@ -421,11 +420,12 @@ FIGURE 5.1: How a counterfactual outcome changes as the natural treatment distri
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3">tmle3</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/tmle3shift">tmle3shift</a></span><span class="op">)</span></code></pre></div>
 <p>We need to estimate two components of the likelihood in order to construct a TML
-estimator. The first of these components is the outcome regression, <span class="math inline">\(\hat{Q}_n\)</span>,
-which is a simple regression of the form <span class="math inline">\(\E[Y \mid A,W]\)</span>. An estimate
-for such a quantity may be constructed using the Super Learner algorithm. We
-construct the components of an <code>sl3</code>-style Super Learner for a regression below,
-using a small variety of parametric and nonparametric regression techniques:</p>
+estimator. The first of these components is the outcome regression,
+<span class="math inline">\(\overline{Q}_n\)</span>, which is a simple regression of the form <span class="math inline">\(\E[Y \mid A,W]\)</span>. An
+estimate for such a quantity may be constructed using the Super Learner
+algorithm. We construct the components of an <code>sl3</code>-style Super Learner for a
+regression below, using a small variety of parametric and nonparametric
+regression techniques:</p>
 <div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># learners used for conditional mean of the outcome</span>
 <span class="va">mean_lrnr</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_mean.html">Lrnr_mean</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
@@ -438,13 +438,13 @@ using a small variety of parametric and nonparametric regression techniques:</p>
   learners <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">mean_lrnr</span>, <span class="va">fglm_lrnr</span>, <span class="va">rf_lrnr</span>, <span class="va">hal_lrnr</span><span class="op">)</span>,
   metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span></code></pre></div>
-<p>The second of these is an estimate of the treatment mechanism, <span class="math inline">\(\hat{g}_n\)</span>,
-i.e., the <em>propensity score</em>. In the case of a continuous intervention node <span class="math inline">\(A\)</span>,
-such a quantity takes the form <span class="math inline">\(p(A \mid W)\)</span>, which is a conditional density.
-Generally speaking, conditional density estimation is a challenging problem that
-has received much attention in the literature. To estimate the treatment
-mechanism, we must make use of learning algorithms specifically suited to
-conditional density estimation; a list of such learners may be extracted from
+<p>The second of these is an estimate of the treatment mechanism, <span class="math inline">\(g_n\)</span>, i.e., the
+<em>generalized propensity score</em>. In the case of a continuous intervention node
+<span class="math inline">\(A\)</span>, such a quantity takes the form <span class="math inline">\(p(A \mid W)\)</span>, which is a conditional
+density. Generally speaking, conditional density estimation is a challenging
+problem that has received much attention in the literature. To estimate the
+treatment mechanism, we must make use of learning algorithms specifically suited
+to conditional density estimation; a list of such learners may be extracted from
 <code>sl3</code> by using <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_learners()</a></code>:</p>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="stochastic-treatment-regimes.html#cb115-1"></a><span class="kw">sl3_list_learners</span>(<span class="st">"density"</span>)</span>
 <span id="cb115-2"><a href="stochastic-treatment-regimes.html#cb115-2"></a>[<span class="dv">1</span>] <span class="st">"Lrnr_density_discretize"</span>     <span class="st">"Lrnr_density_hse"</span>           </span>
@@ -460,16 +460,16 @@ regression techniques (note that we exclude the approach based on the
 <code>haldensify</code> learner from our Super Learner on account of the computationally
 intensive nature of the approach).</p>
 <div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># learners used for conditional densities (i.e., generalized propensity score)</span>
+<code class="sourceCode R"><span class="co"># learners used for conditional densities for (g_n)</span>
 <span class="va">haldensify_lrnr</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_haldensify.html">Lrnr_haldensify</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>
   n_bins <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">20</span><span class="op">)</span>,
   lambda_seq <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">exp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1</span>, <span class="op">-</span><span class="fl">10</span>, length <span class="op">=</span> <span class="fl">200</span><span class="op">)</span><span class="op">)</span>
 <span class="op">)</span>
-<span class="co"># semiparametric density estimator based on homoscedastic errors (HOSE)</span>
+<span class="co"># semiparametric density estimator with homoscedastic errors (HOSE)</span>
 <span class="va">hose_hal_lrnr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_density_semiparametric</span>,
   mean_learner <span class="op">=</span> <span class="va">hal_lrnr</span>
 <span class="op">)</span>
-<span class="co"># semiparametric density estimator based on heteroscedastic errors (HESE)</span>
+<span class="co"># semiparametric density estimator with heteroscedastic errors (HESE)</span>
 <span class="va">hese_rf_glm_lrnr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_density_semiparametric</span>,
   mean_learner <span class="op">=</span> <span class="va">rf_lrnr</span>,
   var_learner <span class="op">=</span> <span class="va">fglm_lrnr</span>
@@ -525,7 +525,7 @@ regression while our <code>g_learner</code> is used in estimating the treatment 
 <p>The above composes our observed data structure <span class="math inline">\(O = (W, A, Y)\)</span>. To formally
 express this fact using the <code>tlverse</code> grammar introduced by the <code>tmle3</code> package,
 we create a single data object and specify the functional relationships between
-the nodes in the <em>directed acyclic graph</em> (DAG) via an NPSEM, reflected in the
+the nodes in the <em>directed acyclic graph</em> (DAG) via an SCM, reflected in the
 node list we set up.</p>
 <p>We now have an observed data structure (<code>data</code>) and a specification of the role
 that each variable in the data set plays as the nodes in a DAG.</p>
@@ -554,7 +554,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 </h3>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="stochastic-treatment-regimes.html#cb120-1"></a>tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</span>
 <span id="cb120-2"><a href="stochastic-treatment-regimes.html#cb120-2"></a></span>
-<span id="cb120-3"><a href="stochastic-treatment-regimes.html#cb120-3"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94735</span> <span class="fl">0.05265</span></span>
+<span id="cb120-3"><a href="stochastic-treatment-regimes.html#cb120-3"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94736</span> <span class="fl">0.05264</span></span>
 <span id="cb120-4"><a href="stochastic-treatment-regimes.html#cb120-4"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94736</span> <span class="fl">0.05264</span></span>
 <span id="cb120-5"><a href="stochastic-treatment-regimes.html#cb120-5"></a>solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</span>
 <span id="cb120-6"><a href="stochastic-treatment-regimes.html#cb120-6"></a>tmle_fit</span>
@@ -576,7 +576,7 @@ is computed based on the estimated EIF.</p>
 positivity violations and downstream instability in the estimation process. In
 order to curb such issues, we can make choices of <span class="math inline">\(\delta\)</span> based on the impact
 of the candidate values on the estimator. Recall that a simplified expression of
-the auxiliary covariate for the TMLE of <span class="math inline">\(\psi\)</span> is <span class="math inline">\(H_n = \frac{g(a - \delta \mid w)}{g(a \mid w)}\)</span>, where <span class="math inline">\(g(a - \delta \mid w)\)</span> is defined by the stochastic
+the auxiliary covariate for the TMLE of <span class="math inline">\(\psi\)</span> is <span class="math inline">\(H = \frac{g(a - \delta \mid w)}{g(a \mid w)}\)</span>, where <span class="math inline">\(g(a - \delta \mid w)\)</span> is defined by the stochastic
 intervention of interest. We can design our stochastic intervention to avoid
 violations of the positivity assumption by by considering a bound <span class="math inline">\(C(\delta) = \frac{g(a - \delta \mid w)}{g(a \mid w)} &lt; M\)</span>, where <span class="math inline">\(M\)</span> is a potentially
 user-specified upper bound of <span class="math inline">\(C(\delta)\)</span>. Note that <span class="math inline">\(C(\delta)\)</span> corresponds to
@@ -656,9 +656,25 @@ machinery exposed by the <a href="https://tmle3.tlverse.org/"><code>tmle3</code>
 <p>One may invoke the <code>tmle3</code> wrapper function (a user-facing convenience utility)
 to fit the series of TML estimators (one for each parameter defined by the grid
 delta) in a single function call:</p>
-<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmle_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="http://tlverse.org/tmle3/reference/tmle3.html">tmle3</a></span><span class="op">(</span><span class="va">tmle_spec</span>, <span class="va">data</span>, <span class="va">node_list</span>, <span class="va">learner_list</span><span class="op">)</span>
-<span class="va">tmle_fit</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="stochastic-treatment-regimes.html#cb122-1"></a>tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</span>
+<span id="cb122-2"><a href="stochastic-treatment-regimes.html#cb122-2"></a></span>
+<span id="cb122-3"><a href="stochastic-treatment-regimes.html#cb122-3"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">547.4323</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.9998973</span> <span class="fl">0.0001027</span></span>
+<span id="cb122-4"><a href="stochastic-treatment-regimes.html#cb122-4"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">547.4323</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.99997059</span> <span class="fl">0.00002941</span></span>
+<span id="cb122-5"><a href="stochastic-treatment-regimes.html#cb122-5"></a>solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</span>
+<span id="cb122-6"><a href="stochastic-treatment-regimes.html#cb122-6"></a>tmle_fit</span>
+<span id="cb122-7"><a href="stochastic-treatment-regimes.html#cb122-7"></a>A tmle3_Fit that took <span class="dv">1</span> <span class="kw">step</span>(s)</span>
+<span id="cb122-8"><a href="stochastic-treatment-regimes.html#cb122-8"></a>         type          param init_est tmle_est        se   lower   upper</span>
+<span id="cb122-9"><a href="stochastic-treatment-regimes.html#cb122-9"></a><span class="dv">1</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.56957</span>  <span class="fl">0.57130</span> <span class="fl">0.0213472</span> <span class="fl">0.52946</span> <span class="fl">0.61314</span></span>
+<span id="cb122-10"><a href="stochastic-treatment-regimes.html#cb122-10"></a><span class="dv">2</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.69881</span>  <span class="fl">0.69750</span> <span class="fl">0.0229958</span> <span class="fl">0.65243</span> <span class="fl">0.74257</span></span>
+<span id="cb122-11"><a href="stochastic-treatment-regimes.html#cb122-11"></a><span class="dv">3</span><span class="op">:</span><span class="st">        </span>TSM  E[Y_{A=<span class="ot">NULL</span>}]  <span class="fl">0.81733</span>  <span class="fl">0.81516</span> <span class="fl">0.0171125</span> <span class="fl">0.78162</span> <span class="fl">0.84870</span></span>
+<span id="cb122-12"><a href="stochastic-treatment-regimes.html#cb122-12"></a><span class="dv">4</span><span class="op">:</span><span class="st"> </span>MSM_linear <span class="kw">MSM</span>(intercept)  <span class="fl">0.69524</span>  <span class="fl">0.69465</span> <span class="fl">0.0190943</span> <span class="fl">0.65723</span> <span class="fl">0.73208</span></span>
+<span id="cb122-13"><a href="stochastic-treatment-regimes.html#cb122-13"></a><span class="dv">5</span><span class="op">:</span><span class="st"> </span>MSM_linear     <span class="kw">MSM</span>(slope)  <span class="fl">0.12388</span>  <span class="fl">0.12193</span> <span class="fl">0.0085622</span> <span class="fl">0.10515</span> <span class="fl">0.13871</span></span>
+<span id="cb122-14"><a href="stochastic-treatment-regimes.html#cb122-14"></a>   psi_transformed lower_transformed upper_transformed</span>
+<span id="cb122-15"><a href="stochastic-treatment-regimes.html#cb122-15"></a><span class="dv">1</span><span class="op">:</span><span class="st">         </span><span class="fl">0.57130</span>           <span class="fl">0.52946</span>           <span class="fl">0.61314</span></span>
+<span id="cb122-16"><a href="stochastic-treatment-regimes.html#cb122-16"></a><span class="dv">2</span><span class="op">:</span><span class="st">         </span><span class="fl">0.69750</span>           <span class="fl">0.65243</span>           <span class="fl">0.74257</span></span>
+<span id="cb122-17"><a href="stochastic-treatment-regimes.html#cb122-17"></a><span class="dv">3</span><span class="op">:</span><span class="st">         </span><span class="fl">0.81516</span>           <span class="fl">0.78162</span>           <span class="fl">0.84870</span></span>
+<span id="cb122-18"><a href="stochastic-treatment-regimes.html#cb122-18"></a><span class="dv">4</span><span class="op">:</span><span class="st">         </span><span class="fl">0.69465</span>           <span class="fl">0.65723</span>           <span class="fl">0.73208</span></span>
+<span id="cb122-19"><a href="stochastic-treatment-regimes.html#cb122-19"></a><span class="dv">5</span><span class="op">:</span><span class="st">         </span><span class="fl">0.12193</span>           <span class="fl">0.10515</span>           <span class="fl">0.13871</span></span></code></pre></div>
 <p><em>Remark</em>: The <code>print</code> method of the resultant <code>tmle_fit</code> object conveniently
 displays the results from computing our TML estimator.</p>
 </div>
@@ -676,13 +692,13 @@ the estimates <span class="math inline">\(\psi_n\)</span> through a working MSM 
 appearing through the grid in <span class="math inline">\(\delta\)</span>, which may be evaluating through a simple
 hypothesis test on the slope parameter <span class="math inline">\(\beta_0\)</span> of the working MSM. Consider a
 grid of <span class="math inline">\(\delta\)</span>, <span class="math inline">\(\{\delta_1, \ldots, \delta_k\}\)</span>, corresponding to
-counterfactual means <span class="math inline">\(\{\psi_{n,\delta_1}, \ldots, \psi_{n, \delta_k}\}\)</span>. In a
-minor abuse of notation, let <span class="math inline">\(\psi = (\psi_{\delta}: \delta)\)</span> denote the grid of
-counterfactual means in the grid defined by <span class="math inline">\(\delta\)</span>, with corresponding TML
-estimators <span class="math inline">\(\psi_n = (\psi_{n,\delta}: \delta)\)</span>. The MSM summarizing the change
-in <span class="math inline">\(\psi_n\)</span> as a function of <span class="math inline">\(delta\)</span> may be expressed <span class="math inline">\(m_{\beta}(\psi_{\delta}) = \alpha_0 + \beta_0 \delta\)</span>. This simple working model summarizes the changes
-in <span class="math inline">\(\psi_{\delta}\)</span> as a function of the parameters <span class="math inline">\((\alpha_0, \beta_0)\)</span>, where
-the latter is the slope of the line resulting from projecting the counterfactual
+counterfactual means <span class="math inline">\(\{\psi_{\delta_1}, \ldots, \psi_{\delta_k}\}\)</span>. Next, let
+<span class="math inline">\(\psi(\delta) = (\psi_{\delta}: \delta)\)</span> denote the grid of
+counterfactual means in the grid defined by <span class="math inline">\(\delta\)</span> and let <span class="math inline">\(\psi_n(\delta)\)</span>
+denote TML estimators of <span class="math inline">\(\psi(\delta)\)</span>. The MSM summarizing the change in
+<span class="math inline">\(\psi_n\)</span> as a function of <span class="math inline">\(\delta\)</span> may be expressed <span class="math inline">\(m_{\beta}(\psi_{\delta}) = \beta_0 + \beta_1 \delta\)</span>. This simple working model summarizes the changes in
+<span class="math inline">\(\psi_{\delta}\)</span> as a function of the parameters <span class="math inline">\((\beta_0, \beta_1)\)</span>, where the
+latter is the slope of the line resulting from projecting the counterfactual
 means onto this simple two-parameter working model.</p>
 <p>A more general expression for the MSM <span class="math inline">\(m_{\beta}(\delta)\)</span> is <span class="math inline">\(\beta_0 = \text{argmin}_{\beta} \sum_{\delta}(\psi_{\delta}(P_0) - m_{\beta}(\delta))^2 h(\delta)\)</span>, the solution to the estimating equation
 <span class="math display">\[u(\beta, (\psi_{\delta}: \delta)) = \sum_{\delta}h(\delta)
@@ -716,46 +732,46 @@ EIF of the MSM parameter <span class="math inline">\(\beta_0\)</span> in terms o
 counterfactual means:
 <span class="math display" id="eq:eif-msm-shift">\[\begin{equation}
    D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
-   m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1} \cdot
+   m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1}
    \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
    D_{\psi_{\delta}}(O).
    \tag{9.14}
 \end{equation}\]</span>
-Here, in Equation <a href="stochastic-treatment-regimes.html#eq:eif-msm-shift">(9.14)</a>, the first term is of dimension <span class="math inline">\(d \times d\)</span> and the second term is of dimension <span class="math inline">\(d \times 1\)</span>. In the above, we
+Here, in Equation <a href="stochastic-treatment-regimes.html#eq:eif-msm-shift">(9.14)</a>, the first component is of dimension
+<span class="math inline">\(d \times d\)</span> and the second is of dimension <span class="math inline">\(d \times 1\)</span>. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
 working MSMs based on GLMs.</p>
-<p>Inference for a parameter of a working MSM may be obtained by straightforward
-application of the delta method (n.b., no relation to the shift parameter
-<span class="math inline">\(\delta\)</span>) – that is, as a result of expressing the EIF of the MSM parameter
-<span class="math inline">\(\beta\)</span> in terms of the EIFs of each of the corresponding estimates
-<span class="math inline">\(\psi_{n,\delta}\)</span>. Due to this convenience, inference on a working MSM is
-straightforward. To wit, the limiting distribution for <span class="math inline">\(m_{\beta}(\delta)\)</span> may
-be expressed <span class="math display">\[\sqrt{n}(\beta_n - \beta_0) \to N(0, \Sigma),\]</span> where <span class="math inline">\(\Sigma\)</span> is
-the empirical covariance matrix of <span class="math inline">\(D_{\beta}(O)\)</span>. With this, we can not only
-estimate the trend through the counterfactual means across a grid in <span class="math inline">\(\delta\)</span>,
-but we can also evaluate whether the slope estimate is statistically
-significant, in terms of hypothesis tests of the form <span class="math inline">\((H_0: \beta_0 = 0; H_1: \beta_0 \neq 0)\)</span> and equivalent Wald-style confidence intervals. Note that the
-parameter of interest <span class="math inline">\(\beta_0\)</span> of the MSM is asymptotically linear (and, in
-fact, a TML estimator) as a consequence of its construction from individual TML
-estimators.</p>
+<p>Above, we utilized a straightforward application of the delta method to obtain
+the EIF of <span class="math inline">\(\beta\)</span>. Inference for this parameter of a working MSM follows from
+evaluation of its EIF <span class="math inline">\(D_{\beta}\)</span>, which is expressed in terms of the EIFs of
+each of the corresponding estimates <span class="math inline">\(\psi_n(\delta)\)</span>. The limit distribution of
+<span class="math inline">\(\beta_n\)</span> may be expressed <span class="math display">\[\sqrt{n}(\beta_n - \beta_0) \to N(0, \Sigma),\]</span>
+where <span class="math inline">\(\Sigma\)</span> is the empirical covariance matrix of <span class="math inline">\(D_{\beta}(O)\)</span>. With this,
+we can not only estimate the trend through the counterfactual means across a
+grid in <span class="math inline">\(\delta\)</span>, but we can also evaluate whether the slope estimate is
+statistically significant, in terms of hypothesis tests of the form <span class="math inline">\((H_0: \beta_0 = 0; H_1: \beta_0 \neq 0)\)</span> and equivalent Wald-style confidence
+intervals. Note that the estimator <span class="math inline">\(\beta_n\)</span> of the parameter <span class="math inline">\(\beta_0\)</span> of the
+MSM is asymptotically linear (and, in fact, a TML estimator) as a consequence of
+its construction from individual TML estimators.</p>
 <p>The strategy just discussed constructs an estimate <span class="math inline">\(\beta_n\)</span> of the working MSM
 slope <span class="math inline">\(\beta_0\)</span> by first evaluating the TML estimates of the counterfactual
-means <span class="math inline">\(\psi_{n,\delta}\)</span> in the grid <span class="math inline">\(\{delta_1, \ldots, \delta_k\}\)</span>; however,
+means <span class="math inline">\(\psi_{n,\delta}\)</span> in the grid <span class="math inline">\(\{\delta_1, \ldots, \delta_k\}\)</span>; however,
 this is not necessarily the best strategy, especially when giving consideration
 to estimation stability in small samples. In smaller samples, it may be prudent
 to perform TML estimation targeting directly the parameter <span class="math inline">\(\beta_0\)</span>, as opposed
 to constructing it by applying the delta method to several independently
 targeted TML estimates.</p>
-<p>To do so, consider a TML estimator targeting <span class="math inline">\(\alpha_0\)</span> and <span class="math inline">\(\beta_0\)</span> (the
-parameters of the working MSM <span class="math inline">\(m_{\beta}\)</span>), which uses a targeting update step
-of the form <span class="math inline">\(\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon (H_{\alpha}(g), H_{\beta}(g)\)</span>, for all <span class="math inline">\(\delta\)</span>, where <span class="math inline">\(H_{\alpha}(g)\)</span> is the
-auxiliary covariate for <span class="math inline">\(\alpha_0\)</span> and <span class="math inline">\(H_{\beta}(g)\)</span> is the auxiliary covariate
-for <span class="math inline">\(\beta_0\)</span>. Such a TML estimator avoids estimating each of the
-<span class="math inline">\(\psi_{\delta}\)</span> in the grid directly, instead cleverly concatenating their
-auxiliary covariates into those appropriate for <span class="math inline">\(\alpha_0\)</span> and <span class="math inline">\(\beta_0\)</span>. To
-construct a targeted maximum likelihood estimator that directly targets the
-parameters of the working MSM, we may use the <code>tmle_vimshift_msm</code> Spec (instead
-of the <code>tmle_vimshift_delta</code> Spec).</p>
+<p>To do so, consider a TML estimator targeting <span class="math inline">\(\beta_0\)</span> (the parameter of the
+working MSM <span class="math inline">\(m_{\beta}\)</span>), which uses a targeting update step of the form
+<span class="math inline">\(\overline{Q}_{n, \epsilon}(A,W) = \overline{Q}_n(A,W) + \epsilon (H_{\beta_0}(g), H_{\beta_1}(g))\)</span>, for all <span class="math inline">\(\delta\)</span>, where <span class="math inline">\(H_{\beta_0}(g)\)</span> is
+the auxiliary covariate for <span class="math inline">\(\beta_0\)</span> (the intercept) and <span class="math inline">\(H_{\beta}(g)\)</span> is the
+auxiliary covariate for <span class="math inline">\(\beta_1\)</span> (the slope). Note that the forms of these
+auxiliary covariates depend on the EIF <span class="math inline">\(D_{\beta}\)</span>. Such a TML estimator avoids
+estimating each of the <span class="math inline">\(\psi_{\delta}\)</span> in the grid directly, instead cleverly
+concatenating their auxiliary covariates into those appropriate for <span class="math inline">\(\beta_0\)</span>
+and <span class="math inline">\(\beta_1\)</span>. To construct a targeted maximum likelihood estimator that
+directly targets the parameters of the working MSM, we may use the
+<code>tmle_vimshift_msm</code> Spec (instead of the <code>tmle_vimshift_delta</code> Spec).</p>
 <div class="sourceCode" id="cb123"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># initialize a tmle specification</span>
 <span class="va">tmle_msm_spec</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/tmle3shift/reference/tmle_vimshift_msm.html">tmle_vimshift_msm</a></span><span class="op">(</span>
@@ -883,11 +899,10 @@ shifts?</p></li>
 <ol style="list-style-type: decimal">
 <li><p>Describe two (equivalent) ways in which the causal effects of stochastic
 interventions may be interpreted.</p></li>
-<li><p>How does the marginal structural model we used to summarize the trend along
-the sequence of shifts previously help to contextualize the estimated effect
-for a single shift? That is, how does access to estimates across several
-shifts and the marginal structural model parameters allow us to more richly
-interpret our findings?</p></li>
+<li><p>How can the information provided by estimates across several shifts
+<span class="math inline">\(\{ \delta_1, \ldots, \delta_k \}\)</span> and the marginal structural model
+parameter summarizing the trend in <span class="math inline">\(\delta\)</span> be used to enrich the
+interpretation of our findings?</p></li>
 <li><p>What advantages, if any, are there to targeting directly the parameters of a
 marginal structural model?</p></li>
 </ol>
@@ -1001,7 +1016,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on October 20, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on December 22, 2021.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

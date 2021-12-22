@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-10-20
+Updated: 2021-12-22
 
 ## Learning Objectives
 
@@ -25,7 +25,8 @@ Updated: 2021-10-20
 7. Construct "realistic" optimal individualized treatment regimes that respect
    real data and subject-matter knowledge limitations on interventions by
    only considering interventions that are supported by the data.
-8. Measure variable importance as defined in terms of the optimal individualized
+8. Interpret the estimated optimal individualized treatment rule.
+9. Measure variable importance as defined in terms of the optimal individualized
    treatment interventions.
 
 ## Introduction to Optimal Individualized Interventions
@@ -109,7 +110,8 @@ In the following, we provide a brief overview of the methodology with a focus on
 building intuition for the target parameter and its importance --- aided with simulations, 
 data examples and software demonstrations. For more information on the technical aspects
 of the algorithm, further practical advice and overview, the interested reader is invited to 
-additionally consult @vanderLaanLuedtke15, @luedtke2016super, @montoya2021optimal and @montoya2021performance. 
+additionally consult @vanderLaanLuedtke15, @luedtke2016super, @montoya2021optimal and 
+@montoya2021performance. 
 
 ---
 
@@ -123,17 +125,20 @@ $n_A$ denoting the number of categories (possibly only two, for a binary setup).
 Note that we treat $W$ as vector-valued, representing all of our collected
 baseline covariates. Therefore, for a single random individual $i$, we have that
 their observed data is $O_i$: with corresponding baseline covariates $W_i$,
-treatment $A_i$, and final outcome $Y_i$. We say that $O \sim P_0$, or that all
+treatment $A_i$, and final outcome $Y_i$. Let $O^n = \{O_i\}_{i=1}^n$ denote
+$n$ observed samples. Then, we say that $O^n \sim P_0$, or that all
 data was drawn from some true probability distribution $P_0$. Let $\mathcal{M}$
-denote a statistical model, with $P_0 \in \mathcal{M}$. We emphasize that we
-make no assumptions about the distribution of $P_0$, hence $\mathcal{M}$ is a
-fully nonparametric model. As previously mentioned, this means that we make no
-assumptions on the relationship between variables, but might be able to say
-something about the relationship of $A$ and $W$, as is the case of a randomized
-trial. As in previous chapters, we denote $P_n$ as the empirical distribution
+denote a statistical model for the probability distribution of the data that is
+nonparametric, beyond possible knowledge of the treatment mechanism. In words, this 
+means that we make no assumptions on the relationship between variables, but might 
+be able to say something about the relationship of $A$ and $W$, as is the case in 
+a randomized trial. In general, the more we know, or are willing to assume about the
+experiment that produces the data, the smaller the model. The true data generating 
+distribution $P_0$ is part of the statistical model $\mathcal{M}$, and we write 
+$P_0 \in \mathcal{M}$. As in previous chapters, we denote $P_n$ as the empirical distribution
 which gives each observation weight $1/n$.
 
-We use the nonparametric structural equation model (NPSEM) in order to define
+We use the structural equation model (SEM) in order to define
 the process that gives rise to the observed (endogenous) and not observed
 (exogenous) variables, as described by @pearl2009causality. In particular, we
 denote $U=(U_W,U_A,U_Y)$ as the exogenous random variables, drawn from $U \sim P_U$.
@@ -143,13 +148,15 @@ We can define the relationships between variables with the following structural 
   W &= f_W(U_W) \\ A &= f_A(W, U_A) \\ Y &= f_Y(A, W, U_Y),
   (\#eq:npsem-mopttx)
 \end{align}
-where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified functions. Note that
+where the collection $f=(f_W,f_A,f_Y)$ denotes unspecified functions, beyond possible 
+knowledge of the treatment mechanism function, $f_A$. Note that
 in the case of a randomized trial, we can write the above NPSEM as
 \begin{align}
   W &= f_W(U_W) \\ A &= U_A \\ Y &= f_Y(A, W, U_Y),
   (\#eq:npsem-rt-mopttx)
 \end{align}
-indicating no dependence of treatment on baseline covariates.
+where $U_A$ has a known distribution and $U_A$ is independent of $U_W$. We will discuss
+this more in later sections on identifiability.
 
 The likelihood of the data admits a factorization, implied by the time ordering
 of $O$. We denote the true density of $O$ as $p_0$, corresponding to the
@@ -161,11 +168,13 @@ distribution $P_0$ and dominating measure $\mu$.
 \end{equation}
 where $p_{Y,0}(Y|A,W)$ is the conditional density of $Y$ given $(A, W)$ with
 respect to some dominating measure $\mu_Y$, $p_{A,0}$ is the conditional density
-of $A$ given $W$ with respect to dominating measure $\mu_A$, and $p_{W,0}$ is
-the density of $W$ with respect to dominating measure $\mu_W$. Consequently, we
-define $P_{Y,0}(Y \mid A, W) = Q_{Y,0}(Y \mid A,W)$, $P_{A,0}(A \mid W) = g_0(A \mid W)$ and $P_{W,0}(W)=Q_{W,0}(W)$ as the corresponding conditional
+of $A$ given $W$ with respect to a counting measure $\mu_A$, and $p_{W,0}$ is
+the density of $W$ with respect to dominating measure $\mu_W$. In order to 
+match relevant Targeted Learning literature, we also 
+write $P_{Y,0}(Y \mid A, W) = Q_{Y,0}(Y \mid A,W)$, $P_{A,0}(A \mid W) = g_0(A \mid W)$ 
+and $P_{W,0}(W)=Q_{W,0}(W)$ as the corresponding conditional
 distribution of $Y$ given $(A,W)$, treatment mechanism $A$ given $W$, and
-distribution of baseline covariates. For notational simplicity, we also define
+distribution of baseline covariates. For notational simplicity, we additionally define
 $\bar{Q}_{Y,0}(A,W) \equiv \E_0[Y \mid A,W]$ as the conditional expectation of
 $Y$ given $(A,W)$.
 
@@ -174,8 +183,8 @@ individualized rule depends on, where $V \in W$.  Note that $V$ could be all of
 $W$, or an empty set, depending on the subject matter knowledge. In particular,
 a researcher might want to consider known effect modifiers available at the time
 of treatment decision as possible $V$ covariates, or consider dynamic treatment 
-rules based on measurements that can be easily obtained in a clinical setting.
-Defining $V$ as a more restrictive set of baseline covariates lets us consider 
+rules based on measurments that can be easily obtained in a clinical setting.
+Defining $V$ as a more restrictive set of baseline covariates allows us to consider 
 possibly sub-optimal rules that are easier to estimate, and thereby allows for 
 statistical inference for the counterfactual mean outcome under the sub-optimal rule; 
 we will elaborate on this in later sections.
@@ -185,13 +194,12 @@ we will elaborate on this in later sections.
 Consider dynamic treatment rules, denoted as $d$, in the set of all possible rules
 $\mathcal{D}$. Then, in a point treatment setting, $d$ is a deterministic function 
 that takes as input $V$ and outputs a treatment decision where 
-$V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \} \times \{1\}$. 
-We will use dynamic treatment rules, and the corresponding treatment
-decision, to describe an intervention on the treatment mechanism and the
-corresponding outcome under a dynamic treatment rule.
+$V \rightarrow d(V) \in \{a_1, \cdots, a_{n_A} \}$. We will use dynamic treatment rules, 
+and the corresponding treatment decision, to describe an intervention on the 
+treatment mechanism and the corresponding outcome under a dynamic treatment rule.
 
 As mentioned in the previous section, causal effects are defined in terms of
-hypothetical interventions on the NPSEM \@ref(eq:npsem-mopttx). For a given 
+hypothetical interventions on the SEM \@ref(eq:npsem-mopttx). For a given 
 rule $d$, our modified system then takes the following form:
 \begin{align}
   W &= f_W(U_W) \\ A &= d(V) \\ Y_{d(V)} &= f_Y(d(V), W, U_Y),
@@ -200,11 +208,11 @@ rule $d$, our modified system then takes the following form:
 where the dynamic treatment regime may be viewed as an intervention in which $A$
 is set equal to a value based on a hypothetical regime $d(V)$. The couterfactual outcome 
 $Y_{d(V)}$ denotes the outcome for a patient had their treatment been assigned using the 
-dynamic rule $d(V)$, possibly contrary to the fact. Note that the counterfactual 
-outcomes for patients assigned treatment, or given control, are similarly written as 
-$Y_1$ and $Y_0$. Finally, we denote the distribution of the counterfactual outcomes 
+dynamic rule $d(V)$, possibly contrary to the fact. Similarly, the counterfactual 
+outcomes had all patients been assigned treatment ($A=1$), or given control ($A=0$), are 
+written as $Y_1$ and $Y_0$. Finally, we denote the distribution of the counterfactual outcomes 
 as $P_{U,X}$, implied by the distribution of exogenous variables $U$ and structural 
-equations $f$. The set of all possible counterfactual distributions are encompassed
+equations $f$. The set of all possible counterfactual distributions are encompased
 by the causal model $\mathcal{M}^F$, where $P_{U,X} \in \mathcal{M}^F$. 
 
 The goal of any causal analysis motivated by such dynamic interventions is to
@@ -213,27 +221,29 @@ respect to the modified intervention distribution. That is, subject's outcome if
 possibly contrary to the fact, the subject received treatment that would have been 
 assigned by rule $d(V)$. Equivalently, we ask the following causal question: 
 "What is the expected outcome had every subject received treatment according to the 
-(optimal) individualized treatment?" With that in mind, we can consider different 
+(optimal) individualized treatment?" In order to estimate the optimal individualized
+treatment, we set the following optimization problem:
+
+$$d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
+\E_{P_{U,X}}[Y_{d(V)}], $$
+where the optimal individualized rule is the rule with the maximal value. We note that, in case 
+the problem at hand requires minimizing the mean of an outcome, our optimal individualized 
+rule will be the rule with the minimal value instead. 
+
+With that in mind, we can consider different 
 treatment rules, all in the set $\mathcal{D}$:
 
-1. The true rule, $d_0$, and the corresponding causal parameter
-   $\E_{U,X}[Y_{d_0(V)}]$ denoting the expected outcome under the
-   true treatment rule $d_0(V)$.
+1. The true rule, $d_{0,\text{opt}}$, and the corresponding causal parameter
+   $\E_{U,X}[Y_{d_{0,\text{opt}}(V)}]$ denoting the expected outcome under the
+   true optimal treatment rule $d_{0,\text{opt}}(V)$.
 
-2. The estimated rule, $d_n$, and the corresponding causal parameter
-   $\E_{U,X}[Y_{d_n(V)}]$ denoting the expected outcome under the
-   estimated treatment rule $d_n(V)$.
+2. The estimated rule, $d_{n,\text{opt}}$, and the corresponding causal parameter
+   $\E_{U,X}[Y_{d_{n,\text{opt}}(V)}]$ denoting the expected outcome under the
+   estimated optimal treatment rule $d_{n,\text{opt}}(V)$.
 
-In this chapter, we will focus on the value under the estimated rule $d_n$, 
-a __data-adaptive parameter__. Note that its true value depends on the sample!
-
-The optimal individualized rule is the rule with the maximal value:
-$$d_{opt}(V) \equiv \text{argmax}_{d(V) \in \mathcal{D}}
-\E_{P_{U,X}}[Y_{d(V)}]$$.
-
-We note that, in case the problem at hand requires minimizing the mean of an
-outcome, our optimal individualized rule will be the rule with the minimal value
-instead. Our causal target parameter of interest is the expected outcome under
+In this chapter, we will focus on the value under the estimated optimal rule $d_{n,\text{opt}}$, 
+a __data-adaptive parameter__. Note that its true value depends on the sample! Finally, 
+our causal target parameter of interest is the expected outcome under
 the estimated optimal individualized rule:
 
 $$\Psi_{d_{n, \text{opt}}(V)}(P_{U,X}) \coloneqq \E_{P_{U,X}}[Y_{d_{n,
@@ -245,27 +255,31 @@ The optimal individualized rule, as well as the value of an optimal
 individualized rule, are causal parameters based on the unobserved
 counterfactuals. In order for the causal quantities to be estimated from the
 observed data, they need to be identified with statistical parameters. This step
-of the roadmap requires me make a few assumptions:
+of the roadmap requires we make a few assumptions:
 
-1. _Strong ignorability_: $A \indep  Y^{d_n(v)} \mid W$, for all $a \in \mathcal{A}$.
-2. _Positivity (or overlap)_: $P_0(\min_{a \in \mathcal{A}} g_0(a \mid W) > 0) = 1$
+1. _Strong ignorability_: $A \indep  Y^{d_{n, \text{opt}}(v)} \mid W$, for all $a \in
+   \mathcal{A}$.
+2. _Positivity (or overlap)_: $P_0(\min_{a \in \mathcal{A}} g_0(a \mid W) > 0)
+   = 1$
 
-Under the above causal assumptions, we can identify the causal target parameter 
+Under the above assumptions, we can identify the causal target parameter 
 with observed data using the G-computation formula. The value of an individualized 
 rule can now be expressed as
 
-$$\E_0[Y_{d_n(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_n(V),W)],$$
+$$\E_0[Y_{d_{n, \text{opt}}(V)}] = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n, \text{opt}}(V),W)],$$
 
-which, under causal assumptions, is interpreted as the mean outcome if
-(possibly contrary to fact), treatment was assigned according to the rule.
+which, under assumptions, is interpreted as the mean outcome if
+(possibly contrary to fact), treatment was assigned according to the optimal rule.
 Finally, the statistical counterpart to the causal parameter of interest is
 defined as
 
 $$\psi_0 = \E_{0,W}[\bar{Q}_{Y,0}(A=d_{n,\text{opt}}(V),W)].$$
 
 Inference for the optimal value has been shown to be difficult at exceptional
-laws, defined as probability distributions for which treatment is neither
-beneficial nor harmful. Inference is similarly difficult in finite samples if
+laws, defined as probability distributions for which there is a positive
+probability on a set of $W$ values for which conditional expectation of $Y$
+given $A$ and $W$ is constant in $a$ - so all treatments are equally 
+benefitial. Inference is similarly difficult in finite samples if
 the treatment effect is very small in all strata, even though valid asymptotic
 estimators exist in this setting. With that in mind, we address the estimation
 problem under the assumption of non-exceptional laws in effect.
@@ -282,7 +296,7 @@ We follow the methodology outlined in @luedtke2016super and
 [@vdl2007super], and estimate its value with cross-validated Targeted Minimum
 Loss-based Estimation (CV-TMLE) [@cvtmle2010]. In great generality, we first
 need to estimate the true individual treatment regime, $d_0(V)$, which
-corresponds to dynamic treatment rule ($d(V)$) that takes a subset of covariates
+corresponds to dynamic treatment rule that takes a subset of covariates
 $V$ and assigns treatment to each individual based on their observed
 covariates $v$. With the estimate of the true optimal ITR in hand, we can
 estimate its corresponding value.
@@ -300,19 +314,21 @@ $$\bar{Q}_0(V) \equiv \E_0[Y_1-Y_0 \mid V] \equiv \E_0[\bar{Q}_{Y,0}(1,W) -
 \bar{Q}_{Y,0}(0,W) \mid V],$$
 or the average treatment effect within a stratum of $V$. The note that the
 optimal individualized rule can now be derived as $d_{n,\text{opt}}(V) =
-\mathbb{I}(\bar{Q}_{0}(V) > 0)$.
+\mathbb{I}(\bar{Q}_{n}(V) > 0)$.
 
 The package `tmle3mopttx` relies on using the Super Learner to estimate the blip
 function. With that in mind, the loss function utilized for learning the optimal 
 individualized rule corresponds to conditional mean type losses. It is however worth 
-mentioning that @luedtke2016super present three different approaches for learning the 
-optimal rule. Namely, they focus on:
+mentioning that @luedtke2016super present three different approaches for learning the optimal
+rule. Namely, they focus on:
 
-1. Super Learning the Blip Function,
+1. Super Learner of the blip function using the squared error loss,
 
-2. Super Learning the Weighted Classification Problem,
+2. Super Learner of $d_0$ using the weighted classification loss function,
 
-3. Joint Super Learner of the Blip and Weighted Classification Problem.
+3. Super Learner of $d_0$ that uses a library of candidate estimators that are
+implied by estimators of the blip as well as estimators that directly go for
+$d_0$ through weighted classification.
 
 A benefit of relying on the blip function, as implemented in `tmle3mopttx`, is that
 one can look at the distribution of the predicted outcomes of the blip for a given 
@@ -335,7 +351,7 @@ value of the ITR:
 
 Note that under the randomization and positivity assumptions we have that
 $\E[D_{\bar{Q}_Y,g,a}(O) \mid V] = \E[Y_a \mid V]$. We emphasize the double
-robust nature of the A-IPW transform-consistency of $\E[Y_a \mid V]$ will depend
+robust nature of the A-IPW transform --- consistency of $\E[Y_a \mid V]$ will depend
 on correct estimation of either $\bar{Q}_{Y,0}(A,W)$ or $g_0(A \mid W)$. As
 such, in a randomized trial, we are guaranteed a consistent estimate of $\E[Y_a \mid V]$ 
 even if we get $\bar{Q}_{Y,0}(A,W)$ wrong! An alternative to the double-robust pseudo-outcome
@@ -345,7 +361,8 @@ an estimate of the blip function, $\bar{Q}_{Y,n}(A=1,W) - \bar{Q}_{Y,n}(A=0,W)$,
 relies on doing a good job on estimating $\bar{Q}_{Y,0}(A,W)$. 
 
 Using the double-robust pseudo-outcome, we can define the following contrast:
-$D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O).$
+$$D_{\bar{Q}_Y,g}(O) = D_{\bar{Q}_Y, g, a=1}(O) - D_{\bar{Q}_Y, g, a=0}(O).$$
+
 
 We estimate the blip function, $\bar{Q}_{0,a}(V)$, by regressing
 $D_{\bar{Q}_Y,g}(O)$ on $V$ using the specified `sl3` library of learners and an
@@ -353,6 +370,7 @@ appropriate loss function. Finally, we are ready for the final steps.
 
 3. Our estimated rule corresponds to $\text{argmax}_{a \in \mathcal{A}}
    \bar{Q}_{0,a}(V)$.
+   
 4. We obtain inference for the mean outcome under the estimated optimal rule
    using CV-TMLE.
 
@@ -371,22 +389,22 @@ We implement three different pseudo-blips in `tmle3mopttx`.
 1. _Blip1_ corresponds to choosing a reference category of treatment, and
    defining the blip for all other categories relative to the specified
    reference. Hence we have that:
-   $$\bar{Q}_{0,a}^{pblip-ref}(V) \equiv \E_0(Y_a-Y_0 \mid V)$$ where $Y_0$ is
+   $$\bar{Q}_{0,a}^{pblip-ref}(V) \equiv \E_0[Y_a-Y_0 \mid V]$$ where $Y_0$ is
    the specified reference category with $A=0$. Note that, for the case of
    binary treatment, this strategy reduces to the approach described for the
    binary setup.
 
 2. _Blip2_ approach corresponds to defining the blip relative to the average of
    all categories. As such, we can define $\bar{Q}_{0,a}^{pblip-avg}(V)$ as:
-   $$\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-     \mathcal{A}} Y_a \mid V).$$
+   $$\bar{Q}_{0,a}^{pblip-avg}(V) \equiv \E_0 [Y_a - \frac{1}{n_A} \sum_{a \in
+     \mathcal{A}} Y_a \mid V].$$
    In the case where subject-matter knowledge regarding which reference category
    to use is not available, blip2 might be a viable option.
 
 3. _Blip3_ reflects an extension of Blip2, where the average is now a weighted
    average:
-   $$\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0(Y_a - \frac{1}{n_A} \sum_{a \in
-     \mathcal{A}} Y_{a} P(A=a \mid V) \mid V).$$
+   $$\bar{Q}_{0,a}^{pblip-wavg}(V) \equiv \E_0 [ Y_a - \frac{1}{n_A} \sum_{a \in
+     \mathcal{A}} Y_{a} P(A=a \mid V) \mid V ].$$
 
 Just like in the binary case, pseudo-blips are estimated by regressing contrasts
 composed using the A-IPW transform on $V$.
@@ -444,6 +462,8 @@ library(data.table)
 library(sl3)
 library(tmle3)
 library(tmle3mopttx)
+library(devtools)
+
 set.seed(111)
 ```
 
@@ -471,7 +491,7 @@ truth is $\psi=0.578$ for this data generating distribution.
 To formally express this fact using the `tlverse` grammar introduced by the
 `tmle3` package, we create a single data object and specify the functional
 relationships between the nodes in the _directed acyclic graph_ (DAG) via
-_nonparametric structural equation models_ (NPSEMs), reflected in the node list
+_structural equation models_ (SEMs), reflected in the node list
 that we set up:
 
 
@@ -495,11 +515,15 @@ we rely on the facilities provided in the [`sl3` R
 package](https://tlverse.org/sl3). Using the framework provided by the [`sl3`
 package](https://tlverse.org/sl3), the nuisance parameters of the TML estimator
 may be fit with ensemble learning, using the cross-validation framework of the
-Super Learner algorithm of @vdl2007super.
+Super Learner algorithm of @vdl2007super. 
 
 
 ```r
 # Define sl3 library and metalearners:
+lrn_xgboost_50 <- Lrnr_xgboost$new(nrounds = 50)
+lrn_xgboost_100 <- Lrnr_xgboost$new(nrounds = 100)
+lrn_xgboost_500 <- Lrnr_xgboost$new(nrounds = 500)
+
 lrn_mean <- Lrnr_mean$new()
 lrn_glm <- Lrnr_glm_fast$new()
 lrn_lasso <- Lrnr_glmnet$new()
@@ -537,7 +561,7 @@ learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner)
 The `learner_list` object above specifies the role that each of the ensemble
 learners we've generated is to play in computing initial estimators. Recall that
 we need initial estimators of relevant parts of the likelihood in order to
-building a TMLE for the parameter of interest. In particular, `learner_list`
+build a TMLE for the parameter of interest. In particular, `learner_list`
 makes explicit the fact that our `Y` is used in fitting the outcome regression,
 while `A` is used in fitting the treatment mechanism regression, and finally `B`
 is used in fitting the blip function.
@@ -548,13 +572,13 @@ To start, we will initialize a specification for the TMLE of our parameter of
 interest simply by calling `tmle3_mopttx_blip_revere`. We specify the argument
 `V = c("W1", "W2", "W3")` when initializing the `tmle3_Spec` object in order to
 communicate that we're interested in learning a rule dependent on `V`
-covariates. Note that we don't have to specify `V`- this will result in a rule
+covariates. Note that we don't have to specify `V` --- this will result in a rule
 that is not based on any collected covariates; we will see an example like this 
 shortly. We also need to specify the type
 of (pseudo) blip we will use in this estimation problem, the list of learners used
 to estimate the blip function, whether we want to maximize or minimize the final
 outcome, and few other more advanced features including searching for a less
-complex rule and realistic interventions.
+complex rule, realistic interventions and possible resource constraints.
 
 
 ```r
@@ -606,12 +630,12 @@ A tmle3_Fit that took 1 step(s)
 1:           0.50279           0.60463
 ```
 
-By studying the output generated, we can see that the confidence interval covers the 
-true parameter, as expected!
+By studying the output generated, we can see that the confidence interval covers the
+true parameter, as expected. 
 
 #### Resource constraint
 
-As mentioned, we can restrict the number of individuals that get the treatment by only
+We can restrict the number of individuals that get the treatment by only
 treating $k$ percent of samples. With that, only patients with the biggest benefit (according
 to the estimated blip) receive treatment. In order to impose a 
 resource constraint, we only have to specify the percent of individuals that can
@@ -662,7 +686,8 @@ table(tmle_spec_resource$return_rule)
 
 #### Empty V
 
-Below we the show an example where $V$ is not specified.
+Below we the show an example where $V$ is not specified, under the 
+resource constraint. 
 
 
 ```r
@@ -697,14 +722,14 @@ as how we construct our learners.
 
 ### Simulated Data
 
-First, we load the simulated data. Here, our data generating distribution was
+First, we load the simulated data. Our data generating distribution is
 of the following form:
 \begin{align*}
   W &\sim \mathcal{N}(\bf{0},I_{4 \times 4})\\
   \P(A=a \mid W) &= \frac{1}{1+\exp^{(-0.8*W_1)}}\\
-  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) -
-    3I(A=2)(2W_1+0.5) +
-    3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1)
+  \P(Y=1 \mid A,W) = 0.5\text{logit}^{-1}[15I(A=1)(W_1-0.5) - \\
+    3I(A=2)(2W_1+0.5) + \\
+    3I(A=3)(3W_1-0.5)] +\text{logit}^{-1}(W_2W_1) \\
 \end{align*}
 
 We can just load the data available as part of the package as follows:
@@ -715,7 +740,7 @@ data("data_cat_realistic")
 ```
 
 The above composes our observed data structure $O = (W, A, Y)$. Note that the
-truth is now $\psi=0.658$, which is the quantity we aim to estimate.
+truth is now $\psi_0=0.658$, which is the quantity we aim to estimate.
 
 
 ```r
@@ -744,7 +769,8 @@ table(data$A)
 **QUESTION:** With categorical treatment, what is the dimension of the blip now?
 What is the dimension for the current example? How would we go about estimating it?
 
-We'll now create new ensemble learners using the `sl3` learners initialized previously:
+We will now create new ensemble learners using the
+`sl3` learners initialized previously:
 
 
 ```r
@@ -777,7 +803,7 @@ b_learner <- create_mv_learners(learners = learners)
 As seen above, we generate three different ensemble learners that must be fit,
 corresponding to the learners for the outcome regression, propensity score, and
 the blip function. Note that we need to estimate $g_0(A \mid W)$ for a
-categorical $A$ -- therefore, we use the multinomial Super Learner option
+categorical $A$ --- therefore, we use the multinomial Super Learner option
 available within the `sl3` package with learners that can address multi-class
 classification problems. In order to see which learners can be used to estimate
 $g_0(A \mid W)$ in `sl3`, we run the following:
@@ -800,12 +826,12 @@ sl3_list_learners(c("categorical"))
 [23] "Lrnr_svm"                  "Lrnr_xgboost"             
 ```
 
-Note that since the corresponding blip will be vector valued, we will have a
+Since the corresponding blip will be vector valued, we will have a
 column for each additional level of treatment. As such, we need to create
 multivariate learners with the helper function `create_mv_learners` that takes a
 list of initialized learners as input.
 
-We make the above explicit with respect to standard notation by bundling the
+We make the above explicit with respect to the standard notation by bundling the
 ensemble learners into a list object below:
 
 
@@ -844,7 +870,7 @@ table(tmle_spec_cat$return_rule)
 250 432 318 
 ```
 
-We can see that the confidence interval covers the truth!
+We can see that the confidence interval covers the truth.
 
 **NOTICE the distribution of the assigned treatment! We will need this shortly.**
 
@@ -862,13 +888,13 @@ global positivity restraints, are not realistic to implement.
 
 In order to not only consider the most ambitious fully $V$-optimal rule, we
 define $S$-optimal rules as the optimal rule that considers all possible subsets
-of $V$ covariates, with card($S$) $\leq$ card($V$) and $\emptyset \in S$. This
-allows us to consider sub-optimal rules that are easier to estimate and
-potentially provide more realistic rules --- as such, we allow for statistical
-inference for the counterfactual mean outcome under the sub-optimal rule. 
-Here we also consider static rules, which assign treatment and control to all.
-Within the `tmle3mopttx` paradigm, we just need to change the `complex`
-parameter to `FALSE`:
+of $V$ covariates, with card($S$) $\leq$ card($V$) and $\emptyset \in S$. In 
+particular, this allows us to define a Super Learner for $d_0$ that includes
+a range of estimators from very simple (e.g., statis rules) to more complex 
+(e.g. full $V$), and let the discrete Super Learner select a simple rule when 
+appropriate. This allows us to consider sub-optimal rules that are easier to estimate and
+potentially provide more realistic rules. Within the `tmle3mopttx` paradigm, we just need 
+to change the `complex` parameter to `FALSE`:
 
 
 ```r
@@ -944,7 +970,7 @@ we had under the "non-realistic"" rule?
 ### Missingness and `tmle3mopttx`
 
 In this section, we present how to use the `tmle3mopttx` package when the data is subject 
-to missingness. Let's start by add some missingness to our outcome.
+to missingness in $Y$. Let's start by add some missingness to our outcome, first.
 
 
 ```r
@@ -959,8 +985,8 @@ summary(data_missing$Y)
   0.000   0.000   0.000   0.464   1.000   1.000     100 
 ```
 
-To start, we must first add to our library learners to estimate the missigness
-process.
+To start, we must first add to our library --- we now also need to estimate the 
+missigness process as well. 
 
 
 ```r
@@ -974,14 +1000,14 @@ learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner, delta_Y=delta_
 ```
 
 The `learner_list` object above specifies the role that each of the ensemble
-learners we've generated is to play in computing initial estimators to be used
-in building a TMLE for the parameter of interest. In particular, it makes
-explicit the fact that our `Y` is used in fitting the outcome regression
-while our `A` is used in fitting our treatment mechanism regression, 
-`B` is used in fitting the blip function, and `delta_Y` fits the missing outcome process.
+learners we've generated is to play in computing the initial estimators needed
+for building the TMLE for the parameter of interest. In particular, it makes
+explicit the fact that `Y` is used in fitting the outcome regression
+while `A` is used in fitting our treatment mechanism regression, 
+`B` for fitting the blip function, and `delta_Y` fits the missing outcome process.
 
-Now, with the additional estimation step associated with missingness added, we can proceed 
-as usual. 
+Now, with the additional estimation step associated with missingness added, we can 
+proceed as usual. 
 
 
 ```r
@@ -1046,9 +1072,9 @@ maximizes (or minimizes) the population mean outcome the most under an optimal
 individualized treatment out of all other considered covariates under optimal
 assignment might be considered _more important_ for the outcome. To put it in
 context, perhaps optimal allocation of treatment 1, denoted $A_1$, results in a
-larger mean outcome than optimal allocation of another treatment ($A_2$).
+larger mean outcome than optimal allocation of another treatment 2, denoted $A_2$.
 Therefore, we would label $A_1$ as having a higher variable importance with
-regard to maximizing (minimizing) the mean outcome under the optimal
+regard to maximizing (or minimizing) the mean outcome under the optimal
 individualized treatment.
 
 ### Simulated Data
@@ -1068,7 +1094,7 @@ node_list <- list(
 )
 ```
 
-Note that our node list now includes $W_1$ as treatments as well! Don't worry,
+Our node list now includes $W_1$ as treatments as well! Don't worry,
 we will still properly adjust for all baseline covariates.
 
 ### Variable Importance using Targeted Estimation of the value of the ITR
@@ -1128,6 +1154,15 @@ vim_results <- tmle3_vim(tmle_spec_vim, data, node_list, learner_list,
 )
 
 print(vim_results)
+   type                param    init_est  tmle_est       se      lower
+1:  ATE E[Y_{A=NULL}] - E[Y]  0.00066272  0.040712 0.016866  0.0076547
+2:  ATE E[Y_{A=NULL}] - E[Y] -0.01042913 -0.039754 0.022095 -0.0830588
+       upper psi_transformed lower_transformed upper_transformed  A           W
+1: 0.0737684        0.040712         0.0076547         0.0737684  A W3,W4,W2,W1
+2: 0.0035505       -0.039754        -0.0830588         0.0035505 W1  W3,W4,W2,A
+    Z_stat      p_nz p_nz_corrected
+1:  2.4138 0.0078932       0.015786
+2: -1.7993 0.0359882       0.035988
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list
