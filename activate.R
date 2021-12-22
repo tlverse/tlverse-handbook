@@ -18,7 +18,7 @@
 
 
   <link crossorigin="anonymous" media="all" integrity="sha512-73MN8RaWLT6hOrTrxNJOEI8Pb0ArN01fXatO0tqm/qXy73XBb0FG3f8jd0NfztcQGoLTDF6Pl6AxpbnDvgwAiA==" rel="stylesheet" href="https://github.githubassets.com/assets/dark_dimmed-ef730df116962d3ea13ab4ebc4d24e10.css" /><link data-color-theme="light" crossorigin="anonymous" media="all" integrity="sha512-E9wnWjoxQmh5A1jiWVYDPKOvA8VPf0iKQYoc+9ycMJvtAi9gOSlaUci+W2smxFIlWkV8hkX+O27S8NIB59iIDw==" rel="stylesheet" data-href="https://github.githubassets.com/assets/light-13dc275a3a314268790358e25956033c.css" /><link data-color-theme="dark" crossorigin="anonymous" media="all" integrity="sha512-nYSv3KrFhMlGUpjkFQBLMEN6HvHhijcoubQLjV3DWlcABEi2yDYf6KGUjRubJ5R+dJnKXR7jA4wu5Dg200SApA==" rel="stylesheet" data-href="https://github.githubassets.com/assets/dark-9d84afdcaac584c9465298e415004b30.css" /><link data-color-theme="dark_high_contrast" crossorigin="anonymous" media="all" integrity="sha512-bOhGZNmild3wSbSBnXK4FdlotedKfGpLBrn2ws0dSVZZaZmQcYoGvkvl1M6L82kHTBkHjonl5pIpbQ9Q066xCw==" rel="stylesheet" data-href="https://github.githubassets.com/assets/dark_high_contrast-6ce84664d9a295ddf049b4819d72b815.css" /><link data-color-theme="dark_colorblind" crossorigin="anonymous" media="all" integrity="sha512-AwOAfDuSE0kUy1kcP+UA/Gj0G3V2UahdhGF/3XKhrgH+rX5j33z3/p8INmxmpC1TF1XDDPjwJAmvCECOdgDCNw==" rel="stylesheet" data-href="https://github.githubassets.com/assets/dark_colorblind-0303807c3b92134914cb591c3fe500fc.css" /><link data-color-theme="light_colorblind" crossorigin="anonymous" media="all" integrity="sha512-MTr0RUpwD911150L11H/RfSf+jCC9M4JQt6f3rFBXTMZZop9I/2FqEUXDYYBLnTqXTel4Ost6mblHDW5IK7Q5Q==" rel="stylesheet" data-href="https://github.githubassets.com/assets/light_colorblind-313af4454a700fdd75d79d0bd751ff45.css" /><link data-color-theme="light_high_contrast" crossorigin="anonymous" media="all" integrity="sha512-YtCQQI4gi5fOKm9+JR5jGw5IqvUk4NlWG6r0YRx3SGXtNYMNuVXlTT3X1HZczk1u9vhCYsMevrnz5FfY2lZyWg==" rel="stylesheet" data-href="https://github.githubassets.com/assets/light_high_contrast-62d090408e208b97ce2a6f7e251e631b.css" />
-  <link crossorigin="anonymous" media="all" integrity="sha512-zw7LEKJYRly65tkoCHN9EKkBSW87oNvS/W1iwFRH5uw6orvEHdej1Pom9Hx20gdv+RhaXzHW/3h0QjuAlkhynQ==" rel="stylesheet" href="https://github.githubassets.com/assets/frameworks-cf0ecb10a258465cbae6d92808737d10.css" />
+  <link crossorigin="anonymous" media="all" integrity="sha512-9zrWSpYa1fCUjd7sp69W4WevcK+3A1NLQm7FXS2UwSbKvGtF1yzyxC4UgY03jg3TgO+ZXxuvSOQukQdYvpVULw==" rel="stylesheet" href="https://github.githubassets.com/assets/frameworks-f73ad64a961ad5f0948ddeeca7af56e1.css" />
   <link crossorigin="anonymous" media="all" integrity="sha512-3UPEO6tpXvbFw23ugE4YF8phTQsG9oq8uDCXLoSq+OurPsH67A8KDMQjHdrbq7C+afONNyrU+Pl71+ATEOlqUQ==" rel="stylesheet" href="https://github.githubassets.com/assets/behaviors-dd43c43bab695ef6c5c36dee804e1817.css" />
   <link crossorigin="anonymous" media="all" integrity="sha512-MCJFYfbQoT4EXC6aWx5Wghs8FC/jslHEeN2iWXphliccmede2dQlhIBTAUCBq9Yu5poltu4askungzvyCsycGg==" rel="stylesheet" href="https://github.githubassets.com/assets/tab-size-fix-30224561f6d0a13e045c2e9a5b1e5682.css" />
   
@@ -104,14 +104,14 @@
 
   <meta name="viewport" content="width=device-width">
   
-  <title>tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook</title>
-    <meta name="description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook">
+  <title>tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook</title>
+    <meta name="description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook">
     <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="GitHub">
   <link rel="fluid-icon" href="https://github.com/fluidicon.png" title="GitHub">
   <meta property="fb:app_id" content="1401488693436528">
   <meta name="apple-itunes-app" content="app-id=1477376905" />
-    <meta name="twitter:image:src" content="https://opengraph.githubassets.com/5294f92d4703573796492831b4387427118744f2647a19cb48dbb818050e34c4/tlverse/tlverse-handbook" /><meta name="twitter:site" content="@github" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta name="twitter:description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" />
-    <meta property="og:image" content="https://opengraph.githubassets.com/5294f92d4703573796492831b4387427118744f2647a19cb48dbb818050e34c4/tlverse/tlverse-handbook" /><meta property="og:image:alt" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="600" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta property="og:url" content="https://github.com/tlverse/tlverse-handbook" /><meta property="og:description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/05-origami.Rmd at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" />
+    <meta name="twitter:image:src" content="https://opengraph.githubassets.com/5294f92d4703573796492831b4387427118744f2647a19cb48dbb818050e34c4/tlverse/tlverse-handbook" /><meta name="twitter:site" content="@github" /><meta name="twitter:card" content="summary_large_image" /><meta name="twitter:title" content="tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta name="twitter:description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" />
+    <meta property="og:image" content="https://opengraph.githubassets.com/5294f92d4703573796492831b4387427118744f2647a19cb48dbb818050e34c4/tlverse/tlverse-handbook" /><meta property="og:image:alt" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta property="og:image:width" content="1200" /><meta property="og:image:height" content="600" /><meta property="og:site_name" content="GitHub" /><meta property="og:type" content="object" /><meta property="og:title" content="tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" /><meta property="og:url" content="https://github.com/tlverse/tlverse-handbook" /><meta property="og:description" content=" 🎯 :closed_book: Targeted Learning in R: A Causal Data Science Handbook - tlverse-handbook/activate.R at f1e0a164992cb9bbd8478dfe86a332f6eb554b9b · tlverse/tlverse-handbook" />
     
 
 
@@ -119,11 +119,11 @@
     
 
   <link rel="assets" href="https://github.githubassets.com/">
-    <link rel="shared-web-socket" href="wss://alive.github.com/_sockets/u/8527276/ws?session=eyJ2IjoiVjMiLCJ1Ijo4NTI3Mjc2LCJzIjo3Mzc4NzY2MjEsImMiOjYyMzExNjkzMywidCI6MTY0MDEyNTA1MH0=--51dc0a4498e3001937c0fad53ea2b09b8e21f56c07699d0c01c8f4fe768f5ba5" data-refresh-url="/_alive" data-session-id="8e72adf144873d866972282d8d0dec9fb052cc182d81825ea425b1f98c107e95">
+    <link rel="shared-web-socket" href="wss://alive.github.com/_sockets/u/8527276/ws?session=eyJ2IjoiVjMiLCJ1Ijo4NTI3Mjc2LCJzIjo3Mzc4NzY2MjEsImMiOjIxNjkxOTIzMzUsInQiOjE2NDAxMjQzMzh9--43a3e4f49dc86ca6f9ff06f71f117080eaae627499edda417d44d2a2d7a5a650" data-refresh-url="/_alive" data-session-id="8e72adf144873d866972282d8d0dec9fb052cc182d81825ea425b1f98c107e95">
     <link rel="shared-web-socket-src" href="/assets-cdn/worker/socket-worker-9c817d86.js">
   <link rel="sudo-modal" href="/sessions/sudo_modal">
 
-  <meta name="request-id" content="AD9E:1277:19AE18:1EDD5B:61C25275" data-pjax-transient="true" /><meta name="html-safe-nonce" content="94b313273513e9ad247bf823896b8bac406e6a7c25c7c73e27cdfeb095213fec" data-pjax-transient="true" /><meta name="visitor-payload" content="eyJyZWZlcnJlciI6Imh0dHBzOi8vZ2l0aHViLmNvbS90bHZlcnNlL3RsdmVyc2UtaGFuZGJvb2svdHJlZS9mMWUwYTE2NDk5MmNiOWJiZDg0NzhkZmU4NmEzMzJmNmViNTU0YjliIiwicmVxdWVzdF9pZCI6IkFEOUU6MTI3NzoxOUFFMTg6MUVERDVCOjYxQzI1Mjc1IiwidmlzaXRvcl9pZCI6IjQxMzYxNDgxNDcyODE0MjQzNTkiLCJyZWdpb25fZWRnZSI6InNlYSIsInJlZ2lvbl9yZW5kZXIiOiJpYWQifQ==" data-pjax-transient="true" /><meta name="visitor-hmac" content="befaec376a932c49697283389ccaac37f11700226bef211400e8db905db7cfa4" data-pjax-transient="true" />
+  <meta name="request-id" content="AD9E:1277:18E613:1DEEF8:61C24F9E" data-pjax-transient="true" /><meta name="html-safe-nonce" content="94b313273513e9ad247bf823896b8bac406e6a7c25c7c73e27cdfeb095213fec" data-pjax-transient="true" /><meta name="visitor-payload" content="eyJyZWZlcnJlciI6Imh0dHBzOi8vZ2l0aHViLmNvbS90bHZlcnNlL3RsdmVyc2UtaGFuZGJvb2svdHJlZS9mMWUwYTE2NDk5MmNiOWJiZDg0NzhkZmU4NmEzMzJmNmViNTU0YjliL3JlbnYiLCJyZXF1ZXN0X2lkIjoiQUQ5RToxMjc3OjE4RTYxMzoxREVFRjg6NjFDMjRGOUUiLCJ2aXNpdG9yX2lkIjoiNDEzNjE0ODE0NzI4MTQyNDM1OSIsInJlZ2lvbl9lZGdlIjoic2VhIiwicmVnaW9uX3JlbmRlciI6ImlhZCJ9" data-pjax-transient="true" /><meta name="visitor-hmac" content="20ee1e311893d1f501b138899d798f49047adef3fbbdfaac97e54480e27c9509" data-pjax-transient="true" />
 
     <meta name="hovercard-subject-tag" content="repository:177248885" data-pjax-transient>
 
@@ -162,16 +162,16 @@
 
       <meta name="expected-hostname" content="github.com">
 
-      <meta name="js-proxy-site-detection-payload" content="ZWMwZDJjYTdhYzkzZmFkYTQ5NTEyZjc0YmZiMjZkZjc2MzM5Nzg0ZjA3ZDU2YTg5MjEwZjlmOWM2Y2E3ZTFiNXx7InJlbW90ZV9hZGRyZXNzIjoiMjQuNC4xMTAuMTkiLCJyZXF1ZXN0X2lkIjoiQUQ5RToxMjc3OjE5QUUxODoxRURENUI6NjFDMjUyNzUiLCJ0aW1lc3RhbXAiOjE2NDAxMjUwNTAsImhvc3QiOiJnaXRodWIuY29tIn0=">
+      <meta name="js-proxy-site-detection-payload" content="ZGE4Njk1YTdiNTgxYjExMTNiOWYyNTg3ODdlN2U0NDM0ZTNhZDA2OGRiYjFmMTViZjkwZTU4MzcwNTY3YjBlN3x7InJlbW90ZV9hZGRyZXNzIjoiMjQuNC4xMTAuMTkiLCJyZXF1ZXN0X2lkIjoiQUQ5RToxMjc3OjE4RTYxMzoxREVFRjg6NjFDMjRGOUUiLCJ0aW1lc3RhbXAiOjE2NDAxMjQzMzgsImhvc3QiOiJnaXRodWIuY29tIn0=">
       <meta name="keyboard-shortcuts-preference" content="all">
       <script type="application/json" id="memex_keyboard_shortcuts_preference">"all"</script>
 
     <meta name="enabled-features" content="ACTIONS_CALLABLE_WORKFLOWS,MARKETPLACE_PENDING_INSTALLATIONS,LINKIFY_SELECTED_TEXT_ON_URL_PASTE,PRESENCE_IDLE">
 
 
-  <meta http-equiv="x-pjax-version" content="2a0ed398d891434ebc5cd37a121dd8663578609e0ecf0d1b542fb263bb3ef861">
+  <meta http-equiv="x-pjax-version" content="2f7046cc8bda72695d6e50b07e8f1e83fa6aaf9837a7987a96b0ca1576a49611">
   <meta http-equiv="x-pjax-csp-version" content="9ea82e8060ac9d44365bfa193918b70ed58abd9413362ba412abb161b3a8d1b6">
-  <meta http-equiv="x-pjax-css-version" content="8c06702a824b73d05c6dcbe160dc26951e0c3af9f2b6bd2c34681db7ef946a74">
+  <meta http-equiv="x-pjax-css-version" content="9fbf437a52ab7cdc295ea0421af01bfda0a43524b6b6f453f831a24b53f452ed">
   <meta http-equiv="x-pjax-js-version" content="996e21374117f01b7df2c1f75047cbdb09449e0572a60b7722454a61ba4735f6">
   
 
@@ -182,7 +182,7 @@
 
 
 
-    <link rel="canonical" href="https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd" data-pjax-transient>
+    <link rel="canonical" href="https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R" data-pjax-transient>
 
 
   <meta name="browser-stats-url" content="https://api.github.com/_private/browser/stats">
@@ -223,7 +223,7 @@
   href="https://github.com/"
   data-hotkey="g d"
   aria-label="Homepage "
-  data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="1c12cfd34a9d6eca6b8550f04ee96cfe54bedc55cd5571a5b1e50a5cd474acf6" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;}"
+  data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="7c585145e54706510ecdf8d8e1aa39fda055313208731ea358837062834a318e" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;}"
 >
   <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" class="octicon octicon-mark-github v-align-middle">
     <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
@@ -267,7 +267,7 @@
           spellcheck="false"
           autocomplete="off"
         >
-        <input type="hidden" value="3pjDlnQi05GRCmw18KXcPsw8S4o0dS52rTZyjt00O0xuVB0I/3LD6tR6QvaRvCrUa9s9BzDoVWzgU9Ns0dof+Q==" data-csrf="true" class="js-data-jump-to-suggestions-path-csrf" />
+        <input type="hidden" value="akmaKroJDlJEl887CvW/MRrnbuxXZgJwp//6+ewdL8PahUS0MVkeKQHn4fhr7EnbvQAYYVP7eWrqmlsb4PMLdg==" data-csrf="true" class="js-data-jump-to-suggestions-path-csrf" />
         <input type="hidden" class="js-site-search-type-field" name="type" >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" aria-hidden="true" class="mr-1 header-search-key-slash"><path fill="none" stroke="#979A9C" opacity=".4" d="M3.5.5h12c1.7 0 3 1.3 3 3v13c0 1.7-1.3 3-3 3h-12c-1.7 0-3-1.3-3-3v-13c0-1.7 1.3-3 3-3z"></path><path fill="#979A9C" d="M11.8 6L8 15.1h-.9L10.8 6h1z"></path></svg>
 
@@ -471,7 +471,7 @@
     <a class="js-selected-navigation-item Header-link d-block d-md-none py-2 py-md-3 border-top border-md-top-0 border-white-fade" data-ga-click="Header, click, Nav menu - item:workspaces context:user" data-selected-links="/codespaces /codespaces" href="/codespaces">
       Codespaces
 </a>
-      <a class="js-selected-navigation-item Header-link d-block d-md-none py-2 py-md-3 border-top border-md-top-0 border-white-fade" data-ga-click="Header, click, Nav menu - item:Sponsors" data-hydro-click="{&quot;event_type&quot;:&quot;sponsors.button_click&quot;,&quot;payload&quot;:{&quot;button&quot;:&quot;HEADER_SPONSORS_DASHBOARD&quot;,&quot;sponsorable_login&quot;:&quot;nhejazi&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="a649b8ceabc76da6be0e2a5d9031d2a1135336063484d13cb1185b8dada67381" data-selected-links=" /sponsors/accounts" href="/sponsors/accounts">Sponsors</a>
+      <a class="js-selected-navigation-item Header-link d-block d-md-none py-2 py-md-3 border-top border-md-top-0 border-white-fade" data-ga-click="Header, click, Nav menu - item:Sponsors" data-hydro-click="{&quot;event_type&quot;:&quot;sponsors.button_click&quot;,&quot;payload&quot;:{&quot;button&quot;:&quot;HEADER_SPONSORS_DASHBOARD&quot;,&quot;sponsorable_login&quot;:&quot;nhejazi&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="175c3dbbb0f0a292e3bac7dd039549af227d469ee623f8bf90a9136da37e93c5" data-selected-links=" /sponsors/accounts" href="/sponsors/accounts">Sponsors</a>
 
     <a class="Header-link d-block d-md-none mr-0 mr-md-3 py-2 py-md-3 border-top border-md-top-0 border-white-fade" href="/settings/profile">
       Settings
@@ -480,12 +480,12 @@
       <img class="avatar avatar-user" loading="lazy" decoding="async" src="https://avatars.githubusercontent.com/u/8527276?s=40&amp;v=4" width="20" height="20" alt="@nhejazi" />
       nhejazi
 </a>
-    <!-- '"` --><!-- </textarea></xmp> --></option></form><form action="/logout" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="cq+e6Si1sCecE4JvGDMb6cUPY8Nzv8MOw1k17ksbVagzWXtioAzrp6cPNHAqSl05bcRmGCS9gRxhnMGH+oy2Ug==" />
+    <!-- '"` --><!-- </textarea></xmp> --></option></form><form action="/logout" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="ckyEQSv8GwPuN/wF7UabmkpF4XEmDq8wUTu7MKkqq2gzumHKo0VAg9UrShrfP91K4o7kqnEM7SLz/k9ZGL1Ikg==" />
       <button
         type="submit"
         class="Header-link mr-0 mr-md-3 py-2 py-md-3 border-top border-md-top-0 border-white-fade d-md-none btn-link d-block width-full text-left"
         style="padding-left: 2px;"
-        data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;sign out&quot;,&quot;label&quot;:&quot;icon:logout&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="b0cf60288057c32bc0df09d871e8669a6ed84a512627f439d7fe92194e44f859" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;sign out&quot;,&quot;label&quot;:&quot;icon:logout&quot;}"
+        data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;sign out&quot;,&quot;label&quot;:&quot;icon:logout&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="67ecbe9c79eb8f54168ec24dcd605abd49035c8738b6130d219ac02207bb1783" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;sign out&quot;,&quot;label&quot;:&quot;icon:logout&quot;}"
       >
         <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-sign-out v-align-middle">
     <path fill-rule="evenodd" d="M2 2.75C2 1.784 2.784 1 3.75 1h2.5a.75.75 0 010 1.5h-2.5a.25.25 0 00-.25.25v10.5c0 .138.112.25.25.25h2.5a.75.75 0 010 1.5h-2.5A1.75 1.75 0 012 13.25V2.75zm10.44 4.5H6.75a.75.75 0 000 1.5h5.69l-1.97 1.97a.75.75 0 101.06 1.06l3.25-3.25a.75.75 0 000-1.06l-3.25-3.25a.75.75 0 10-1.06 1.06l1.97 1.97z"></path>
@@ -502,7 +502,7 @@
   href="https://github.com/"
   data-hotkey="g d"
   aria-label="Homepage "
-  data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="1c12cfd34a9d6eca6b8550f04ee96cfe54bedc55cd5571a5b1e50a5cd474acf6" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;}"
+  data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="7c585145e54706510ecdf8d8e1aa39fda055313208731ea358837062834a318e" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;go to dashboard&quot;,&quot;label&quot;:&quot;icon:logo&quot;}"
 >
   <svg height="32" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="32" data-view-component="true" class="octicon octicon-mark-github v-align-middle">
     <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
@@ -518,7 +518,7 @@
       <notification-indicator
         class="js-socket-channel"
         data-test-selector="notifications-indicator"
-        data-channel="eyJjIjoibm90aWZpY2F0aW9uLWNoYW5nZWQ6ODUyNzI3NiIsInQiOjE2NDAxMjUwNTB9--3da217cd0ad529ba9f1379aa28b540cebd9055083a8f0e1c277190967e170c80">
+        data-channel="eyJjIjoibm90aWZpY2F0aW9uLWNoYW5nZWQ6ODUyNzI3NiIsInQiOjE2NDAxMjQzMzh9--41bb0c42a6c1a2d060fe84499d8b52a90beb8e844f16f26d7625ade21b9db713">
         <a href="/notifications"
           class="Header-link notification-indicator position-relative tooltipped tooltipped-sw"
           
@@ -541,7 +541,7 @@
   <summary
     class="Header-link"
     aria-label="Create new…"
-    data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;create new&quot;,&quot;label&quot;:&quot;icon:add&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="7cc2489d46f40705671df1cb8e8d7c3c1ff0c4581a90f412535e1d68db4e0d4d" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;create new&quot;,&quot;label&quot;:&quot;icon:add&quot;}"
+    data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;create new&quot;,&quot;label&quot;:&quot;icon:add&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="77aa3aac2df653742ee71d1fec571817b7f228a59b6af04dbc5b2b90eb3bfb3c" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;create new&quot;,&quot;label&quot;:&quot;icon:add&quot;}"
   >
       <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-plus">
     <path fill-rule="evenodd" d="M7.75 2a.75.75 0 01.75.75V7h4.25a.75.75 0 110 1.5H8.5v4.25a.75.75 0 11-1.5 0V8.5H2.75a.75.75 0 010-1.5H7V2.75A.75.75 0 017.75 2z"></path>
@@ -579,7 +579,7 @@
   <summary
     class="Header-link"
     aria-label="View profile and more"
-    data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;show menu&quot;,&quot;label&quot;:&quot;icon:avatar&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="534eb6f0720ebb190dcf5cfda861e14bd7a229c1a673c475bb6a2849cbc1ca9d" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;show menu&quot;,&quot;label&quot;:&quot;icon:avatar&quot;}"
+    data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;show menu&quot;,&quot;label&quot;:&quot;icon:avatar&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="05d5435e88c58e78a2f0494969b9ff0aa90504a0dcc3b4d452064f7db7d99af0" data-analytics-event="{&quot;category&quot;:&quot;Header&quot;,&quot;action&quot;:&quot;show menu&quot;,&quot;label&quot;:&quot;icon:avatar&quot;}"
   >
     <img src="https://avatars.githubusercontent.com/u/8527276?s=40&amp;v=4" alt="@nhejazi" size="20" height="20" width="20" data-view-component="true" class="avatar avatar-small circle" />
       <span class="feature-preview-indicator js-feature-preview-indicator" style="top: 1px;" hidden></span>
@@ -651,14 +651,14 @@
   <details-dialog class="command-palette-details-dialog d-flex flex-column flex-justify-center height-fit" aria-label="command palette">
     <command-palette
       class="command-palette color-bg-default rounded-3"
-      data-return-to=/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd
+      data-return-to=/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R
       data-user-id="8527276"
       >
-      <input type="hidden" value="FJEB5feyO59ZhYino59ZIGX4psf7IgOsax+GYXVxjst0WFM26fBVDOTPKaUzuaAJtfIzYdSvOFakP/YqRUM0+Q==" data-csrf="true" class="js-graphql-csrf" />
+      <input type="hidden" value="HmsQELYzmQxqR5OMfneHbn1I5fe9w4mgQXHsrOAM9VB+okLDqHH3n9cNMo7uUX5HrUJwUZJOslqOUZzn0D5PYg==" data-csrf="true" class="js-graphql-csrf" />
       <iframe class="d-none js-command-palette-commands" sandbox="allow-scripts allow-same-origin" srcdoc="<script crossorigin=&quot;anonymous&quot; defer=&quot;defer&quot; integrity=&quot;sha512-2Jz3lq/Gk0f8RePMFf+bUCfw6LwZ3nXfh3AQmMFOUj5cIW/rCeZcWRFO/q0l00bbLMcdXkpDj6KvP9Ny2qh8QA==&quot; type=&quot;application/javascript&quot; src=&quot;https://github.githubassets.com/assets/command-runner-d89cf796.js&quot;></script>
 " aria-hidden="true" data-url="https://github.com"></iframe>
       <input type="hidden" name="color-mode-path" id="color-mode-path" value="/settings/appearance/color_mode" class="js-color-mode-path" autocomplete="off" />
-      <input type="hidden" value="eYGc6lWn/HWLqBwMumYkGgsY8PY1pOEIuyZ1qSss3CAZlsaL7K9hKxCLkDaIRPW+HM5CXgfKRS4AhA7dyzC72Q==" data-csrf="true" class="js-color-mode-csrf" />
+      <input type="hidden" value="YCR69RqgBJIziNqHbpkbWDv74f3mzyMYKHS5sHG1wekAMyCUo6iZzKirVr1cu8r8LC1TVdShhz6T1sLEkammEA==" data-csrf="true" class="js-color-mode-csrf" />
 
         <command-palette-mode
           data-char="#"
@@ -1302,7 +1302,7 @@
         data-action="toggle:notifications-list-subscription-form#detailsToggled"
       >
 
-      <summary data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;WATCH_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="0d17b9aa4afde9e4be787f911bdfe824b97cbdadaba32dad2fb1d3e4ce74299f" data-ga-click="Repository, click Watch settings, action:blob#show" aria-label="Notification settings" data-view-component="true" class="btn-sm btn">  <span data-menu-button>
+      <summary data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;WATCH_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="66692003f7c3e48ddd7a48ea02014f2d3faf01d6e038942c8becc7596e7fce72" data-ga-click="Repository, click Watch settings, action:blob#show" aria-label="Notification settings" data-view-component="true" class="btn-sm btn">  <span data-menu-button>
             <span
               
               
@@ -1354,7 +1354,7 @@
             </header>
 
             <div class="SelectMenu-list">
-              <form data-target="notifications-list-subscription-form.form" data-action="submit:notifications-list-subscription-form#submitForm" action="/notifications/subscribe" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="ckJAEIQwkWNVcyDCPlwWVjDBsuYJQUtoGL2jeOTpdyOpPH4CIzGegOZYMsQ5RpQpjghyo3TRz+wIdgw4HianPg==" autocomplete="off" />
+              <form data-target="notifications-list-subscription-form.form" data-action="submit:notifications-list-subscription-form#submitForm" action="/notifications/subscribe" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="J3GW7QnEgnEJx55UZmXzUotDY5xtSr/Qe7Py9ntvCDX8D6j/rsWNkrrsjFJhf3EtNYqj2RDaO1RreF22gaDYKA==" autocomplete="off" />
 
                 <input type="hidden" name="repository_id" value="177248885">
 
@@ -1467,7 +1467,7 @@
 
         <details-dialog class="notifications-component-dialog " data-target="notifications-list-subscription-form.customDialog" hidden>
           <div class="SelectMenu-modal notifications-component-dialog-modal overflow-visible">
-            <form data-target="notifications-list-subscription-form.customform" data-action="submit:notifications-list-subscription-form#submitCustomForm" action="/notifications/subscribe" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="aoyCMAv1j2bRCol3Sykbm7FwA0DJdZRMp1LelG3lTUux8rwirPSAhWIhm3FMM5nkD7nDBbTlEMi3mXHUlyqdVg==" autocomplete="off" />
+            <form data-target="notifications-list-subscription-form.customform" data-action="submit:notifications-list-subscription-form#submitCustomForm" action="/notifications/subscribe" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="GiHNMjkhoSOcATvOR1f6YgthUpHxd5DMWVEOSjUk88fBX/MgniCuwC8qKchATXgdtaiS1IznFEhJmqEKz+sj2g==" autocomplete="off" />
 
               <input type="hidden" name="repository_id" value="177248885">
 
@@ -1611,7 +1611,7 @@
     <li>
               <div class="float-left">
         <details class="details-reset details-overlay details-overlay-dark " >
-                <summary data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;FORK_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="506e891b3d7b4b7ba7a0dd5694f1b90602e139a7dbf8cc82b47cb7e11c0b305f" data-ga-click="Repository, show fork modal, action:blob#show; text:Fork" aria-label="Fork your own copy of tlverse/tlverse-handbook to your account" data-view-component="true" class="btn-sm btn">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-repo-forked mr-2">
+                <summary data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;FORK_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="21752361fca902f7b38d08475d8648c7ba90466d91366eafbc533dadc801a1b7" data-ga-click="Repository, show fork modal, action:blob#show; text:Fork" aria-label="Fork your own copy of tlverse/tlverse-handbook to your account" data-view-component="true" class="btn-sm btn">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-repo-forked mr-2">
     <path fill-rule="evenodd" d="M5 3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0 10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0 101.5 0V8.5h1.5a2.25 2.25 0 002.25-2.25v-.878a2.25 2.25 0 10-1.5 0v.878a.75.75 0 01-.75.75h-4.5A.75.75 0 015 6.25v-.878zm3.75 7.378a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path>
 </svg>Fork
                 <span id="repo-network-counter" data-pjax-replace="true" title="13" data-view-component="true" class="Counter">13</span>
@@ -1651,23 +1651,23 @@
     <li>
           
   <div data-view-component="true" class="js-toggler-container js-social-container starring-container on BtnGroup d-flex">
-    <form class="starred js-social-form BtnGroup-parent flex-auto" action="/tlverse/tlverse-handbook/unstar" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="c9zzsJglovgkOMbO5wRwQn/Icc+/RLKP+BxspIDAfigxBM5mS3DRN8rWot8hry8Ekezj+7I1arrcUQhXKxHcTQ==" autocomplete="off" />
+    <form class="starred js-social-form BtnGroup-parent flex-auto" action="/tlverse/tlverse-handbook/unstar" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="J3HjvQPRNd1RUj3ustiwqsH/Hufo76hH/Uz9488e5/tlqd5r0IRGEr+8Wf90c+/sL9uM0+WecHLZAZkQZM9Fng==" autocomplete="off" />
       <input type="hidden" name="context" value="repository">
-      <button data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;UNSTAR_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="75eb01ce2a9a5de1f4300d49fcb94e106b9ef98e126569cb7b8b5c2b2af65311" data-ga-click="Repository, click unstar button, action:blob#show; text:Unstar" aria-label="Unstar this repository" type="submit" data-view-component="true" class="js-toggler-target rounded-left-2 border-right-0 btn-sm btn BtnGroup-item">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-star-fill starred-button-icon d-inline-block mr-2">
+      <button data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;UNSTAR_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="3fc83c09d7032aed0c68b0b9129b3dc25801f368f83609fd79f141e713351581" data-ga-click="Repository, click unstar button, action:blob#show; text:Unstar" aria-label="Unstar this repository" type="submit" data-view-component="true" class="js-toggler-target rounded-left-2 border-right-0 btn-sm btn BtnGroup-item">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-star-fill starred-button-icon d-inline-block mr-2">
     <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25z"></path>
 </svg><span data-view-component="true" class="d-inline">
           Starred
 </span>          <span id="repo-stars-counter-unstar" aria-label="30 users starred this repository" data-singular-suffix="user starred this repository" data-plural-suffix="users starred this repository" data-pjax-replace="true" title="30" data-view-component="true" class="Counter js-social-count">30</span>
 </button></form>
-    <form class="unstarred js-social-form BtnGroup-parent flex-auto" action="/tlverse/tlverse-handbook/star" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="XYGoR8jWmDetjuCW0vzXXPyUaL6EIfHNLInkwNyIXPKid8L3wz6qRgJXgPKGaKc/JP641FQi1uX4kNcgdE8yVg==" autocomplete="off" />
+    <form class="unstarred js-social-form BtnGroup-parent flex-auto" action="/tlverse/tlverse-handbook/star" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="wsfXQ3PlNI5mFprGDfgKA69r8Uwqs2kwr7H03iBCz2I9Mb3zeA0G/8nP+qJZbHpgdwEhJvqwThh7qMc+iIWhxg==" autocomplete="off" />
       <input type="hidden" name="context" value="repository">
-      <button data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;STAR_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="75dec4879a6bafdb5364648d5322bf491e315c2959e74d7b379871540bd2c78f" data-ga-click="Repository, click star button, action:blob#show; text:Star" aria-label="Star this repository" type="submit" data-view-component="true" class="js-toggler-target rounded-left-2 btn-sm btn BtnGroup-item">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-star d-inline-block mr-2">
+      <button data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;STAR_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="a8140cc30c34f76f48695505831cafba5a6bc7d5745bbd1afc57b9ff42325df8" data-ga-click="Repository, click star button, action:blob#show; text:Star" aria-label="Star this repository" type="submit" data-view-component="true" class="js-toggler-target rounded-left-2 btn-sm btn BtnGroup-item">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-star d-inline-block mr-2">
     <path fill-rule="evenodd" d="M8 .25a.75.75 0 01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719 4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0 01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75 0 018 .25zm0 2.445L6.615 5.5a.75.75 0 01-.564.41l-3.097.45 2.24 2.184a.75.75 0 01.216.664l-.528 3.084 2.769-1.456a.75.75 0 01.698 0l2.77 1.456-.53-3.084a.75.75 0 01.216-.664l2.24-2.183-3.096-.45a.75.75 0 01-.564-.41L8 2.694v.001z"></path>
 </svg><span data-view-component="true" class="d-inline">
           Star
 </span>          <span id="repo-stars-counter-star" aria-label="30 users starred this repository" data-singular-suffix="user starred this repository" data-plural-suffix="users starred this repository" data-pjax-replace="true" title="30" data-view-component="true" class="Counter js-social-count">30</span>
 </button></form>
-      <details id="details-1899a0" data-view-component="true" class="details-reset details-overlay BtnGroup-parent js-user-list-menu d-inline-block position-relative">
+      <details id="details-f46dff" data-view-component="true" class="details-reset details-overlay BtnGroup-parent js-user-list-menu d-inline-block position-relative">
       <summary aria-label="Add this repository to a list" data-view-component="true" class="btn-sm btn BtnGroup-item px-2 float-none">  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-triangle-down">
     <path d="M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z"></path>
 </svg>
@@ -1675,7 +1675,7 @@
   <div class="Box-header">
     <h2 class="Box-title">Create list</h2>
   </div>
-  <form class="Box-body d-flex flex-column p-3 js-user-list-form" action="/stars/nhejazi/lists" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="beNK1XY9ZAKnuS8I4kNO6Mv4zCtRgAMd5LenQwgwwf8ou4MH+Jh8bnuSmgfkicDF9O+JofiZMIrgnrkeJ23NPg==" autocomplete="off" />
+  <form class="Box-body d-flex flex-column p-3 js-user-list-form" action="/stars/nhejazi/lists" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="b1aqtCp0Esk+j4FIpctlTS12jHcW3Q+jMQkJnTyLf4MqDmNmpNEKpeKkNEejAetgEmHJ/b/EPDQ1IBfAE9ZzQg==" autocomplete="off" />
         <p class="color-fg-subtle mb-3">Create a list to organize your starred repositories.</p>
       <input type="hidden" name="repository_id" value="{{ repositoryId }}">
 
@@ -1695,7 +1695,7 @@
           required
         >
       </text-expander>
-      <input type="hidden" value="lYG8XJd9Jmqt99nssuyC7a+rGeXts22bZDbjNdXvJ1tDezCyvhBHIPHYDRFZeGa7qUA02Zvehus5NvQr5kI9wg==" data-csrf="true" />
+      <input type="hidden" value="et2v9i1lSVVVstIu6sQZkAbSaGYbLvBIb1b8MpHjDK+sJyMYBAgoHwmdBtMBUP3GADlFWm1DGzgyVussok4WNg==" data-csrf="true" />
     </auto-check>
     <p
       class="note error position-relative js-user-list-error"
@@ -1759,13 +1759,13 @@
       
 >
     <div class="SelectMenu-modal">
-        <button class="SelectMenu-closeButton position-absolute right-0 m-2" type="button" aria-label="Close menu" data-toggle-for="details-1899a0">
+        <button class="SelectMenu-closeButton position-absolute right-0 m-2" type="button" aria-label="Close menu" data-toggle-for="details-f46dff">
           <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
     <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
 </svg>
         </button>
       <div
-        id="filter-menu-1899a0"
+        id="filter-menu-f46dff"
         class="d-flex flex-column flex-1 overflow-hidden"
 >
         <div
@@ -1985,7 +1985,7 @@
 
 
 
-    <a class="d-none js-permalink-shortcut" data-hotkey="y" href="/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd">Permalink</a>
+    <a class="d-none js-permalink-shortcut" data-hotkey="y" href="/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R">Permalink</a>
 
 
     <div class="d-flex flex-items-start flex-shrink-0 pb-3 flex-wrap flex-md-nowrap flex-justify-between flex-md-justify-start">
@@ -2056,10 +2056,10 @@
             </template>
 
               <template data-target="ref-selector.noMatchTemplate">
-    <!-- '"` --><!-- </textarea></xmp> --></option></form><form action="/tlverse/tlverse-handbook/branches" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="GOkjr7Sn/B0LL9NFUZ0hxtIVY6eIQlRiowHQxi2Ay2yIMD3AkHFCojofqhVFbnn1Ax59y+7Xqw1FkV+Qeim4Lw==" />
+    <!-- '"` --><!-- </textarea></xmp> --></option></form><form action="/tlverse/tlverse-handbook/branches" accept-charset="UTF-8" method="post"><input type="hidden" name="authenticity_token" value="XHeRYu6JQhQsU/C+kSllHKW8znBh5YsIFZbAXrG7fajMro8Nyl/8qx1jie6F2j0vdLfQHAdwdGfzBk8I5hIO6w==" />
       <input type="hidden" name="name" value="{{ refName }}">
       <input type="hidden" name="branch"  value="f1e0a164992cb9bbd8478dfe86a332f6eb554b9b">
-      <input type="hidden" name="path_binary" value="MDUtb3JpZ2FtaS5SbWQ=">
+      <input type="hidden" name="path_binary" value="cmVudi9hY3RpdmF0ZS5S">
 
       <button class="SelectMenu-item wb-break-word" type="submit" role="menuitem" data-index="{{ index }}">
         <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-git-branch SelectMenu-icon flex-self-baseline">
@@ -2084,7 +2084,7 @@
             </div>
 
               <template data-target="ref-selector.itemTemplate">
-  <a href="https://github.com/tlverse/tlverse-handbook/blob/{{ urlEncodedRefName }}/05-origami.Rmd" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
+  <a href="https://github.com/tlverse/tlverse-handbook/blob/{{ urlEncodedRefName }}/renv/activate.R" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
     <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
     <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
 </svg>
@@ -2124,7 +2124,7 @@
             </template>
 
               <template data-target="ref-selector.itemTemplate">
-  <a href="https://github.com/tlverse/tlverse-handbook/blob/{{ urlEncodedRefName }}/05-origami.Rmd" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
+  <a href="https://github.com/tlverse/tlverse-handbook/blob/{{ urlEncodedRefName }}/renv/activate.R" class="SelectMenu-item" role="menuitemradio" rel="nofollow" aria-checked="{{ isCurrent }}" data-index="{{ index }}">
     <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-check SelectMenu-icon SelectMenu-icon--check">
     <path fill-rule="evenodd" d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"></path>
 </svg>
@@ -2155,7 +2155,7 @@
 </div>
 
       <h2 id="blob-path" class="breadcrumb flex-auto flex-self-center min-width-0 text-normal mx-2 width-full width-md-auto flex-order-1 flex-md-order-none mt-3 mt-md-0">
-        <span class="js-repo-root text-bold"><span class="js-path-segment d-inline-block wb-break-all"><a data-pjax="#repo-content-pjax-container" rel="nofollow" href="/tlverse/tlverse-handbook/tree/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b"><span>tlverse-handbook</span></a></span></span><span class="separator">/</span><strong class="final-path">05-origami.Rmd</strong>
+        <span class="js-repo-root text-bold"><span class="js-path-segment d-inline-block wb-break-all"><a data-pjax="#repo-content-pjax-container" rel="nofollow" href="/tlverse/tlverse-handbook/tree/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b"><span>tlverse-handbook</span></a></span></span><span class="separator">/</span><span class="js-path-segment d-inline-block wb-break-all"><a data-pjax="#repo-content-pjax-container" rel="nofollow" href="/tlverse/tlverse-handbook/tree/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv"><span>renv</span></a></span><span class="separator">/</span><strong class="final-path">activate.R</strong>
       </h2>
       <a href="/tlverse/tlverse-handbook/find/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b"
             class="js-pjax-capture-input btn mr-2 d-none d-md-block"
@@ -2171,7 +2171,7 @@
 </summary>
   <div data-view-component="true">          <ul class="dropdown-menu dropdown-menu-sw">
             <li class="d-block d-md-none">
-              <a class="dropdown-item d-flex flex-items-baseline" data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;FIND_FILE_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="11f0180ea36b8bd26726c09ac9cad62d50bb7fb7da98c7660f5cefb7bda72520" data-ga-click="Repository, find file, location:repo overview" data-hotkey="t" data-pjax="true" href="/tlverse/tlverse-handbook/find/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b">
+              <a class="dropdown-item d-flex flex-items-baseline" data-hydro-click="{&quot;event_type&quot;:&quot;repository.click&quot;,&quot;payload&quot;:{&quot;target&quot;:&quot;FIND_FILE_BUTTON&quot;,&quot;repository_id&quot;:177248885,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="35ee7422d0da32b91f3be756616d5c0ce79d190f15df4f91f4e7f65b21dc3d30" data-ga-click="Repository, find file, location:repo overview" data-hotkey="t" data-pjax="true" href="/tlverse/tlverse-handbook/find/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b">
                 <span class="flex-auto">Go to file</span>
                 <span class="text-small color-fg-muted" aria-hidden="true">T</span>
 </a>            </li>
@@ -2183,13 +2183,13 @@
 </button>            </li>
             <li class="dropdown-divider" role="none"></li>
             <li>
-              <clipboard-copy data-toggle-for="blob-more-options-details" aria-label="Copy path" value="05-origami.Rmd" data-view-component="true" class="dropdown-item cursor-pointer">
+              <clipboard-copy data-toggle-for="blob-more-options-details" aria-label="Copy path" value="renv/activate.R" data-view-component="true" class="dropdown-item cursor-pointer">
     
                 Copy path
 
 </clipboard-copy>            </li>
             <li>
-              <clipboard-copy data-toggle-for="blob-more-options-details" aria-label="Copy permalink" value="https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd" data-view-component="true" class="dropdown-item cursor-pointer">
+              <clipboard-copy data-toggle-for="blob-more-options-details" aria-label="Copy permalink" value="https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R" data-view-component="true" class="dropdown-item cursor-pointer">
     
                 <span class="d-flex flex-items-baseline">
                   <span class="flex-auto">Copy permalink</span>
@@ -2204,17 +2204,80 @@
 
 
     <div class="Box d-flex flex-column flex-shrink-0 mb-3">
-      <include-fragment src="/tlverse/tlverse-handbook/contributors/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd" class="commit-loader">
-        <div class="Box-header d-flex flex-items-center">
-          <div class="Skeleton avatar avatar-user flex-shrink-0 ml-n1 mr-n1 mt-n1 mb-n1" style="width:24px;height:24px;"></div>
-          <div class="Skeleton Skeleton--text col-5 ml-2">&nbsp;</div>
-        </div>
+      
+  <div class="Box-header Details js-details-container">
+      <div class="d-flex flex-items-center">
+        <span class="flex-shrink-0 ml-n1 mr-n1 mt-n1 mb-n1">
+          <a rel="contributor" data-skip-pjax="true" data-hovercard-type="user" data-hovercard-url="/users/nhejazi/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/nhejazi"><img class="avatar avatar-user" src="https://avatars.githubusercontent.com/u/8527276?s=48&amp;v=4" width="24" height="24" alt="@nhejazi" /></a>
+        </span>
+        <div class="flex-1 d-flex flex-items-center ml-3 min-width-0">
+          <div class="css-truncate css-truncate-overflow">
+            <a class="text-bold Link--primary" rel="contributor" data-hovercard-type="user" data-hovercard-url="/users/nhejazi/hovercard" data-octo-click="hovercard-link-click" data-octo-dimensions="link_type:self" href="/nhejazi">nhejazi</a>
 
-        <div class="Box-body d-flex flex-items-center" >
-          <div class="Skeleton Skeleton--text col-1">&nbsp;</div>
-          <span class="color-fg-danger h6 loader-error">Cannot retrieve contributors at this time</span>
+              <span class="markdown-title">
+                <a data-pjax="true" title="add actions and update renv" class="Link--secondary" href="/tlverse/tlverse-handbook/commit/d55e061b1802e4f6c18f292c65ed5aa46377ab66">add actions and update renv</a>
+              </span>
+          </div>
+
+
+          <span class="ml-2">
+            <include-fragment accept="text/fragment+html" src="/tlverse/tlverse-handbook/commit/d55e061b1802e4f6c18f292c65ed5aa46377ab66/rollup?direction=e" class="d-inline"></include-fragment>
+          </span>
         </div>
-</include-fragment>    </div>
+        <div class="ml-3 d-flex flex-shrink-0 flex-items-center flex-justify-end color-fg-muted no-wrap">
+          <span class="d-none d-md-inline">
+            <span>Latest commit</span>
+            <a class="text-small text-mono Link--secondary" href="/tlverse/tlverse-handbook/commit/d55e061b1802e4f6c18f292c65ed5aa46377ab66" data-pjax>d55e061</a>
+            <span itemprop="dateModified"><relative-time datetime="2021-10-13T04:42:08Z" class="no-wrap">Oct 13, 2021</relative-time></span>
+          </span>
+
+          <a data-pjax href="/tlverse/tlverse-handbook/commits/d55e061b1802e4f6c18f292c65ed5aa46377ab66/renv/activate.R" class="ml-3 no-wrap Link--primary no-underline">
+            <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-history">
+    <path fill-rule="evenodd" d="M1.643 3.143L.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684zM7.75 4a.75.75 0 01.75.75v2.992l2.028.812a.75.75 0 01-.557 1.392l-2.5-1A.75.75 0 017 8.25v-3.5A.75.75 0 017.75 4z"></path>
+</svg>
+            <span class="d-none d-sm-inline">
+              <strong>History</strong>
+            </span>
+          </a>
+        </div>
+      </div>
+
+  </div>
+
+  <div class="Box-body d-flex flex-items-center flex-auto border-bottom-0 flex-wrap" >
+    <details class="details-reset details-overlay details-overlay-dark lh-default color-fg-default float-left mr-3" id="blob_contributors_box">
+      <summary class="Link--primary">
+        <svg text="gray" aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-people">
+    <path fill-rule="evenodd" d="M5.5 3.5a2 2 0 100 4 2 2 0 000-4zM2 5.5a3.5 3.5 0 115.898 2.549 5.507 5.507 0 013.034 4.084.75.75 0 11-1.482.235 4.001 4.001 0 00-7.9 0 .75.75 0 01-1.482-.236A5.507 5.507 0 013.102 8.05 3.49 3.49 0 012 5.5zM11 4a.75.75 0 100 1.5 1.5 1.5 0 01.666 2.844.75.75 0 00-.416.672v.352a.75.75 0 00.574.73c1.2.289 2.162 1.2 2.522 2.372a.75.75 0 101.434-.44 5.01 5.01 0 00-2.56-3.012A3 3 0 0011 4z"></path>
+</svg>
+        <strong>1</strong>
+        
+        contributor
+      </summary>
+      <details-dialog
+        class="Box Box--overlay d-flex flex-column anim-fade-in fast"
+        aria-label="Users who have contributed to this file"
+        src="/tlverse/tlverse-handbook/contributors-list/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R" preload>
+        <div class="Box-header">
+          <button class="Box-btn-octicon btn-octicon float-right" type="button" aria-label="Close dialog" data-close-dialog>
+            <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-x">
+    <path fill-rule="evenodd" d="M3.72 3.72a.75.75 0 011.06 0L8 6.94l3.22-3.22a.75.75 0 111.06 1.06L9.06 8l3.22 3.22a.75.75 0 11-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 01-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 010-1.06z"></path>
+</svg>
+          </button>
+          <h3 class="Box-title">
+            Users who have contributed to this file
+          </h3>
+        </div>
+        <include-fragment>
+          <svg style="box-sizing: content-box; color: var(--color-icon-primary);" width="32" height="32" viewBox="0 0 16 16" fill="none" data-view-component="true" class="my-3 mx-auto d-block anim-rotate">
+  <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-opacity="0.25" stroke-width="2" vector-effect="non-scaling-stroke" />
+  <path d="M15 8a7.002 7.002 0 00-7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke" />
+</svg>
+        </include-fragment>
+      </details-dialog>
+    </details>
+  </div>
+    </div>
 
 
       
@@ -2236,18 +2299,18 @@
 
   <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1">
 
-      1014 lines (821 sloc)
+      668 lines (488 sloc)
       <span class="file-info-divider"></span>
-    44.1 KB
+    17.9 KB
   </div>
 
   <div class="d-flex py-1 py-md-0 flex-auto flex-order-1 flex-md-order-2 flex-sm-grow-0 flex-justify-between hide-sm hide-md">
       
 
     <div class="BtnGroup">
-      <a href="/tlverse/tlverse-handbook/raw/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd" id="raw-url" data-view-component="true" class="btn-sm btn BtnGroup-item">  Raw
+      <a href="/tlverse/tlverse-handbook/raw/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R" id="raw-url" data-view-component="true" class="btn-sm btn BtnGroup-item">  Raw
 </a>
-        <a href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd" data-hotkey="b" data-view-component="true" class="js-update-url-with-hash btn-sm btn BtnGroup-item">  Blame
+        <a href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R" data-hotkey="b" data-view-component="true" class="js-update-url-with-hash btn-sm btn BtnGroup-item">  Blame
 </a>
     </div>
 
@@ -2261,13 +2324,13 @@
           </button>
 
         
-          <a href="/login?return_to=https%3A%2F%2Fgithub.com%2Ftlverse%2Ftlverse-handbook%2Fblob%2Ff1e0a164992cb9bbd8478dfe86a332f6eb554b9b%2F05-origami.Rmd" class="btn-octicon disabled tooltipped tooltipped-nw"
+          <a href="/login?return_to=https%3A%2F%2Fgithub.com%2Ftlverse%2Ftlverse-handbook%2Fblob%2Ff1e0a164992cb9bbd8478dfe86a332f6eb554b9b%2Frenv%2Factivate.R" class="btn-octicon disabled tooltipped tooltipped-nw"
             aria-label="You must be on a branch to make or propose changes to this file">
             <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-pencil">
     <path fill-rule="evenodd" d="M11.013 1.427a1.75 1.75 0 012.474 0l1.086 1.086a1.75 1.75 0 010 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 01-.927-.928l.929-3.25a1.75 1.75 0 01.445-.758l8.61-8.61zm1.414 1.06a.25.25 0 00-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 000-.354l-1.086-1.086zM11.189 6.25L9.75 4.81l-6.286 6.287a.25.25 0 00-.064.108l-.558 1.953 1.953-.558a.249.249 0 00.108-.064l6.286-6.286z"></path>
 </svg>
           </a>
-          <a href="/login?return_to=https%3A%2F%2Fgithub.com%2Ftlverse%2Ftlverse-handbook%2Fblob%2Ff1e0a164992cb9bbd8478dfe86a332f6eb554b9b%2F05-origami.Rmd" class="btn-octicon btn-octicon-danger disabled tooltipped tooltipped-nw"
+          <a href="/login?return_to=https%3A%2F%2Fgithub.com%2Ftlverse%2Ftlverse-handbook%2Fblob%2Ff1e0a164992cb9bbd8478dfe86a332f6eb554b9b%2Frenv%2Factivate.R" class="btn-octicon btn-octicon-danger disabled tooltipped tooltipped-nw"
             aria-label="You must be on a branch to make or propose changes to this file">
             <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" class="octicon octicon-trash">
     <path fill-rule="evenodd" d="M6.5 1.75a.25.25 0 01.25-.25h2.5a.25.25 0 01.25.25V3h-3V1.75zm4.5 0V3h2.25a.75.75 0 010 1.5H2.75a.75.75 0 010-1.5H5V1.75C5 .784 5.784 0 6.75 0h2.5C10.216 0 11 .784 11 1.75zM4.496 6.675a.75.75 0 10-1.492.15l.66 6.6A1.75 1.75 0 005.405 15h5.19c.9 0 1.652-.681 1.741-1.576l.66-6.6a.75.75 0 00-1.492-.149l-.66 6.6a.25.25 0 01-.249.225h-5.19a.25.25 0 01-.249-.225l-.66-6.6z"></path>
@@ -2288,14 +2351,14 @@
             <li>
             </li>
           <li>
-            <a class="dropdown-item" href="/tlverse/tlverse-handbook/raw/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd">
+            <a class="dropdown-item" href="/tlverse/tlverse-handbook/raw/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R">
               View raw
             </a>
           </li>
             <li>
                           </li>
             <li>
-              <a class="dropdown-item" href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd">
+              <a class="dropdown-item" href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R">
                 View blame
               </a>
             </li>
@@ -2307,7 +2370,7 @@
 
 
       
-  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-rmarkdown  gist-border-0">
+  <div itemprop="text" class="Box-body p-0 blob-wrapper data type-r  gist-border-0">
 
       
 <div class="js-check-bidi blob-code-content">
@@ -2334,41 +2397,41 @@
 </svg>
 </span></template>
 
-  <table class="highlight tab-size js-file-line-container js-code-nav-container js-tagsearch-file" data-tab-size="8" data-paste-markdown-skip data-tagsearch-lang="RMarkdown" data-tagsearch-path="05-origami.Rmd">
+  <table class="highlight tab-size js-file-line-container js-code-nav-container js-tagsearch-file" data-tab-size="8" data-paste-markdown-skip data-tagsearch-lang="R" data-tagsearch-path="renv/activate.R">
         <tr>
           <td id="L1" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1"></td>
-          <td id="LC1" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">#</span><span class="pl-mh"> </span>Cross-validation {#origami}</span></td>
+          <td id="LC1" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L2" class="blob-num js-line-number js-code-nav-line-number" data-line-number="2"></td>
-          <td id="LC2" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC2" class="blob-code blob-code-inner js-file-line">local({</td>
         </tr>
         <tr>
           <td id="L3" class="blob-num js-line-number js-code-nav-line-number" data-line-number="3"></td>
-          <td id="LC3" class="blob-code blob-code-inner js-file-line"><span class="pl-mi">_Ivana Malenica_</span></td>
+          <td id="LC3" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L4" class="blob-num js-line-number js-code-nav-line-number" data-line-number="4"></td>
-          <td id="LC4" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC4" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> the requested version of renv</span></td>
         </tr>
         <tr>
           <td id="L5" class="blob-num js-line-number js-code-nav-line-number" data-line-number="5"></td>
-          <td id="LC5" class="blob-code blob-code-inner js-file-line">Based on the [<span class="pl-e">`origami` `R` package</span>](https://github.com/tlverse/origami)</td>
+          <td id="LC5" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>0.14.0<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L6" class="blob-num js-line-number js-code-nav-line-number" data-line-number="6"></td>
-          <td id="LC6" class="blob-code blob-code-inner js-file-line">by <span class="pl-mi">_Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_</span>.</td>
-        </tr>
-        <tr>
-          <td id="L7" class="blob-num js-line-number js-code-nav-line-number" data-line-number="7"></td>
-          <td id="LC7" class="blob-code blob-code-inner js-file-line">
+          <td id="LC6" class="blob-code blob-code-inner js-file-line">
 </td>
         </tr>
         <tr>
+          <td id="L7" class="blob-num js-line-number js-code-nav-line-number" data-line-number="7"></td>
+          <td id="LC7" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> the project directory</span></td>
+        </tr>
+        <tr>
           <td id="L8" class="blob-num js-line-number js-code-nav-line-number" data-line-number="8"></td>
-          <td id="LC8" class="blob-code blob-code-inner js-file-line">Updated: <span class="pl-c1">`r Sys.Date()`</span></td>
+          <td id="LC8" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">project</span> <span class="pl-k">&lt;-</span> getwd()</td>
         </tr>
         <tr>
           <td id="L9" class="blob-num js-line-number js-code-nav-line-number" data-line-number="9"></td>
@@ -2377,16 +2440,15 @@
         </tr>
         <tr>
           <td id="L10" class="blob-num js-line-number js-code-nav-line-number" data-line-number="10"></td>
-          <td id="LC10" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\begin{VT1}\n\\VH{Learning Objectives}&#39;`</span></td>
+          <td id="LC10" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> allow environment variable to control activation</span></td>
         </tr>
         <tr>
           <td id="L11" class="blob-num js-line-number js-code-nav-line-number" data-line-number="11"></td>
-          <td id="LC11" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC11" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">activate</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_ACTIVATE_PROJECT<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L12" class="blob-num js-line-number js-code-nav-line-number" data-line-number="12"></td>
-          <td id="LC12" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_html_output()) &#39;## Learning Objectives{-}&#39;`</span></td>
+          <td id="LC12" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (<span class="pl-k">!</span>nzchar(<span class="pl-smi">activate</span>)) {</td>
         </tr>
         <tr>
           <td id="L13" class="blob-num js-line-number js-code-nav-line-number" data-line-number="13"></td>
@@ -2395,16 +2457,15 @@
         </tr>
         <tr>
           <td id="L14" class="blob-num js-line-number js-code-nav-line-number" data-line-number="14"></td>
-          <td id="LC14" class="blob-code blob-code-inner js-file-line">By the end of this chapter you will be able to:</td>
+          <td id="LC14" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> don&#39;t auto-activate when R CMD INSTALL is running</span></td>
         </tr>
         <tr>
           <td id="L15" class="blob-num js-line-number js-code-nav-line-number" data-line-number="15"></td>
-          <td id="LC15" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC15" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (nzchar(Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>R_INSTALL_PKG<span class="pl-pds">&quot;</span></span>)))</td>
         </tr>
         <tr>
           <td id="L16" class="blob-num js-line-number js-code-nav-line-number" data-line-number="16"></td>
-          <td id="LC16" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> Differentiate between training, validation and test sets.</td>
+          <td id="LC16" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L17" class="blob-num js-line-number js-code-nav-line-number" data-line-number="17"></td>
@@ -2413,7 +2474,7 @@
         </tr>
         <tr>
           <td id="L18" class="blob-num js-line-number js-code-nav-line-number" data-line-number="18"></td>
-          <td id="LC18" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> Understand the concept of a loss function, risk and cross-validation.</td>
+          <td id="LC18" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L19" class="blob-num js-line-number js-code-nav-line-number" data-line-number="19"></td>
@@ -2422,33 +2483,32 @@
         </tr>
         <tr>
           <td id="L20" class="blob-num js-line-number js-code-nav-line-number" data-line-number="20"></td>
-          <td id="LC20" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> Select a loss function that is appropriate for the functional parameter to be</td>
+          <td id="LC20" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> bail if activation was explicitly disabled</span></td>
         </tr>
         <tr>
           <td id="L21" class="blob-num js-line-number js-code-nav-line-number" data-line-number="21"></td>
-          <td id="LC21" class="blob-code blob-code-inner js-file-line">   estimated.</td>
+          <td id="LC21" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (tolower(<span class="pl-smi">activate</span>) <span class="pl-k">%in%</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>false<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>f<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>0<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L22" class="blob-num js-line-number js-code-nav-line-number" data-line-number="22"></td>
-          <td id="LC22" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC22" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L23" class="blob-num js-line-number js-code-nav-line-number" data-line-number="23"></td>
-          <td id="LC23" class="blob-code blob-code-inner js-file-line"><span class="pl-v">4.</span> Understand and contrast different cross-validation schemes for i.i.d. data.</td>
-        </tr>
-        <tr>
-          <td id="L24" class="blob-num js-line-number js-code-nav-line-number" data-line-number="24"></td>
-          <td id="LC24" class="blob-code blob-code-inner js-file-line">
+          <td id="LC23" class="blob-code blob-code-inner js-file-line">
 </td>
         </tr>
         <tr>
+          <td id="L24" class="blob-num js-line-number js-code-nav-line-number" data-line-number="24"></td>
+          <td id="LC24" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> avoid recursion</span></td>
+        </tr>
+        <tr>
           <td id="L25" class="blob-num js-line-number js-code-nav-line-number" data-line-number="25"></td>
-          <td id="LC25" class="blob-code blob-code-inner js-file-line"><span class="pl-v">5.</span> Understand and contrast different cross-validation schemes for time dependent</td>
+          <td id="LC25" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (nzchar(Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_R_INITIALIZING<span class="pl-pds">&quot;</span></span>)))</td>
         </tr>
         <tr>
           <td id="L26" class="blob-num js-line-number js-code-nav-line-number" data-line-number="26"></td>
-          <td id="LC26" class="blob-code blob-code-inner js-file-line">   data.</td>
+          <td id="LC26" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-k">invisible</span>(<span class="pl-c1">TRUE</span>))</td>
         </tr>
         <tr>
           <td id="L27" class="blob-num js-line-number js-code-nav-line-number" data-line-number="27"></td>
@@ -2457,2591 +2517,2501 @@
         </tr>
         <tr>
           <td id="L28" class="blob-num js-line-number js-code-nav-line-number" data-line-number="28"></td>
-          <td id="LC28" class="blob-code blob-code-inner js-file-line"><span class="pl-v">6.</span> Setup the proper fold structure, build custom fold-based function, and</td>
+          <td id="LC28" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> signal that we&#39;re loading renv during R startup</span></td>
         </tr>
         <tr>
           <td id="L29" class="blob-num js-line-number js-code-nav-line-number" data-line-number="29"></td>
-          <td id="LC29" class="blob-code blob-code-inner js-file-line">   cross-validate the proposed function using the <span class="pl-c1">`origami`</span> <span class="pl-c1">`R`</span> package.</td>
+          <td id="LC29" class="blob-code blob-code-inner js-file-line">  Sys.setenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_R_INITIALIZING<span class="pl-pds">&quot;</span></span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>true<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L30" class="blob-num js-line-number js-code-nav-line-number" data-line-number="30"></td>
-          <td id="LC30" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC30" class="blob-code blob-code-inner js-file-line">  on.exit(Sys.unsetenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_R_INITIALIZING<span class="pl-pds">&quot;</span></span>), <span class="pl-v">add</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L31" class="blob-num js-line-number js-code-nav-line-number" data-line-number="31"></td>
-          <td id="LC31" class="blob-code blob-code-inner js-file-line"><span class="pl-v">7.</span> Setup the proper cross-validation structure for the use by the Super Learner</td>
+          <td id="LC31" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L32" class="blob-num js-line-number js-code-nav-line-number" data-line-number="32"></td>
-          <td id="LC32" class="blob-code blob-code-inner js-file-line">   using the the <span class="pl-c1">`origami`</span> <span class="pl-c1">`R`</span> package.</td>
+          <td id="LC32" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> signal that we&#39;ve consented to use renv</span></td>
         </tr>
         <tr>
           <td id="L33" class="blob-num js-line-number js-code-nav-line-number" data-line-number="33"></td>
-          <td id="LC33" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC33" class="blob-code blob-code-inner js-file-line">  options(<span class="pl-v">renv.consent</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L34" class="blob-num js-line-number js-code-nav-line-number" data-line-number="34"></td>
-          <td id="LC34" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\end{VT1}&#39;`</span></td>
+          <td id="LC34" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L35" class="blob-num js-line-number js-code-nav-line-number" data-line-number="35"></td>
-          <td id="LC35" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC35" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> load the &#39;utils&#39; package eagerly -- this ensures that renv shims, which</span></td>
         </tr>
         <tr>
           <td id="L36" class="blob-num js-line-number js-code-nav-line-number" data-line-number="36"></td>
-          <td id="LC36" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Introduction</span></td>
+          <td id="LC36" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> mask &#39;utils&#39; packages, will come first on the search path</span></td>
         </tr>
         <tr>
           <td id="L37" class="blob-num js-line-number js-code-nav-line-number" data-line-number="37"></td>
-          <td id="LC37" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC37" class="blob-code blob-code-inner js-file-line">  library(<span class="pl-smi">utils</span>, <span class="pl-v">lib.loc</span> <span class="pl-k">=</span> <span class="pl-smi">.Library</span>)</td>
         </tr>
         <tr>
           <td id="L38" class="blob-num js-line-number js-code-nav-line-number" data-line-number="38"></td>
-          <td id="LC38" class="blob-code blob-code-inner js-file-line">In this chapter, we start elaborating on the estimation step outlined in the</td>
+          <td id="LC38" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L39" class="blob-num js-line-number js-code-nav-line-number" data-line-number="39"></td>
-          <td id="LC39" class="blob-code blob-code-inner js-file-line">[<span class="pl-e">introductory chapter</span>](#intro), which discussed the [_Roadmap for Targeted</td>
+          <td id="LC39" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> check to see if renv has already been loaded</span></td>
         </tr>
         <tr>
           <td id="L40" class="blob-num js-line-number js-code-nav-line-number" data-line-number="40"></td>
-          <td id="LC40" class="blob-code blob-code-inner js-file-line">Learning_](#roadmap). In order to generate an initial estimate of our target</td>
+          <td id="LC40" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span> <span class="pl-k">%in%</span> loadedNamespaces()) {</td>
         </tr>
         <tr>
           <td id="L41" class="blob-num js-line-number js-code-nav-line-number" data-line-number="41"></td>
-          <td id="LC41" class="blob-code blob-code-inner js-file-line">parameter -- which is the focus of the following [chapter on Super</td>
+          <td id="LC41" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L42" class="blob-num js-line-number js-code-nav-line-number" data-line-number="42"></td>
-          <td id="LC42" class="blob-code blob-code-inner js-file-line">Learning](#sl3), we first need to translate, and incorporate, our knowledge</td>
+          <td id="LC42" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if renv has already been loaded, and it&#39;s the requested version of renv,</span></td>
         </tr>
         <tr>
           <td id="L43" class="blob-num js-line-number js-code-nav-line-number" data-line-number="43"></td>
-          <td id="LC43" class="blob-code blob-code-inner js-file-line">about the data generating process into the estimation procedure, and decide how</td>
+          <td id="LC43" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> nothing to do</span></td>
         </tr>
         <tr>
           <td id="L44" class="blob-num js-line-number js-code-nav-line-number" data-line-number="44"></td>
-          <td id="LC44" class="blob-code blob-code-inner js-file-line">to evaluate our estimation performance.</td>
+          <td id="LC44" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">spec</span> <span class="pl-k">&lt;-</span> .getNamespaceInfo(.getNamespace(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>), <span class="pl-s"><span class="pl-pds">&quot;</span>spec<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L45" class="blob-num js-line-number js-code-nav-line-number" data-line-number="45"></td>
-          <td id="LC45" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC45" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (identical(<span class="pl-smi">spec</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>version<span class="pl-pds">&quot;</span></span>]], <span class="pl-smi">version</span>))</td>
         </tr>
         <tr>
           <td id="L46" class="blob-num js-line-number js-code-nav-line-number" data-line-number="46"></td>
-          <td id="LC46" class="blob-code blob-code-inner js-file-line">The performance, or error, of any algorithm used in the estimation procedure</td>
+          <td id="LC46" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-k">invisible</span>(<span class="pl-c1">TRUE</span>))</td>
         </tr>
         <tr>
           <td id="L47" class="blob-num js-line-number js-code-nav-line-number" data-line-number="47"></td>
-          <td id="LC47" class="blob-code blob-code-inner js-file-line">directly relates to its generalizability on the independent data. The proper</td>
+          <td id="LC47" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L48" class="blob-num js-line-number js-code-nav-line-number" data-line-number="48"></td>
-          <td id="LC48" class="blob-code blob-code-inner js-file-line">assessment of the performance of proposed algorithms is extremely important; it</td>
+          <td id="LC48" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> otherwise, unload and attempt to load the correct version of renv</span></td>
         </tr>
         <tr>
           <td id="L49" class="blob-num js-line-number js-code-nav-line-number" data-line-number="49"></td>
-          <td id="LC49" class="blob-code blob-code-inner js-file-line">guides the choice of the final learning method, and it gives us a quantitative</td>
+          <td id="LC49" class="blob-code blob-code-inner js-file-line">    unloadNamespace(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L50" class="blob-num js-line-number js-code-nav-line-number" data-line-number="50"></td>
-          <td id="LC50" class="blob-code blob-code-inner js-file-line">assessment of how good the chosen algorithm is doing. In order to assess the</td>
+          <td id="LC50" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L51" class="blob-num js-line-number js-code-nav-line-number" data-line-number="51"></td>
-          <td id="LC51" class="blob-code blob-code-inner js-file-line">performance of an algorithm, we introduce the concept of a <span class="pl-mb">**loss**</span> function,</td>
+          <td id="LC51" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L52" class="blob-num js-line-number js-code-nav-line-number" data-line-number="52"></td>
-          <td id="LC52" class="blob-code blob-code-inner js-file-line">which helps us define the <span class="pl-mb">**risk**</span>, also referred to as the **expected</td>
+          <td id="LC52" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L53" class="blob-num js-line-number js-code-nav-line-number" data-line-number="53"></td>
-          <td id="LC53" class="blob-code blob-code-inner js-file-line">prediction error**.  </td>
+          <td id="LC53" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> load bootstrap tools   </span></td>
         </tr>
         <tr>
           <td id="L54" class="blob-num js-line-number js-code-nav-line-number" data-line-number="54"></td>
-          <td id="LC54" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC54" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">bootstrap</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>, <span class="pl-smi">library</span>) {</td>
         </tr>
         <tr>
           <td id="L55" class="blob-num js-line-number js-code-nav-line-number" data-line-number="55"></td>
-          <td id="LC55" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\begin{shortbox}\n\\Boxhead{Constructing a library that is consistent with the data-generating distribution}&#39;`</span></td>
+          <td id="LC55" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L56" class="blob-num js-line-number js-code-nav-line-number" data-line-number="56"></td>
-          <td id="LC56" class="blob-code blob-code-inner js-file-line">Our goal, as further specified in the next chapter, will be</td>
+          <td id="LC56" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> attempt to download renv</span></td>
         </tr>
         <tr>
           <td id="L57" class="blob-num js-line-number js-code-nav-line-number" data-line-number="57"></td>
-          <td id="LC57" class="blob-code blob-code-inner js-file-line">to estimate the true risk of the proposed statistical learning method. Our</td>
+          <td id="LC57" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">tarball</span> <span class="pl-k">&lt;-</span> tryCatch(renv_bootstrap_download(<span class="pl-smi">version</span>), <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span>)</td>
         </tr>
         <tr>
           <td id="L58" class="blob-num js-line-number js-code-nav-line-number" data-line-number="58"></td>
-          <td id="LC58" class="blob-code blob-code-inner js-file-line">goal(s) consist of:</td>
+          <td id="LC58" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (inherits(<span class="pl-smi">tarball</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>error<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L59" class="blob-num js-line-number js-code-nav-line-number" data-line-number="59"></td>
-          <td id="LC59" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC59" class="blob-code blob-code-inner js-file-line">      stop(<span class="pl-s"><span class="pl-pds">&quot;</span>failed to download renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L60" class="blob-num js-line-number js-code-nav-line-number" data-line-number="60"></td>
-          <td id="LC60" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> Estimating the performance of different algorithms in order to choose the</td>
+          <td id="LC60" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L61" class="blob-num js-line-number js-code-nav-line-number" data-line-number="61"></td>
-          <td id="LC61" class="blob-code blob-code-inner js-file-line">   best one.</td>
+          <td id="LC61" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> now attempt to install</span></td>
         </tr>
         <tr>
           <td id="L62" class="blob-num js-line-number js-code-nav-line-number" data-line-number="62"></td>
-          <td id="LC62" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> Having chosen a winner, estimate the true risk of the proposed</td>
+          <td id="LC62" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">status</span> <span class="pl-k">&lt;-</span> tryCatch(renv_bootstrap_install(<span class="pl-smi">version</span>, <span class="pl-smi">tarball</span>, <span class="pl-smi">library</span>), <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span>)</td>
         </tr>
         <tr>
           <td id="L63" class="blob-num js-line-number js-code-nav-line-number" data-line-number="63"></td>
-          <td id="LC63" class="blob-code blob-code-inner js-file-line">   statistical learning method.</td>
+          <td id="LC63" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (inherits(<span class="pl-smi">status</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>error<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L64" class="blob-num js-line-number js-code-nav-line-number" data-line-number="64"></td>
-          <td id="LC64" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\end{shortbox}&#39;`</span></td>
+          <td id="LC64" class="blob-code blob-code-inner js-file-line">      stop(<span class="pl-s"><span class="pl-pds">&quot;</span>failed to install renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L65" class="blob-num js-line-number js-code-nav-line-number" data-line-number="65"></td>
-          <td id="LC65" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC65" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L66" class="blob-num js-line-number js-code-nav-line-number" data-line-number="66"></td>
-          <td id="LC66" class="blob-code blob-code-inner js-file-line">In the following, we propose a method to do so using the observed data and</td>
+          <td id="LC66" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L67" class="blob-num js-line-number js-code-nav-line-number" data-line-number="67"></td>
-          <td id="LC67" class="blob-code blob-code-inner js-file-line"><span class="pl-mb">**cross-validation**</span> procedure using the <span class="pl-c1">`origami`</span> package [<span class="pl-v">@</span><span class="pl-s">coyle2018origami</span>].</td>
+          <td id="LC67" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L68" class="blob-num js-line-number js-code-nav-line-number" data-line-number="68"></td>
-          <td id="LC68" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC68" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_tests_running</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L69" class="blob-num js-line-number js-code-nav-line-number" data-line-number="69"></td>
-          <td id="LC69" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Background</span></td>
+          <td id="LC69" class="blob-code blob-code-inner js-file-line">    getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>renv.tests.running<span class="pl-pds">&quot;</span></span>, <span class="pl-v">default</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L70" class="blob-num js-line-number js-code-nav-line-number" data-line-number="70"></td>
-          <td id="LC70" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC70" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L71" class="blob-num js-line-number js-code-nav-line-number" data-line-number="71"></td>
-          <td id="LC71" class="blob-code blob-code-inner js-file-line">Ideally, in a data-rich scenario, we would split our dataset into three parts:</td>
+          <td id="LC71" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L72" class="blob-num js-line-number js-code-nav-line-number" data-line-number="72"></td>
-          <td id="LC72" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC72" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_repos</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L73" class="blob-num js-line-number js-code-nav-line-number" data-line-number="73"></td>
-          <td id="LC73" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> training set,</td>
+          <td id="LC73" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L74" class="blob-num js-line-number js-code-nav-line-number" data-line-number="74"></td>
-          <td id="LC74" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> validation set,</td>
+          <td id="LC74" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check for repos override</span></td>
         </tr>
         <tr>
           <td id="L75" class="blob-num js-line-number js-code-nav-line-number" data-line-number="75"></td>
-          <td id="LC75" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> test set.</td>
+          <td id="LC75" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_CONFIG_REPOS_OVERRIDE<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L76" class="blob-num js-line-number js-code-nav-line-number" data-line-number="76"></td>
-          <td id="LC76" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC76" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">repos</span>))</td>
         </tr>
         <tr>
           <td id="L77" class="blob-num js-line-number js-code-nav-line-number" data-line-number="77"></td>
-          <td id="LC77" class="blob-code blob-code-inner js-file-line">The training set is used to fit algorithm(s) of interest; we evaluate the</td>
+          <td id="LC77" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-smi">repos</span>)</td>
         </tr>
         <tr>
           <td id="L78" class="blob-num js-line-number js-code-nav-line-number" data-line-number="78"></td>
-          <td id="LC78" class="blob-code blob-code-inner js-file-line">performance of the fit(s) on a validation set, which can be used to estimate</td>
+          <td id="LC78" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L79" class="blob-num js-line-number js-code-nav-line-number" data-line-number="79"></td>
-          <td id="LC79" class="blob-code blob-code-inner js-file-line">prediction error (e.g., for tuning and model selection). The final error of the</td>
+          <td id="LC79" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if we&#39;re testing, re-use the test repositories</span></td>
         </tr>
         <tr>
           <td id="L80" class="blob-num js-line-number js-code-nav-line-number" data-line-number="80"></td>
-          <td id="LC80" class="blob-code blob-code-inner js-file-line">chosen algorithm(s) is obtained by using the test set, which is kept separately,</td>
+          <td id="LC80" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (renv_bootstrap_tests_running())</td>
         </tr>
         <tr>
           <td id="L81" class="blob-num js-line-number js-code-nav-line-number" data-line-number="81"></td>
-          <td id="LC81" class="blob-code blob-code-inner js-file-line">and doesn&#39;t see the data before the final evaluation.  One might wonder, with</td>
+          <td id="LC81" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>renv.tests.repos<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L82" class="blob-num js-line-number js-code-nav-line-number" data-line-number="82"></td>
-          <td id="LC82" class="blob-code blob-code-inner js-file-line">training data readily available, why not use the training error to evaluate the</td>
+          <td id="LC82" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L83" class="blob-num js-line-number js-code-nav-line-number" data-line-number="83"></td>
-          <td id="LC83" class="blob-code blob-code-inner js-file-line">proposed algorithm&#39;s performance?  Unfortunately, the training error is not a</td>
+          <td id="LC83" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> retrieve current repos</span></td>
         </tr>
         <tr>
           <td id="L84" class="blob-num js-line-number js-code-nav-line-number" data-line-number="84"></td>
-          <td id="LC84" class="blob-code blob-code-inner js-file-line">good estimate of the true risk; it consistently decreases with model complexity,</td>
+          <td id="LC84" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span> <span class="pl-k">&lt;-</span> getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>repos<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L85" class="blob-num js-line-number js-code-nav-line-number" data-line-number="85"></td>
-          <td id="LC85" class="blob-code blob-code-inner js-file-line">resulting in a possible overfit to the training data and low generalizability.</td>
+          <td id="LC85" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L86" class="blob-num js-line-number js-code-nav-line-number" data-line-number="86"></td>
-          <td id="LC86" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC86" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> ensure @CRAN@ entries are resolved</span></td>
         </tr>
         <tr>
           <td id="L87" class="blob-num js-line-number js-code-nav-line-number" data-line-number="87"></td>
-          <td id="LC87" class="blob-code blob-code-inner js-file-line">Since data are often scarce, separating it into training, validation and test</td>
+          <td id="LC87" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span>[<span class="pl-smi">repos</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>@CRAN@<span class="pl-pds">&quot;</span></span>] <span class="pl-k">&lt;-</span> getOption(</td>
         </tr>
         <tr>
           <td id="L88" class="blob-num js-line-number js-code-nav-line-number" data-line-number="88"></td>
-          <td id="LC88" class="blob-code blob-code-inner js-file-line">set is usually not possible. In the absence of a large data set and a designated</td>
+          <td id="LC88" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>renv.repos.cran<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L89" class="blob-num js-line-number js-code-nav-line-number" data-line-number="89"></td>
-          <td id="LC89" class="blob-code blob-code-inner js-file-line">test set, we must resort to methods that estimate the true risk by efficient</td>
+          <td id="LC89" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>https://cloud.r-project.org<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L90" class="blob-num js-line-number js-code-nav-line-number" data-line-number="90"></td>
-          <td id="LC90" class="blob-code blob-code-inner js-file-line">sample re-use.  Re-sampling methods, in great generality, involve repeatedly</td>
+          <td id="LC90" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L91" class="blob-num js-line-number js-code-nav-line-number" data-line-number="91"></td>
-          <td id="LC91" class="blob-code blob-code-inner js-file-line">sampling from the training set and fitting proposed algorithms on the new</td>
+          <td id="LC91" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L92" class="blob-num js-line-number js-code-nav-line-number" data-line-number="92"></td>
-          <td id="LC92" class="blob-code blob-code-inner js-file-line">samples. While often computationally intensive, re-sampling methods are</td>
+          <td id="LC92" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> add in renv.bootstrap.repos if set</span></td>
         </tr>
         <tr>
           <td id="L93" class="blob-num js-line-number js-code-nav-line-number" data-line-number="93"></td>
-          <td id="LC93" class="blob-code blob-code-inner js-file-line">particularly useful for model selection and estimation of the true risk. In</td>
+          <td id="LC93" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">default</span> <span class="pl-k">&lt;-</span> c(<span class="pl-v">FALLBACK</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>https://cloud.r-project.org<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L94" class="blob-num js-line-number js-code-nav-line-number" data-line-number="94"></td>
-          <td id="LC94" class="blob-code blob-code-inner js-file-line">addition, they might provide more insight on variability and robustness of the</td>
+          <td id="LC94" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">extra</span> <span class="pl-k">&lt;-</span> getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>renv.bootstrap.repos<span class="pl-pds">&quot;</span></span>, <span class="pl-v">default</span> <span class="pl-k">=</span> <span class="pl-smi">default</span>)</td>
         </tr>
         <tr>
           <td id="L95" class="blob-num js-line-number js-code-nav-line-number" data-line-number="95"></td>
-          <td id="LC95" class="blob-code blob-code-inner js-file-line">algorithm fit then fitting an algorithm only once on all the training data.</td>
+          <td id="LC95" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span> <span class="pl-k">&lt;-</span> c(<span class="pl-smi">repos</span>, <span class="pl-smi">extra</span>)</td>
         </tr>
         <tr>
           <td id="L96" class="blob-num js-line-number js-code-nav-line-number" data-line-number="96"></td>
-          <td id="LC96" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC96" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L97" class="blob-num js-line-number js-code-nav-line-number" data-line-number="97"></td>
-          <td id="LC97" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Introducing: cross-validation</span></td>
+          <td id="LC97" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> remove duplicates that might&#39;ve snuck in</span></td>
         </tr>
         <tr>
           <td id="L98" class="blob-num js-line-number js-code-nav-line-number" data-line-number="98"></td>
-          <td id="LC98" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC98" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">dupes</span> <span class="pl-k">&lt;-</span> duplicated(<span class="pl-smi">repos</span>) <span class="pl-k">|</span> duplicated(names(<span class="pl-smi">repos</span>))</td>
         </tr>
         <tr>
           <td id="L99" class="blob-num js-line-number js-code-nav-line-number" data-line-number="99"></td>
-          <td id="LC99" class="blob-code blob-code-inner js-file-line">In this chapter, we focus on <span class="pl-mb">**cross-validation**</span> -- an essential tool for</td>
+          <td id="LC99" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span>[<span class="pl-k">!</span><span class="pl-smi">dupes</span>]</td>
         </tr>
         <tr>
           <td id="L100" class="blob-num js-line-number js-code-nav-line-number" data-line-number="100"></td>
-          <td id="LC100" class="blob-code blob-code-inner js-file-line">evaluating how any given algorithm extends from a sample to the target</td>
+          <td id="LC100" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L101" class="blob-num js-line-number js-code-nav-line-number" data-line-number="101"></td>
-          <td id="LC101" class="blob-code blob-code-inner js-file-line">population from which the sample is derived. It has seen widespread application</td>
+          <td id="LC101" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L102" class="blob-num js-line-number js-code-nav-line-number" data-line-number="102"></td>
-          <td id="LC102" class="blob-code blob-code-inner js-file-line">in all facets of statistics, perhaps most notably statistical machine learning.</td>
+          <td id="LC102" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L103" class="blob-num js-line-number js-code-nav-line-number" data-line-number="103"></td>
-          <td id="LC103" class="blob-code blob-code-inner js-file-line">The cross-validation procedure can be used for model selection, as well as for</td>
+          <td id="LC103" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L104" class="blob-num js-line-number js-code-nav-line-number" data-line-number="104"></td>
-          <td id="LC104" class="blob-code blob-code-inner js-file-line">estimation of the true risk associated with any statistical learning method in</td>
+          <td id="LC104" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L105" class="blob-num js-line-number js-code-nav-line-number" data-line-number="105"></td>
-          <td id="LC105" class="blob-code blob-code-inner js-file-line">order to evaluate its performance. It particular, cross-validation directly</td>
+          <td id="LC105" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if the renv version number has 4 components, assume it must</span></td>
         </tr>
         <tr>
           <td id="L106" class="blob-num js-line-number js-code-nav-line-number" data-line-number="106"></td>
-          <td id="LC106" class="blob-code blob-code-inner js-file-line">estimates the true risk when the estimate is applied to an independent sample</td>
+          <td id="LC106" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> be retrieved via github</span></td>
         </tr>
         <tr>
           <td id="L107" class="blob-num js-line-number js-code-nav-line-number" data-line-number="107"></td>
-          <td id="LC107" class="blob-code blob-code-inner js-file-line">from the joint distribution of the predictors and outcome. When used for model</td>
+          <td id="LC107" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">nv</span> <span class="pl-k">&lt;-</span> numeric_version(<span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L108" class="blob-num js-line-number js-code-nav-line-number" data-line-number="108"></td>
-          <td id="LC108" class="blob-code blob-code-inner js-file-line">selection, cross-validation has powerful optimality properties. The asymptotic</td>
+          <td id="LC108" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">components</span> <span class="pl-k">&lt;-</span> unclass(<span class="pl-smi">nv</span>)[[<span class="pl-c1">1</span>]]</td>
         </tr>
         <tr>
           <td id="L109" class="blob-num js-line-number js-code-nav-line-number" data-line-number="109"></td>
-          <td id="LC109" class="blob-code blob-code-inner js-file-line">optimality results state that the cross-validated selector performs (in terms of</td>
+          <td id="LC109" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L110" class="blob-num js-line-number js-code-nav-line-number" data-line-number="110"></td>
-          <td id="LC110" class="blob-code blob-code-inner js-file-line">risk) asymptotically as well as an optimal oracle selector based on the true,</td>
+          <td id="LC110" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">methods</span> <span class="pl-k">&lt;-</span> <span class="pl-k">if</span> (length(<span class="pl-smi">components</span>) <span class="pl-k">==</span> <span class="pl-c1">4L</span>) {</td>
         </tr>
         <tr>
           <td id="L111" class="blob-num js-line-number js-code-nav-line-number" data-line-number="111"></td>
-          <td id="LC111" class="blob-code blob-code-inner js-file-line">unknown data generating distribution. For further details on the theoretical</td>
+          <td id="LC111" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">list</span>(</td>
         </tr>
         <tr>
           <td id="L112" class="blob-num js-line-number js-code-nav-line-number" data-line-number="112"></td>
-          <td id="LC112" class="blob-code blob-code-inner js-file-line">results, we suggest <span class="pl-v">@</span><span class="pl-s">vdl2003unified</span>, <span class="pl-v">@</span><span class="pl-s">vdl2004asymptotic</span>, <span class="pl-v">@</span><span class="pl-s">dudoit2005asymptotics</span> and</td>
+          <td id="LC112" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">renv_bootstrap_download_github</span></td>
         </tr>
         <tr>
           <td id="L113" class="blob-num js-line-number js-code-nav-line-number" data-line-number="113"></td>
-          <td id="LC113" class="blob-code blob-code-inner js-file-line"><span class="pl-v">@</span><span class="pl-s">vaart2006oracle</span>.</td>
+          <td id="LC113" class="blob-code blob-code-inner js-file-line">      )</td>
         </tr>
         <tr>
           <td id="L114" class="blob-num js-line-number js-code-nav-line-number" data-line-number="114"></td>
-          <td id="LC114" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC114" class="blob-code blob-code-inner js-file-line">    } <span class="pl-k">else</span> {</td>
         </tr>
         <tr>
           <td id="L115" class="blob-num js-line-number js-code-nav-line-number" data-line-number="115"></td>
-          <td id="LC115" class="blob-code blob-code-inner js-file-line">In great generality, cross-validation works by partitioning a sample into</td>
+          <td id="LC115" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">list</span>(</td>
         </tr>
         <tr>
           <td id="L116" class="blob-num js-line-number js-code-nav-line-number" data-line-number="116"></td>
-          <td id="LC116" class="blob-code blob-code-inner js-file-line">complementary subsets, applying a particular algorithm(s) on a subset (the</td>
+          <td id="LC116" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">renv_bootstrap_download_cran_latest</span>,</td>
         </tr>
         <tr>
           <td id="L117" class="blob-num js-line-number js-code-nav-line-number" data-line-number="117"></td>
-          <td id="LC117" class="blob-code blob-code-inner js-file-line">training set), and evaluating the method of choice on the complementary subset</td>
+          <td id="LC117" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">renv_bootstrap_download_cran_archive</span></td>
         </tr>
         <tr>
           <td id="L118" class="blob-num js-line-number js-code-nav-line-number" data-line-number="118"></td>
-          <td id="LC118" class="blob-code blob-code-inner js-file-line">(the validation/test set). This procedure is repeated across multiple partitions</td>
+          <td id="LC118" class="blob-code blob-code-inner js-file-line">      )</td>
         </tr>
         <tr>
           <td id="L119" class="blob-num js-line-number js-code-nav-line-number" data-line-number="119"></td>
-          <td id="LC119" class="blob-code blob-code-inner js-file-line">of the data. A variety of different partitioning schemes exist, depending on the</td>
+          <td id="LC119" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L120" class="blob-num js-line-number js-code-nav-line-number" data-line-number="120"></td>
-          <td id="LC120" class="blob-code blob-code-inner js-file-line">problem of interest, data size, prevalence of the outcome, and dependence</td>
+          <td id="LC120" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L121" class="blob-num js-line-number js-code-nav-line-number" data-line-number="121"></td>
-          <td id="LC121" class="blob-code blob-code-inner js-file-line">structure. The <span class="pl-c1">`origami`</span> package provides a suite of tools that generalize the</td>
+          <td id="LC121" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">method</span> <span class="pl-k">in</span> <span class="pl-smi">methods</span>) {</td>
         </tr>
         <tr>
           <td id="L122" class="blob-num js-line-number js-code-nav-line-number" data-line-number="122"></td>
-          <td id="LC122" class="blob-code blob-code-inner js-file-line">application of cross-validation to arbitrary data analytic procedures. In the</td>
+          <td id="LC122" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">path</span> <span class="pl-k">&lt;-</span> tryCatch(method(<span class="pl-smi">version</span>), <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span>)</td>
         </tr>
         <tr>
           <td id="L123" class="blob-num js-line-number js-code-nav-line-number" data-line-number="123"></td>
-          <td id="LC123" class="blob-code blob-code-inner js-file-line">the following, we describe different types of cross-validation schemes readily</td>
+          <td id="LC123" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (is.character(<span class="pl-smi">path</span>) <span class="pl-k">&amp;&amp;</span> file.exists(<span class="pl-smi">path</span>))</td>
         </tr>
         <tr>
           <td id="L124" class="blob-num js-line-number js-code-nav-line-number" data-line-number="124"></td>
-          <td id="LC124" class="blob-code blob-code-inner js-file-line">available in <span class="pl-c1">`origami`</span>, introduce the general structure of the <span class="pl-c1">`origami`</span></td>
+          <td id="LC124" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">return</span>(<span class="pl-smi">path</span>)</td>
         </tr>
         <tr>
           <td id="L125" class="blob-num js-line-number js-code-nav-line-number" data-line-number="125"></td>
-          <td id="LC125" class="blob-code blob-code-inner js-file-line">package, and show their use in applied settings.</td>
+          <td id="LC125" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L126" class="blob-num js-line-number js-code-nav-line-number" data-line-number="126"></td>
-          <td id="LC126" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC126" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L127" class="blob-num js-line-number js-code-nav-line-number" data-line-number="127"></td>
-          <td id="LC127" class="blob-code blob-code-inner js-file-line"><span class="pl-c">---</span></td>
+          <td id="LC127" class="blob-code blob-code-inner js-file-line">    stop(<span class="pl-s"><span class="pl-pds">&quot;</span>failed to download renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L128" class="blob-num js-line-number js-code-nav-line-number" data-line-number="128"></td>
-          <td id="LC128" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC128" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L129" class="blob-num js-line-number js-code-nav-line-number" data-line-number="129"></td>
-          <td id="LC129" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Estimation Roadmap: how does it all fit together?</span></td>
+          <td id="LC129" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L130" class="blob-num js-line-number js-code-nav-line-number" data-line-number="130"></td>
-          <td id="LC130" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC130" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L131" class="blob-num js-line-number js-code-nav-line-number" data-line-number="131"></td>
-          <td id="LC131" class="blob-code blob-code-inner js-file-line">Similarly to how we defined the [<span class="pl-e">_Roadmap for Targeted Learning_</span>](#roadmap), we</td>
+          <td id="LC131" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download_impl</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">url</span>, <span class="pl-smi">destfile</span>) {</td>
         </tr>
         <tr>
           <td id="L132" class="blob-num js-line-number js-code-nav-line-number" data-line-number="132"></td>
-          <td id="LC132" class="blob-code blob-code-inner js-file-line">can define the <span class="pl-mb">**Estimation Roadmap**</span> to guide the estimation process. In</td>
+          <td id="LC132" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L133" class="blob-num js-line-number js-code-nav-line-number" data-line-number="133"></td>
-          <td id="LC133" class="blob-code blob-code-inner js-file-line">particular, we have developed a unified loss-based cross-validation methodology</td>
+          <td id="LC133" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">mode</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>wb<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L134" class="blob-num js-line-number js-code-nav-line-number" data-line-number="134"></td>
-          <td id="LC134" class="blob-code blob-code-inner js-file-line">for estimator construction, selection, and performance assessment in a series of</td>
+          <td id="LC134" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L135" class="blob-num js-line-number js-code-nav-line-number" data-line-number="135"></td>
-          <td id="LC135" class="blob-code blob-code-inner js-file-line">articles (e.g., see <span class="pl-v">@</span><span class="pl-s">vdl2003unified</span>, <span class="pl-v">@</span><span class="pl-s">vdl2004asymptotic</span>, <span class="pl-v">@</span><span class="pl-s">dudoit2005asymptotics</span>,</td>
+          <td id="LC135" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17715</span></td>
         </tr>
         <tr>
           <td id="L136" class="blob-num js-line-number js-code-nav-line-number" data-line-number="136"></td>
-          <td id="LC136" class="blob-code blob-code-inner js-file-line"><span class="pl-v">@</span><span class="pl-s">vaart2006oracle</span>, and <span class="pl-v">@</span><span class="pl-s">vdl2007super</span>) that follow three main steps:</td>
+          <td id="LC136" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">fixup</span> <span class="pl-k">&lt;-</span></td>
         </tr>
         <tr>
           <td id="L137" class="blob-num js-line-number js-code-nav-line-number" data-line-number="137"></td>
-          <td id="LC137" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC137" class="blob-code blob-code-inner js-file-line">      Sys.info()[[<span class="pl-s"><span class="pl-pds">&quot;</span>sysname<span class="pl-pds">&quot;</span></span>]] <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Windows<span class="pl-pds">&quot;</span></span> <span class="pl-k">&amp;&amp;</span></td>
         </tr>
         <tr>
           <td id="L138" class="blob-num js-line-number js-code-nav-line-number" data-line-number="138"></td>
-          <td id="LC138" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> <span class="pl-mb">**The loss funtion**</span>:</td>
+          <td id="LC138" class="blob-code blob-code-inner js-file-line">      substring(<span class="pl-smi">url</span>, <span class="pl-c1">1L</span>, <span class="pl-c1">5L</span>) <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>file:<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L139" class="blob-num js-line-number js-code-nav-line-number" data-line-number="139"></td>
-          <td id="LC139" class="blob-code blob-code-inner js-file-line">Define the target parameter as the minimizer of the expected loss (risk) for a</td>
+          <td id="LC139" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L140" class="blob-num js-line-number js-code-nav-line-number" data-line-number="140"></td>
-          <td id="LC140" class="blob-code blob-code-inner js-file-line">full data loss function chosen to represent the desired performance measure.</td>
+          <td id="LC140" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">fixup</span>)</td>
         </tr>
         <tr>
           <td id="L141" class="blob-num js-line-number js-code-nav-line-number" data-line-number="141"></td>
-          <td id="LC141" class="blob-code blob-code-inner js-file-line">Map the full data loss function into an observed data loss function, having the</td>
+          <td id="LC141" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">mode</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>w+b<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L142" class="blob-num js-line-number js-code-nav-line-number" data-line-number="142"></td>
-          <td id="LC142" class="blob-code blob-code-inner js-file-line">same expected value and leading to an efficient estimator of risk.</td>
+          <td id="LC142" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L143" class="blob-num js-line-number js-code-nav-line-number" data-line-number="143"></td>
-          <td id="LC143" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC143" class="blob-code blob-code-inner js-file-line">    <span class="pl-e">utils</span><span class="pl-k">::</span>download.file(</td>
         </tr>
         <tr>
           <td id="L144" class="blob-num js-line-number js-code-nav-line-number" data-line-number="144"></td>
-          <td id="LC144" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> <span class="pl-mb">**The algorithms**</span>:</td>
+          <td id="LC144" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">url</span>      <span class="pl-k">=</span> <span class="pl-smi">url</span>,</td>
         </tr>
         <tr>
           <td id="L145" class="blob-num js-line-number js-code-nav-line-number" data-line-number="145"></td>
-          <td id="LC145" class="blob-code blob-code-inner js-file-line">Construct a finite collection of candidate estimators for the parameter of</td>
+          <td id="LC145" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">destfile</span> <span class="pl-k">=</span> <span class="pl-smi">destfile</span>,</td>
         </tr>
         <tr>
           <td id="L146" class="blob-num js-line-number js-code-nav-line-number" data-line-number="146"></td>
-          <td id="LC146" class="blob-code blob-code-inner js-file-line">interest.</td>
+          <td id="LC146" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">mode</span>     <span class="pl-k">=</span> <span class="pl-smi">mode</span>,</td>
         </tr>
         <tr>
           <td id="L147" class="blob-num js-line-number js-code-nav-line-number" data-line-number="147"></td>
-          <td id="LC147" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC147" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">quiet</span>    <span class="pl-k">=</span> <span class="pl-c1">TRUE</span></td>
         </tr>
         <tr>
           <td id="L148" class="blob-num js-line-number js-code-nav-line-number" data-line-number="148"></td>
-          <td id="LC148" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> <span class="pl-mb">**The cross-validation scheme**</span>:</td>
+          <td id="LC148" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L149" class="blob-num js-line-number js-code-nav-line-number" data-line-number="149"></td>
-          <td id="LC149" class="blob-code blob-code-inner js-file-line">Apply appropriate cross-validation to select an optimal estimator among the</td>
+          <td id="LC149" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L150" class="blob-num js-line-number js-code-nav-line-number" data-line-number="150"></td>
-          <td id="LC150" class="blob-code blob-code-inner js-file-line">candidates, and assess the overall performance of the resulting estimator.</td>
+          <td id="LC150" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L151" class="blob-num js-line-number js-code-nav-line-number" data-line-number="151"></td>
-          <td id="LC151" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC151" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L152" class="blob-num js-line-number js-code-nav-line-number" data-line-number="152"></td>
-          <td id="LC152" class="blob-code blob-code-inner js-file-line">Step 1 of the Estimation Roadmap allows us to unify a broad range of problems</td>
+          <td id="LC152" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download_cran_latest</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L153" class="blob-num js-line-number js-code-nav-line-number" data-line-number="153"></td>
-          <td id="LC153" class="blob-code blob-code-inner js-file-line">that are traditionally treated separately in the statistical literature,</td>
+          <td id="LC153" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L154" class="blob-num js-line-number js-code-nav-line-number" data-line-number="154"></td>
-          <td id="LC154" class="blob-code blob-code-inner js-file-line">including density estimation, prediction of polychotomous and continuous</td>
+          <td id="LC154" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">spec</span> <span class="pl-k">&lt;-</span> renv_bootstrap_download_cran_latest_find(<span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L155" class="blob-num js-line-number js-code-nav-line-number" data-line-number="155"></td>
-          <td id="LC155" class="blob-code blob-code-inner js-file-line">outcomes. For example, if we are interested in estimating the full joint</td>
+          <td id="LC155" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L156" class="blob-num js-line-number js-code-nav-line-number" data-line-number="156"></td>
-          <td id="LC156" class="blob-code blob-code-inner js-file-line">conditional density, we could use the negative log-likelihood loss. If instead</td>
+          <td id="LC156" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>* Downloading renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> ... <span class="pl-pds">&quot;</span></span>, <span class="pl-v">appendLF</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L157" class="blob-num js-line-number js-code-nav-line-number" data-line-number="157"></td>
-          <td id="LC157" class="blob-code blob-code-inner js-file-line">we are interested in the conditional mean with continuous outcome, one could use</td>
+          <td id="LC157" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L158" class="blob-num js-line-number js-code-nav-line-number" data-line-number="158"></td>
-          <td id="LC158" class="blob-code blob-code-inner js-file-line">the squared error loss; had the outcome been binary, one could resort to the</td>
+          <td id="LC158" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">type</span>  <span class="pl-k">&lt;-</span> <span class="pl-smi">spec</span><span class="pl-k">$</span><span class="pl-smi">type</span></td>
         </tr>
         <tr>
           <td id="L159" class="blob-num js-line-number js-code-nav-line-number" data-line-number="159"></td>
-          <td id="LC159" class="blob-code blob-code-inner js-file-line">indicator (0-1) loss. The unified loss-based framework also reconciles censored</td>
+          <td id="LC159" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">spec</span><span class="pl-k">$</span><span class="pl-smi">repos</span></td>
         </tr>
         <tr>
           <td id="L160" class="blob-num js-line-number js-code-nav-line-number" data-line-number="160"></td>
-          <td id="LC160" class="blob-code blob-code-inner js-file-line">and full data estimation methods, by generalizing any loss based learning for</td>
+          <td id="LC160" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L161" class="blob-num js-line-number js-code-nav-line-number" data-line-number="161"></td>
-          <td id="LC161" class="blob-code blob-code-inner js-file-line">full data into loss based learning for general censored data. </td>
+          <td id="LC161" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">info</span> <span class="pl-k">&lt;-</span> tryCatch(</td>
         </tr>
         <tr>
           <td id="L162" class="blob-num js-line-number js-code-nav-line-number" data-line-number="162"></td>
-          <td id="LC162" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC162" class="blob-code blob-code-inner js-file-line">      <span class="pl-e">utils</span><span class="pl-k">::</span>download.packages(</td>
         </tr>
         <tr>
           <td id="L163" class="blob-num js-line-number js-code-nav-line-number" data-line-number="163"></td>
-          <td id="LC163" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Example: cross-validation and prediction</span></td>
+          <td id="LC163" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">pkgs</span>    <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L164" class="blob-num js-line-number js-code-nav-line-number" data-line-number="164"></td>
-          <td id="LC164" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC164" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">destdir</span> <span class="pl-k">=</span> tempdir(),</td>
         </tr>
         <tr>
           <td id="L165" class="blob-num js-line-number js-code-nav-line-number" data-line-number="165"></td>
-          <td id="LC165" class="blob-code blob-code-inner js-file-line">Now that we introduced the Estimation Roadmap, we can define our objective with</td>
+          <td id="LC165" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">repos</span>   <span class="pl-k">=</span> <span class="pl-smi">repos</span>,</td>
         </tr>
         <tr>
           <td id="L166" class="blob-num js-line-number js-code-nav-line-number" data-line-number="166"></td>
-          <td id="LC166" class="blob-code blob-code-inner js-file-line">more mathematical notation, using prediction as an example. Let the observed</td>
+          <td id="LC166" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">type</span>    <span class="pl-k">=</span> <span class="pl-smi">type</span>,</td>
         </tr>
         <tr>
           <td id="L167" class="blob-num js-line-number js-code-nav-line-number" data-line-number="167"></td>
-          <td id="LC167" class="blob-code blob-code-inner js-file-line">data be defined as $X = (W,Y)$, where a unit specific data can be written as</td>
+          <td id="LC167" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">quiet</span>   <span class="pl-k">=</span> <span class="pl-c1">TRUE</span></td>
         </tr>
         <tr>
           <td id="L168" class="blob-num js-line-number js-code-nav-line-number" data-line-number="168"></td>
-          <td id="LC168" class="blob-code blob-code-inner js-file-line">$X_i = (W_i,Y_i)$, for $i = 1, <span class="pl-cce">\l</span>dots, n$. For each of the $n$ samples, we</td>
+          <td id="LC168" class="blob-code blob-code-inner js-file-line">      ),</td>
         </tr>
         <tr>
           <td id="L169" class="blob-num js-line-number js-code-nav-line-number" data-line-number="169"></td>
-          <td id="LC169" class="blob-code blob-code-inner js-file-line">denote $Y_i$ as the outcome of interest (polychotomous or continuous), and $W_i$</td>
+          <td id="LC169" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">condition</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span></td>
         </tr>
         <tr>
           <td id="L170" class="blob-num js-line-number js-code-nav-line-number" data-line-number="170"></td>
-          <td id="LC170" class="blob-code blob-code-inner js-file-line">as a $p$-dimensional set of covariates. Let $<span class="pl-cce">\p</span>si_0(W)$ denote the target</td>
+          <td id="LC170" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L171" class="blob-num js-line-number js-code-nav-line-number" data-line-number="171"></td>
-          <td id="LC171" class="blob-code blob-code-inner js-file-line">parameter of interest we want to estimate; for this example, we are interested</td>
+          <td id="LC171" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L172" class="blob-num js-line-number js-code-nav-line-number" data-line-number="172"></td>
-          <td id="LC172" class="blob-code blob-code-inner js-file-line">in estimating the conditional expectation of the outcome given the covariates,</td>
+          <td id="LC172" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (inherits(<span class="pl-smi">info</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>condition<span class="pl-pds">&quot;</span></span>)) {</td>
         </tr>
         <tr>
           <td id="L173" class="blob-num js-line-number js-code-nav-line-number" data-line-number="173"></td>
-          <td id="LC173" class="blob-code blob-code-inner js-file-line">$<span class="pl-cce">\p</span>si_0(W) = E(Y <span class="pl-cce">\m</span>id W)$.  Following the Estimation Roadmap, we chose the</td>
+          <td id="LC173" class="blob-code blob-code-inner js-file-line">      message(<span class="pl-s"><span class="pl-pds">&quot;</span>FAILED<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L174" class="blob-num js-line-number js-code-nav-line-number" data-line-number="174"></td>
-          <td id="LC174" class="blob-code blob-code-inner js-file-line">appropriate loss function, $L$, such that $<span class="pl-cce">\p</span>si_0(W) = <span class="pl-cce">\t</span>ext{argmin}_{<span class="pl-cce">\p</span>si}</td>
+          <td id="LC174" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L175" class="blob-num js-line-number js-code-nav-line-number" data-line-number="175"></td>
-          <td id="LC175" class="blob-code blob-code-inner js-file-line">E[L(X,<span class="pl-cce">\p</span>si(W))]$. But how do we know how each $<span class="pl-cce">\p</span>si$ is doing? In order to pick</td>
+          <td id="LC175" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L176" class="blob-num js-line-number js-code-nav-line-number" data-line-number="176"></td>
-          <td id="LC176" class="blob-code blob-code-inner js-file-line">the optimal estimator among the candidates, and assess the overall performance</td>
+          <td id="LC176" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L177" class="blob-num js-line-number js-code-nav-line-number" data-line-number="177"></td>
-          <td id="LC177" class="blob-code blob-code-inner js-file-line">of the resulting estimator, we use cross-validation -- dividing the available data</td>
+          <td id="LC177" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> report success and return</span></td>
         </tr>
         <tr>
           <td id="L178" class="blob-num js-line-number js-code-nav-line-number" data-line-number="178"></td>
-          <td id="LC178" class="blob-code blob-code-inner js-file-line">into the training set and validation set. Observations in the training set are</td>
+          <td id="LC178" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>OK (downloaded <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">type</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>)<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L179" class="blob-num js-line-number js-code-nav-line-number" data-line-number="179"></td>
-          <td id="LC179" class="blob-code blob-code-inner js-file-line">used to fit (or train) the estimator, while the validation set is used to assess</td>
+          <td id="LC179" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">info</span>[<span class="pl-c1">1</span>, <span class="pl-c1">2</span>]</td>
         </tr>
         <tr>
           <td id="L180" class="blob-num js-line-number js-code-nav-line-number" data-line-number="180"></td>
-          <td id="LC180" class="blob-code blob-code-inner js-file-line">the risk of (or validate) it.</td>
+          <td id="LC180" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L181" class="blob-num js-line-number js-code-nav-line-number" data-line-number="181"></td>
-          <td id="LC181" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC181" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L182" class="blob-num js-line-number js-code-nav-line-number" data-line-number="182"></td>
-          <td id="LC182" class="blob-code blob-code-inner js-file-line">To derive a general representation for cross-validation, we define a **split</td>
+          <td id="LC182" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L183" class="blob-num js-line-number js-code-nav-line-number" data-line-number="183"></td>
-          <td id="LC183" class="blob-code blob-code-inner js-file-line">vector**, $B_n = (B_n(i): i = 1, <span class="pl-cce">\l</span>dots, n) <span class="pl-cce">\i</span>n <span class="pl-cce">\{</span>0,1<span class="pl-cce">\}</span>^n$. Note that split</td>
+          <td id="LC183" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download_cran_latest_find</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L184" class="blob-num js-line-number js-code-nav-line-number" data-line-number="184"></td>
-          <td id="LC184" class="blob-code blob-code-inner js-file-line">vector is independent of the empirical distribution, $P_n$. A realization of</td>
+          <td id="LC184" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L185" class="blob-num js-line-number js-code-nav-line-number" data-line-number="185"></td>
-          <td id="LC185" class="blob-code blob-code-inner js-file-line">$B_n$ defines a random split of the data into a training and validation set such</td>
+          <td id="LC185" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check whether binaries are supported on this system</span></td>
         </tr>
         <tr>
           <td id="L186" class="blob-num js-line-number js-code-nav-line-number" data-line-number="186"></td>
-          <td id="LC186" class="blob-code blob-code-inner js-file-line">that if</td>
+          <td id="LC186" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">binary</span> <span class="pl-k">&lt;-</span></td>
         </tr>
         <tr>
           <td id="L187" class="blob-num js-line-number js-code-nav-line-number" data-line-number="187"></td>
-          <td id="LC187" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC187" class="blob-code blob-code-inner js-file-line">      getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>renv.bootstrap.binary<span class="pl-pds">&quot;</span></span>, <span class="pl-v">default</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>) <span class="pl-k">&amp;&amp;</span></td>
         </tr>
         <tr>
           <td id="L188" class="blob-num js-line-number js-code-nav-line-number" data-line-number="188"></td>
-          <td id="LC188" class="blob-code blob-code-inner js-file-line">$$B_n(i) = 0, <span class="pl-cce">\ \ \t</span>ext{i sample is in the training set}$$</td>
+          <td id="LC188" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">!</span>identical(<span class="pl-smi">.Platform</span><span class="pl-k">$</span><span class="pl-smi">pkgType</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>source<span class="pl-pds">&quot;</span></span>) <span class="pl-k">&amp;&amp;</span></td>
         </tr>
         <tr>
           <td id="L189" class="blob-num js-line-number js-code-nav-line-number" data-line-number="189"></td>
-          <td id="LC189" class="blob-code blob-code-inner js-file-line">$$B_n(i) = 1, <span class="pl-cce">\ \ \t</span>ext{i sample is in the validation set.}$$</td>
+          <td id="LC189" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">!</span>identical(getOption(<span class="pl-s"><span class="pl-pds">&quot;</span>pkgType<span class="pl-pds">&quot;</span></span>), <span class="pl-s"><span class="pl-pds">&quot;</span>source<span class="pl-pds">&quot;</span></span>) <span class="pl-k">&amp;&amp;</span></td>
         </tr>
         <tr>
           <td id="L190" class="blob-num js-line-number js-code-nav-line-number" data-line-number="190"></td>
-          <td id="LC190" class="blob-code blob-code-inner js-file-line">We can further define $P_{n,B_n}^0$ and $P_{n,B_n}^1$ as the empirical</td>
+          <td id="LC190" class="blob-code blob-code-inner js-file-line">      Sys.info()[[<span class="pl-s"><span class="pl-pds">&quot;</span>sysname<span class="pl-pds">&quot;</span></span>]] <span class="pl-k">%in%</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>Darwin<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>Windows<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L191" class="blob-num js-line-number js-code-nav-line-number" data-line-number="191"></td>
-          <td id="LC191" class="blob-code blob-code-inner js-file-line">distributions of the training and validation sets, respectively. Then $n_0 =</td>
+          <td id="LC191" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L192" class="blob-num js-line-number js-code-nav-line-number" data-line-number="192"></td>
-          <td id="LC192" class="blob-code blob-code-inner js-file-line"><span class="pl-cce">\s</span>um_i (1-B_n(i))$ and $n_1 = <span class="pl-cce">\s</span>um_i B_n(i)$ denote the number of samples in each</td>
+          <td id="LC192" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">types</span> <span class="pl-k">&lt;-</span> c(<span class="pl-k">if</span> (<span class="pl-smi">binary</span>) <span class="pl-s"><span class="pl-pds">&quot;</span>binary<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>source<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L193" class="blob-num js-line-number js-code-nav-line-number" data-line-number="193"></td>
-          <td id="LC193" class="blob-code blob-code-inner js-file-line">set. The particular distribution of the split vector $B_n$ defines the type of</td>
+          <td id="LC193" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L194" class="blob-num js-line-number js-code-nav-line-number" data-line-number="194"></td>
-          <td id="LC194" class="blob-code blob-code-inner js-file-line">cross-validation scheme, tailored to the problem and data set in hand.</td>
+          <td id="LC194" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> iterate over types + repositories</span></td>
         </tr>
         <tr>
           <td id="L195" class="blob-num js-line-number js-code-nav-line-number" data-line-number="195"></td>
-          <td id="LC195" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC195" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">type</span> <span class="pl-k">in</span> <span class="pl-smi">types</span>) {</td>
         </tr>
         <tr>
           <td id="L196" class="blob-num js-line-number js-code-nav-line-number" data-line-number="196"></td>
-          <td id="LC196" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Cross-validation schemes in <span class="pl-c1">`origami`</span></span></td>
+          <td id="LC196" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">for</span> (<span class="pl-smi">repos</span> <span class="pl-k">in</span> renv_bootstrap_repos()) {</td>
         </tr>
         <tr>
           <td id="L197" class="blob-num js-line-number js-code-nav-line-number" data-line-number="197"></td>
-          <td id="LC197" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC197" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L198" class="blob-num js-line-number js-code-nav-line-number" data-line-number="198"></td>
-          <td id="LC198" class="blob-code blob-code-inner js-file-line">As we specified earlier, the particular distribution of the split vector $B_n$</td>
+          <td id="LC198" class="blob-code blob-code-inner js-file-line">        <span class="pl-c"><span class="pl-c">#</span> retrieve package database</span></td>
         </tr>
         <tr>
           <td id="L199" class="blob-num js-line-number js-code-nav-line-number" data-line-number="199"></td>
-          <td id="LC199" class="blob-code blob-code-inner js-file-line">defines the type of the cross-validation method. In the following, we describe</td>
+          <td id="LC199" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">db</span> <span class="pl-k">&lt;-</span> tryCatch(</td>
         </tr>
         <tr>
           <td id="L200" class="blob-num js-line-number js-code-nav-line-number" data-line-number="200"></td>
-          <td id="LC200" class="blob-code blob-code-inner js-file-line">different types of cross-validation schemes available in <span class="pl-c1">`origami`</span> package, and</td>
+          <td id="LC200" class="blob-code blob-code-inner js-file-line">          as.data.frame(</td>
         </tr>
         <tr>
           <td id="L201" class="blob-num js-line-number js-code-nav-line-number" data-line-number="201"></td>
-          <td id="LC201" class="blob-code blob-code-inner js-file-line">show their use in the sequel.</td>
+          <td id="LC201" class="blob-code blob-code-inner js-file-line">            <span class="pl-e">utils</span><span class="pl-k">::</span>available.packages(<span class="pl-v">type</span> <span class="pl-k">=</span> <span class="pl-smi">type</span>, <span class="pl-v">repos</span> <span class="pl-k">=</span> <span class="pl-smi">repos</span>),</td>
         </tr>
         <tr>
           <td id="L202" class="blob-num js-line-number js-code-nav-line-number" data-line-number="202"></td>
-          <td id="LC202" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC202" class="blob-code blob-code-inner js-file-line">            <span class="pl-v">stringsAsFactors</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span></td>
         </tr>
         <tr>
           <td id="L203" class="blob-num js-line-number js-code-nav-line-number" data-line-number="203"></td>
-          <td id="LC203" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>WASH Benefits Study Example {-}</span></td>
+          <td id="LC203" class="blob-code blob-code-inner js-file-line">          ),</td>
         </tr>
         <tr>
           <td id="L204" class="blob-num js-line-number js-code-nav-line-number" data-line-number="204"></td>
-          <td id="LC204" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC204" class="blob-code blob-code-inner js-file-line">          <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span></td>
         </tr>
         <tr>
           <td id="L205" class="blob-num js-line-number js-code-nav-line-number" data-line-number="205"></td>
-          <td id="LC205" class="blob-code blob-code-inner js-file-line">In order to illustrate different cross-validation schemes, we will be using the</td>
+          <td id="LC205" class="blob-code blob-code-inner js-file-line">        )</td>
         </tr>
         <tr>
           <td id="L206" class="blob-num js-line-number js-code-nav-line-number" data-line-number="206"></td>
-          <td id="LC206" class="blob-code blob-code-inner js-file-line">WASH data. Detailed information on the WASH Benefits Example Dataset can be</td>
+          <td id="LC206" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L207" class="blob-num js-line-number js-code-nav-line-number" data-line-number="207"></td>
-          <td id="LC207" class="blob-code blob-code-inner js-file-line">found in [Chapter 3]{#data}. In particular, we are interested in predicting</td>
+          <td id="LC207" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">if</span> (inherits(<span class="pl-smi">db</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>error<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L208" class="blob-num js-line-number js-code-nav-line-number" data-line-number="208"></td>
-          <td id="LC208" class="blob-code blob-code-inner js-file-line">weight-for-height z-score <span class="pl-c1">`whz`</span> using the available covariate data. For this</td>
+          <td id="LC208" class="blob-code blob-code-inner js-file-line">          <span class="pl-k">next</span></td>
         </tr>
         <tr>
           <td id="L209" class="blob-num js-line-number js-code-nav-line-number" data-line-number="209"></td>
-          <td id="LC209" class="blob-code blob-code-inner js-file-line">illustration, we will start by treating the data as independent and identically</td>
+          <td id="LC209" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L210" class="blob-num js-line-number js-code-nav-line-number" data-line-number="210"></td>
-          <td id="LC210" class="blob-code blob-code-inner js-file-line">distributed (i.i.d.) random draws. To see what each cross-validation scheme is</td>
+          <td id="LC210" class="blob-code blob-code-inner js-file-line">        <span class="pl-c"><span class="pl-c">#</span> check for compatible entry</span></td>
         </tr>
         <tr>
           <td id="L211" class="blob-num js-line-number js-code-nav-line-number" data-line-number="211"></td>
-          <td id="LC211" class="blob-code blob-code-inner js-file-line">doing, we will subset the data to only $n=30$. Note that each row represents an</td>
+          <td id="LC211" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">entry</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">db</span>[<span class="pl-smi">db</span><span class="pl-k">$</span><span class="pl-smi">Package</span> <span class="pl-k">%in%</span> <span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span> <span class="pl-k">&amp;</span> <span class="pl-smi">db</span><span class="pl-k">$</span><span class="pl-smi">Version</span> <span class="pl-k">%in%</span> <span class="pl-smi">version</span>, ]</td>
         </tr>
         <tr>
           <td id="L212" class="blob-num js-line-number js-code-nav-line-number" data-line-number="212"></td>
-          <td id="LC212" class="blob-code blob-code-inner js-file-line">i.i.d. sample, indexed by the row number.</td>
+          <td id="LC212" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">if</span> (nrow(<span class="pl-smi">entry</span>) <span class="pl-k">==</span> <span class="pl-c1">0</span>)</td>
         </tr>
         <tr>
           <td id="L213" class="blob-num js-line-number js-code-nav-line-number" data-line-number="213"></td>
-          <td id="LC213" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC213" class="blob-code blob-code-inner js-file-line">          <span class="pl-k">next</span></td>
         </tr>
         <tr>
           <td id="L214" class="blob-num js-line-number js-code-nav-line-number" data-line-number="214"></td>
-          <td id="LC214" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r setup}</span><span class="pl-s1"></span></td>
+          <td id="LC214" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L215" class="blob-num js-line-number js-code-nav-line-number" data-line-number="215"></td>
-          <td id="LC215" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">data.table</span>)</span></td>
+          <td id="LC215" class="blob-code blob-code-inner js-file-line">        <span class="pl-c"><span class="pl-c">#</span> found it; return spec to caller</span></td>
         </tr>
         <tr>
           <td id="L216" class="blob-num js-line-number js-code-nav-line-number" data-line-number="216"></td>
-          <td id="LC216" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">origami</span>)</span></td>
+          <td id="LC216" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">spec</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(<span class="pl-v">entry</span> <span class="pl-k">=</span> <span class="pl-smi">entry</span>, <span class="pl-v">type</span> <span class="pl-k">=</span> <span class="pl-smi">type</span>, <span class="pl-v">repos</span> <span class="pl-k">=</span> <span class="pl-smi">repos</span>)</td>
         </tr>
         <tr>
           <td id="L217" class="blob-num js-line-number js-code-nav-line-number" data-line-number="217"></td>
-          <td id="LC217" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">knitr</span>)</span></td>
+          <td id="LC217" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">return</span>(<span class="pl-smi">spec</span>)</td>
         </tr>
         <tr>
           <td id="L218" class="blob-num js-line-number js-code-nav-line-number" data-line-number="218"></td>
-          <td id="LC218" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">kableExtra</span>)</span></td>
+          <td id="LC218" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L219" class="blob-num js-line-number js-code-nav-line-number" data-line-number="219"></td>
-          <td id="LC219" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
+          <td id="LC219" class="blob-code blob-code-inner js-file-line">      }</td>
         </tr>
         <tr>
           <td id="L220" class="blob-num js-line-number js-code-nav-line-number" data-line-number="220"></td>
-          <td id="LC220" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> load data set and take a peek</span></span></td>
+          <td id="LC220" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L221" class="blob-num js-line-number js-code-nav-line-number" data-line-number="221"></td>
-          <td id="LC221" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">washb_data</span> <span class="pl-k">&lt;-</span> fread(</span></td>
+          <td id="LC221" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L222" class="blob-num js-line-number js-code-nav-line-number" data-line-number="222"></td>
-          <td id="LC222" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  paste0(</span></td>
+          <td id="LC222" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if we got here, we failed to find renv</span></td>
         </tr>
         <tr>
           <td id="L223" class="blob-num js-line-number js-code-nav-line-number" data-line-number="223"></td>
-          <td id="LC223" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-s"><span class="pl-pds">&quot;</span>https://raw.githubusercontent.com/tlverse/tlverse-data/master/<span class="pl-pds">&quot;</span></span>,</span></td>
+          <td id="LC223" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">fmt</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>renv %s is not available from your declared package repositories<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L224" class="blob-num js-line-number js-code-nav-line-number" data-line-number="224"></td>
-          <td id="LC224" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-s"><span class="pl-pds">&quot;</span>wash-benefits/washb_data.csv<span class="pl-pds">&quot;</span></span></span></td>
+          <td id="LC224" class="blob-code blob-code-inner js-file-line">    stop(sprintf(<span class="pl-smi">fmt</span>, <span class="pl-smi">version</span>))</td>
         </tr>
         <tr>
           <td id="L225" class="blob-num js-line-number js-code-nav-line-number" data-line-number="225"></td>
-          <td id="LC225" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  ),</span></td>
+          <td id="LC225" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L226" class="blob-num js-line-number js-code-nav-line-number" data-line-number="226"></td>
-          <td id="LC226" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">stringsAsFactors</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span></span></td>
+          <td id="LC226" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L227" class="blob-num js-line-number js-code-nav-line-number" data-line-number="227"></td>
-          <td id="LC227" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
+          <td id="LC227" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L228" class="blob-num js-line-number js-code-nav-line-number" data-line-number="228"></td>
-          <td id="LC228" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC228" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download_cran_archive</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L229" class="blob-num js-line-number js-code-nav-line-number" data-line-number="229"></td>
-          <td id="LC229" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC229" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L230" class="blob-num js-line-number js-code-nav-line-number" data-line-number="230"></td>
-          <td id="LC230" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r origami_washb_example_table1, echo=FALSE}</span><span class="pl-s1"></span></td>
+          <td id="LC230" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">name</span> <span class="pl-k">&lt;-</span> sprintf(<span class="pl-s"><span class="pl-pds">&quot;</span>renv_%s.tar.gz<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L231" class="blob-num js-line-number js-code-nav-line-number" data-line-number="231"></td>
-          <td id="LC231" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">n_samp</span> <span class="pl-k">&lt;-</span> <span class="pl-c1">30</span></span></td>
+          <td id="LC231" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">repos</span> <span class="pl-k">&lt;-</span> renv_bootstrap_repos()</td>
         </tr>
         <tr>
           <td id="L232" class="blob-num js-line-number js-code-nav-line-number" data-line-number="232"></td>
-          <td id="LC232" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">washb_data</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">washb_data</span>[seq_len(<span class="pl-smi">n_samp</span>), ]</span></td>
+          <td id="LC232" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">urls</span> <span class="pl-k">&lt;-</span> file.path(<span class="pl-smi">repos</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>src/contrib/Archive/renv<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">name</span>)</td>
         </tr>
         <tr>
           <td id="L233" class="blob-num js-line-number js-code-nav-line-number" data-line-number="233"></td>
-          <td id="LC233" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-e">knitr</span><span class="pl-k">::</span>is_latex_output()) {</span></td>
+          <td id="LC233" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">destfile</span> <span class="pl-k">&lt;-</span> file.path(tempdir(), <span class="pl-smi">name</span>)</td>
         </tr>
         <tr>
           <td id="L234" class="blob-num js-line-number js-code-nav-line-number" data-line-number="234"></td>
-          <td id="LC234" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  head(<span class="pl-smi">washb_data</span>) %<span class="pl-k">&gt;</span>%</span></td>
+          <td id="LC234" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L235" class="blob-num js-line-number js-code-nav-line-number" data-line-number="235"></td>
-          <td id="LC235" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable(<span class="pl-v">format</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>latex<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC235" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>* Downloading renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> ... <span class="pl-pds">&quot;</span></span>, <span class="pl-v">appendLF</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L236" class="blob-num js-line-number js-code-nav-line-number" data-line-number="236"></td>
-          <td id="LC236" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">} <span class="pl-k">else</span> <span class="pl-k">if</span> (<span class="pl-e">knitr</span><span class="pl-k">::</span>is_html_output()) {</span></td>
+          <td id="LC236" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L237" class="blob-num js-line-number js-code-nav-line-number" data-line-number="237"></td>
-          <td id="LC237" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  head(<span class="pl-smi">washb_data</span>) %<span class="pl-k">&gt;</span>%</span></td>
+          <td id="LC237" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">url</span> <span class="pl-k">in</span> <span class="pl-smi">urls</span>) {</td>
         </tr>
         <tr>
           <td id="L238" class="blob-num js-line-number js-code-nav-line-number" data-line-number="238"></td>
-          <td id="LC238" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable() %<span class="pl-k">&gt;</span>%</span></td>
+          <td id="LC238" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L239" class="blob-num js-line-number js-code-nav-line-number" data-line-number="239"></td>
-          <td id="LC239" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable_styling(<span class="pl-v">fixed_thead</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>) %<span class="pl-k">&gt;</span>%</span></td>
+          <td id="LC239" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">status</span> <span class="pl-k">&lt;-</span> tryCatch(</td>
         </tr>
         <tr>
           <td id="L240" class="blob-num js-line-number js-code-nav-line-number" data-line-number="240"></td>
-          <td id="LC240" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    scroll_box(<span class="pl-v">width</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>100%<span class="pl-pds">&quot;</span></span>, <span class="pl-v">height</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>300px<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC240" class="blob-code blob-code-inner js-file-line">        renv_bootstrap_download_impl(<span class="pl-smi">url</span>, <span class="pl-smi">destfile</span>),</td>
         </tr>
         <tr>
           <td id="L241" class="blob-num js-line-number js-code-nav-line-number" data-line-number="241"></td>
-          <td id="LC241" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">}</span></td>
+          <td id="LC241" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">condition</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span></td>
         </tr>
         <tr>
           <td id="L242" class="blob-num js-line-number js-code-nav-line-number" data-line-number="242"></td>
-          <td id="LC242" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC242" class="blob-code blob-code-inner js-file-line">      )</td>
         </tr>
         <tr>
           <td id="L243" class="blob-num js-line-number js-code-nav-line-number" data-line-number="243"></td>
-          <td id="LC243" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC243" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L244" class="blob-num js-line-number js-code-nav-line-number" data-line-number="244"></td>
-          <td id="LC244" class="blob-code blob-code-inner js-file-line">Above is a look at the first <span class="pl-c1">`r n_samp`</span> of the data.</td>
+          <td id="LC244" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (identical(<span class="pl-smi">status</span>, <span class="pl-c1">0L</span>)) {</td>
         </tr>
         <tr>
           <td id="L245" class="blob-num js-line-number js-code-nav-line-number" data-line-number="245"></td>
-          <td id="LC245" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC245" class="blob-code blob-code-inner js-file-line">        message(<span class="pl-s"><span class="pl-pds">&quot;</span>OK<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L246" class="blob-num js-line-number js-code-nav-line-number" data-line-number="246"></td>
-          <td id="LC246" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Cross-validation for i.i.d. data</span></td>
+          <td id="LC246" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">return</span>(<span class="pl-smi">destfile</span>)</td>
         </tr>
         <tr>
           <td id="L247" class="blob-num js-line-number js-code-nav-line-number" data-line-number="247"></td>
-          <td id="LC247" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC247" class="blob-code blob-code-inner js-file-line">      }</td>
         </tr>
         <tr>
           <td id="L248" class="blob-num js-line-number js-code-nav-line-number" data-line-number="248"></td>
-          <td id="LC248" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Re-substitution</span></td>
+          <td id="LC248" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L249" class="blob-num js-line-number js-code-nav-line-number" data-line-number="249"></td>
-          <td id="LC249" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC249" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L250" class="blob-num js-line-number js-code-nav-line-number" data-line-number="250"></td>
-          <td id="LC250" class="blob-code blob-code-inner js-file-line">The re-substitution method is the simplest strategy for estimating the risk</td>
+          <td id="LC250" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L251" class="blob-num js-line-number js-code-nav-line-number" data-line-number="251"></td>
-          <td id="LC251" class="blob-code blob-code-inner js-file-line">associated with fitting a proposed algorithm on a set of observations. Here, all</td>
+          <td id="LC251" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>FAILED<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L252" class="blob-num js-line-number js-code-nav-line-number" data-line-number="252"></td>
-          <td id="LC252" class="blob-code blob-code-inner js-file-line">observed data is used for both training and validation set.</td>
+          <td id="LC252" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L253" class="blob-num js-line-number js-code-nav-line-number" data-line-number="253"></td>
-          <td id="LC253" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC253" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L254" class="blob-num js-line-number js-code-nav-line-number" data-line-number="254"></td>
-          <td id="LC254" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the re-substitution method with <span class="pl-c1">`origami`</span> package</td>
+          <td id="LC254" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L255" class="blob-num js-line-number js-code-nav-line-number" data-line-number="255"></td>
-          <td id="LC255" class="blob-code blob-code-inner js-file-line">below; we will use the function <span class="pl-c1">`folds_resubstitution(n)`</span>. In order to setup</td>
+          <td id="LC255" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L256" class="blob-num js-line-number js-code-nav-line-number" data-line-number="256"></td>
-          <td id="LC256" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`folds_resubstitution(n)`</span>, we just need the total number of samples we want to</td>
+          <td id="LC256" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_download_github</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L257" class="blob-num js-line-number js-code-nav-line-number" data-line-number="257"></td>
-          <td id="LC257" class="blob-code blob-code-inner js-file-line">allocate to training and validation sets; remember that each row of data is a</td>
+          <td id="LC257" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L258" class="blob-num js-line-number js-code-nav-line-number" data-line-number="258"></td>
-          <td id="LC258" class="blob-code blob-code-inner js-file-line">unique i.i.d. sample. Notice the structure of the <span class="pl-c1">`origami`</span> output:</td>
+          <td id="LC258" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">enabled</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_BOOTSTRAP_FROM_GITHUB<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>TRUE<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L259" class="blob-num js-line-number js-code-nav-line-number" data-line-number="259"></td>
-          <td id="LC259" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC259" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>identical(<span class="pl-smi">enabled</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>TRUE<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L260" class="blob-num js-line-number js-code-nav-line-number" data-line-number="260"></td>
-          <td id="LC260" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> <span class="pl-mb">**v:**</span> the cross-validation fold</td>
+          <td id="LC260" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L261" class="blob-num js-line-number js-code-nav-line-number" data-line-number="261"></td>
-          <td id="LC261" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> <span class="pl-mb">**training_set:**</span> the indexes of the samples in the training set</td>
+          <td id="LC261" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L262" class="blob-num js-line-number js-code-nav-line-number" data-line-number="262"></td>
-          <td id="LC262" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> <span class="pl-mb">**validation_set:**</span> the indexes of the samples in the training set.</td>
+          <td id="LC262" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> prepare download options</span></td>
         </tr>
         <tr>
           <td id="L263" class="blob-num js-line-number js-code-nav-line-number" data-line-number="263"></td>
-          <td id="LC263" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC263" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">pat</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>GITHUB_PAT<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L264" class="blob-num js-line-number js-code-nav-line-number" data-line-number="264"></td>
-          <td id="LC264" class="blob-code blob-code-inner js-file-line">This structure of the <span class="pl-c1">`origami`</span> output (aka, fold(s)) will persist for each of the</td>
+          <td id="LC264" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (nzchar(Sys.which(<span class="pl-s"><span class="pl-pds">&quot;</span>curl<span class="pl-pds">&quot;</span></span>)) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">pat</span>)) {</td>
         </tr>
         <tr>
           <td id="L265" class="blob-num js-line-number js-code-nav-line-number" data-line-number="265"></td>
-          <td id="LC265" class="blob-code blob-code-inner js-file-line">cross-validation schemes we present in this chapter. Below, we show the fold</td>
+          <td id="LC265" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">fmt</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>--location --fail --header <span class="pl-cce">\&quot;</span>Authorization: token %s<span class="pl-cce">\&quot;</span><span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L266" class="blob-num js-line-number js-code-nav-line-number" data-line-number="266"></td>
-          <td id="LC266" class="blob-code blob-code-inner js-file-line">generated by the re-substitution method:</td>
+          <td id="LC266" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">extra</span> <span class="pl-k">&lt;-</span> sprintf(<span class="pl-smi">fmt</span>, <span class="pl-smi">pat</span>)</td>
         </tr>
         <tr>
           <td id="L267" class="blob-num js-line-number js-code-nav-line-number" data-line-number="267"></td>
-          <td id="LC267" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC267" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">saved</span> <span class="pl-k">&lt;-</span> options(<span class="pl-s"><span class="pl-pds">&quot;</span>download.file.method<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>download.file.extra<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L268" class="blob-num js-line-number js-code-nav-line-number" data-line-number="268"></td>
-          <td id="LC268" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r resubstitution}</span><span class="pl-s1"></span></td>
+          <td id="LC268" class="blob-code blob-code-inner js-file-line">      options(<span class="pl-v">download.file.method</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>curl<span class="pl-pds">&quot;</span></span>, <span class="pl-v">download.file.extra</span> <span class="pl-k">=</span> <span class="pl-smi">extra</span>)</td>
         </tr>
         <tr>
           <td id="L269" class="blob-num js-line-number js-code-nav-line-number" data-line-number="269"></td>
-          <td id="LC269" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">folds_resubstitution(nrow(<span class="pl-smi">washb_data</span>))</span></td>
+          <td id="LC269" class="blob-code blob-code-inner js-file-line">      on.exit(do.call(<span class="pl-e">base</span><span class="pl-k">::</span><span class="pl-smi">options</span>, <span class="pl-smi">saved</span>), <span class="pl-v">add</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L270" class="blob-num js-line-number js-code-nav-line-number" data-line-number="270"></td>
-          <td id="LC270" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC270" class="blob-code blob-code-inner js-file-line">    } <span class="pl-k">else</span> <span class="pl-k">if</span> (nzchar(Sys.which(<span class="pl-s"><span class="pl-pds">&quot;</span>wget<span class="pl-pds">&quot;</span></span>)) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">pat</span>)) {</td>
         </tr>
         <tr>
           <td id="L271" class="blob-num js-line-number js-code-nav-line-number" data-line-number="271"></td>
-          <td id="LC271" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC271" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">fmt</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>--header=<span class="pl-cce">\&quot;</span>Authorization: token %s<span class="pl-cce">\&quot;</span><span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L272" class="blob-num js-line-number js-code-nav-line-number" data-line-number="272"></td>
-          <td id="LC272" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Holdout method</span></td>
+          <td id="LC272" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">extra</span> <span class="pl-k">&lt;-</span> sprintf(<span class="pl-smi">fmt</span>, <span class="pl-smi">pat</span>)</td>
         </tr>
         <tr>
           <td id="L273" class="blob-num js-line-number js-code-nav-line-number" data-line-number="273"></td>
-          <td id="LC273" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC273" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">saved</span> <span class="pl-k">&lt;-</span> options(<span class="pl-s"><span class="pl-pds">&quot;</span>download.file.method<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>download.file.extra<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L274" class="blob-num js-line-number js-code-nav-line-number" data-line-number="274"></td>
-          <td id="LC274" class="blob-code blob-code-inner js-file-line">The holdout method, or the validation set approach, consists of randomly</td>
+          <td id="LC274" class="blob-code blob-code-inner js-file-line">      options(<span class="pl-v">download.file.method</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>wget<span class="pl-pds">&quot;</span></span>, <span class="pl-v">download.file.extra</span> <span class="pl-k">=</span> <span class="pl-smi">extra</span>)</td>
         </tr>
         <tr>
           <td id="L275" class="blob-num js-line-number js-code-nav-line-number" data-line-number="275"></td>
-          <td id="LC275" class="blob-code blob-code-inner js-file-line">dividing the available data into the training set and validation set (holdout</td>
+          <td id="LC275" class="blob-code blob-code-inner js-file-line">      on.exit(do.call(<span class="pl-e">base</span><span class="pl-k">::</span><span class="pl-smi">options</span>, <span class="pl-smi">saved</span>), <span class="pl-v">add</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L276" class="blob-num js-line-number js-code-nav-line-number" data-line-number="276"></td>
-          <td id="LC276" class="blob-code blob-code-inner js-file-line">set). The model is then fitted on the training set, and further evaluated on</td>
+          <td id="LC276" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L277" class="blob-num js-line-number js-code-nav-line-number" data-line-number="277"></td>
-          <td id="LC277" class="blob-code blob-code-inner js-file-line">the observations in the validation set. Typically, the data is split into</td>
+          <td id="LC277" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L278" class="blob-num js-line-number js-code-nav-line-number" data-line-number="278"></td>
-          <td id="LC278" class="blob-code blob-code-inner js-file-line">$60/40$, $70/30$, $80/20$ or $90/10$ splits.</td>
+          <td id="LC278" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>* Downloading renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> from GitHub ... <span class="pl-pds">&quot;</span></span>, <span class="pl-v">appendLF</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L279" class="blob-num js-line-number js-code-nav-line-number" data-line-number="279"></td>
-          <td id="LC279" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC279" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L280" class="blob-num js-line-number js-code-nav-line-number" data-line-number="280"></td>
-          <td id="LC280" class="blob-code blob-code-inner js-file-line">The holdout method is intuitive, conceptually easy, and computationally not too</td>
+          <td id="LC280" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">url</span> <span class="pl-k">&lt;-</span> file.path(<span class="pl-s"><span class="pl-pds">&quot;</span>https://api.github.com/repos/rstudio/renv/tarball<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L281" class="blob-num js-line-number js-code-nav-line-number" data-line-number="281"></td>
-          <td id="LC281" class="blob-code blob-code-inner js-file-line">demanding. However, if we repeat the process of randomly splitting the data into</td>
+          <td id="LC281" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">name</span> <span class="pl-k">&lt;-</span> sprintf(<span class="pl-s"><span class="pl-pds">&quot;</span>renv_%s.tar.gz<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L282" class="blob-num js-line-number js-code-nav-line-number" data-line-number="282"></td>
-          <td id="LC282" class="blob-code blob-code-inner js-file-line">the training and validation set, we might get a very different cross-validated</td>
+          <td id="LC282" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">destfile</span> <span class="pl-k">&lt;-</span> file.path(tempdir(), <span class="pl-smi">name</span>)</td>
         </tr>
         <tr>
           <td id="L283" class="blob-num js-line-number js-code-nav-line-number" data-line-number="283"></td>
-          <td id="LC283" class="blob-code blob-code-inner js-file-line">emprical risk. In particular, the emprical mean of the loss over the validation </td>
+          <td id="LC283" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L284" class="blob-num js-line-number js-code-nav-line-number" data-line-number="284"></td>
-          <td id="LC284" class="blob-code blob-code-inner js-file-line">sets might be highly variable, depending on which samples were included in the training/validation split. Overall, the cross-validated emprical risk for the </td>
+          <td id="LC284" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">status</span> <span class="pl-k">&lt;-</span> tryCatch(</td>
         </tr>
         <tr>
           <td id="L285" class="blob-num js-line-number js-code-nav-line-number" data-line-number="285"></td>
-          <td id="LC285" class="blob-code blob-code-inner js-file-line">holdout method is more variabiable, since in includes variability of the random</td>
+          <td id="LC285" class="blob-code blob-code-inner js-file-line">      renv_bootstrap_download_impl(<span class="pl-smi">url</span>, <span class="pl-smi">destfile</span>),</td>
         </tr>
         <tr>
           <td id="L286" class="blob-num js-line-number js-code-nav-line-number" data-line-number="286"></td>
-          <td id="LC286" class="blob-code blob-code-inner js-file-line">split as well - which is not what we want. For classification problems, there is a </td>
+          <td id="LC286" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">condition</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span></td>
         </tr>
         <tr>
           <td id="L287" class="blob-num js-line-number js-code-nav-line-number" data-line-number="287"></td>
-          <td id="LC287" class="blob-code blob-code-inner js-file-line">possibility of an uneven distribution of different classes in the training and validation </td>
+          <td id="LC287" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L288" class="blob-num js-line-number js-code-nav-line-number" data-line-number="288"></td>
-          <td id="LC288" class="blob-code blob-code-inner js-file-line">set unless data is stratified. Finally, note that we are not using all of the </td>
+          <td id="LC288" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L289" class="blob-num js-line-number js-code-nav-line-number" data-line-number="289"></td>
-          <td id="LC289" class="blob-code blob-code-inner js-file-line">data to train and evaluate the performance of the proposed algorithm, which might </td>
+          <td id="LC289" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>identical(<span class="pl-smi">status</span>, <span class="pl-c1">0L</span>)) {</td>
         </tr>
         <tr>
           <td id="L290" class="blob-num js-line-number js-code-nav-line-number" data-line-number="290"></td>
-          <td id="LC290" class="blob-code blob-code-inner js-file-line">result in bias.</td>
+          <td id="LC290" class="blob-code blob-code-inner js-file-line">      message(<span class="pl-s"><span class="pl-pds">&quot;</span>FAILED<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L291" class="blob-num js-line-number js-code-nav-line-number" data-line-number="291"></td>
-          <td id="LC291" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC291" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L292" class="blob-num js-line-number js-code-nav-line-number" data-line-number="292"></td>
-          <td id="LC292" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Leave-one-out</span></td>
+          <td id="LC292" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L293" class="blob-num js-line-number js-code-nav-line-number" data-line-number="293"></td>
-          <td id="LC293" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC293" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L294" class="blob-num js-line-number js-code-nav-line-number" data-line-number="294"></td>
-          <td id="LC294" class="blob-code blob-code-inner js-file-line">The leave-one-out cross-validation scheme is closely related to the holdout</td>
+          <td id="LC294" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>OK<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L295" class="blob-num js-line-number js-code-nav-line-number" data-line-number="295"></td>
-          <td id="LC295" class="blob-code blob-code-inner js-file-line">method. In particular, it also involves splitting the data into the training and</td>
+          <td id="LC295" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-smi">destfile</span>)</td>
         </tr>
         <tr>
           <td id="L296" class="blob-num js-line-number js-code-nav-line-number" data-line-number="296"></td>
-          <td id="LC296" class="blob-code blob-code-inner js-file-line">validation set; however, instead of partitioning the observed data into sets of</td>
+          <td id="LC296" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L297" class="blob-num js-line-number js-code-nav-line-number" data-line-number="297"></td>
-          <td id="LC297" class="blob-code blob-code-inner js-file-line">similar size, a single observation is used as a validation set. With that,</td>
+          <td id="LC297" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L298" class="blob-num js-line-number js-code-nav-line-number" data-line-number="298"></td>
-          <td id="LC298" class="blob-code blob-code-inner js-file-line">majority of the units are employed for training (fitting) the proposed</td>
+          <td id="LC298" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L299" class="blob-num js-line-number js-code-nav-line-number" data-line-number="299"></td>
-          <td id="LC299" class="blob-code blob-code-inner js-file-line">algorithm. Since only one unit (for example $x_1 = (w_1, y_1)$) is not used in</td>
+          <td id="LC299" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_install</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>, <span class="pl-smi">tarball</span>, <span class="pl-smi">library</span>) {</td>
         </tr>
         <tr>
           <td id="L300" class="blob-num js-line-number js-code-nav-line-number" data-line-number="300"></td>
-          <td id="LC300" class="blob-code blob-code-inner js-file-line">the fitting process, leave-one-out cross-validation results in a possibly less</td>
+          <td id="LC300" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L301" class="blob-num js-line-number js-code-nav-line-number" data-line-number="301"></td>
-          <td id="LC301" class="blob-code blob-code-inner js-file-line">biased estimate of the true risk; typically, leave-one-out approach will not</td>
+          <td id="LC301" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> attempt to install it into project library</span></td>
         </tr>
         <tr>
           <td id="L302" class="blob-num js-line-number js-code-nav-line-number" data-line-number="302"></td>
-          <td id="LC302" class="blob-code blob-code-inner js-file-line">overestimate the risk as much as the holdout method. On the other hand, since</td>
+          <td id="LC302" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>* Installing renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> ... <span class="pl-pds">&quot;</span></span>, <span class="pl-v">appendLF</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L303" class="blob-num js-line-number js-code-nav-line-number" data-line-number="303"></td>
-          <td id="LC303" class="blob-code blob-code-inner js-file-line">the estimate of risk is based on a single sample, it is typically a highly</td>
+          <td id="LC303" class="blob-code blob-code-inner js-file-line">    dir.create(<span class="pl-smi">library</span>, <span class="pl-v">showWarnings</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>, <span class="pl-v">recursive</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L304" class="blob-num js-line-number js-code-nav-line-number" data-line-number="304"></td>
-          <td id="LC304" class="blob-code blob-code-inner js-file-line">variable estimate.</td>
+          <td id="LC304" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L305" class="blob-num js-line-number js-code-nav-line-number" data-line-number="305"></td>
-          <td id="LC305" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC305" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> invoke using system2 so we can capture and report output</span></td>
         </tr>
         <tr>
           <td id="L306" class="blob-num js-line-number js-code-nav-line-number" data-line-number="306"></td>
-          <td id="LC306" class="blob-code blob-code-inner js-file-line">We can repeat the process of spiting the data into training and validation set</td>
+          <td id="LC306" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">bin</span> <span class="pl-k">&lt;-</span> R.home(<span class="pl-s"><span class="pl-pds">&quot;</span>bin<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L307" class="blob-num js-line-number js-code-nav-line-number" data-line-number="307"></td>
-          <td id="LC307" class="blob-code blob-code-inner js-file-line">until all samples are part of the validation set at some point. For example,</td>
+          <td id="LC307" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">exe</span> <span class="pl-k">&lt;-</span> <span class="pl-k">if</span> (Sys.info()[[<span class="pl-s"><span class="pl-pds">&quot;</span>sysname<span class="pl-pds">&quot;</span></span>]] <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Windows<span class="pl-pds">&quot;</span></span>) <span class="pl-s"><span class="pl-pds">&quot;</span>R.exe<span class="pl-pds">&quot;</span></span> <span class="pl-k">else</span> <span class="pl-s"><span class="pl-pds">&quot;</span>R<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L308" class="blob-num js-line-number js-code-nav-line-number" data-line-number="308"></td>
-          <td id="LC308" class="blob-code blob-code-inner js-file-line">next iteration of the cross-validation might have $x_2 = (w_2,y_2)$ as the</td>
+          <td id="LC308" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">r</span> <span class="pl-k">&lt;-</span> file.path(<span class="pl-smi">bin</span>, <span class="pl-smi">exe</span>)</td>
         </tr>
         <tr>
           <td id="L309" class="blob-num js-line-number js-code-nav-line-number" data-line-number="309"></td>
-          <td id="LC309" class="blob-code blob-code-inner js-file-line">validation set and all the rest of $n-1$ samples as the training set. Repeating</td>
+          <td id="LC309" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">args</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>--vanilla<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>CMD<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>INSTALL<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>-l<span class="pl-pds">&quot;</span></span>, shQuote(<span class="pl-smi">library</span>), shQuote(<span class="pl-smi">tarball</span>))</td>
         </tr>
         <tr>
           <td id="L310" class="blob-num js-line-number js-code-nav-line-number" data-line-number="310"></td>
-          <td id="LC310" class="blob-code blob-code-inner js-file-line">this approach $n$ times results in, for example, $n$ squared errors $MSE_1,</td>
+          <td id="LC310" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">output</span> <span class="pl-k">&lt;-</span> system2(<span class="pl-smi">r</span>, <span class="pl-smi">args</span>, <span class="pl-v">stdout</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>, <span class="pl-v">stderr</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L311" class="blob-num js-line-number js-code-nav-line-number" data-line-number="311"></td>
-          <td id="LC311" class="blob-code blob-code-inner js-file-line">MSE_2, <span class="pl-cce">\l</span>dots, MSE_n$. The estimate of the true risk is the average over the</td>
+          <td id="LC311" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>Done!<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L312" class="blob-num js-line-number js-code-nav-line-number" data-line-number="312"></td>
-          <td id="LC312" class="blob-code blob-code-inner js-file-line">$n$ squared errors. While the leave-one-out cross-validation results in a less</td>
+          <td id="LC312" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L313" class="blob-num js-line-number js-code-nav-line-number" data-line-number="313"></td>
-          <td id="LC313" class="blob-code blob-code-inner js-file-line">biased (albeit, more variable) estimate of risk than the holdout method, it</td>
+          <td id="LC313" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check for successful install</span></td>
         </tr>
         <tr>
           <td id="L314" class="blob-num js-line-number js-code-nav-line-number" data-line-number="314"></td>
-          <td id="LC314" class="blob-code blob-code-inner js-file-line">could be expensive to implement if $n$ is large.</td>
+          <td id="LC314" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">status</span> <span class="pl-k">&lt;-</span> attr(<span class="pl-smi">output</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>status<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L315" class="blob-num js-line-number js-code-nav-line-number" data-line-number="315"></td>
-          <td id="LC315" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC315" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (is.numeric(<span class="pl-smi">status</span>) <span class="pl-k">&amp;&amp;</span> <span class="pl-k">!</span>identical(<span class="pl-smi">status</span>, <span class="pl-c1">0L</span>)) {</td>
         </tr>
         <tr>
           <td id="L316" class="blob-num js-line-number js-code-nav-line-number" data-line-number="316"></td>
-          <td id="LC316" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the leave-one-out cross-validation with <span class="pl-c1">`origami`</span></td>
+          <td id="LC316" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">header</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Error installing renv:<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L317" class="blob-num js-line-number js-code-nav-line-number" data-line-number="317"></td>
-          <td id="LC317" class="blob-code blob-code-inner js-file-line">package below; we will use the function <span class="pl-c1">`folds_loo(n)`</span>. In order to setup</td>
+          <td id="LC317" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">lines</span> <span class="pl-k">&lt;-</span> paste(rep.int(<span class="pl-s"><span class="pl-pds">&quot;</span>=<span class="pl-pds">&quot;</span></span>, nchar(<span class="pl-smi">header</span>)), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L318" class="blob-num js-line-number js-code-nav-line-number" data-line-number="318"></td>
-          <td id="LC318" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`folds_loo(n)`</span>, similarly to the re-substitution method, we just need the total</td>
+          <td id="LC318" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">text</span> <span class="pl-k">&lt;-</span> c(<span class="pl-smi">header</span>, <span class="pl-smi">lines</span>, <span class="pl-smi">output</span>)</td>
         </tr>
         <tr>
           <td id="L319" class="blob-num js-line-number js-code-nav-line-number" data-line-number="319"></td>
-          <td id="LC319" class="blob-code blob-code-inner js-file-line">number of samples we want to cross-validate.  We show the first two folds</td>
+          <td id="LC319" class="blob-code blob-code-inner js-file-line">      writeLines(<span class="pl-smi">text</span>, <span class="pl-v">con</span> <span class="pl-k">=</span> stderr())</td>
         </tr>
         <tr>
           <td id="L320" class="blob-num js-line-number js-code-nav-line-number" data-line-number="320"></td>
-          <td id="LC320" class="blob-code blob-code-inner js-file-line">generated by the leave-one-out cross-validation below.</td>
+          <td id="LC320" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L321" class="blob-num js-line-number js-code-nav-line-number" data-line-number="321"></td>
-          <td id="LC321" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC321" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L322" class="blob-num js-line-number js-code-nav-line-number" data-line-number="322"></td>
-          <td id="LC322" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r loo}</span><span class="pl-s1"></span></td>
+          <td id="LC322" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">status</span></td>
         </tr>
         <tr>
           <td id="L323" class="blob-num js-line-number js-code-nav-line-number" data-line-number="323"></td>
-          <td id="LC323" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_loo(nrow(<span class="pl-smi">washb_data</span>))</span></td>
+          <td id="LC323" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L324" class="blob-num js-line-number js-code-nav-line-number" data-line-number="324"></td>
-          <td id="LC324" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC324" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L325" class="blob-num js-line-number js-code-nav-line-number" data-line-number="325"></td>
-          <td id="LC325" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC325" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L326" class="blob-num js-line-number js-code-nav-line-number" data-line-number="326"></td>
-          <td id="LC326" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC326" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_prefix</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L327" class="blob-num js-line-number js-code-nav-line-number" data-line-number="327"></td>
-          <td id="LC327" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC327" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L328" class="blob-num js-line-number js-code-nav-line-number" data-line-number="328"></td>
-          <td id="LC328" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>V-fold</span></td>
+          <td id="LC328" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> construct version prefix</span></td>
         </tr>
         <tr>
           <td id="L329" class="blob-num js-line-number js-code-nav-line-number" data-line-number="329"></td>
-          <td id="LC329" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC329" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-smi">R.version</span><span class="pl-k">$</span><span class="pl-smi">major</span>, <span class="pl-smi">R.version</span><span class="pl-k">$</span><span class="pl-smi">minor</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>.<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L330" class="blob-num js-line-number js-code-nav-line-number" data-line-number="330"></td>
-          <td id="LC330" class="blob-code blob-code-inner js-file-line">An alternative to leave-one-out is V-fold cross-validation. This</td>
+          <td id="LC330" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-s"><span class="pl-pds">&quot;</span>R<span class="pl-pds">&quot;</span></span>, numeric_version(<span class="pl-smi">version</span>)[<span class="pl-c1">1</span>, <span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">2</span>], <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>-<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L331" class="blob-num js-line-number js-code-nav-line-number" data-line-number="331"></td>
-          <td id="LC331" class="blob-code blob-code-inner js-file-line">cross-validation scheme randomly divides the data into $v$ sets (folds) of equal</td>
+          <td id="LC331" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L332" class="blob-num js-line-number js-code-nav-line-number" data-line-number="332"></td>
-          <td id="LC332" class="blob-code blob-code-inner js-file-line">size; for each fold, the number of samples in the validation set are the same.</td>
+          <td id="LC332" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> include SVN revision for development versions of R</span></td>
         </tr>
         <tr>
           <td id="L333" class="blob-num js-line-number js-code-nav-line-number" data-line-number="333"></td>
-          <td id="LC333" class="blob-code blob-code-inner js-file-line">For V-fold cross-validation, one of the folds is treated as a validation set,</td>
+          <td id="LC333" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> (to avoid sharing platform-specific artefacts with released versions of R)</span></td>
         </tr>
         <tr>
           <td id="L334" class="blob-num js-line-number js-code-nav-line-number" data-line-number="334"></td>
-          <td id="LC334" class="blob-code blob-code-inner js-file-line">whereas the proposed algorithm is fit on the remaining $v-1$ folds in the</td>
+          <td id="LC334" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">devel</span> <span class="pl-k">&lt;-</span></td>
         </tr>
         <tr>
           <td id="L335" class="blob-num js-line-number js-code-nav-line-number" data-line-number="335"></td>
-          <td id="LC335" class="blob-code blob-code-inner js-file-line">training set. The loss, for example MSE, is computed on the samples in the</td>
+          <td id="LC335" class="blob-code blob-code-inner js-file-line">      identical(<span class="pl-smi">R.version</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>status<span class="pl-pds">&quot;</span></span>]],   <span class="pl-s"><span class="pl-pds">&quot;</span>Under development (unstable)<span class="pl-pds">&quot;</span></span>) <span class="pl-k">||</span></td>
         </tr>
         <tr>
           <td id="L336" class="blob-num js-line-number js-code-nav-line-number" data-line-number="336"></td>
-          <td id="LC336" class="blob-code blob-code-inner js-file-line">validation set. With the proposed algorithm trained and its performance</td>
+          <td id="LC336" class="blob-code blob-code-inner js-file-line">      identical(<span class="pl-smi">R.version</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>nickname<span class="pl-pds">&quot;</span></span>]], <span class="pl-s"><span class="pl-pds">&quot;</span>Unsuffered Consequences<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L337" class="blob-num js-line-number js-code-nav-line-number" data-line-number="337"></td>
-          <td id="LC337" class="blob-code blob-code-inner js-file-line">evaluated on the first fold, we repeat this process $v$ times; each time, a</td>
+          <td id="LC337" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L338" class="blob-num js-line-number js-code-nav-line-number" data-line-number="338"></td>
-          <td id="LC338" class="blob-code blob-code-inner js-file-line">different group of samples is treated as a validation set. Note that with V-fold</td>
+          <td id="LC338" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">devel</span>)</td>
         </tr>
         <tr>
           <td id="L339" class="blob-num js-line-number js-code-nav-line-number" data-line-number="339"></td>
-          <td id="LC339" class="blob-code blob-code-inner js-file-line">cross-validation we effectively use all of the data to train and evaluate the</td>
+          <td id="LC339" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-smi">prefix</span>, <span class="pl-smi">R.version</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>svn rev<span class="pl-pds">&quot;</span></span>]], <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>-r<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L340" class="blob-num js-line-number js-code-nav-line-number" data-line-number="340"></td>
-          <td id="LC340" class="blob-code blob-code-inner js-file-line">proposed algorithm without overfitting to the training data. In the end, the</td>
+          <td id="LC340" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L341" class="blob-num js-line-number js-code-nav-line-number" data-line-number="341"></td>
-          <td id="LC341" class="blob-code blob-code-inner js-file-line">V-fold cross-validation results in $v$ estimates of validation error. The final</td>
+          <td id="LC341" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> build list of path components</span></td>
         </tr>
         <tr>
           <td id="L342" class="blob-num js-line-number js-code-nav-line-number" data-line-number="342"></td>
-          <td id="LC342" class="blob-code blob-code-inner js-file-line">V-fold CV estimate is computed as an average over all the validation losses.</td>
+          <td id="LC342" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">components</span> <span class="pl-k">&lt;-</span> c(<span class="pl-smi">prefix</span>, <span class="pl-smi">R.version</span><span class="pl-k">$</span><span class="pl-smi">platform</span>)</td>
         </tr>
         <tr>
           <td id="L343" class="blob-num js-line-number js-code-nav-line-number" data-line-number="343"></td>
-          <td id="LC343" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC343" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L344" class="blob-num js-line-number js-code-nav-line-number" data-line-number="344"></td>
-          <td id="LC344" class="blob-code blob-code-inner js-file-line">For a dataset with $n$ samples, V-fold cross-validation with $v=n$ is just</td>
+          <td id="LC344" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> include prefix if provided by user</span></td>
         </tr>
         <tr>
           <td id="L345" class="blob-num js-line-number js-code-nav-line-number" data-line-number="345"></td>
-          <td id="LC345" class="blob-code blob-code-inner js-file-line">leave-one-out; similarly, if we set $n=1$, we can get the holdout method&#39;s</td>
+          <td id="LC345" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> renv_bootstrap_platform_prefix_impl()</td>
         </tr>
         <tr>
           <td id="L346" class="blob-num js-line-number js-code-nav-line-number" data-line-number="346"></td>
-          <td id="LC346" class="blob-code blob-code-inner js-file-line">estimate of algorithm&#39;s performance. Despite the obvious computational</td>
+          <td id="LC346" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">prefix</span>) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">prefix</span>))</td>
         </tr>
         <tr>
           <td id="L347" class="blob-num js-line-number js-code-nav-line-number" data-line-number="347"></td>
-          <td id="LC347" class="blob-code blob-code-inner js-file-line">advantages, V-fold cross-validation often gives more accurate estimates of the</td>
+          <td id="LC347" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">components</span> <span class="pl-k">&lt;-</span> c(<span class="pl-smi">prefix</span>, <span class="pl-smi">components</span>)</td>
         </tr>
         <tr>
           <td id="L348" class="blob-num js-line-number js-code-nav-line-number" data-line-number="348"></td>
-          <td id="LC348" class="blob-code blob-code-inner js-file-line">true risk. The reason for this comes from the bias-variance trade-off that comes</td>
+          <td id="LC348" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L349" class="blob-num js-line-number js-code-nav-line-number" data-line-number="349"></td>
-          <td id="LC349" class="blob-code blob-code-inner js-file-line">from employing both methods; while leave-one-out might be less biased, it has</td>
+          <td id="LC349" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> build prefix</span></td>
         </tr>
         <tr>
           <td id="L350" class="blob-num js-line-number js-code-nav-line-number" data-line-number="350"></td>
-          <td id="LC350" class="blob-code blob-code-inner js-file-line">higher variance. This difference becomes more obvious as $v&lt;&lt;n$ (but not too</td>
+          <td id="LC350" class="blob-code blob-code-inner js-file-line">    paste(<span class="pl-smi">components</span>, <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>/<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L351" class="blob-num js-line-number js-code-nav-line-number" data-line-number="351"></td>
-          <td id="LC351" class="blob-code blob-code-inner js-file-line">small, as then we increase bias). With V-fold cross-validation, we end up</td>
+          <td id="LC351" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L352" class="blob-num js-line-number js-code-nav-line-number" data-line-number="352"></td>
-          <td id="LC352" class="blob-code blob-code-inner js-file-line">averaging output from $v$ fits that are typically less correlated than the</td>
+          <td id="LC352" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L353" class="blob-num js-line-number js-code-nav-line-number" data-line-number="353"></td>
-          <td id="LC353" class="blob-code blob-code-inner js-file-line">outputs from leave-one-out fits. Since the mean of many highly correlated</td>
+          <td id="LC353" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L354" class="blob-num js-line-number js-code-nav-line-number" data-line-number="354"></td>
-          <td id="LC354" class="blob-code blob-code-inner js-file-line">quantities has higher variance, leave-one-out estimate of the risk will</td>
+          <td id="LC354" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_prefix_impl</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L355" class="blob-num js-line-number js-code-nav-line-number" data-line-number="355"></td>
-          <td id="LC355" class="blob-code blob-code-inner js-file-line">have higher variance than the estimate based on V-fold cross-validation.</td>
+          <td id="LC355" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L356" class="blob-num js-line-number js-code-nav-line-number" data-line-number="356"></td>
-          <td id="LC356" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC356" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if an explicit prefix has been supplied, use it</span></td>
         </tr>
         <tr>
           <td id="L357" class="blob-num js-line-number js-code-nav-line-number" data-line-number="357"></td>
-          <td id="LC357" class="blob-code blob-code-inner js-file-line">Let&#39;s see V-fold cross-validation with <span class="pl-c1">`origami`</span> in action! In the next chapter</td>
+          <td id="LC357" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PATHS_PREFIX<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L358" class="blob-num js-line-number js-code-nav-line-number" data-line-number="358"></td>
-          <td id="LC358" class="blob-code blob-code-inner js-file-line">we will study the Super Learner --- an actual algorithm that we fit and evaluate</td>
+          <td id="LC358" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">prefix</span>))</td>
         </tr>
         <tr>
           <td id="L359" class="blob-num js-line-number js-code-nav-line-number" data-line-number="359"></td>
-          <td id="LC359" class="blob-code blob-code-inner js-file-line">its performance. The Super Learner relies on V-fold cross-validation as default cross-validation scheme. In order</td>
+          <td id="LC359" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-smi">prefix</span>)</td>
         </tr>
         <tr>
           <td id="L360" class="blob-num js-line-number js-code-nav-line-number" data-line-number="360"></td>
-          <td id="LC360" class="blob-code blob-code-inner js-file-line">to set up V-fold CV, we need to call function <span class="pl-c1">`folds_vfold(n, V)`</span>. Arguments</td>
+          <td id="LC360" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L361" class="blob-num js-line-number js-code-nav-line-number" data-line-number="361"></td>
-          <td id="LC361" class="blob-code blob-code-inner js-file-line">for <span class="pl-c1">`folds_vfold(n, V)`</span> require the total number of samples to be</td>
+          <td id="LC361" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if the user has requested an automatic prefix, generate it</span></td>
         </tr>
         <tr>
           <td id="L362" class="blob-num js-line-number js-code-nav-line-number" data-line-number="362"></td>
-          <td id="LC362" class="blob-code blob-code-inner js-file-line">cross-validated, and the number of folds we want to get.</td>
+          <td id="LC362" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">auto</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PATHS_PREFIX_AUTO<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L363" class="blob-num js-line-number js-code-nav-line-number" data-line-number="363"></td>
-          <td id="LC363" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC363" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">auto</span> <span class="pl-k">%in%</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>TRUE<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>True<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>true<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>1<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L364" class="blob-num js-line-number js-code-nav-line-number" data-line-number="364"></td>
-          <td id="LC364" class="blob-code blob-code-inner js-file-line">At $V=2$, we get 2 folds with $n/2$ number of samples in both training and</td>
+          <td id="LC364" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(renv_bootstrap_platform_prefix_auto())</td>
         </tr>
         <tr>
           <td id="L365" class="blob-num js-line-number js-code-nav-line-number" data-line-number="365"></td>
-          <td id="LC365" class="blob-code blob-code-inner js-file-line">validation set.</td>
+          <td id="LC365" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L366" class="blob-num js-line-number js-code-nav-line-number" data-line-number="366"></td>
-          <td id="LC366" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC366" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> empty string on failure</span></td>
         </tr>
         <tr>
           <td id="L367" class="blob-num js-line-number js-code-nav-line-number" data-line-number="367"></td>
-          <td id="LC367" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r cv}</span><span class="pl-s1"></span></td>
+          <td id="LC367" class="blob-code blob-code-inner js-file-line">    <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L368" class="blob-num js-line-number js-code-nav-line-number" data-line-number="368"></td>
-          <td id="LC368" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_vfold(nrow(<span class="pl-smi">washb_data</span>), <span class="pl-v">V</span> <span class="pl-k">=</span> <span class="pl-c1">2</span>)</span></td>
+          <td id="LC368" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L369" class="blob-num js-line-number js-code-nav-line-number" data-line-number="369"></td>
-          <td id="LC369" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC369" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L370" class="blob-num js-line-number js-code-nav-line-number" data-line-number="370"></td>
-          <td id="LC370" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC370" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L371" class="blob-num js-line-number js-code-nav-line-number" data-line-number="371"></td>
-          <td id="LC371" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC371" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_prefix_auto</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L372" class="blob-num js-line-number js-code-nav-line-number" data-line-number="372"></td>
-          <td id="LC372" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC372" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L373" class="blob-num js-line-number js-code-nav-line-number" data-line-number="373"></td>
-          <td id="LC373" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Monte Carlo</span></td>
+          <td id="LC373" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> tryCatch(renv_bootstrap_platform_os(), <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span>)</td>
         </tr>
         <tr>
           <td id="L374" class="blob-num js-line-number js-code-nav-line-number" data-line-number="374"></td>
-          <td id="LC374" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC374" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (inherits(<span class="pl-smi">prefix</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>error<span class="pl-pds">&quot;</span></span>) <span class="pl-k">||</span> <span class="pl-smi">prefix</span> <span class="pl-k">%in%</span> <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span>) {</td>
         </tr>
         <tr>
           <td id="L375" class="blob-num js-line-number js-code-nav-line-number" data-line-number="375"></td>
-          <td id="LC375" class="blob-code blob-code-inner js-file-line">With Monte Carlo cross-validation, we randomly select some fraction of the data</td>
+          <td id="LC375" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L376" class="blob-num js-line-number js-code-nav-line-number" data-line-number="376"></td>
-          <td id="LC376" class="blob-code blob-code-inner js-file-line">(without replacement) to form the training set; we assign the rest of the</td>
+          <td id="LC376" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">msg</span> <span class="pl-k">&lt;-</span> paste(</td>
         </tr>
         <tr>
           <td id="L377" class="blob-num js-line-number js-code-nav-line-number" data-line-number="377"></td>
-          <td id="LC377" class="blob-code blob-code-inner js-file-line">samples to the validation set. With that, the data is repeatedly and randomly</td>
+          <td id="LC377" class="blob-code blob-code-inner js-file-line">        <span class="pl-s"><span class="pl-pds">&quot;</span>failed to infer current operating system<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L378" class="blob-num js-line-number js-code-nav-line-number" data-line-number="378"></td>
-          <td id="LC378" class="blob-code blob-code-inner js-file-line">divided into two sets, a training set of $n_0 = n <span class="pl-cce">\c</span>dot (1-p)$ observations and</td>
+          <td id="LC378" class="blob-code blob-code-inner js-file-line">        <span class="pl-s"><span class="pl-pds">&quot;</span>please file a bug report at https://github.com/rstudio/renv/issues<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L379" class="blob-num js-line-number js-code-nav-line-number" data-line-number="379"></td>
-          <td id="LC379" class="blob-code blob-code-inner js-file-line">a validation set of $n_1 = n <span class="pl-cce">\c</span>dot p$ observations. This process is then</td>
+          <td id="LC379" class="blob-code blob-code-inner js-file-line">        <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>; <span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L380" class="blob-num js-line-number js-code-nav-line-number" data-line-number="380"></td>
-          <td id="LC380" class="blob-code blob-code-inner js-file-line">repeated multiple times, generating (at random) new training and validation</td>
+          <td id="LC380" class="blob-code blob-code-inner js-file-line">      )</td>
         </tr>
         <tr>
           <td id="L381" class="blob-num js-line-number js-code-nav-line-number" data-line-number="381"></td>
-          <td id="LC381" class="blob-code blob-code-inner js-file-line">partitions each time.</td>
+          <td id="LC381" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L382" class="blob-num js-line-number js-code-nav-line-number" data-line-number="382"></td>
-          <td id="LC382" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC382" class="blob-code blob-code-inner js-file-line">      warning(<span class="pl-smi">msg</span>)</td>
         </tr>
         <tr>
           <td id="L383" class="blob-num js-line-number js-code-nav-line-number" data-line-number="383"></td>
-          <td id="LC383" class="blob-code blob-code-inner js-file-line">Since the partitions are independent across folds, the same sample can appear in</td>
+          <td id="LC383" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L384" class="blob-num js-line-number js-code-nav-line-number" data-line-number="384"></td>
-          <td id="LC384" class="blob-code blob-code-inner js-file-line">the validation set multiple times -- note that this is a stark difference</td>
+          <td id="LC384" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L385" class="blob-num js-line-number js-code-nav-line-number" data-line-number="385"></td>
-          <td id="LC385" class="blob-code blob-code-inner js-file-line">between Monte Carlo and V-fold cross-validation. For a given $p$, Monte Carlo</td>
+          <td id="LC385" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L386" class="blob-num js-line-number js-code-nav-line-number" data-line-number="386"></td>
-          <td id="LC386" class="blob-code blob-code-inner js-file-line">cross-validation would be optimal if done infinite times, but this is not </td>
+          <td id="LC386" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span></td>
         </tr>
         <tr>
           <td id="L387" class="blob-num js-line-number js-code-nav-line-number" data-line-number="387"></td>
-          <td id="LC387" class="blob-code blob-code-inner js-file-line">computationally feasible. With Monte Carlo</td>
+          <td id="LC387" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L388" class="blob-num js-line-number js-code-nav-line-number" data-line-number="388"></td>
-          <td id="LC388" class="blob-code blob-code-inner js-file-line">cross-validation, one is able to explore many more available partitions than</td>
+          <td id="LC388" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L389" class="blob-num js-line-number js-code-nav-line-number" data-line-number="389"></td>
-          <td id="LC389" class="blob-code blob-code-inner js-file-line">with V-fold cross-validation -- resulting in a possibly less variable estimate</td>
+          <td id="LC389" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L390" class="blob-num js-line-number js-code-nav-line-number" data-line-number="390"></td>
-          <td id="LC390" class="blob-code blob-code-inner js-file-line">of the risk, at a cost of an increase in bias. By having many overlapping splits,</td>
+          <td id="LC390" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_os</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L391" class="blob-num js-line-number js-code-nav-line-number" data-line-number="391"></td>
-          <td id="LC391" class="blob-code blob-code-inner js-file-line">we often also need more splits (and thus more computational time) to achieve</td>
+          <td id="LC391" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L392" class="blob-num js-line-number js-code-nav-line-number" data-line-number="392"></td>
-          <td id="LC392" class="blob-code blob-code-inner js-file-line">V-fold performance with only $V$ splits. </td>
+          <td id="LC392" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">sysinfo</span> <span class="pl-k">&lt;-</span> Sys.info()</td>
         </tr>
         <tr>
           <td id="L393" class="blob-num js-line-number js-code-nav-line-number" data-line-number="393"></td>
-          <td id="LC393" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC393" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">sysname</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">sysinfo</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>sysname<span class="pl-pds">&quot;</span></span>]]</td>
         </tr>
         <tr>
           <td id="L394" class="blob-num js-line-number js-code-nav-line-number" data-line-number="394"></td>
-          <td id="LC394" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the Monte Carlo cross-validation with <span class="pl-c1">`origami`</span></td>
+          <td id="LC394" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L395" class="blob-num js-line-number js-code-nav-line-number" data-line-number="395"></td>
-          <td id="LC395" class="blob-code blob-code-inner js-file-line">package below using the function <span class="pl-c1">`folds_montecarlo(n, V, pvalidation)`</span>. In order</td>
+          <td id="LC395" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> handle Windows + macOS up front</span></td>
         </tr>
         <tr>
           <td id="L396" class="blob-num js-line-number js-code-nav-line-number" data-line-number="396"></td>
-          <td id="LC396" class="blob-code blob-code-inner js-file-line">to setup <span class="pl-c1">`folds_montecarlo(n, V, pvalidation)`</span>, we need:</td>
+          <td id="LC396" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">sysname</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Windows<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L397" class="blob-num js-line-number js-code-nav-line-number" data-line-number="397"></td>
-          <td id="LC397" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC397" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-s"><span class="pl-pds">&quot;</span>windows<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L398" class="blob-num js-line-number js-code-nav-line-number" data-line-number="398"></td>
-          <td id="LC398" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> the total number of samples we want to cross-validate;</td>
+          <td id="LC398" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">else</span> <span class="pl-k">if</span> (<span class="pl-smi">sysname</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Darwin<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L399" class="blob-num js-line-number js-code-nav-line-number" data-line-number="399"></td>
-          <td id="LC399" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> the number of folds;</td>
+          <td id="LC399" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-s"><span class="pl-pds">&quot;</span>macos<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L400" class="blob-num js-line-number js-code-nav-line-number" data-line-number="400"></td>
-          <td id="LC400" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> the proportion of observations to be placed in the validation set.</td>
+          <td id="LC400" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L401" class="blob-num js-line-number js-code-nav-line-number" data-line-number="401"></td>
-          <td id="LC401" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC401" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check for os-release files</span></td>
         </tr>
         <tr>
           <td id="L402" class="blob-num js-line-number js-code-nav-line-number" data-line-number="402"></td>
-          <td id="LC402" class="blob-code blob-code-inner js-file-line">At $V=2$ and $pvalidation=0.2$, we obtain 2 folds with approximately $6$ samples</td>
+          <td id="LC402" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">file</span> <span class="pl-k">in</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>/etc/os-release<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>/usr/lib/os-release<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L403" class="blob-num js-line-number js-code-nav-line-number" data-line-number="403"></td>
-          <td id="LC403" class="blob-code blob-code-inner js-file-line">in validation set per fold.</td>
+          <td id="LC403" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (file.exists(<span class="pl-smi">file</span>))</td>
         </tr>
         <tr>
           <td id="L404" class="blob-num js-line-number js-code-nav-line-number" data-line-number="404"></td>
-          <td id="LC404" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC404" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">return</span>(renv_bootstrap_platform_os_via_os_release(<span class="pl-smi">file</span>, <span class="pl-smi">sysinfo</span>))</td>
         </tr>
         <tr>
           <td id="L405" class="blob-num js-line-number js-code-nav-line-number" data-line-number="405"></td>
-          <td id="LC405" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r montecarlo}</span><span class="pl-s1"></span></td>
+          <td id="LC405" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L406" class="blob-num js-line-number js-code-nav-line-number" data-line-number="406"></td>
-          <td id="LC406" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_montecarlo(nrow(<span class="pl-smi">washb_data</span>), <span class="pl-v">V</span> <span class="pl-k">=</span> <span class="pl-c1">2</span>, <span class="pl-v">pvalidation</span> <span class="pl-k">=</span> <span class="pl-c1">0.2</span>)</span></td>
+          <td id="LC406" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check for redhat-release files</span></td>
         </tr>
         <tr>
           <td id="L407" class="blob-num js-line-number js-code-nav-line-number" data-line-number="407"></td>
-          <td id="LC407" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC407" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (file.exists(<span class="pl-s"><span class="pl-pds">&quot;</span>/etc/redhat-release<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L408" class="blob-num js-line-number js-code-nav-line-number" data-line-number="408"></td>
-          <td id="LC408" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC408" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(renv_bootstrap_platform_os_via_redhat_release())</td>
         </tr>
         <tr>
           <td id="L409" class="blob-num js-line-number js-code-nav-line-number" data-line-number="409"></td>
-          <td id="LC409" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC409" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L410" class="blob-num js-line-number js-code-nav-line-number" data-line-number="410"></td>
-          <td id="LC410" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC410" class="blob-code blob-code-inner js-file-line">    <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L411" class="blob-num js-line-number js-code-nav-line-number" data-line-number="411"></td>
-          <td id="LC411" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Bootstrap</span></td>
+          <td id="LC411" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L412" class="blob-num js-line-number js-code-nav-line-number" data-line-number="412"></td>
-          <td id="LC412" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC412" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L413" class="blob-num js-line-number js-code-nav-line-number" data-line-number="413"></td>
-          <td id="LC413" class="blob-code blob-code-inner js-file-line">The bootstrap cross-validation also consists of randomly selecting samples, with</td>
+          <td id="LC413" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L414" class="blob-num js-line-number js-code-nav-line-number" data-line-number="414"></td>
-          <td id="LC414" class="blob-code blob-code-inner js-file-line">replacement, for the training set. The rest of the samples not picked for the</td>
+          <td id="LC414" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_os_via_os_release</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">file</span>, <span class="pl-smi">sysinfo</span>) {</td>
         </tr>
         <tr>
           <td id="L415" class="blob-num js-line-number js-code-nav-line-number" data-line-number="415"></td>
-          <td id="LC415" class="blob-code blob-code-inner js-file-line">training set are allocated to the validation set. This process is then repeated</td>
+          <td id="LC415" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L416" class="blob-num js-line-number js-code-nav-line-number" data-line-number="416"></td>
-          <td id="LC416" class="blob-code blob-code-inner js-file-line">multiple times, generating (at random) new training and validation partitions</td>
+          <td id="LC416" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> read /etc/os-release</span></td>
         </tr>
         <tr>
           <td id="L417" class="blob-num js-line-number js-code-nav-line-number" data-line-number="417"></td>
-          <td id="LC417" class="blob-code blob-code-inner js-file-line">each time. In contract to the Monte Carlo cross-validation, the total number of</td>
+          <td id="LC417" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">release</span> <span class="pl-k">&lt;-</span> <span class="pl-e">utils</span><span class="pl-k">::</span>read.table(</td>
         </tr>
         <tr>
           <td id="L418" class="blob-num js-line-number js-code-nav-line-number" data-line-number="418"></td>
-          <td id="LC418" class="blob-code blob-code-inner js-file-line">samples in a training and validation size across folds is not constant. We also</td>
+          <td id="LC418" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">file</span>             <span class="pl-k">=</span> <span class="pl-smi">file</span>,</td>
         </tr>
         <tr>
           <td id="L419" class="blob-num js-line-number js-code-nav-line-number" data-line-number="419"></td>
-          <td id="LC419" class="blob-code blob-code-inner js-file-line">sample with replacement, hence the same samples can be in multiple training</td>
+          <td id="LC419" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">sep</span>              <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>=<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L420" class="blob-num js-line-number js-code-nav-line-number" data-line-number="420"></td>
-          <td id="LC420" class="blob-code blob-code-inner js-file-line">sets. The proportion of observations in the validation sets is a random</td>
+          <td id="LC420" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">quote</span>            <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-cce">\&quot;</span><span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>&#39;<span class="pl-pds">&quot;</span></span>),</td>
         </tr>
         <tr>
           <td id="L421" class="blob-num js-line-number js-code-nav-line-number" data-line-number="421"></td>
-          <td id="LC421" class="blob-code blob-code-inner js-file-line">variable, with expectation $<span class="pl-cce">\s</span>im 0.368$.</td>
+          <td id="LC421" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">col.names</span>        <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>Key<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>Value<span class="pl-pds">&quot;</span></span>),</td>
         </tr>
         <tr>
           <td id="L422" class="blob-num js-line-number js-code-nav-line-number" data-line-number="422"></td>
-          <td id="LC422" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC422" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">comment.char</span>     <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>#<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L423" class="blob-num js-line-number js-code-nav-line-number" data-line-number="423"></td>
-          <td id="LC423" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the bootstrap cross-validation with <span class="pl-c1">`origami`</span> package</td>
+          <td id="LC423" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">stringsAsFactors</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span></td>
         </tr>
         <tr>
           <td id="L424" class="blob-num js-line-number js-code-nav-line-number" data-line-number="424"></td>
-          <td id="LC424" class="blob-code blob-code-inner js-file-line">below using the function <span class="pl-c1">`folds_bootstrap(n, V)`</span>. In order to setup</td>
+          <td id="LC424" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L425" class="blob-num js-line-number js-code-nav-line-number" data-line-number="425"></td>
-          <td id="LC425" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`folds_bootstrap(n, V)`</span>, we need:</td>
+          <td id="LC425" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L426" class="blob-num js-line-number js-code-nav-line-number" data-line-number="426"></td>
-          <td id="LC426" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC426" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">vars</span> <span class="pl-k">&lt;-</span> as.list(<span class="pl-smi">release</span><span class="pl-k">$</span><span class="pl-smi">Value</span>)</td>
         </tr>
         <tr>
           <td id="L427" class="blob-num js-line-number js-code-nav-line-number" data-line-number="427"></td>
-          <td id="LC427" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> the total number of samples we want to cross-validate;</td>
+          <td id="LC427" class="blob-code blob-code-inner js-file-line">    names(<span class="pl-smi">vars</span>) <span class="pl-k">&lt;-</span> <span class="pl-smi">release</span><span class="pl-k">$</span><span class="pl-smi">Key</span></td>
         </tr>
         <tr>
           <td id="L428" class="blob-num js-line-number js-code-nav-line-number" data-line-number="428"></td>
-          <td id="LC428" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> the number of folds.</td>
+          <td id="LC428" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L429" class="blob-num js-line-number js-code-nav-line-number" data-line-number="429"></td>
-          <td id="LC429" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC429" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> get os name</span></td>
         </tr>
         <tr>
           <td id="L430" class="blob-num js-line-number js-code-nav-line-number" data-line-number="430"></td>
-          <td id="LC430" class="blob-code blob-code-inner js-file-line">At $V=2$, we obtain $2$ folds with different number of samples in the validation</td>
+          <td id="LC430" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">os</span> <span class="pl-k">&lt;-</span> tolower(<span class="pl-smi">sysinfo</span>[[<span class="pl-s"><span class="pl-pds">&quot;</span>sysname<span class="pl-pds">&quot;</span></span>]])</td>
         </tr>
         <tr>
           <td id="L431" class="blob-num js-line-number js-code-nav-line-number" data-line-number="431"></td>
-          <td id="LC431" class="blob-code blob-code-inner js-file-line">set across folds.</td>
+          <td id="LC431" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L432" class="blob-num js-line-number js-code-nav-line-number" data-line-number="432"></td>
-          <td id="LC432" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC432" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> read id</span></td>
         </tr>
         <tr>
           <td id="L433" class="blob-num js-line-number js-code-nav-line-number" data-line-number="433"></td>
-          <td id="LC433" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r bootstrap}</span><span class="pl-s1"></span></td>
+          <td id="LC433" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">id</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L434" class="blob-num js-line-number js-code-nav-line-number" data-line-number="434"></td>
-          <td id="LC434" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_bootstrap(nrow(<span class="pl-smi">washb_data</span>), <span class="pl-v">V</span> <span class="pl-k">=</span> <span class="pl-c1">2</span>)</span></td>
+          <td id="LC434" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">field</span> <span class="pl-k">in</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>ID<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>ID_LIKE<span class="pl-pds">&quot;</span></span>)) {</td>
         </tr>
         <tr>
           <td id="L435" class="blob-num js-line-number js-code-nav-line-number" data-line-number="435"></td>
-          <td id="LC435" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC435" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (<span class="pl-smi">field</span> <span class="pl-k">%in%</span> names(<span class="pl-smi">vars</span>) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">vars</span>[[<span class="pl-smi">field</span>]])) {</td>
         </tr>
         <tr>
           <td id="L436" class="blob-num js-line-number js-code-nav-line-number" data-line-number="436"></td>
-          <td id="LC436" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC436" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">id</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">vars</span>[[<span class="pl-smi">field</span>]]</td>
         </tr>
         <tr>
           <td id="L437" class="blob-num js-line-number js-code-nav-line-number" data-line-number="437"></td>
-          <td id="LC437" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC437" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">break</span></td>
         </tr>
         <tr>
           <td id="L438" class="blob-num js-line-number js-code-nav-line-number" data-line-number="438"></td>
-          <td id="LC438" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC438" class="blob-code blob-code-inner js-file-line">      }</td>
         </tr>
         <tr>
           <td id="L439" class="blob-num js-line-number js-code-nav-line-number" data-line-number="439"></td>
-          <td id="LC439" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Cross-validation for dependent data</span></td>
+          <td id="LC439" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L440" class="blob-num js-line-number js-code-nav-line-number" data-line-number="440"></td>
-          <td id="LC440" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC440" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L441" class="blob-num js-line-number js-code-nav-line-number" data-line-number="441"></td>
-          <td id="LC441" class="blob-code blob-code-inner js-file-line">The <span class="pl-c1">`origami`</span> package also supports numerous cross-validation schemes for</td>
+          <td id="LC441" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> read version</span></td>
         </tr>
         <tr>
           <td id="L442" class="blob-num js-line-number js-code-nav-line-number" data-line-number="442"></td>
-          <td id="LC442" class="blob-code blob-code-inner js-file-line">time-series data, for both single and multiple time-series with arbitrary time</td>
+          <td id="LC442" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L443" class="blob-num js-line-number js-code-nav-line-number" data-line-number="443"></td>
-          <td id="LC443" class="blob-code blob-code-inner js-file-line">and network dependence.</td>
+          <td id="LC443" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">field</span> <span class="pl-k">in</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span>UBUNTU_CODENAME<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>VERSION_CODENAME<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>VERSION_ID<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>BUILD_ID<span class="pl-pds">&quot;</span></span>)) {</td>
         </tr>
         <tr>
           <td id="L444" class="blob-num js-line-number js-code-nav-line-number" data-line-number="444"></td>
-          <td id="LC444" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC444" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (<span class="pl-smi">field</span> <span class="pl-k">%in%</span> names(<span class="pl-smi">vars</span>) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">vars</span>[[<span class="pl-smi">field</span>]])) {</td>
         </tr>
         <tr>
           <td id="L445" class="blob-num js-line-number js-code-nav-line-number" data-line-number="445"></td>
-          <td id="LC445" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>AirPassenger Example {-}</span></td>
+          <td id="LC445" class="blob-code blob-code-inner js-file-line">        <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">vars</span>[[<span class="pl-smi">field</span>]]</td>
         </tr>
         <tr>
           <td id="L446" class="blob-num js-line-number js-code-nav-line-number" data-line-number="446"></td>
-          <td id="LC446" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC446" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">break</span></td>
         </tr>
         <tr>
           <td id="L447" class="blob-num js-line-number js-code-nav-line-number" data-line-number="447"></td>
-          <td id="LC447" class="blob-code blob-code-inner js-file-line">In order to illustrate different cross-validation schemes for time-series, we</td>
+          <td id="LC447" class="blob-code blob-code-inner js-file-line">      }</td>
         </tr>
         <tr>
           <td id="L448" class="blob-num js-line-number js-code-nav-line-number" data-line-number="448"></td>
-          <td id="LC448" class="blob-code blob-code-inner js-file-line">will be using the AirPassenger data; this is a widely used, freely available</td>
+          <td id="LC448" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L449" class="blob-num js-line-number js-code-nav-line-number" data-line-number="449"></td>
-          <td id="LC449" class="blob-code blob-code-inner js-file-line">dataset. The AirPassenger dataset in <span class="pl-c1">`R`</span> provides monthly totals of</td>
+          <td id="LC449" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L450" class="blob-num js-line-number js-code-nav-line-number" data-line-number="450"></td>
-          <td id="LC450" class="blob-code blob-code-inner js-file-line">international airline passengers from 1949 to 1960. This dataset is already of a</td>
+          <td id="LC450" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> join together</span></td>
         </tr>
         <tr>
           <td id="L451" class="blob-num js-line-number js-code-nav-line-number" data-line-number="451"></td>
-          <td id="LC451" class="blob-code blob-code-inner js-file-line">time series class therefore no further class or date manipulation is required.</td>
+          <td id="LC451" class="blob-code blob-code-inner js-file-line">    paste(c(<span class="pl-smi">os</span>, <span class="pl-smi">id</span>, <span class="pl-smi">version</span>), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>-<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L452" class="blob-num js-line-number js-code-nav-line-number" data-line-number="452"></td>
-          <td id="LC452" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC452" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L453" class="blob-num js-line-number js-code-nav-line-number" data-line-number="453"></td>
-          <td id="LC453" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\begin{shortbox}\n\\Boxhead{Constructing a library that is consistent with the data-generating distribution}&#39;`</span></td>
+          <td id="LC453" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L454" class="blob-num js-line-number js-code-nav-line-number" data-line-number="454"></td>
-          <td id="LC454" class="blob-code blob-code-inner js-file-line"><span class="pl-mb">**Goal:**</span> we want to forecast the number of airline passengers at time $h$</td>
+          <td id="LC454" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L455" class="blob-num js-line-number js-code-nav-line-number" data-line-number="455"></td>
-          <td id="LC455" class="blob-code blob-code-inner js-file-line">horizon using the historical data from 1949 to 1960.</td>
+          <td id="LC455" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_platform_os_via_redhat_release</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L456" class="blob-num js-line-number js-code-nav-line-number" data-line-number="456"></td>
-          <td id="LC456" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`r if (knitr::is_latex_output()) &#39;\\end{shortbox}&#39;`</span></td>
+          <td id="LC456" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L457" class="blob-num js-line-number js-code-nav-line-number" data-line-number="457"></td>
-          <td id="LC457" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC457" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> read /etc/redhat-release</span></td>
         </tr>
         <tr>
           <td id="L458" class="blob-num js-line-number js-code-nav-line-number" data-line-number="458"></td>
-          <td id="LC458" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r plot_airpass}</span><span class="pl-s1"></span></td>
+          <td id="LC458" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">contents</span> <span class="pl-k">&lt;-</span> readLines(<span class="pl-s"><span class="pl-pds">&quot;</span>/etc/redhat-release<span class="pl-pds">&quot;</span></span>, <span class="pl-v">warn</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L459" class="blob-num js-line-number js-code-nav-line-number" data-line-number="459"></td>
-          <td id="LC459" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">ggfortify</span>)</span></td>
+          <td id="LC459" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L460" class="blob-num js-line-number js-code-nav-line-number" data-line-number="460"></td>
-          <td id="LC460" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
+          <td id="LC460" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> infer id</span></td>
         </tr>
         <tr>
           <td id="L461" class="blob-num js-line-number js-code-nav-line-number" data-line-number="461"></td>
-          <td id="LC461" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">data(<span class="pl-smi">AirPassengers</span>)</span></td>
+          <td id="LC461" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">id</span> <span class="pl-k">&lt;-</span> <span class="pl-k">if</span> (grepl(<span class="pl-s"><span class="pl-pds">&quot;</span>centos<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">contents</span>, <span class="pl-v">ignore.case</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>))</td>
         </tr>
         <tr>
           <td id="L462" class="blob-num js-line-number js-code-nav-line-number" data-line-number="462"></td>
-          <td id="LC462" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">AP</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">AirPassengers</span></span></td>
+          <td id="LC462" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>centos<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L463" class="blob-num js-line-number js-code-nav-line-number" data-line-number="463"></td>
-          <td id="LC463" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
+          <td id="LC463" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">else</span> <span class="pl-k">if</span> (grepl(<span class="pl-s"><span class="pl-pds">&quot;</span>redhat<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">contents</span>, <span class="pl-v">ignore.case</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>))</td>
         </tr>
         <tr>
           <td id="L464" class="blob-num js-line-number js-code-nav-line-number" data-line-number="464"></td>
-          <td id="LC464" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">autoplot(<span class="pl-smi">AP</span>) <span class="pl-k">+</span></span></td>
+          <td id="LC464" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>redhat<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L465" class="blob-num js-line-number js-code-nav-line-number" data-line-number="465"></td>
-          <td id="LC465" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  labs(</span></td>
+          <td id="LC465" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">else</span></td>
         </tr>
         <tr>
           <td id="L466" class="blob-num js-line-number js-code-nav-line-number" data-line-number="466"></td>
-          <td id="LC466" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">x</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Date<span class="pl-pds">&quot;</span></span>,</span></td>
+          <td id="LC466" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L467" class="blob-num js-line-number js-code-nav-line-number" data-line-number="467"></td>
-          <td id="LC467" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">y</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Passenger numbers (1000&#39;s)<span class="pl-pds">&quot;</span></span>,</span></td>
+          <td id="LC467" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L468" class="blob-num js-line-number js-code-nav-line-number" data-line-number="468"></td>
-          <td id="LC468" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">title</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Air Passengers from 1949 to 1961<span class="pl-pds">&quot;</span></span></span></td>
+          <td id="LC468" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> try to find a version component (very hacky)</span></td>
         </tr>
         <tr>
           <td id="L469" class="blob-num js-line-number js-code-nav-line-number" data-line-number="469"></td>
-          <td id="LC469" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  )</span></td>
+          <td id="LC469" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>unknown<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L470" class="blob-num js-line-number js-code-nav-line-number" data-line-number="470"></td>
-          <td id="LC470" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
+          <td id="LC470" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L471" class="blob-num js-line-number js-code-nav-line-number" data-line-number="471"></td>
-          <td id="LC471" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">t</span> <span class="pl-k">&lt;-</span> length(<span class="pl-smi">AP</span>)</span></td>
+          <td id="LC471" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">parts</span> <span class="pl-k">&lt;-</span> strsplit(<span class="pl-smi">contents</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>[[:space:]]<span class="pl-pds">&quot;</span></span>)[[<span class="pl-c1">1L</span>]]</td>
         </tr>
         <tr>
           <td id="L472" class="blob-num js-line-number js-code-nav-line-number" data-line-number="472"></td>
-          <td id="LC472" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC472" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">for</span> (<span class="pl-smi">part</span> <span class="pl-k">in</span> <span class="pl-smi">parts</span>) {</td>
         </tr>
         <tr>
           <td id="L473" class="blob-num js-line-number js-code-nav-line-number" data-line-number="473"></td>
-          <td id="LC473" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC473" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L474" class="blob-num js-line-number js-code-nav-line-number" data-line-number="474"></td>
-          <td id="LC474" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Rolling origin</span></td>
+          <td id="LC474" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">nv</span> <span class="pl-k">&lt;-</span> tryCatch(numeric_version(<span class="pl-smi">part</span>), <span class="pl-v">error</span> <span class="pl-k">=</span> <span class="pl-smi">identity</span>)</td>
         </tr>
         <tr>
           <td id="L475" class="blob-num js-line-number js-code-nav-line-number" data-line-number="475"></td>
-          <td id="LC475" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC475" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">if</span> (inherits(<span class="pl-smi">nv</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>error<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L476" class="blob-num js-line-number js-code-nav-line-number" data-line-number="476"></td>
-          <td id="LC476" class="blob-code blob-code-inner js-file-line">Rolling origin cross-validation scheme lends itself to &quot;online&quot; algorithms,</td>
+          <td id="LC476" class="blob-code blob-code-inner js-file-line">        <span class="pl-k">next</span></td>
         </tr>
         <tr>
           <td id="L477" class="blob-num js-line-number js-code-nav-line-number" data-line-number="477"></td>
-          <td id="LC477" class="blob-code blob-code-inner js-file-line">where large streams of data have to be fit continually, and the final fit is</td>
+          <td id="LC477" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L478" class="blob-num js-line-number js-code-nav-line-number" data-line-number="478"></td>
-          <td id="LC478" class="blob-code blob-code-inner js-file-line">constantly updated with more data acquired. In general, the rolling origin</td>
+          <td id="LC478" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">version</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">nv</span>[<span class="pl-c1">1</span>, <span class="pl-c1">1</span>]</td>
         </tr>
         <tr>
           <td id="L479" class="blob-num js-line-number js-code-nav-line-number" data-line-number="479"></td>
-          <td id="LC479" class="blob-code blob-code-inner js-file-line">scheme defines an initial training set, and with each iteration the size of the</td>
+          <td id="LC479" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">break</span></td>
         </tr>
         <tr>
           <td id="L480" class="blob-num js-line-number js-code-nav-line-number" data-line-number="480"></td>
-          <td id="LC480" class="blob-code blob-code-inner js-file-line">training set grows by $m$ observations until we reach time $t$ for a particular</td>
+          <td id="LC480" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L481" class="blob-num js-line-number js-code-nav-line-number" data-line-number="481"></td>
-          <td id="LC481" class="blob-code blob-code-inner js-file-line">fold. The time points included in the training set are always behind the</td>
+          <td id="LC481" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L482" class="blob-num js-line-number js-code-nav-line-number" data-line-number="482"></td>
-          <td id="LC482" class="blob-code blob-code-inner js-file-line">validation set time points; in addition, there might be a gap between training</td>
+          <td id="LC482" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L483" class="blob-num js-line-number js-code-nav-line-number" data-line-number="483"></td>
-          <td id="LC483" class="blob-code blob-code-inner js-file-line">and validation times of size $h$.</td>
+          <td id="LC483" class="blob-code blob-code-inner js-file-line">    paste(c(<span class="pl-s"><span class="pl-pds">&quot;</span>linux<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">id</span>, <span class="pl-smi">version</span>), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>-<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L484" class="blob-num js-line-number js-code-nav-line-number" data-line-number="484"></td>
-          <td id="LC484" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC484" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L485" class="blob-num js-line-number js-code-nav-line-number" data-line-number="485"></td>
-          <td id="LC485" class="blob-code blob-code-inner js-file-line">To further illustrate rolling origin cross-validation, we show below an example</td>
+          <td id="LC485" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L486" class="blob-num js-line-number js-code-nav-line-number" data-line-number="486"></td>
-          <td id="LC486" class="blob-code blob-code-inner js-file-line">with 3 folds. Here, the first window size is 15 time points, on which we first</td>
+          <td id="LC486" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L487" class="blob-num js-line-number js-code-nav-line-number" data-line-number="487"></td>
-          <td id="LC487" class="blob-code blob-code-inner js-file-line">train the proposed algorithm. We then evaluate its performance on 10 time</td>
+          <td id="LC487" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_library_root_name</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">project</span>) {</td>
         </tr>
         <tr>
           <td id="L488" class="blob-num js-line-number js-code-nav-line-number" data-line-number="488"></td>
-          <td id="LC488" class="blob-code blob-code-inner js-file-line">points, with a gap of size 5 between the training and validation time points.</td>
+          <td id="LC488" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L489" class="blob-num js-line-number js-code-nav-line-number" data-line-number="489"></td>
-          <td id="LC489" class="blob-code blob-code-inner js-file-line">For the following fold, we train the algorithm on a longer stream of data, 25</td>
+          <td id="LC489" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> use project name as-is if requested</span></td>
         </tr>
         <tr>
           <td id="L490" class="blob-num js-line-number js-code-nav-line-number" data-line-number="490"></td>
-          <td id="LC490" class="blob-code blob-code-inner js-file-line">time points, including the original 15 we started with. We then evaluate its</td>
+          <td id="LC490" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">asis</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PATHS_LIBRARY_ROOT_ASIS<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>FALSE<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L491" class="blob-num js-line-number js-code-nav-line-number" data-line-number="491"></td>
-          <td id="LC491" class="blob-code blob-code-inner js-file-line">performance on 10 time points in the future.</td>
+          <td id="LC491" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">asis</span>)</td>
         </tr>
         <tr>
           <td id="L492" class="blob-num js-line-number js-code-nav-line-number" data-line-number="492"></td>
-          <td id="LC492" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC492" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(basename(<span class="pl-smi">project</span>))</td>
         </tr>
         <tr>
           <td id="L493" class="blob-num js-line-number js-code-nav-line-number" data-line-number="493"></td>
-          <td id="LC493" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r, fig.cap=&quot;Rolling origin CV&quot;, results=&quot;asis&quot;, echo=FALSE}</span><span class="pl-s1"></span></td>
+          <td id="LC493" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L494" class="blob-num js-line-number js-code-nav-line-number" data-line-number="494"></td>
-          <td id="LC494" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-e">knitr</span><span class="pl-k">::</span>include_graphics(<span class="pl-v">path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>img/png/rolling_origin.png<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC494" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> otherwise, disambiguate based on project&#39;s path</span></td>
         </tr>
         <tr>
           <td id="L495" class="blob-num js-line-number js-code-nav-line-number" data-line-number="495"></td>
-          <td id="LC495" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC495" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">id</span> <span class="pl-k">&lt;-</span> substring(renv_bootstrap_hash_text(<span class="pl-smi">project</span>), <span class="pl-c1">1L</span>, <span class="pl-c1">8L</span>)</td>
         </tr>
         <tr>
           <td id="L496" class="blob-num js-line-number js-code-nav-line-number" data-line-number="496"></td>
-          <td id="LC496" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC496" class="blob-code blob-code-inner js-file-line">    paste(basename(<span class="pl-smi">project</span>), <span class="pl-smi">id</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>-<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L497" class="blob-num js-line-number js-code-nav-line-number" data-line-number="497"></td>
-          <td id="LC497" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the rolling origin cross-validation with <span class="pl-c1">`origami`</span></td>
+          <td id="LC497" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L498" class="blob-num js-line-number js-code-nav-line-number" data-line-number="498"></td>
-          <td id="LC498" class="blob-code blob-code-inner js-file-line">package below using the function <span class="pl-c1">`folds_rolling_origin(n, first_window,</span></td>
+          <td id="LC498" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L499" class="blob-num js-line-number js-code-nav-line-number" data-line-number="499"></td>
-          <td id="LC499" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">validation_size, gap, batch)`</span>. In order to setup <span class="pl-c1">`folds_rolling_origin(n,</span></td>
+          <td id="LC499" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L500" class="blob-num js-line-number js-code-nav-line-number" data-line-number="500"></td>
-          <td id="LC500" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">first_window, validation_size, gap, batch)`</span>, we need:</td>
+          <td id="LC500" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_library_root</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">project</span>) {</td>
         </tr>
         <tr>
           <td id="L501" class="blob-num js-line-number js-code-nav-line-number" data-line-number="501"></td>
-          <td id="LC501" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC501" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L502" class="blob-num js-line-number js-code-nav-line-number" data-line-number="502"></td>
-          <td id="LC502" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> the total number of time points we want to cross-validate;</td>
+          <td id="LC502" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">path</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PATHS_LIBRARY<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L503" class="blob-num js-line-number js-code-nav-line-number" data-line-number="503"></td>
-          <td id="LC503" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> the size of the first training set;</td>
+          <td id="LC503" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">path</span>))</td>
         </tr>
         <tr>
           <td id="L504" class="blob-num js-line-number js-code-nav-line-number" data-line-number="504"></td>
-          <td id="LC504" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> the size of the validation set;</td>
+          <td id="LC504" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-smi">path</span>)</td>
         </tr>
         <tr>
           <td id="L505" class="blob-num js-line-number js-code-nav-line-number" data-line-number="505"></td>
-          <td id="LC505" class="blob-code blob-code-inner js-file-line"><span class="pl-v">4.</span> the gap between training and validation set;</td>
+          <td id="LC505" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L506" class="blob-num js-line-number js-code-nav-line-number" data-line-number="506"></td>
-          <td id="LC506" class="blob-code blob-code-inner js-file-line"><span class="pl-v">5.</span> the size of the update on the training set per each iteration of CV.</td>
+          <td id="LC506" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">path</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PATHS_LIBRARY_ROOT<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L507" class="blob-num js-line-number js-code-nav-line-number" data-line-number="507"></td>
-          <td id="LC507" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC507" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">path</span>)) {</td>
         </tr>
         <tr>
           <td id="L508" class="blob-num js-line-number js-code-nav-line-number" data-line-number="508"></td>
-          <td id="LC508" class="blob-code blob-code-inner js-file-line">Our time-series has $t=144$ time points. Setting the <span class="pl-c1">`first_window`</span> to $50$,</td>
+          <td id="LC508" class="blob-code blob-code-inner js-file-line">      <span class="pl-smi">name</span> <span class="pl-k">&lt;-</span> renv_bootstrap_library_root_name(<span class="pl-smi">project</span>)</td>
         </tr>
         <tr>
           <td id="L509" class="blob-num js-line-number js-code-nav-line-number" data-line-number="509"></td>
-          <td id="LC509" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`validation_size`</span> to 10, <span class="pl-c1">`gap`</span> to 5 and <span class="pl-c1">`batch`</span> to 20, we get 4 time-series</td>
+          <td id="LC509" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(file.path(<span class="pl-smi">path</span>, <span class="pl-smi">name</span>))</td>
         </tr>
         <tr>
           <td id="L510" class="blob-num js-line-number js-code-nav-line-number" data-line-number="510"></td>
-          <td id="LC510" class="blob-code blob-code-inner js-file-line">folds; we show the first two below.</td>
+          <td id="LC510" class="blob-code blob-code-inner js-file-line">    }</td>
         </tr>
         <tr>
           <td id="L511" class="blob-num js-line-number js-code-nav-line-number" data-line-number="511"></td>
-          <td id="LC511" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC511" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L512" class="blob-num js-line-number js-code-nav-line-number" data-line-number="512"></td>
-          <td id="LC512" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r rolling_origin}</span><span class="pl-s1"></span></td>
+          <td id="LC512" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> renv_bootstrap_profile_prefix()</td>
         </tr>
         <tr>
           <td id="L513" class="blob-num js-line-number js-code-nav-line-number" data-line-number="513"></td>
-          <td id="LC513" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_rolling_origin(</span></td>
+          <td id="LC513" class="blob-code blob-code-inner js-file-line">    paste(c(<span class="pl-smi">project</span>, <span class="pl-smi">prefix</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>renv/library<span class="pl-pds">&quot;</span></span>), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>/<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L514" class="blob-num js-line-number js-code-nav-line-number" data-line-number="514"></td>
-          <td id="LC514" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">t</span>,</span></td>
+          <td id="LC514" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L515" class="blob-num js-line-number js-code-nav-line-number" data-line-number="515"></td>
-          <td id="LC515" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">first_window</span> <span class="pl-k">=</span> <span class="pl-c1">50</span>, <span class="pl-v">validation_size</span> <span class="pl-k">=</span> <span class="pl-c1">10</span>, <span class="pl-v">gap</span> <span class="pl-k">=</span> <span class="pl-c1">5</span>, <span class="pl-v">batch</span> <span class="pl-k">=</span> <span class="pl-c1">20</span></span></td>
+          <td id="LC515" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L516" class="blob-num js-line-number js-code-nav-line-number" data-line-number="516"></td>
-          <td id="LC516" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
+          <td id="LC516" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L517" class="blob-num js-line-number js-code-nav-line-number" data-line-number="517"></td>
-          <td id="LC517" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC517" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_validate_version</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L518" class="blob-num js-line-number js-code-nav-line-number" data-line-number="518"></td>
-          <td id="LC518" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC518" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L519" class="blob-num js-line-number js-code-nav-line-number" data-line-number="519"></td>
-          <td id="LC519" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC519" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">loadedversion</span> <span class="pl-k">&lt;-</span> <span class="pl-e">utils</span><span class="pl-k">::</span>packageDescription(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>, <span class="pl-v">fields</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>Version<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L520" class="blob-num js-line-number js-code-nav-line-number" data-line-number="520"></td>
-          <td id="LC520" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC520" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-smi">version</span> <span class="pl-k">==</span> <span class="pl-smi">loadedversion</span>)</td>
         </tr>
         <tr>
           <td id="L521" class="blob-num js-line-number js-code-nav-line-number" data-line-number="521"></td>
-          <td id="LC521" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Rolling window</span></td>
+          <td id="LC521" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L522" class="blob-num js-line-number js-code-nav-line-number" data-line-number="522"></td>
-          <td id="LC522" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC522" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L523" class="blob-num js-line-number js-code-nav-line-number" data-line-number="523"></td>
-          <td id="LC523" class="blob-code blob-code-inner js-file-line">Instead of adding more time points to the training set per each iteration, the</td>
+          <td id="LC523" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> assume four-component versions are from GitHub; three-component</span></td>
         </tr>
         <tr>
           <td id="L524" class="blob-num js-line-number js-code-nav-line-number" data-line-number="524"></td>
-          <td id="LC524" class="blob-code blob-code-inner js-file-line">rolling window cross-validation scheme &quot;rolls&quot; the training sample forward by</td>
+          <td id="LC524" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> versions are from CRAN</span></td>
         </tr>
         <tr>
           <td id="L525" class="blob-num js-line-number js-code-nav-line-number" data-line-number="525"></td>
-          <td id="LC525" class="blob-code blob-code-inner js-file-line">$m$ time units. The rolling window scheme might be considered in parametric</td>
+          <td id="LC525" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">components</span> <span class="pl-k">&lt;-</span> strsplit(<span class="pl-smi">loadedversion</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>[.-]<span class="pl-pds">&quot;</span></span>)[[<span class="pl-c1">1</span>]]</td>
         </tr>
         <tr>
           <td id="L526" class="blob-num js-line-number js-code-nav-line-number" data-line-number="526"></td>
-          <td id="LC526" class="blob-code blob-code-inner js-file-line">settings when one wishes to guard against moment or parameter drift that is</td>
+          <td id="LC526" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">remote</span> <span class="pl-k">&lt;-</span> <span class="pl-k">if</span> (length(<span class="pl-smi">components</span>) <span class="pl-k">==</span> <span class="pl-c1">4L</span>)</td>
         </tr>
         <tr>
           <td id="L527" class="blob-num js-line-number js-code-nav-line-number" data-line-number="527"></td>
-          <td id="LC527" class="blob-code blob-code-inner js-file-line">difficult to model explicitly; it is also more efficient for computationally</td>
+          <td id="LC527" class="blob-code blob-code-inner js-file-line">      paste(<span class="pl-s"><span class="pl-pds">&quot;</span>rstudio/renv<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">loadedversion</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>@<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L528" class="blob-num js-line-number js-code-nav-line-number" data-line-number="528"></td>
-          <td id="LC528" class="blob-code blob-code-inner js-file-line">demanding settings such as streaming data, in which large amounts of training</td>
+          <td id="LC528" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">else</span></td>
         </tr>
         <tr>
           <td id="L529" class="blob-num js-line-number js-code-nav-line-number" data-line-number="529"></td>
-          <td id="LC529" class="blob-code blob-code-inner js-file-line">data cannot be stored. In contrast to rolling origin CV, the training sample for</td>
+          <td id="LC529" class="blob-code blob-code-inner js-file-line">      paste(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">loadedversion</span>, <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>@<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L530" class="blob-num js-line-number js-code-nav-line-number" data-line-number="530"></td>
-          <td id="LC530" class="blob-code blob-code-inner js-file-line">each iteration of the rolling window scheme is always the same.</td>
+          <td id="LC530" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L531" class="blob-num js-line-number js-code-nav-line-number" data-line-number="531"></td>
-          <td id="LC531" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC531" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">fmt</span> <span class="pl-k">&lt;-</span> paste(</td>
         </tr>
         <tr>
           <td id="L532" class="blob-num js-line-number js-code-nav-line-number" data-line-number="532"></td>
-          <td id="LC532" class="blob-code blob-code-inner js-file-line">To illustrate the rolling window cross-validation with 3 time-series folds</td>
+          <td id="LC532" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>renv %1$s was loaded from project library, but this project is configured to use renv %2$s.<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L533" class="blob-num js-line-number js-code-nav-line-number" data-line-number="533"></td>
-          <td id="LC533" class="blob-code blob-code-inner js-file-line">below. The first window size is 15 time points, on which we first train the</td>
+          <td id="LC533" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>Use `renv::record(<span class="pl-cce">\&quot;</span>%3$s<span class="pl-cce">\&quot;</span>)` to record renv %1$s in the lockfile.<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L534" class="blob-num js-line-number js-code-nav-line-number" data-line-number="534"></td>
-          <td id="LC534" class="blob-code blob-code-inner js-file-line">proposed algorithm. As in the previous illustration, we evaluate its performance</td>
+          <td id="LC534" class="blob-code blob-code-inner js-file-line">      <span class="pl-s"><span class="pl-pds">&quot;</span>Use `renv::restore(packages = <span class="pl-cce">\&quot;</span>renv<span class="pl-cce">\&quot;</span>)` to install renv %2$s into the project library.<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L535" class="blob-num js-line-number js-code-nav-line-number" data-line-number="535"></td>
-          <td id="LC535" class="blob-code blob-code-inner js-file-line">on 10 time points, with a gap of size 5 between the training and validation time</td>
+          <td id="LC535" class="blob-code blob-code-inner js-file-line">      <span class="pl-v">sep</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-cce">\n</span><span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L536" class="blob-num js-line-number js-code-nav-line-number" data-line-number="536"></td>
-          <td id="LC536" class="blob-code blob-code-inner js-file-line">points. However, for the next fold, we train the algorithm on time points</td>
+          <td id="LC536" class="blob-code blob-code-inner js-file-line">    )</td>
         </tr>
         <tr>
           <td id="L537" class="blob-num js-line-number js-code-nav-line-number" data-line-number="537"></td>
-          <td id="LC537" class="blob-code blob-code-inner js-file-line">further away from the origin (here, 10 time points). Note that the size of the</td>
+          <td id="LC537" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L538" class="blob-num js-line-number js-code-nav-line-number" data-line-number="538"></td>
-          <td id="LC538" class="blob-code blob-code-inner js-file-line">training set in the new fold is the same as in the first fold (15 time points).</td>
+          <td id="LC538" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">msg</span> <span class="pl-k">&lt;-</span> sprintf(<span class="pl-smi">fmt</span>, <span class="pl-smi">loadedversion</span>, <span class="pl-smi">version</span>, <span class="pl-smi">remote</span>)</td>
         </tr>
         <tr>
           <td id="L539" class="blob-num js-line-number js-code-nav-line-number" data-line-number="539"></td>
-          <td id="LC539" class="blob-code blob-code-inner js-file-line">This setup keeps the training sets comparable over time (and fold) as compared</td>
+          <td id="LC539" class="blob-code blob-code-inner js-file-line">    warning(<span class="pl-smi">msg</span>, <span class="pl-v">call.</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L540" class="blob-num js-line-number js-code-nav-line-number" data-line-number="540"></td>
-          <td id="LC540" class="blob-code blob-code-inner js-file-line">to the rolling origin CV. We then evaluate the performance of the proposed</td>
+          <td id="LC540" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L541" class="blob-num js-line-number js-code-nav-line-number" data-line-number="541"></td>
-          <td id="LC541" class="blob-code blob-code-inner js-file-line">algorithm on 10 time points in the future.</td>
+          <td id="LC541" class="blob-code blob-code-inner js-file-line">    <span class="pl-c1">FALSE</span></td>
         </tr>
         <tr>
           <td id="L542" class="blob-num js-line-number js-code-nav-line-number" data-line-number="542"></td>
-          <td id="LC542" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC542" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L543" class="blob-num js-line-number js-code-nav-line-number" data-line-number="543"></td>
-          <td id="LC543" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r, fig.cap=&quot;Rolling window CV&quot;, results=&quot;asis&quot;, echo=FALSE}</span><span class="pl-s1"></span></td>
+          <td id="LC543" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L544" class="blob-num js-line-number js-code-nav-line-number" data-line-number="544"></td>
-          <td id="LC544" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-e">knitr</span><span class="pl-k">::</span>include_graphics(<span class="pl-v">path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>img/png/rolling_window.png<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC544" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L545" class="blob-num js-line-number js-code-nav-line-number" data-line-number="545"></td>
-          <td id="LC545" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC545" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_hash_text</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">text</span>) {</td>
         </tr>
         <tr>
           <td id="L546" class="blob-num js-line-number js-code-nav-line-number" data-line-number="546"></td>
-          <td id="LC546" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC546" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L547" class="blob-num js-line-number js-code-nav-line-number" data-line-number="547"></td>
-          <td id="LC547" class="blob-code blob-code-inner js-file-line">We illustrate the usage of the rolling window cross-validation with <span class="pl-c1">`origami`</span></td>
+          <td id="LC547" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">hashfile</span> <span class="pl-k">&lt;-</span> tempfile(<span class="pl-s"><span class="pl-pds">&quot;</span>renv-hash-<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L548" class="blob-num js-line-number js-code-nav-line-number" data-line-number="548"></td>
-          <td id="LC548" class="blob-code blob-code-inner js-file-line">package below using the function <span class="pl-c1">`folds_rolling_window(n, window_size,</span></td>
+          <td id="LC548" class="blob-code blob-code-inner js-file-line">    on.exit(unlink(<span class="pl-smi">hashfile</span>), <span class="pl-v">add</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L549" class="blob-num js-line-number js-code-nav-line-number" data-line-number="549"></td>
-          <td id="LC549" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">validation_size, gap, batch)`</span>. In order to setup <span class="pl-c1">`folds_rolling_window(n,</span></td>
+          <td id="LC549" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L550" class="blob-num js-line-number js-code-nav-line-number" data-line-number="550"></td>
-          <td id="LC550" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">window_size, validation_size, gap, batch)`</span>, we need:</td>
+          <td id="LC550" class="blob-code blob-code-inner js-file-line">    writeLines(<span class="pl-smi">text</span>, <span class="pl-v">con</span> <span class="pl-k">=</span> <span class="pl-smi">hashfile</span>)</td>
         </tr>
         <tr>
           <td id="L551" class="blob-num js-line-number js-code-nav-line-number" data-line-number="551"></td>
-          <td id="LC551" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC551" class="blob-code blob-code-inner js-file-line">    <span class="pl-e">tools</span><span class="pl-k">::</span>md5sum(<span class="pl-smi">hashfile</span>)</td>
         </tr>
         <tr>
           <td id="L552" class="blob-num js-line-number js-code-nav-line-number" data-line-number="552"></td>
-          <td id="LC552" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> the total number of time points we want to cross-validate;</td>
+          <td id="LC552" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L553" class="blob-num js-line-number js-code-nav-line-number" data-line-number="553"></td>
-          <td id="LC553" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> the size of the training sets;</td>
+          <td id="LC553" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L554" class="blob-num js-line-number js-code-nav-line-number" data-line-number="554"></td>
-          <td id="LC554" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> the size of the validation set;</td>
+          <td id="LC554" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L555" class="blob-num js-line-number js-code-nav-line-number" data-line-number="555"></td>
-          <td id="LC555" class="blob-code blob-code-inner js-file-line"><span class="pl-v">4.</span> the gap between training and validation set;</td>
+          <td id="LC555" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_load</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">project</span>, <span class="pl-smi">libpath</span>, <span class="pl-smi">version</span>) {</td>
         </tr>
         <tr>
           <td id="L556" class="blob-num js-line-number js-code-nav-line-number" data-line-number="556"></td>
-          <td id="LC556" class="blob-code blob-code-inner js-file-line"><span class="pl-v">5.</span> the size of the update on the training set per each iteration of CV.</td>
+          <td id="LC556" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L557" class="blob-num js-line-number js-code-nav-line-number" data-line-number="557"></td>
-          <td id="LC557" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC557" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> try to load renv from the project library</span></td>
         </tr>
         <tr>
           <td id="L558" class="blob-num js-line-number js-code-nav-line-number" data-line-number="558"></td>
-          <td id="LC558" class="blob-code blob-code-inner js-file-line">Setting the <span class="pl-c1">`window_size`</span> to $50$, <span class="pl-c1">`validation_size`</span> to 10, <span class="pl-c1">`gap`</span> to 5 and</td>
+          <td id="LC558" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>requireNamespace(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>, <span class="pl-v">lib.loc</span> <span class="pl-k">=</span> <span class="pl-smi">libpath</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>))</td>
         </tr>
         <tr>
           <td id="L559" class="blob-num js-line-number js-code-nav-line-number" data-line-number="559"></td>
-          <td id="LC559" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`batch`</span> to 20, we also get 4 time-series folds; we show the first two below.</td>
+          <td id="LC559" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L560" class="blob-num js-line-number js-code-nav-line-number" data-line-number="560"></td>
-          <td id="LC560" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC560" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L561" class="blob-num js-line-number js-code-nav-line-number" data-line-number="561"></td>
-          <td id="LC561" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r rolling_window}</span><span class="pl-s1"></span></td>
+          <td id="LC561" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> warn if the version of renv loaded does not match</span></td>
         </tr>
         <tr>
           <td id="L562" class="blob-num js-line-number js-code-nav-line-number" data-line-number="562"></td>
-          <td id="LC562" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> folds_rolling_window(</span></td>
+          <td id="LC562" class="blob-code blob-code-inner js-file-line">    renv_bootstrap_validate_version(<span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L563" class="blob-num js-line-number js-code-nav-line-number" data-line-number="563"></td>
-          <td id="LC563" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">t</span>,</span></td>
+          <td id="LC563" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L564" class="blob-num js-line-number js-code-nav-line-number" data-line-number="564"></td>
-          <td id="LC564" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">window_size</span> <span class="pl-k">=</span> <span class="pl-c1">50</span>, <span class="pl-v">validation_size</span> <span class="pl-k">=</span> <span class="pl-c1">10</span>, <span class="pl-v">gap</span> <span class="pl-k">=</span> <span class="pl-c1">5</span>, <span class="pl-v">batch</span> <span class="pl-k">=</span> <span class="pl-c1">20</span></span></td>
+          <td id="LC564" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> load the project</span></td>
         </tr>
         <tr>
           <td id="L565" class="blob-num js-line-number js-code-nav-line-number" data-line-number="565"></td>
-          <td id="LC565" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
+          <td id="LC565" class="blob-code blob-code-inner js-file-line">    <span class="pl-e">renv</span><span class="pl-k">::</span>load(<span class="pl-smi">project</span>)</td>
         </tr>
         <tr>
           <td id="L566" class="blob-num js-line-number js-code-nav-line-number" data-line-number="566"></td>
-          <td id="LC566" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
+          <td id="LC566" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L567" class="blob-num js-line-number js-code-nav-line-number" data-line-number="567"></td>
-          <td id="LC567" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
+          <td id="LC567" class="blob-code blob-code-inner js-file-line">    <span class="pl-c1">TRUE</span></td>
         </tr>
         <tr>
           <td id="L568" class="blob-num js-line-number js-code-nav-line-number" data-line-number="568"></td>
-          <td id="LC568" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC568" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L569" class="blob-num js-line-number js-code-nav-line-number" data-line-number="569"></td>
-          <td id="LC569" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC569" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L570" class="blob-num js-line-number js-code-nav-line-number" data-line-number="570"></td>
-          <td id="LC570" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Rolling origin with V-fold</span></td>
+          <td id="LC570" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L571" class="blob-num js-line-number js-code-nav-line-number" data-line-number="571"></td>
-          <td id="LC571" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC571" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_profile_load</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">project</span>) {</td>
         </tr>
         <tr>
           <td id="L572" class="blob-num js-line-number js-code-nav-line-number" data-line-number="572"></td>
-          <td id="LC572" class="blob-code blob-code-inner js-file-line">A variant of rolling origin scheme which accounts for sample dependence is the</td>
+          <td id="LC572" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L573" class="blob-num js-line-number js-code-nav-line-number" data-line-number="573"></td>
-          <td id="LC573" class="blob-code blob-code-inner js-file-line">rolling-origin-$V$-fold cross-validation. In contrast to the canonical rolling</td>
+          <td id="LC573" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> if RENV_PROFILE is already set, just use that</span></td>
         </tr>
         <tr>
           <td id="L574" class="blob-num js-line-number js-code-nav-line-number" data-line-number="574"></td>
-          <td id="LC574" class="blob-code blob-code-inner js-file-line">origin CV, samples in the training and validation set are not the same, as the</td>
+          <td id="LC574" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PROFILE<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)</td>
         </tr>
         <tr>
           <td id="L575" class="blob-num js-line-number js-code-nav-line-number" data-line-number="575"></td>
-          <td id="LC575" class="blob-code blob-code-inner js-file-line">variant encompasses $V$-fold CV in addition to the time-series setup. The</td>
+          <td id="LC575" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(<span class="pl-smi">profile</span>) <span class="pl-k">&amp;&amp;</span> nzchar(<span class="pl-smi">profile</span>))</td>
         </tr>
         <tr>
           <td id="L576" class="blob-num js-line-number js-code-nav-line-number" data-line-number="576"></td>
-          <td id="LC576" class="blob-code blob-code-inner js-file-line">predictions are evaluated on the future times of time-series units not seen</td>
+          <td id="LC576" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-smi">profile</span>)</td>
         </tr>
         <tr>
           <td id="L577" class="blob-num js-line-number js-code-nav-line-number" data-line-number="577"></td>
-          <td id="LC577" class="blob-code blob-code-inner js-file-line">during the training step, allowing for dependence in both samples and time. One</td>
+          <td id="LC577" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L578" class="blob-num js-line-number js-code-nav-line-number" data-line-number="578"></td>
-          <td id="LC578" class="blob-code blob-code-inner js-file-line">can use the rolling-origin-$v$-fold cross-validation with <span class="pl-c1">`origami`</span> package</td>
+          <td id="LC578" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> check for a profile file (nothing to do if it doesn&#39;t exist)</span></td>
         </tr>
         <tr>
           <td id="L579" class="blob-num js-line-number js-code-nav-line-number" data-line-number="579"></td>
-          <td id="LC579" class="blob-code blob-code-inner js-file-line">using the function <span class="pl-c1">`folds_vfold_rolling_origin_pooled(n, t, id, time, V,</span></td>
+          <td id="LC579" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">path</span> <span class="pl-k">&lt;-</span> file.path(<span class="pl-smi">project</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>renv/local/profile<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L580" class="blob-num js-line-number js-code-nav-line-number" data-line-number="580"></td>
-          <td id="LC580" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">first_window, validation_size, gap, batch)`</span>. In the figure below, we show $V=2$</td>
+          <td id="LC580" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>file.exists(<span class="pl-smi">path</span>))</td>
         </tr>
         <tr>
           <td id="L581" class="blob-num js-line-number js-code-nav-line-number" data-line-number="581"></td>
-          <td id="LC581" class="blob-code blob-code-inner js-file-line">$V$-folds, and 2 time-series CV folds.</td>
+          <td id="LC581" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">NULL</span>)</td>
         </tr>
         <tr>
           <td id="L582" class="blob-num js-line-number js-code-nav-line-number" data-line-number="582"></td>
-          <td id="LC582" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC582" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L583" class="blob-num js-line-number js-code-nav-line-number" data-line-number="583"></td>
-          <td id="LC583" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r, fig.cap=&quot;Rolling origin V-fold CV&quot;, results=&quot;asis&quot;, echo=FALSE}</span><span class="pl-s1"></span></td>
+          <td id="LC583" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> read the profile, and set it if it exists</span></td>
         </tr>
         <tr>
           <td id="L584" class="blob-num js-line-number js-code-nav-line-number" data-line-number="584"></td>
-          <td id="LC584" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-e">knitr</span><span class="pl-k">::</span>include_graphics(<span class="pl-v">path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>img/png/rolling_origin_v_fold.png<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC584" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">contents</span> <span class="pl-k">&lt;-</span> readLines(<span class="pl-smi">path</span>, <span class="pl-v">warn</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L585" class="blob-num js-line-number js-code-nav-line-number" data-line-number="585"></td>
-          <td id="LC585" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC585" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (length(<span class="pl-smi">contents</span>) <span class="pl-k">==</span> <span class="pl-c1">0L</span>)</td>
         </tr>
         <tr>
           <td id="L586" class="blob-num js-line-number js-code-nav-line-number" data-line-number="586"></td>
-          <td id="LC586" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC586" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">NULL</span>)</td>
         </tr>
         <tr>
           <td id="L587" class="blob-num js-line-number js-code-nav-line-number" data-line-number="587"></td>
-          <td id="LC587" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">####</span><span class="pl-mh"> </span>Rolling window with v-fold</span></td>
+          <td id="LC587" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L588" class="blob-num js-line-number js-code-nav-line-number" data-line-number="588"></td>
-          <td id="LC588" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC588" class="blob-code blob-code-inner js-file-line">    <span class="pl-c"><span class="pl-c">#</span> set RENV_PROFILE</span></td>
         </tr>
         <tr>
           <td id="L589" class="blob-num js-line-number js-code-nav-line-number" data-line-number="589"></td>
-          <td id="LC589" class="blob-code blob-code-inner js-file-line">Analogous to the previous section, we can extend rolling window CV to support</td>
+          <td id="LC589" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">contents</span>[[<span class="pl-c1">1L</span>]]</td>
         </tr>
         <tr>
           <td id="L590" class="blob-num js-line-number js-code-nav-line-number" data-line-number="590"></td>
-          <td id="LC590" class="blob-code blob-code-inner js-file-line">multiple time-series with arbitrary sample dependence. One can use the</td>
+          <td id="LC590" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (nzchar(<span class="pl-smi">profile</span>))</td>
         </tr>
         <tr>
           <td id="L591" class="blob-num js-line-number js-code-nav-line-number" data-line-number="591"></td>
-          <td id="LC591" class="blob-code blob-code-inner js-file-line">rolling-window-$V$-fold cross-validation with <span class="pl-c1">`origami`</span> package using the</td>
+          <td id="LC591" class="blob-code blob-code-inner js-file-line">      Sys.setenv(<span class="pl-v">RENV_PROFILE</span> <span class="pl-k">=</span> <span class="pl-smi">profile</span>)</td>
         </tr>
         <tr>
           <td id="L592" class="blob-num js-line-number js-code-nav-line-number" data-line-number="592"></td>
-          <td id="LC592" class="blob-code blob-code-inner js-file-line">function <span class="pl-c1">`folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size,</span></td>
+          <td id="LC592" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L593" class="blob-num js-line-number js-code-nav-line-number" data-line-number="593"></td>
-          <td id="LC593" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">validation_size, gap, batch)`</span>. In the figure below, we show $V=2$ $V$-folds, and</td>
+          <td id="LC593" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span></td>
         </tr>
         <tr>
           <td id="L594" class="blob-num js-line-number js-code-nav-line-number" data-line-number="594"></td>
-          <td id="LC594" class="blob-code blob-code-inner js-file-line">2 time-series CV folds.</td>
+          <td id="LC594" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L595" class="blob-num js-line-number js-code-nav-line-number" data-line-number="595"></td>
-          <td id="LC595" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC595" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L596" class="blob-num js-line-number js-code-nav-line-number" data-line-number="596"></td>
-          <td id="LC596" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r, fig.cap=&quot;Rolling window V-fold CV&quot;, results=&quot;asis&quot;, echo=FALSE}</span><span class="pl-s1"></span></td>
+          <td id="LC596" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L597" class="blob-num js-line-number js-code-nav-line-number" data-line-number="597"></td>
-          <td id="LC597" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-e">knitr</span><span class="pl-k">::</span>include_graphics(<span class="pl-v">path</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>img/png/rolling_window_v_fold.png<span class="pl-pds">&quot;</span></span>)</span></td>
+          <td id="LC597" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_profile_prefix</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L598" class="blob-num js-line-number js-code-nav-line-number" data-line-number="598"></td>
-          <td id="LC598" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
+          <td id="LC598" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span> <span class="pl-k">&lt;-</span> renv_bootstrap_profile_get()</td>
         </tr>
         <tr>
           <td id="L599" class="blob-num js-line-number js-code-nav-line-number" data-line-number="599"></td>
-          <td id="LC599" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC599" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (<span class="pl-k">!</span>is.null(<span class="pl-smi">profile</span>))</td>
         </tr>
         <tr>
           <td id="L600" class="blob-num js-line-number js-code-nav-line-number" data-line-number="600"></td>
-          <td id="LC600" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>General workflow of <span class="pl-c1">`origami`</span></span></td>
+          <td id="LC600" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(file.path(<span class="pl-s"><span class="pl-pds">&quot;</span>renv/profiles<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">profile</span>))</td>
         </tr>
         <tr>
           <td id="L601" class="blob-num js-line-number js-code-nav-line-number" data-line-number="601"></td>
-          <td id="LC601" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC601" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L602" class="blob-num js-line-number js-code-nav-line-number" data-line-number="602"></td>
-          <td id="LC602" class="blob-code blob-code-inner js-file-line">Before we dive into more details, let&#39;s take a moment to review some of the</td>
+          <td id="LC602" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L603" class="blob-num js-line-number js-code-nav-line-number" data-line-number="603"></td>
-          <td id="LC603" class="blob-code blob-code-inner js-file-line">basic functionality in <span class="pl-c1">`origami`</span> R package. The main function in the <span class="pl-c1">`origami`</span></td>
+          <td id="LC603" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_profile_get</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>() {</td>
         </tr>
         <tr>
           <td id="L604" class="blob-num js-line-number js-code-nav-line-number" data-line-number="604"></td>
-          <td id="LC604" class="blob-code blob-code-inner js-file-line">is <span class="pl-c1">`cross_validate`</span>. To start off, the user must define the fold structure and a function</td>
+          <td id="LC604" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span> <span class="pl-k">&lt;-</span> Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PROFILE<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L605" class="blob-num js-line-number js-code-nav-line-number" data-line-number="605"></td>
-          <td id="LC605" class="blob-code blob-code-inner js-file-line">that operates on each fold. Once these are passed to <span class="pl-c1">`cross_validate`</span>, <span class="pl-c1">`cross_validate`</span> </td>
+          <td id="LC605" class="blob-code blob-code-inner js-file-line">    renv_bootstrap_profile_normalize(<span class="pl-smi">profile</span>)</td>
         </tr>
         <tr>
           <td id="L606" class="blob-num js-line-number js-code-nav-line-number" data-line-number="606"></td>
-          <td id="LC606" class="blob-code blob-code-inner js-file-line">will apply the same specified function to each fold, and combine the fold-specific results in a meaningful way. We will see this in action in later sections; for</td>
+          <td id="LC606" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L607" class="blob-num js-line-number js-code-nav-line-number" data-line-number="607"></td>
-          <td id="LC607" class="blob-code blob-code-inner js-file-line">now, we provide specific details on each each step of this process below.</td>
+          <td id="LC607" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L608" class="blob-num js-line-number js-code-nav-line-number" data-line-number="608"></td>
-          <td id="LC608" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC608" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_profile_set</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">profile</span>) {</td>
         </tr>
         <tr>
           <td id="L609" class="blob-num js-line-number js-code-nav-line-number" data-line-number="609"></td>
-          <td id="LC609" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>(1) Define folds</span></td>
+          <td id="LC609" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span> <span class="pl-k">&lt;-</span> renv_bootstrap_profile_normalize(<span class="pl-smi">profile</span>)</td>
         </tr>
         <tr>
           <td id="L610" class="blob-num js-line-number js-code-nav-line-number" data-line-number="610"></td>
-          <td id="LC610" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC610" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (is.null(<span class="pl-smi">profile</span>))</td>
         </tr>
         <tr>
           <td id="L611" class="blob-num js-line-number js-code-nav-line-number" data-line-number="611"></td>
-          <td id="LC611" class="blob-code blob-code-inner js-file-line">The <span class="pl-c1">`folds`</span> object passed to <span class="pl-c1">`cross_validate`</span> is a list of folds; such lists can</td>
+          <td id="LC611" class="blob-code blob-code-inner js-file-line">      Sys.unsetenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_PROFILE<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L612" class="blob-num js-line-number js-code-nav-line-number" data-line-number="612"></td>
-          <td id="LC612" class="blob-code blob-code-inner js-file-line">be generated using the <span class="pl-c1">`make_folds`</span> function. Each fold consists of a list with</td>
+          <td id="LC612" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">else</span></td>
         </tr>
         <tr>
           <td id="L613" class="blob-num js-line-number js-code-nav-line-number" data-line-number="613"></td>
-          <td id="LC613" class="blob-code blob-code-inner js-file-line">a <span class="pl-c1">`training`</span> index vector, a <span class="pl-c1">`validation`</span> index vector, and a <span class="pl-c1">`fold_index`</span> (its</td>
+          <td id="LC613" class="blob-code blob-code-inner js-file-line">      Sys.setenv(<span class="pl-v">RENV_PROFILE</span> <span class="pl-k">=</span> <span class="pl-smi">profile</span>)</td>
         </tr>
         <tr>
           <td id="L614" class="blob-num js-line-number js-code-nav-line-number" data-line-number="614"></td>
-          <td id="LC614" class="blob-code blob-code-inner js-file-line">order in the list of folds). This function supports a variety of</td>
+          <td id="LC614" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L615" class="blob-num js-line-number js-code-nav-line-number" data-line-number="615"></td>
-          <td id="LC615" class="blob-code blob-code-inner js-file-line">cross-validation schemes we describe in the following section. The <span class="pl-c1">`make_folds`</span></td>
+          <td id="LC615" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L616" class="blob-num js-line-number js-code-nav-line-number" data-line-number="616"></td>
-          <td id="LC616" class="blob-code blob-code-inner js-file-line">can balance across levels of a variable (<span class="pl-c1">`strata_ids`</span>), and it can also keep</td>
+          <td id="LC616" class="blob-code blob-code-inner js-file-line">  <span class="pl-en">renv_bootstrap_profile_normalize</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">profile</span>) {</td>
         </tr>
         <tr>
           <td id="L617" class="blob-num js-line-number js-code-nav-line-number" data-line-number="617"></td>
-          <td id="LC617" class="blob-code blob-code-inner js-file-line">all observations from the same independent unit together (<span class="pl-c1">`cluster`</span>).</td>
+          <td id="LC617" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L618" class="blob-num js-line-number js-code-nav-line-number" data-line-number="618"></td>
-          <td id="LC618" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC618" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">if</span> (is.null(<span class="pl-smi">profile</span>) <span class="pl-k">||</span> <span class="pl-smi">profile</span> <span class="pl-k">%in%</span> c(<span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>default<span class="pl-pds">&quot;</span></span>))</td>
         </tr>
         <tr>
           <td id="L619" class="blob-num js-line-number js-code-nav-line-number" data-line-number="619"></td>
-          <td id="LC619" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>(2) Define fold function</span></td>
+          <td id="LC619" class="blob-code blob-code-inner js-file-line">      <span class="pl-k">return</span>(<span class="pl-c1">NULL</span>)</td>
         </tr>
         <tr>
           <td id="L620" class="blob-num js-line-number js-code-nav-line-number" data-line-number="620"></td>
-          <td id="LC620" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC620" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L621" class="blob-num js-line-number js-code-nav-line-number" data-line-number="621"></td>
-          <td id="LC621" class="blob-code blob-code-inner js-file-line">The <span class="pl-c1">`cv_fun`</span> argument to <span class="pl-c1">`cross_validate`</span> is a function that will perform some</td>
+          <td id="LC621" class="blob-code blob-code-inner js-file-line">    <span class="pl-smi">profile</span></td>
         </tr>
         <tr>
           <td id="L622" class="blob-num js-line-number js-code-nav-line-number" data-line-number="622"></td>
-          <td id="LC622" class="blob-code blob-code-inner js-file-line">operation on each fold. The first argument to this function must be <span class="pl-c1">`fold`</span>,</td>
+          <td id="LC622" class="blob-code blob-code-inner js-file-line">  </td>
         </tr>
         <tr>
           <td id="L623" class="blob-num js-line-number js-code-nav-line-number" data-line-number="623"></td>
-          <td id="LC623" class="blob-code blob-code-inner js-file-line">which will receive an individual fold object to operate on. Additional arguments</td>
+          <td id="LC623" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L624" class="blob-num js-line-number js-code-nav-line-number" data-line-number="624"></td>
-          <td id="LC624" class="blob-code blob-code-inner js-file-line">can be passed to <span class="pl-c1">`cv_fun`</span> using the <span class="pl-c1">`...`</span> argument to <span class="pl-c1">`cross_validate`</span>. Within</td>
+          <td id="LC624" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L625" class="blob-num js-line-number js-code-nav-line-number" data-line-number="625"></td>
-          <td id="LC625" class="blob-code blob-code-inner js-file-line">this function, the convenience functions <span class="pl-c1">`training`</span>, <span class="pl-c1">`validation`</span> and</td>
+          <td id="LC625" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> load the renv profile, if any</span></td>
         </tr>
         <tr>
           <td id="L626" class="blob-num js-line-number js-code-nav-line-number" data-line-number="626"></td>
-          <td id="LC626" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`fold_index`</span> can return the various components of a fold object. If <span class="pl-c1">`training`</span></td>
+          <td id="LC626" class="blob-code blob-code-inner js-file-line">  renv_bootstrap_profile_load(<span class="pl-smi">project</span>)</td>
         </tr>
         <tr>
           <td id="L627" class="blob-num js-line-number js-code-nav-line-number" data-line-number="627"></td>
-          <td id="LC627" class="blob-code blob-code-inner js-file-line">or <span class="pl-c1">`validation`</span> is passed an object, it will index it in a sensible way.</td>
+          <td id="LC627" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L628" class="blob-num js-line-number js-code-nav-line-number" data-line-number="628"></td>
-          <td id="LC628" class="blob-code blob-code-inner js-file-line">For instance, if it is a vector, it will index the vector directly; if it is a</td>
+          <td id="LC628" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> construct path to library root</span></td>
         </tr>
         <tr>
           <td id="L629" class="blob-num js-line-number js-code-nav-line-number" data-line-number="629"></td>
-          <td id="LC629" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`data.frame`</span> or <span class="pl-c1">`matrix`</span>, it will index rows. This allows the user to easily</td>
+          <td id="LC629" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">root</span> <span class="pl-k">&lt;-</span> renv_bootstrap_library_root(<span class="pl-smi">project</span>)</td>
         </tr>
         <tr>
           <td id="L630" class="blob-num js-line-number js-code-nav-line-number" data-line-number="630"></td>
-          <td id="LC630" class="blob-code blob-code-inner js-file-line">partition data into training and validation sets. The fold function must return</td>
+          <td id="LC630" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L631" class="blob-num js-line-number js-code-nav-line-number" data-line-number="631"></td>
-          <td id="LC631" class="blob-code blob-code-inner js-file-line">a named list of results containing whatever fold-specific outputs are generated.</td>
+          <td id="LC631" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> construct library prefix for platform</span></td>
         </tr>
         <tr>
           <td id="L632" class="blob-num js-line-number js-code-nav-line-number" data-line-number="632"></td>
-          <td id="LC632" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC632" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> renv_bootstrap_platform_prefix()</td>
         </tr>
         <tr>
           <td id="L633" class="blob-num js-line-number js-code-nav-line-number" data-line-number="633"></td>
-          <td id="LC633" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>(3) Apply <span class="pl-c1">`cross_validate`</span></span></td>
-        </tr>
-        <tr>
-          <td id="L634" class="blob-num js-line-number js-code-nav-line-number" data-line-number="634"></td>
-          <td id="LC634" class="blob-code blob-code-inner js-file-line">
+          <td id="LC633" class="blob-code blob-code-inner js-file-line">
 </td>
         </tr>
         <tr>
+          <td id="L634" class="blob-num js-line-number js-code-nav-line-number" data-line-number="634"></td>
+          <td id="LC634" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> construct full libpath</span></td>
+        </tr>
+        <tr>
           <td id="L635" class="blob-num js-line-number js-code-nav-line-number" data-line-number="635"></td>
-          <td id="LC635" class="blob-code blob-code-inner js-file-line">After defining folds, <span class="pl-c1">`cross_validate`</span> can be used to map the <span class="pl-c1">`cv_fun`</span> across</td>
+          <td id="LC635" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">libpath</span> <span class="pl-k">&lt;-</span> file.path(<span class="pl-smi">root</span>, <span class="pl-smi">prefix</span>)</td>
         </tr>
         <tr>
           <td id="L636" class="blob-num js-line-number js-code-nav-line-number" data-line-number="636"></td>
-          <td id="LC636" class="blob-code blob-code-inner js-file-line">the <span class="pl-c1">`folds`</span> using <span class="pl-c1">`future_lapply`</span>. This means that it can be easily parallelized</td>
+          <td id="LC636" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L637" class="blob-num js-line-number js-code-nav-line-number" data-line-number="637"></td>
-          <td id="LC637" class="blob-code blob-code-inner js-file-line">by specifying a parallelization scheme (i.e., a <span class="pl-c1">`plan`</span> from the [future</td>
+          <td id="LC637" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> attempt to load</span></td>
         </tr>
         <tr>
           <td id="L638" class="blob-num js-line-number js-code-nav-line-number" data-line-number="638"></td>
-          <td id="LC638" class="blob-code blob-code-inner js-file-line">parallelization framework for <span class="pl-c1">`R`</span>](https://Cran.R-project.org/package=future)</td>
+          <td id="LC638" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (renv_bootstrap_load(<span class="pl-smi">project</span>, <span class="pl-smi">libpath</span>, <span class="pl-smi">version</span>))</td>
         </tr>
         <tr>
           <td id="L639" class="blob-num js-line-number js-code-nav-line-number" data-line-number="639"></td>
-          <td id="LC639" class="blob-code blob-code-inner js-file-line">[<span class="pl-v">@</span><span class="pl-s">bengtsson2021unifying</span>]). The application of <span class="pl-c1">`cross_validate`</span> generates a list</td>
+          <td id="LC639" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L640" class="blob-num js-line-number js-code-nav-line-number" data-line-number="640"></td>
-          <td id="LC640" class="blob-code blob-code-inner js-file-line">of results. As described above, each call to <span class="pl-c1">`cv_fun`</span> itself returns a list of</td>
+          <td id="LC640" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L641" class="blob-num js-line-number js-code-nav-line-number" data-line-number="641"></td>
-          <td id="LC641" class="blob-code blob-code-inner js-file-line">results, with different elements for each type of result we care about. The main</td>
+          <td id="LC641" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> load failed; inform user we&#39;re about to bootstrap</span></td>
         </tr>
         <tr>
           <td id="L642" class="blob-num js-line-number js-code-nav-line-number" data-line-number="642"></td>
-          <td id="LC642" class="blob-code blob-code-inner js-file-line">loop generates a list of these individual lists of results (a sort of</td>
+          <td id="LC642" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">prefix</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-s"><span class="pl-pds">&quot;</span># Bootstrapping renv<span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>)</td>
         </tr>
         <tr>
           <td id="L643" class="blob-num js-line-number js-code-nav-line-number" data-line-number="643"></td>
-          <td id="LC643" class="blob-code blob-code-inner js-file-line">&quot;meta-list&quot;). This &quot;meta-list&quot; is then inverted such that there is one element</td>
+          <td id="LC643" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">postfix</span> <span class="pl-k">&lt;-</span> paste(rep.int(<span class="pl-s"><span class="pl-pds">&quot;</span>-<span class="pl-pds">&quot;</span></span>, <span class="pl-c1">77L</span> <span class="pl-k">-</span> nchar(<span class="pl-smi">prefix</span>)), <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L644" class="blob-num js-line-number js-code-nav-line-number" data-line-number="644"></td>
-          <td id="LC644" class="blob-code blob-code-inner js-file-line">per result type (this too is a list of the results for each fold). By default,</td>
+          <td id="LC644" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">header</span> <span class="pl-k">&lt;-</span> paste(<span class="pl-smi">prefix</span>, <span class="pl-smi">postfix</span>)</td>
         </tr>
         <tr>
           <td id="L645" class="blob-num js-line-number js-code-nav-line-number" data-line-number="645"></td>
-          <td id="LC645" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`combine_results`</span> is used to combine these results type lists in a sensible</td>
+          <td id="LC645" class="blob-code blob-code-inner js-file-line">  message(<span class="pl-smi">header</span>)</td>
         </tr>
         <tr>
           <td id="L646" class="blob-num js-line-number js-code-nav-line-number" data-line-number="646"></td>
-          <td id="LC646" class="blob-code blob-code-inner js-file-line">manner. How results are combined is determined automatically by examining the</td>
+          <td id="LC646" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L647" class="blob-num js-line-number js-code-nav-line-number" data-line-number="647"></td>
-          <td id="LC647" class="blob-code blob-code-inner js-file-line">data types of the results from the first fold. This can be modified by</td>
+          <td id="LC647" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> perform bootstrap</span></td>
         </tr>
         <tr>
           <td id="L648" class="blob-num js-line-number js-code-nav-line-number" data-line-number="648"></td>
-          <td id="LC648" class="blob-code blob-code-inner js-file-line">specifying a list of arguments to <span class="pl-c1">`.combine_control`</span>.</td>
+          <td id="LC648" class="blob-code blob-code-inner js-file-line">  bootstrap(<span class="pl-smi">version</span>, <span class="pl-smi">libpath</span>)</td>
         </tr>
         <tr>
           <td id="L649" class="blob-num js-line-number js-code-nav-line-number" data-line-number="649"></td>
@@ -5050,74 +5020,74 @@
         </tr>
         <tr>
           <td id="L650" class="blob-num js-line-number js-code-nav-line-number" data-line-number="650"></td>
-          <td id="LC650" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Cross-validation in action</span></td>
+          <td id="LC650" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> exit early if we&#39;re just testing bootstrap</span></td>
         </tr>
         <tr>
           <td id="L651" class="blob-num js-line-number js-code-nav-line-number" data-line-number="651"></td>
-          <td id="LC651" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC651" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (<span class="pl-k">!</span>is.na(Sys.getenv(<span class="pl-s"><span class="pl-pds">&quot;</span>RENV_BOOTSTRAP_INSTALL_ONLY<span class="pl-pds">&quot;</span></span>, <span class="pl-v">unset</span> <span class="pl-k">=</span> <span class="pl-c1">NA</span>)))</td>
         </tr>
         <tr>
           <td id="L652" class="blob-num js-line-number js-code-nav-line-number" data-line-number="652"></td>
-          <td id="LC652" class="blob-code blob-code-inner js-file-line">Let&#39;s see <span class="pl-c1">`origami`</span> in action! In the following chapter we will learn how to use</td>
+          <td id="LC652" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-c1">TRUE</span>)</td>
         </tr>
         <tr>
           <td id="L653" class="blob-num js-line-number js-code-nav-line-number" data-line-number="653"></td>
-          <td id="LC653" class="blob-code blob-code-inner js-file-line">cross-validation with the Super Learner, and how we can utilize the power of</td>
+          <td id="LC653" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L654" class="blob-num js-line-number js-code-nav-line-number" data-line-number="654"></td>
-          <td id="LC654" class="blob-code blob-code-inner js-file-line">cross-validation to build optimal ensembles of algorithms, not just its use on a</td>
+          <td id="LC654" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> try again to load</span></td>
         </tr>
         <tr>
           <td id="L655" class="blob-num js-line-number js-code-nav-line-number" data-line-number="655"></td>
-          <td id="LC655" class="blob-code blob-code-inner js-file-line">single statistical learning method.</td>
+          <td id="LC655" class="blob-code blob-code-inner js-file-line">  <span class="pl-k">if</span> (requireNamespace(<span class="pl-s"><span class="pl-pds">&quot;</span>renv<span class="pl-pds">&quot;</span></span>, <span class="pl-v">lib.loc</span> <span class="pl-k">=</span> <span class="pl-smi">libpath</span>, <span class="pl-v">quietly</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)) {</td>
         </tr>
         <tr>
           <td id="L656" class="blob-num js-line-number js-code-nav-line-number" data-line-number="656"></td>
-          <td id="LC656" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC656" class="blob-code blob-code-inner js-file-line">    message(<span class="pl-s"><span class="pl-pds">&quot;</span>* Successfully installed and loaded renv <span class="pl-pds">&quot;</span></span>, <span class="pl-smi">version</span>, <span class="pl-s"><span class="pl-pds">&quot;</span>.<span class="pl-pds">&quot;</span></span>)</td>
         </tr>
         <tr>
           <td id="L657" class="blob-num js-line-number js-code-nav-line-number" data-line-number="657"></td>
-          <td id="LC657" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Cross-validation with linear regression</span></td>
+          <td id="LC657" class="blob-code blob-code-inner js-file-line">    <span class="pl-k">return</span>(<span class="pl-e">renv</span><span class="pl-k">::</span>load())</td>
         </tr>
         <tr>
           <td id="L658" class="blob-num js-line-number js-code-nav-line-number" data-line-number="658"></td>
-          <td id="LC658" class="blob-code blob-code-inner js-file-line">
-</td>
+          <td id="LC658" class="blob-code blob-code-inner js-file-line">  }</td>
         </tr>
         <tr>
           <td id="L659" class="blob-num js-line-number js-code-nav-line-number" data-line-number="659"></td>
-          <td id="LC659" class="blob-code blob-code-inner js-file-line">First, we will load the relevant <span class="pl-c1">`R`</span> packages, set a seed, and load the full</td>
+          <td id="LC659" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L660" class="blob-num js-line-number js-code-nav-line-number" data-line-number="660"></td>
-          <td id="LC660" class="blob-code blob-code-inner js-file-line">WASH data once again. In order to illustrate cross-validation with <span class="pl-c1">`origami`</span> and</td>
+          <td id="LC660" class="blob-code blob-code-inner js-file-line">  <span class="pl-c"><span class="pl-c">#</span> failed to download or load renv; warn the user</span></td>
         </tr>
         <tr>
           <td id="L661" class="blob-num js-line-number js-code-nav-line-number" data-line-number="661"></td>
-          <td id="LC661" class="blob-code blob-code-inner js-file-line">linear regression, we will focus on predicting the weight-for-height Z-score</td>
+          <td id="LC661" class="blob-code blob-code-inner js-file-line">  <span class="pl-smi">msg</span> <span class="pl-k">&lt;-</span> c(</td>
         </tr>
         <tr>
           <td id="L662" class="blob-num js-line-number js-code-nav-line-number" data-line-number="662"></td>
-          <td id="LC662" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`whz`</span> using all of the available covariate data. As stated previously, we will</td>
+          <td id="LC662" class="blob-code blob-code-inner js-file-line">    <span class="pl-s"><span class="pl-pds">&quot;</span>Failed to find an renv installation: the project will not be loaded.<span class="pl-pds">&quot;</span></span>,</td>
         </tr>
         <tr>
           <td id="L663" class="blob-num js-line-number js-code-nav-line-number" data-line-number="663"></td>
-          <td id="LC663" class="blob-code blob-code-inner js-file-line">assume the data is independent and identically distributed, ignoring the cluster</td>
+          <td id="LC663" class="blob-code blob-code-inner js-file-line">    <span class="pl-s"><span class="pl-pds">&quot;</span>Use `renv::activate()` to re-initialize the project.<span class="pl-pds">&quot;</span></span></td>
         </tr>
         <tr>
           <td id="L664" class="blob-num js-line-number js-code-nav-line-number" data-line-number="664"></td>
-          <td id="LC664" class="blob-code blob-code-inner js-file-line">structure imposed by the clinical trial design. For the sake of illustration, we</td>
+          <td id="LC664" class="blob-code blob-code-inner js-file-line">  )</td>
         </tr>
         <tr>
           <td id="L665" class="blob-num js-line-number js-code-nav-line-number" data-line-number="665"></td>
-          <td id="LC665" class="blob-code blob-code-inner js-file-line">will work with a subset of data, and remove all samples with missing data from</td>
+          <td id="LC665" class="blob-code blob-code-inner js-file-line">
+</td>
         </tr>
         <tr>
           <td id="L666" class="blob-num js-line-number js-code-nav-line-number" data-line-number="666"></td>
-          <td id="LC666" class="blob-code blob-code-inner js-file-line">the dataset; we will learn in the next chapter how to deal with missingness.</td>
+          <td id="LC666" class="blob-code blob-code-inner js-file-line">  warning(paste(<span class="pl-smi">msg</span>, <span class="pl-v">collapse</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span><span class="pl-cce">\n</span><span class="pl-pds">&quot;</span></span>), <span class="pl-v">call.</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span>)</td>
         </tr>
         <tr>
           <td id="L667" class="blob-num js-line-number js-code-nav-line-number" data-line-number="667"></td>
@@ -5126,1440 +5096,7 @@
         </tr>
         <tr>
           <td id="L668" class="blob-num js-line-number js-code-nav-line-number" data-line-number="668"></td>
-          <td id="LC668" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r setup_ex}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L669" class="blob-num js-line-number js-code-nav-line-number" data-line-number="669"></td>
-          <td id="LC669" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">stringr</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L670" class="blob-num js-line-number js-code-nav-line-number" data-line-number="670"></td>
-          <td id="LC670" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">dplyr</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L671" class="blob-num js-line-number js-code-nav-line-number" data-line-number="671"></td>
-          <td id="LC671" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">tidyr</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L672" class="blob-num js-line-number js-code-nav-line-number" data-line-number="672"></td>
-          <td id="LC672" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L673" class="blob-num js-line-number js-code-nav-line-number" data-line-number="673"></td>
-          <td id="LC673" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> load data set and take a peek</span></span></td>
-        </tr>
-        <tr>
-          <td id="L674" class="blob-num js-line-number js-code-nav-line-number" data-line-number="674"></td>
-          <td id="LC674" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">washb_data</span> <span class="pl-k">&lt;-</span> fread(</span></td>
-        </tr>
-        <tr>
-          <td id="L675" class="blob-num js-line-number js-code-nav-line-number" data-line-number="675"></td>
-          <td id="LC675" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  paste0(</span></td>
-        </tr>
-        <tr>
-          <td id="L676" class="blob-num js-line-number js-code-nav-line-number" data-line-number="676"></td>
-          <td id="LC676" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-s"><span class="pl-pds">&quot;</span>https://raw.githubusercontent.com/tlverse/tlverse-data/master/<span class="pl-pds">&quot;</span></span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L677" class="blob-num js-line-number js-code-nav-line-number" data-line-number="677"></td>
-          <td id="LC677" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-s"><span class="pl-pds">&quot;</span>wash-benefits/washb_data.csv<span class="pl-pds">&quot;</span></span></span></td>
-        </tr>
-        <tr>
-          <td id="L678" class="blob-num js-line-number js-code-nav-line-number" data-line-number="678"></td>
-          <td id="LC678" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  ),</span></td>
-        </tr>
-        <tr>
-          <td id="L679" class="blob-num js-line-number js-code-nav-line-number" data-line-number="679"></td>
-          <td id="LC679" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">stringsAsFactors</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span></span></td>
-        </tr>
-        <tr>
-          <td id="L680" class="blob-num js-line-number js-code-nav-line-number" data-line-number="680"></td>
-          <td id="LC680" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
-        </tr>
-        <tr>
-          <td id="L681" class="blob-num js-line-number js-code-nav-line-number" data-line-number="681"></td>
-          <td id="LC681" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L682" class="blob-num js-line-number js-code-nav-line-number" data-line-number="682"></td>
-          <td id="LC682" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> Remove missing data, then pick just the first 500 rows</span></span></td>
-        </tr>
-        <tr>
-          <td id="L683" class="blob-num js-line-number js-code-nav-line-number" data-line-number="683"></td>
-          <td id="LC683" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">washb_data</span> <span class="pl-k">&lt;-</span> <span class="pl-smi">washb_data</span> %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L684" class="blob-num js-line-number js-code-nav-line-number" data-line-number="684"></td>
-          <td id="LC684" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  drop_na() %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L685" class="blob-num js-line-number js-code-nav-line-number" data-line-number="685"></td>
-          <td id="LC685" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  slice(<span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">500</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L686" class="blob-num js-line-number js-code-nav-line-number" data-line-number="686"></td>
-          <td id="LC686" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L687" class="blob-num js-line-number js-code-nav-line-number" data-line-number="687"></td>
-          <td id="LC687" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">outcome</span> <span class="pl-k">&lt;-</span> <span class="pl-s"><span class="pl-pds">&quot;</span>whz<span class="pl-pds">&quot;</span></span></span></td>
-        </tr>
-        <tr>
-          <td id="L688" class="blob-num js-line-number js-code-nav-line-number" data-line-number="688"></td>
-          <td id="LC688" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">covars</span> <span class="pl-k">&lt;-</span> colnames(<span class="pl-smi">washb_data</span>)[<span class="pl-k">-</span>which(names(<span class="pl-smi">washb_data</span>) <span class="pl-k">==</span> <span class="pl-smi">outcome</span>)]</span></td>
-        </tr>
-        <tr>
-          <td id="L689" class="blob-num js-line-number js-code-nav-line-number" data-line-number="689"></td>
-          <td id="LC689" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L690" class="blob-num js-line-number js-code-nav-line-number" data-line-number="690"></td>
-          <td id="LC690" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L691" class="blob-num js-line-number js-code-nav-line-number" data-line-number="691"></td>
-          <td id="LC691" class="blob-code blob-code-inner js-file-line">Here&#39;s a look at the data:</td>
-        </tr>
-        <tr>
-          <td id="L692" class="blob-num js-line-number js-code-nav-line-number" data-line-number="692"></td>
-          <td id="LC692" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L693" class="blob-num js-line-number js-code-nav-line-number" data-line-number="693"></td>
-          <td id="LC693" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r origami_washb_example_table2, echo=FALSE}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L694" class="blob-num js-line-number js-code-nav-line-number" data-line-number="694"></td>
-          <td id="LC694" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-e">knitr</span><span class="pl-k">::</span>is_latex_output()) {</span></td>
-        </tr>
-        <tr>
-          <td id="L695" class="blob-num js-line-number js-code-nav-line-number" data-line-number="695"></td>
-          <td id="LC695" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  head(<span class="pl-smi">washb_data</span>) %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L696" class="blob-num js-line-number js-code-nav-line-number" data-line-number="696"></td>
-          <td id="LC696" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable(<span class="pl-v">format</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>latex<span class="pl-pds">&quot;</span></span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L697" class="blob-num js-line-number js-code-nav-line-number" data-line-number="697"></td>
-          <td id="LC697" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">} <span class="pl-k">else</span> <span class="pl-k">if</span> (<span class="pl-e">knitr</span><span class="pl-k">::</span>is_html_output()) {</span></td>
-        </tr>
-        <tr>
-          <td id="L698" class="blob-num js-line-number js-code-nav-line-number" data-line-number="698"></td>
-          <td id="LC698" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  head(<span class="pl-smi">washb_data</span>) %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L699" class="blob-num js-line-number js-code-nav-line-number" data-line-number="699"></td>
-          <td id="LC699" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable() %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L700" class="blob-num js-line-number js-code-nav-line-number" data-line-number="700"></td>
-          <td id="LC700" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    kable_styling(<span class="pl-v">fixed_thead</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>) %<span class="pl-k">&gt;</span>%</span></td>
-        </tr>
-        <tr>
-          <td id="L701" class="blob-num js-line-number js-code-nav-line-number" data-line-number="701"></td>
-          <td id="LC701" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    scroll_box(<span class="pl-v">width</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>100%<span class="pl-pds">&quot;</span></span>, <span class="pl-v">height</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>300px<span class="pl-pds">&quot;</span></span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L702" class="blob-num js-line-number js-code-nav-line-number" data-line-number="702"></td>
-          <td id="LC702" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">}</span></td>
-        </tr>
-        <tr>
-          <td id="L703" class="blob-num js-line-number js-code-nav-line-number" data-line-number="703"></td>
-          <td id="LC703" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L704" class="blob-num js-line-number js-code-nav-line-number" data-line-number="704"></td>
-          <td id="LC704" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L705" class="blob-num js-line-number js-code-nav-line-number" data-line-number="705"></td>
-          <td id="LC705" class="blob-code blob-code-inner js-file-line">We can see the covariates used in the prediction:</td>
-        </tr>
-        <tr>
-          <td id="L706" class="blob-num js-line-number js-code-nav-line-number" data-line-number="706"></td>
-          <td id="LC706" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L707" class="blob-num js-line-number js-code-nav-line-number" data-line-number="707"></td>
-          <td id="LC707" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r covariates}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L708" class="blob-num js-line-number js-code-nav-line-number" data-line-number="708"></td>
-          <td id="LC708" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">outcome</span></span></td>
-        </tr>
-        <tr>
-          <td id="L709" class="blob-num js-line-number js-code-nav-line-number" data-line-number="709"></td>
-          <td id="LC709" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">covars</span></span></td>
-        </tr>
-        <tr>
-          <td id="L710" class="blob-num js-line-number js-code-nav-line-number" data-line-number="710"></td>
-          <td id="LC710" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L711" class="blob-num js-line-number js-code-nav-line-number" data-line-number="711"></td>
-          <td id="LC711" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L712" class="blob-num js-line-number js-code-nav-line-number" data-line-number="712"></td>
-          <td id="LC712" class="blob-code blob-code-inner js-file-line">Next, we fit a linear model on the full data, with the goal of predicting the</td>
-        </tr>
-        <tr>
-          <td id="L713" class="blob-num js-line-number js-code-nav-line-number" data-line-number="713"></td>
-          <td id="LC713" class="blob-code blob-code-inner js-file-line">weight-for-height Z-score <span class="pl-c1">`whz`</span> using all of the available covariate data. Let&#39;s</td>
-        </tr>
-        <tr>
-          <td id="L714" class="blob-num js-line-number js-code-nav-line-number" data-line-number="714"></td>
-          <td id="LC714" class="blob-code blob-code-inner js-file-line">try it out:</td>
-        </tr>
-        <tr>
-          <td id="L715" class="blob-num js-line-number js-code-nav-line-number" data-line-number="715"></td>
-          <td id="LC715" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L716" class="blob-num js-line-number js-code-nav-line-number" data-line-number="716"></td>
-          <td id="LC716" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r linear_mod}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L717" class="blob-num js-line-number js-code-nav-line-number" data-line-number="717"></td>
-          <td id="LC717" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">lm_mod</span> <span class="pl-k">&lt;-</span> lm(<span class="pl-smi">whz</span> <span class="pl-k">~</span> <span class="pl-smi">.</span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">washb_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L718" class="blob-num js-line-number js-code-nav-line-number" data-line-number="718"></td>
-          <td id="LC718" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">summary(<span class="pl-smi">lm_mod</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L719" class="blob-num js-line-number js-code-nav-line-number" data-line-number="719"></td>
-          <td id="LC719" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L720" class="blob-num js-line-number js-code-nav-line-number" data-line-number="720"></td>
-          <td id="LC720" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L721" class="blob-num js-line-number js-code-nav-line-number" data-line-number="721"></td>
-          <td id="LC721" class="blob-code blob-code-inner js-file-line">We can assess how well the model fits the data by comparing the predictions of</td>
-        </tr>
-        <tr>
-          <td id="L722" class="blob-num js-line-number js-code-nav-line-number" data-line-number="722"></td>
-          <td id="LC722" class="blob-code blob-code-inner js-file-line">the linear model to the true outcomes observed in the data set. This is the well</td>
-        </tr>
-        <tr>
-          <td id="L723" class="blob-num js-line-number js-code-nav-line-number" data-line-number="723"></td>
-          <td id="LC723" class="blob-code blob-code-inner js-file-line">known (and standard) mean squared error. We can extract that from the <span class="pl-c1">`lm`</span> model</td>
-        </tr>
-        <tr>
-          <td id="L724" class="blob-num js-line-number js-code-nav-line-number" data-line-number="724"></td>
-          <td id="LC724" class="blob-code blob-code-inner js-file-line">object as follows:</td>
-        </tr>
-        <tr>
-          <td id="L725" class="blob-num js-line-number js-code-nav-line-number" data-line-number="725"></td>
-          <td id="LC725" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L726" class="blob-num js-line-number js-code-nav-line-number" data-line-number="726"></td>
-          <td id="LC726" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r get_naive_error}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L727" class="blob-num js-line-number js-code-nav-line-number" data-line-number="727"></td>
-          <td id="LC727" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">(<span class="pl-smi">err</span> <span class="pl-k">&lt;-</span> mean(resid(<span class="pl-smi">lm_mod</span>)<span class="pl-k">^</span><span class="pl-c1">2</span>))</span></td>
-        </tr>
-        <tr>
-          <td id="L728" class="blob-num js-line-number js-code-nav-line-number" data-line-number="728"></td>
-          <td id="LC728" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L729" class="blob-num js-line-number js-code-nav-line-number" data-line-number="729"></td>
-          <td id="LC729" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L730" class="blob-num js-line-number js-code-nav-line-number" data-line-number="730"></td>
-          <td id="LC730" class="blob-code blob-code-inner js-file-line">The mean squared error is <span class="pl-c1">`r err`</span>. There is an important problem that arises</td>
-        </tr>
-        <tr>
-          <td id="L731" class="blob-num js-line-number js-code-nav-line-number" data-line-number="731"></td>
-          <td id="LC731" class="blob-code blob-code-inner js-file-line">when we assess the model in this way - that is, we have trained our linear</td>
-        </tr>
-        <tr>
-          <td id="L732" class="blob-num js-line-number js-code-nav-line-number" data-line-number="732"></td>
-          <td id="LC732" class="blob-code blob-code-inner js-file-line">regression model on the full data set and assessed the error on the full data</td>
-        </tr>
-        <tr>
-          <td id="L733" class="blob-num js-line-number js-code-nav-line-number" data-line-number="733"></td>
-          <td id="LC733" class="blob-code blob-code-inner js-file-line">set, using up all of our data. We, of course, are generally not interested in</td>
-        </tr>
-        <tr>
-          <td id="L734" class="blob-num js-line-number js-code-nav-line-number" data-line-number="734"></td>
-          <td id="LC734" class="blob-code blob-code-inner js-file-line">how well the model explains variation in the observed data; rather, we are</td>
-        </tr>
-        <tr>
-          <td id="L735" class="blob-num js-line-number js-code-nav-line-number" data-line-number="735"></td>
-          <td id="LC735" class="blob-code blob-code-inner js-file-line">interested in how the explanation provided by the model generalizes to a target</td>
-        </tr>
-        <tr>
-          <td id="L736" class="blob-num js-line-number js-code-nav-line-number" data-line-number="736"></td>
-          <td id="LC736" class="blob-code blob-code-inner js-file-line">population from which the sample is presumably derived. Having used all of our</td>
-        </tr>
-        <tr>
-          <td id="L737" class="blob-num js-line-number js-code-nav-line-number" data-line-number="737"></td>
-          <td id="LC737" class="blob-code blob-code-inner js-file-line">available data, we cannot honestly evaluate how well the model fits (and thus</td>
-        </tr>
-        <tr>
-          <td id="L738" class="blob-num js-line-number js-code-nav-line-number" data-line-number="738"></td>
-          <td id="LC738" class="blob-code blob-code-inner js-file-line">explains) variation at the population level.</td>
-        </tr>
-        <tr>
-          <td id="L739" class="blob-num js-line-number js-code-nav-line-number" data-line-number="739"></td>
-          <td id="LC739" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L740" class="blob-num js-line-number js-code-nav-line-number" data-line-number="740"></td>
-          <td id="LC740" class="blob-code blob-code-inner js-file-line">To resolve this issue, cross-validation allows for a particular procedure (e.g.,</td>
-        </tr>
-        <tr>
-          <td id="L741" class="blob-num js-line-number js-code-nav-line-number" data-line-number="741"></td>
-          <td id="LC741" class="blob-code blob-code-inner js-file-line">linear regression) to be implemented over subsets of the data, evaluating how</td>
-        </tr>
-        <tr>
-          <td id="L742" class="blob-num js-line-number js-code-nav-line-number" data-line-number="742"></td>
-          <td id="LC742" class="blob-code blob-code-inner js-file-line">well the procedure fits on a testing (&quot;validation&quot;) set, thereby providing an</td>
-        </tr>
-        <tr>
-          <td id="L743" class="blob-num js-line-number js-code-nav-line-number" data-line-number="743"></td>
-          <td id="LC743" class="blob-code blob-code-inner js-file-line">honest evaluation of the error.</td>
-        </tr>
-        <tr>
-          <td id="L744" class="blob-num js-line-number js-code-nav-line-number" data-line-number="744"></td>
-          <td id="LC744" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L745" class="blob-num js-line-number js-code-nav-line-number" data-line-number="745"></td>
-          <td id="LC745" class="blob-code blob-code-inner js-file-line">We can easily add cross-validation to our linear regression procedure using</td>
-        </tr>
-        <tr>
-          <td id="L746" class="blob-num js-line-number js-code-nav-line-number" data-line-number="746"></td>
-          <td id="LC746" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`origami`</span>. First, let us define a new function to perform linear regression on a</td>
-        </tr>
-        <tr>
-          <td id="L747" class="blob-num js-line-number js-code-nav-line-number" data-line-number="747"></td>
-          <td id="LC747" class="blob-code blob-code-inner js-file-line">specific partition of the data (called a &quot;fold&quot;):</td>
-        </tr>
-        <tr>
-          <td id="L748" class="blob-num js-line-number js-code-nav-line-number" data-line-number="748"></td>
-          <td id="LC748" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L749" class="blob-num js-line-number js-code-nav-line-number" data-line-number="749"></td>
-          <td id="LC749" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r define_fun_cv_lm}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L750" class="blob-num js-line-number js-code-nav-line-number" data-line-number="750"></td>
-          <td id="LC750" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-en">cv_lm</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">fold</span>, <span class="pl-smi">data</span>, <span class="pl-smi">reg_form</span>) {</span></td>
-        </tr>
-        <tr>
-          <td id="L751" class="blob-num js-line-number js-code-nav-line-number" data-line-number="751"></td>
-          <td id="LC751" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> get name and index of outcome variable from regression formula</span></span></td>
-        </tr>
-        <tr>
-          <td id="L752" class="blob-num js-line-number js-code-nav-line-number" data-line-number="752"></td>
-          <td id="LC752" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out_var</span> <span class="pl-k">&lt;-</span> as.character(unlist(str_split(<span class="pl-smi">reg_form</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> <span class="pl-pds">&quot;</span></span>))[<span class="pl-c1">1</span>])</span></td>
-        </tr>
-        <tr>
-          <td id="L753" class="blob-num js-line-number js-code-nav-line-number" data-line-number="753"></td>
-          <td id="LC753" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out_var_ind</span> <span class="pl-k">&lt;-</span> as.numeric(which(colnames(<span class="pl-smi">data</span>) <span class="pl-k">==</span> <span class="pl-smi">out_var</span>))</span></td>
-        </tr>
-        <tr>
-          <td id="L754" class="blob-num js-line-number js-code-nav-line-number" data-line-number="754"></td>
-          <td id="LC754" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L755" class="blob-num js-line-number js-code-nav-line-number" data-line-number="755"></td>
-          <td id="LC755" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> split up data into training and validation sets</span></span></td>
-        </tr>
-        <tr>
-          <td id="L756" class="blob-num js-line-number js-code-nav-line-number" data-line-number="756"></td>
-          <td id="LC756" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">train_data</span> <span class="pl-k">&lt;-</span> training(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L757" class="blob-num js-line-number js-code-nav-line-number" data-line-number="757"></td>
-          <td id="LC757" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_data</span> <span class="pl-k">&lt;-</span> validation(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L758" class="blob-num js-line-number js-code-nav-line-number" data-line-number="758"></td>
-          <td id="LC758" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L759" class="blob-num js-line-number js-code-nav-line-number" data-line-number="759"></td>
-          <td id="LC759" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> fit linear model on training set and predict on validation set</span></span></td>
-        </tr>
-        <tr>
-          <td id="L760" class="blob-num js-line-number js-code-nav-line-number" data-line-number="760"></td>
-          <td id="LC760" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">mod</span> <span class="pl-k">&lt;-</span> lm(as.formula(<span class="pl-smi">reg_form</span>), <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">train_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L761" class="blob-num js-line-number js-code-nav-line-number" data-line-number="761"></td>
-          <td id="LC761" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">preds</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">mod</span>, <span class="pl-v">newdata</span> <span class="pl-k">=</span> <span class="pl-smi">valid_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L762" class="blob-num js-line-number js-code-nav-line-number" data-line-number="762"></td>
-          <td id="LC762" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_data</span> <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">valid_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L763" class="blob-num js-line-number js-code-nav-line-number" data-line-number="763"></td>
-          <td id="LC763" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L764" class="blob-num js-line-number js-code-nav-line-number" data-line-number="764"></td>
-          <td id="LC764" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> capture results to be returned as output</span></span></td>
-        </tr>
-        <tr>
-          <td id="L765" class="blob-num js-line-number js-code-nav-line-number" data-line-number="765"></td>
-          <td id="LC765" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(</span></td>
-        </tr>
-        <tr>
-          <td id="L766" class="blob-num js-line-number js-code-nav-line-number" data-line-number="766"></td>
-          <td id="LC766" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">coef</span> <span class="pl-k">=</span> <span class="pl-k">data.frame</span>(t(coef(<span class="pl-smi">mod</span>))),</span></td>
-        </tr>
-        <tr>
-          <td id="L767" class="blob-num js-line-number js-code-nav-line-number" data-line-number="767"></td>
-          <td id="LC767" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">SE</span> <span class="pl-k">=</span> (<span class="pl-smi">preds</span> <span class="pl-k">-</span> <span class="pl-smi">valid_data</span>[, <span class="pl-smi">out_var_ind</span>])<span class="pl-k">^</span><span class="pl-c1">2</span></span></td>
-        </tr>
-        <tr>
-          <td id="L768" class="blob-num js-line-number js-code-nav-line-number" data-line-number="768"></td>
-          <td id="LC768" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  )</span></td>
-        </tr>
-        <tr>
-          <td id="L769" class="blob-num js-line-number js-code-nav-line-number" data-line-number="769"></td>
-          <td id="LC769" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-k">return</span>(<span class="pl-smi">out</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L770" class="blob-num js-line-number js-code-nav-line-number" data-line-number="770"></td>
-          <td id="LC770" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">}</span></td>
-        </tr>
-        <tr>
-          <td id="L771" class="blob-num js-line-number js-code-nav-line-number" data-line-number="771"></td>
-          <td id="LC771" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L772" class="blob-num js-line-number js-code-nav-line-number" data-line-number="772"></td>
-          <td id="LC772" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L773" class="blob-num js-line-number js-code-nav-line-number" data-line-number="773"></td>
-          <td id="LC773" class="blob-code blob-code-inner js-file-line">Our <span class="pl-c1">`cv_lm`</span> function is rather simple: we merely split the available data into a</td>
-        </tr>
-        <tr>
-          <td id="L774" class="blob-num js-line-number js-code-nav-line-number" data-line-number="774"></td>
-          <td id="LC774" class="blob-code blob-code-inner js-file-line">training and validation sets (using the eponymous functions provided in</td>
-        </tr>
-        <tr>
-          <td id="L775" class="blob-num js-line-number js-code-nav-line-number" data-line-number="775"></td>
-          <td id="LC775" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`origami`</span>) fit the linear model on the training set, and evaluate the model on</td>
-        </tr>
-        <tr>
-          <td id="L776" class="blob-num js-line-number js-code-nav-line-number" data-line-number="776"></td>
-          <td id="LC776" class="blob-code blob-code-inner js-file-line">the validation set. This is a simple example of what <span class="pl-c1">`origami`</span> considers to be</td>
-        </tr>
-        <tr>
-          <td id="L777" class="blob-num js-line-number js-code-nav-line-number" data-line-number="777"></td>
-          <td id="LC777" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`cv_fun`</span> --- functions for using cross-validation to perform a particular routine</td>
-        </tr>
-        <tr>
-          <td id="L778" class="blob-num js-line-number js-code-nav-line-number" data-line-number="778"></td>
-          <td id="LC778" class="blob-code blob-code-inner js-file-line">over an input data set. Having defined such a function, we can simply generate a</td>
-        </tr>
-        <tr>
-          <td id="L779" class="blob-num js-line-number js-code-nav-line-number" data-line-number="779"></td>
-          <td id="LC779" class="blob-code blob-code-inner js-file-line">set of partitions using <span class="pl-c1">`origami`</span>&#39;s <span class="pl-c1">`make_folds`</span> function, and apply our <span class="pl-c1">`cv_lm`</span></td>
-        </tr>
-        <tr>
-          <td id="L780" class="blob-num js-line-number js-code-nav-line-number" data-line-number="780"></td>
-          <td id="LC780" class="blob-code blob-code-inner js-file-line">function over the resultant <span class="pl-c1">`folds`</span> object. Below, we replicate the</td>
-        </tr>
-        <tr>
-          <td id="L781" class="blob-num js-line-number js-code-nav-line-number" data-line-number="781"></td>
-          <td id="LC781" class="blob-code blob-code-inner js-file-line">re-substitution estimate of the error -- we did this &quot;by hand&quot; above -- using</td>
-        </tr>
-        <tr>
-          <td id="L782" class="blob-num js-line-number js-code-nav-line-number" data-line-number="782"></td>
-          <td id="LC782" class="blob-code blob-code-inner js-file-line">the functions <span class="pl-c1">`make_folds`</span> and <span class="pl-c1">`cv_lm`</span>.</td>
-        </tr>
-        <tr>
-          <td id="L783" class="blob-num js-line-number js-code-nav-line-number" data-line-number="783"></td>
-          <td id="LC783" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L784" class="blob-num js-line-number js-code-nav-line-number" data-line-number="784"></td>
-          <td id="LC784" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r cv_lm_resub}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L785" class="blob-num js-line-number js-code-nav-line-number" data-line-number="785"></td>
-          <td id="LC785" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> re-substitution estimate</span></span></td>
-        </tr>
-        <tr>
-          <td id="L786" class="blob-num js-line-number js-code-nav-line-number" data-line-number="786"></td>
-          <td id="LC786" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">resub</span> <span class="pl-k">&lt;-</span> make_folds(<span class="pl-smi">washb_data</span>, <span class="pl-v">fold_fun</span> <span class="pl-k">=</span> <span class="pl-smi">folds_resubstitution</span>)[[<span class="pl-c1">1</span>]]</span></td>
-        </tr>
-        <tr>
-          <td id="L787" class="blob-num js-line-number js-code-nav-line-number" data-line-number="787"></td>
-          <td id="LC787" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">resub_results</span> <span class="pl-k">&lt;-</span> cv_lm(<span class="pl-v">fold</span> <span class="pl-k">=</span> <span class="pl-smi">resub</span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">washb_data</span>, <span class="pl-v">reg_form</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>whz ~ .<span class="pl-pds">&quot;</span></span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L788" class="blob-num js-line-number js-code-nav-line-number" data-line-number="788"></td>
-          <td id="LC788" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">mean(<span class="pl-smi">resub_results</span><span class="pl-k">$</span><span class="pl-smi">SE</span>, <span class="pl-v">na.rm</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L789" class="blob-num js-line-number js-code-nav-line-number" data-line-number="789"></td>
-          <td id="LC789" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L790" class="blob-num js-line-number js-code-nav-line-number" data-line-number="790"></td>
-          <td id="LC790" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L791" class="blob-num js-line-number js-code-nav-line-number" data-line-number="791"></td>
-          <td id="LC791" class="blob-code blob-code-inner js-file-line">This (nearly) matches the estimate of the error that we obtained above.</td>
-        </tr>
-        <tr>
-          <td id="L792" class="blob-num js-line-number js-code-nav-line-number" data-line-number="792"></td>
-          <td id="LC792" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L793" class="blob-num js-line-number js-code-nav-line-number" data-line-number="793"></td>
-          <td id="LC793" class="blob-code blob-code-inner js-file-line">We can more honestly evaluate the error by V-fold cross-validation, which</td>
-        </tr>
-        <tr>
-          <td id="L794" class="blob-num js-line-number js-code-nav-line-number" data-line-number="794"></td>
-          <td id="LC794" class="blob-code blob-code-inner js-file-line">partitions the data into $v$ subsets, fitting the model on $v - 1$ of the</td>
-        </tr>
-        <tr>
-          <td id="L795" class="blob-num js-line-number js-code-nav-line-number" data-line-number="795"></td>
-          <td id="LC795" class="blob-code blob-code-inner js-file-line">subsets and evaluating on the subset that was held out for testing. This is</td>
-        </tr>
-        <tr>
-          <td id="L796" class="blob-num js-line-number js-code-nav-line-number" data-line-number="796"></td>
-          <td id="LC796" class="blob-code blob-code-inner js-file-line">repeated such that each subset is used for validation. We can easily apply our</td>
-        </tr>
-        <tr>
-          <td id="L797" class="blob-num js-line-number js-code-nav-line-number" data-line-number="797"></td>
-          <td id="LC797" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`cv_lm`</span> function using <span class="pl-c1">`origami`</span>&#39;s <span class="pl-c1">`cross_validate`</span> (n.b., by default this</td>
-        </tr>
-        <tr>
-          <td id="L798" class="blob-num js-line-number js-code-nav-line-number" data-line-number="798"></td>
-          <td id="LC798" class="blob-code blob-code-inner js-file-line">performs 10-fold cross-validation):</td>
-        </tr>
-        <tr>
-          <td id="L799" class="blob-num js-line-number js-code-nav-line-number" data-line-number="799"></td>
-          <td id="LC799" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L800" class="blob-num js-line-number js-code-nav-line-number" data-line-number="800"></td>
-          <td id="LC800" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r cv_lm_cross_valdate}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L801" class="blob-num js-line-number js-code-nav-line-number" data-line-number="801"></td>
-          <td id="LC801" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> cross-validated estimate</span></span></td>
-        </tr>
-        <tr>
-          <td id="L802" class="blob-num js-line-number js-code-nav-line-number" data-line-number="802"></td>
-          <td id="LC802" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> make_folds(<span class="pl-smi">washb_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L803" class="blob-num js-line-number js-code-nav-line-number" data-line-number="803"></td>
-          <td id="LC803" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">cvlm_results</span> <span class="pl-k">&lt;-</span> cross_validate(</span></td>
-        </tr>
-        <tr>
-          <td id="L804" class="blob-num js-line-number js-code-nav-line-number" data-line-number="804"></td>
-          <td id="LC804" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">cv_fun</span> <span class="pl-k">=</span> <span class="pl-smi">cv_lm</span>, <span class="pl-v">folds</span> <span class="pl-k">=</span> <span class="pl-smi">folds</span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">washb_data</span>, <span class="pl-v">reg_form</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>whz ~ .<span class="pl-pds">&quot;</span></span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L805" class="blob-num js-line-number js-code-nav-line-number" data-line-number="805"></td>
-          <td id="LC805" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">use_future</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span></span></td>
-        </tr>
-        <tr>
-          <td id="L806" class="blob-num js-line-number js-code-nav-line-number" data-line-number="806"></td>
-          <td id="LC806" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
-        </tr>
-        <tr>
-          <td id="L807" class="blob-num js-line-number js-code-nav-line-number" data-line-number="807"></td>
-          <td id="LC807" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">mean(<span class="pl-smi">cvlm_results</span><span class="pl-k">$</span><span class="pl-smi">SE</span>, <span class="pl-v">na.rm</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L808" class="blob-num js-line-number js-code-nav-line-number" data-line-number="808"></td>
-          <td id="LC808" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L809" class="blob-num js-line-number js-code-nav-line-number" data-line-number="809"></td>
-          <td id="LC809" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L810" class="blob-num js-line-number js-code-nav-line-number" data-line-number="810"></td>
-          <td id="LC810" class="blob-code blob-code-inner js-file-line">Having performed 10-fold cross-validation, we quickly notice that our previous</td>
-        </tr>
-        <tr>
-          <td id="L811" class="blob-num js-line-number js-code-nav-line-number" data-line-number="811"></td>
-          <td id="LC811" class="blob-code blob-code-inner js-file-line">estimate of the model error (by resubstitution) was a bit optimistic. The honest</td>
-        </tr>
-        <tr>
-          <td id="L812" class="blob-num js-line-number js-code-nav-line-number" data-line-number="812"></td>
-          <td id="LC812" class="blob-code blob-code-inner js-file-line">estimate of the error is larger!</td>
-        </tr>
-        <tr>
-          <td id="L813" class="blob-num js-line-number js-code-nav-line-number" data-line-number="813"></td>
-          <td id="LC813" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L814" class="blob-num js-line-number js-code-nav-line-number" data-line-number="814"></td>
-          <td id="LC814" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Cross-validation with random forests</span></td>
-        </tr>
-        <tr>
-          <td id="L815" class="blob-num js-line-number js-code-nav-line-number" data-line-number="815"></td>
-          <td id="LC815" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L816" class="blob-num js-line-number js-code-nav-line-number" data-line-number="816"></td>
-          <td id="LC816" class="blob-code blob-code-inner js-file-line">To examine <span class="pl-c1">`origami`</span> further, let us return to our example analysis using the</td>
-        </tr>
-        <tr>
-          <td id="L817" class="blob-num js-line-number js-code-nav-line-number" data-line-number="817"></td>
-          <td id="LC817" class="blob-code blob-code-inner js-file-line">WASH data set. Here, we will write a new <span class="pl-c1">`cv_fun`</span> type object. As an example, we</td>
-        </tr>
-        <tr>
-          <td id="L818" class="blob-num js-line-number js-code-nav-line-number" data-line-number="818"></td>
-          <td id="LC818" class="blob-code blob-code-inner js-file-line">will use Breiman&#39;s <span class="pl-c1">`randomForest`</span> [<span class="pl-v">@</span><span class="pl-s">breiman2001random</span>]:</td>
-        </tr>
-        <tr>
-          <td id="L819" class="blob-num js-line-number js-code-nav-line-number" data-line-number="819"></td>
-          <td id="LC819" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L820" class="blob-num js-line-number js-code-nav-line-number" data-line-number="820"></td>
-          <td id="LC820" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r cv_fun_randomForest}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L821" class="blob-num js-line-number js-code-nav-line-number" data-line-number="821"></td>
-          <td id="LC821" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> make sure to load the package!</span></span></td>
-        </tr>
-        <tr>
-          <td id="L822" class="blob-num js-line-number js-code-nav-line-number" data-line-number="822"></td>
-          <td id="LC822" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">randomForest</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L823" class="blob-num js-line-number js-code-nav-line-number" data-line-number="823"></td>
-          <td id="LC823" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L824" class="blob-num js-line-number js-code-nav-line-number" data-line-number="824"></td>
-          <td id="LC824" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-en">cv_rf</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">fold</span>, <span class="pl-smi">data</span>, <span class="pl-smi">reg_form</span>) {</span></td>
-        </tr>
-        <tr>
-          <td id="L825" class="blob-num js-line-number js-code-nav-line-number" data-line-number="825"></td>
-          <td id="LC825" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> get name and index of outcome variable from regression formula</span></span></td>
-        </tr>
-        <tr>
-          <td id="L826" class="blob-num js-line-number js-code-nav-line-number" data-line-number="826"></td>
-          <td id="LC826" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out_var</span> <span class="pl-k">&lt;-</span> as.character(unlist(str_split(<span class="pl-smi">reg_form</span>, <span class="pl-s"><span class="pl-pds">&quot;</span> <span class="pl-pds">&quot;</span></span>))[<span class="pl-c1">1</span>])</span></td>
-        </tr>
-        <tr>
-          <td id="L827" class="blob-num js-line-number js-code-nav-line-number" data-line-number="827"></td>
-          <td id="LC827" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out_var_ind</span> <span class="pl-k">&lt;-</span> as.numeric(which(colnames(<span class="pl-smi">data</span>) <span class="pl-k">==</span> <span class="pl-smi">out_var</span>))</span></td>
-        </tr>
-        <tr>
-          <td id="L828" class="blob-num js-line-number js-code-nav-line-number" data-line-number="828"></td>
-          <td id="LC828" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L829" class="blob-num js-line-number js-code-nav-line-number" data-line-number="829"></td>
-          <td id="LC829" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> define training and validation sets based on input object of class &quot;folds&quot;</span></span></td>
-        </tr>
-        <tr>
-          <td id="L830" class="blob-num js-line-number js-code-nav-line-number" data-line-number="830"></td>
-          <td id="LC830" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">train_data</span> <span class="pl-k">&lt;-</span> training(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L831" class="blob-num js-line-number js-code-nav-line-number" data-line-number="831"></td>
-          <td id="LC831" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_data</span> <span class="pl-k">&lt;-</span> validation(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L832" class="blob-num js-line-number js-code-nav-line-number" data-line-number="832"></td>
-          <td id="LC832" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L833" class="blob-num js-line-number js-code-nav-line-number" data-line-number="833"></td>
-          <td id="LC833" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> fit Random Forest regression on training set and predict on holdout set</span></span></td>
-        </tr>
-        <tr>
-          <td id="L834" class="blob-num js-line-number js-code-nav-line-number" data-line-number="834"></td>
-          <td id="LC834" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">mod</span> <span class="pl-k">&lt;-</span> randomForest(<span class="pl-v">formula</span> <span class="pl-k">=</span> as.formula(<span class="pl-smi">reg_form</span>), <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">train_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L835" class="blob-num js-line-number js-code-nav-line-number" data-line-number="835"></td>
-          <td id="LC835" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">preds</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">mod</span>, <span class="pl-v">newdata</span> <span class="pl-k">=</span> <span class="pl-smi">valid_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L836" class="blob-num js-line-number js-code-nav-line-number" data-line-number="836"></td>
-          <td id="LC836" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_data</span> <span class="pl-k">&lt;-</span> as.data.frame(<span class="pl-smi">valid_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L837" class="blob-num js-line-number js-code-nav-line-number" data-line-number="837"></td>
-          <td id="LC837" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L838" class="blob-num js-line-number js-code-nav-line-number" data-line-number="838"></td>
-          <td id="LC838" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> define output object to be returned as list (for flexibility)</span></span></td>
-        </tr>
-        <tr>
-          <td id="L839" class="blob-num js-line-number js-code-nav-line-number" data-line-number="839"></td>
-          <td id="LC839" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(</span></td>
-        </tr>
-        <tr>
-          <td id="L840" class="blob-num js-line-number js-code-nav-line-number" data-line-number="840"></td>
-          <td id="LC840" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">coef</span> <span class="pl-k">=</span> <span class="pl-k">data.frame</span>(<span class="pl-smi">mod</span><span class="pl-k">$</span><span class="pl-smi">coefs</span>),</span></td>
-        </tr>
-        <tr>
-          <td id="L841" class="blob-num js-line-number js-code-nav-line-number" data-line-number="841"></td>
-          <td id="LC841" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">SE</span> <span class="pl-k">=</span> ((<span class="pl-smi">preds</span> <span class="pl-k">-</span> <span class="pl-smi">valid_data</span>[, <span class="pl-smi">out_var_ind</span>])<span class="pl-k">^</span><span class="pl-c1">2</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L842" class="blob-num js-line-number js-code-nav-line-number" data-line-number="842"></td>
-          <td id="LC842" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  )</span></td>
-        </tr>
-        <tr>
-          <td id="L843" class="blob-num js-line-number js-code-nav-line-number" data-line-number="843"></td>
-          <td id="LC843" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-k">return</span>(<span class="pl-smi">out</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L844" class="blob-num js-line-number js-code-nav-line-number" data-line-number="844"></td>
-          <td id="LC844" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">}</span></td>
-        </tr>
-        <tr>
-          <td id="L845" class="blob-num js-line-number js-code-nav-line-number" data-line-number="845"></td>
-          <td id="LC845" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L846" class="blob-num js-line-number js-code-nav-line-number" data-line-number="846"></td>
-          <td id="LC846" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L847" class="blob-num js-line-number js-code-nav-line-number" data-line-number="847"></td>
-          <td id="LC847" class="blob-code blob-code-inner js-file-line">Above, in writing our <span class="pl-c1">`cv_rf`</span> function to cross-validate <span class="pl-c1">`randomForest`</span>, we used</td>
-        </tr>
-        <tr>
-          <td id="L848" class="blob-num js-line-number js-code-nav-line-number" data-line-number="848"></td>
-          <td id="LC848" class="blob-code blob-code-inner js-file-line">our previous function <span class="pl-c1">`cv_lm`</span> as an example. For now, individual <span class="pl-c1">`cv_fun`</span> must</td>
-        </tr>
-        <tr>
-          <td id="L849" class="blob-num js-line-number js-code-nav-line-number" data-line-number="849"></td>
-          <td id="LC849" class="blob-code blob-code-inner js-file-line">be written by hand; however, in future releases, a wrapper may be available to</td>
-        </tr>
-        <tr>
-          <td id="L850" class="blob-num js-line-number js-code-nav-line-number" data-line-number="850"></td>
-          <td id="LC850" class="blob-code blob-code-inner js-file-line">support auto-generating <span class="pl-c1">`cv_fun`</span>s to be used with <span class="pl-c1">`origami`</span>.</td>
-        </tr>
-        <tr>
-          <td id="L851" class="blob-num js-line-number js-code-nav-line-number" data-line-number="851"></td>
-          <td id="LC851" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L852" class="blob-num js-line-number js-code-nav-line-number" data-line-number="852"></td>
-          <td id="LC852" class="blob-code blob-code-inner js-file-line">Below, we use <span class="pl-c1">`cross_validate`</span> to apply our new <span class="pl-c1">`cv_rf`</span> function over the <span class="pl-c1">`folds`</span></td>
-        </tr>
-        <tr>
-          <td id="L853" class="blob-num js-line-number js-code-nav-line-number" data-line-number="853"></td>
-          <td id="LC853" class="blob-code blob-code-inner js-file-line">object generated by <span class="pl-c1">`make_folds`</span>.</td>
-        </tr>
-        <tr>
-          <td id="L854" class="blob-num js-line-number js-code-nav-line-number" data-line-number="854"></td>
-          <td id="LC854" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L855" class="blob-num js-line-number js-code-nav-line-number" data-line-number="855"></td>
-          <td id="LC855" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r cv_fun_randomForest_run}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L856" class="blob-num js-line-number js-code-nav-line-number" data-line-number="856"></td>
-          <td id="LC856" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> now, let&#39;s cross-validate...</span></span></td>
-        </tr>
-        <tr>
-          <td id="L857" class="blob-num js-line-number js-code-nav-line-number" data-line-number="857"></td>
-          <td id="LC857" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> make_folds(<span class="pl-smi">washb_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L858" class="blob-num js-line-number js-code-nav-line-number" data-line-number="858"></td>
-          <td id="LC858" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">cvrf_results</span> <span class="pl-k">&lt;-</span> cross_validate(</span></td>
-        </tr>
-        <tr>
-          <td id="L859" class="blob-num js-line-number js-code-nav-line-number" data-line-number="859"></td>
-          <td id="LC859" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">cv_fun</span> <span class="pl-k">=</span> <span class="pl-smi">cv_rf</span>, <span class="pl-v">folds</span> <span class="pl-k">=</span> <span class="pl-smi">folds</span>, </span></td>
-        </tr>
-        <tr>
-          <td id="L860" class="blob-num js-line-number js-code-nav-line-number" data-line-number="860"></td>
-          <td id="LC860" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">washb_data</span>, <span class="pl-v">reg_form</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">&quot;</span>whz ~ .<span class="pl-pds">&quot;</span></span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L861" class="blob-num js-line-number js-code-nav-line-number" data-line-number="861"></td>
-          <td id="LC861" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">use_future</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span></span></td>
-        </tr>
-        <tr>
-          <td id="L862" class="blob-num js-line-number js-code-nav-line-number" data-line-number="862"></td>
-          <td id="LC862" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
-        </tr>
-        <tr>
-          <td id="L863" class="blob-num js-line-number js-code-nav-line-number" data-line-number="863"></td>
-          <td id="LC863" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">mean(<span class="pl-smi">cvrf_results</span><span class="pl-k">$</span><span class="pl-smi">SE</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L864" class="blob-num js-line-number js-code-nav-line-number" data-line-number="864"></td>
-          <td id="LC864" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L865" class="blob-num js-line-number js-code-nav-line-number" data-line-number="865"></td>
-          <td id="LC865" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L866" class="blob-num js-line-number js-code-nav-line-number" data-line-number="866"></td>
-          <td id="LC866" class="blob-code blob-code-inner js-file-line">Using 10-fold cross-validation (the default), we obtain an honest estimate of</td>
-        </tr>
-        <tr>
-          <td id="L867" class="blob-num js-line-number js-code-nav-line-number" data-line-number="867"></td>
-          <td id="LC867" class="blob-code blob-code-inner js-file-line">the prediction error of random forests. From this, we gather that the use of</td>
-        </tr>
-        <tr>
-          <td id="L868" class="blob-num js-line-number js-code-nav-line-number" data-line-number="868"></td>
-          <td id="LC868" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`origami`</span>&#39;s <span class="pl-c1">`cross_validate`</span> procedure can be generalized to arbitrary estimation</td>
-        </tr>
-        <tr>
-          <td id="L869" class="blob-num js-line-number js-code-nav-line-number" data-line-number="869"></td>
-          <td id="LC869" class="blob-code blob-code-inner js-file-line">techniques, given availability of an appropriate <span class="pl-c1">`cv_fun`</span> function.</td>
-        </tr>
-        <tr>
-          <td id="L870" class="blob-num js-line-number js-code-nav-line-number" data-line-number="870"></td>
-          <td id="LC870" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L871" class="blob-num js-line-number js-code-nav-line-number" data-line-number="871"></td>
-          <td id="LC871" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Cross-validation with arima</span></td>
-        </tr>
-        <tr>
-          <td id="L872" class="blob-num js-line-number js-code-nav-line-number" data-line-number="872"></td>
-          <td id="LC872" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L873" class="blob-num js-line-number js-code-nav-line-number" data-line-number="873"></td>
-          <td id="LC873" class="blob-code blob-code-inner js-file-line">Cross-validation can also be used for forecast model selection in a time series</td>
-        </tr>
-        <tr>
-          <td id="L874" class="blob-num js-line-number js-code-nav-line-number" data-line-number="874"></td>
-          <td id="LC874" class="blob-code blob-code-inner js-file-line">setting. Here, the partitioning scheme mirrors the application of the</td>
-        </tr>
-        <tr>
-          <td id="L875" class="blob-num js-line-number js-code-nav-line-number" data-line-number="875"></td>
-          <td id="LC875" class="blob-code blob-code-inner js-file-line">forecasting model: we&#39;ll train the data on past observations (either all</td>
-        </tr>
-        <tr>
-          <td id="L876" class="blob-num js-line-number js-code-nav-line-number" data-line-number="876"></td>
-          <td id="LC876" class="blob-code blob-code-inner js-file-line">available or a recent subset), and then use the model fit to predict the next</td>
-        </tr>
-        <tr>
-          <td id="L877" class="blob-num js-line-number js-code-nav-line-number" data-line-number="877"></td>
-          <td id="LC877" class="blob-code blob-code-inner js-file-line">few observations. We consider the <span class="pl-c1">`AirPassengers`</span> dataset again, a monthly time</td>
-        </tr>
-        <tr>
-          <td id="L878" class="blob-num js-line-number js-code-nav-line-number" data-line-number="878"></td>
-          <td id="LC878" class="blob-code blob-code-inner js-file-line">series of passenger air traffic in thousands of people.</td>
-        </tr>
-        <tr>
-          <td id="L879" class="blob-num js-line-number js-code-nav-line-number" data-line-number="879"></td>
-          <td id="LC879" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L880" class="blob-num js-line-number js-code-nav-line-number" data-line-number="880"></td>
-          <td id="LC880" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r load_airpass}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L881" class="blob-num js-line-number js-code-nav-line-number" data-line-number="881"></td>
-          <td id="LC881" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">data(<span class="pl-smi">AirPassengers</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L882" class="blob-num js-line-number js-code-nav-line-number" data-line-number="882"></td>
-          <td id="LC882" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">print(<span class="pl-smi">AirPassengers</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L883" class="blob-num js-line-number js-code-nav-line-number" data-line-number="883"></td>
-          <td id="LC883" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L884" class="blob-num js-line-number js-code-nav-line-number" data-line-number="884"></td>
-          <td id="LC884" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L885" class="blob-num js-line-number js-code-nav-line-number" data-line-number="885"></td>
-          <td id="LC885" class="blob-code blob-code-inner js-file-line">Suppose we want to pick between two forecasting models with different <span class="pl-c1">`arima`</span></td>
-        </tr>
-        <tr>
-          <td id="L886" class="blob-num js-line-number js-code-nav-line-number" data-line-number="886"></td>
-          <td id="LC886" class="blob-code blob-code-inner js-file-line">configurations. We can do that by evaluating their forecasting performance.</td>
-        </tr>
-        <tr>
-          <td id="L887" class="blob-num js-line-number js-code-nav-line-number" data-line-number="887"></td>
-          <td id="LC887" class="blob-code blob-code-inner js-file-line">First, we set up the appropriate cross-validation scheme for time-series.</td>
-        </tr>
-        <tr>
-          <td id="L888" class="blob-num js-line-number js-code-nav-line-number" data-line-number="888"></td>
-          <td id="LC888" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L889" class="blob-num js-line-number js-code-nav-line-number" data-line-number="889"></td>
-          <td id="LC889" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r folds_airpass}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L890" class="blob-num js-line-number js-code-nav-line-number" data-line-number="890"></td>
-          <td id="LC890" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span> <span class="pl-k">&lt;-</span> make_folds(<span class="pl-smi">AirPassengers</span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L891" class="blob-num js-line-number js-code-nav-line-number" data-line-number="891"></td>
-          <td id="LC891" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">fold_fun</span> <span class="pl-k">=</span> <span class="pl-smi">folds_rolling_origin</span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L892" class="blob-num js-line-number js-code-nav-line-number" data-line-number="892"></td>
-          <td id="LC892" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">first_window</span> <span class="pl-k">=</span> <span class="pl-c1">36</span>, <span class="pl-v">validation_size</span> <span class="pl-k">=</span> <span class="pl-c1">24</span>, <span class="pl-v">batch</span> <span class="pl-k">=</span> <span class="pl-c1">10</span></span></td>
-        </tr>
-        <tr>
-          <td id="L893" class="blob-num js-line-number js-code-nav-line-number" data-line-number="893"></td>
-          <td id="LC893" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
-        </tr>
-        <tr>
-          <td id="L894" class="blob-num js-line-number js-code-nav-line-number" data-line-number="894"></td>
-          <td id="LC894" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L895" class="blob-num js-line-number js-code-nav-line-number" data-line-number="895"></td>
-          <td id="LC895" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> How many folds where generated?</span></span></td>
-        </tr>
-        <tr>
-          <td id="L896" class="blob-num js-line-number js-code-nav-line-number" data-line-number="896"></td>
-          <td id="LC896" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">length(<span class="pl-smi">folds</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L897" class="blob-num js-line-number js-code-nav-line-number" data-line-number="897"></td>
-          <td id="LC897" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L898" class="blob-num js-line-number js-code-nav-line-number" data-line-number="898"></td>
-          <td id="LC898" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> Examine the first 2 folds.</span></span></td>
-        </tr>
-        <tr>
-          <td id="L899" class="blob-num js-line-number js-code-nav-line-number" data-line-number="899"></td>
-          <td id="LC899" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">1</span>]]</span></td>
-        </tr>
-        <tr>
-          <td id="L900" class="blob-num js-line-number js-code-nav-line-number" data-line-number="900"></td>
-          <td id="LC900" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">folds</span>[[<span class="pl-c1">2</span>]]</span></td>
-        </tr>
-        <tr>
-          <td id="L901" class="blob-num js-line-number js-code-nav-line-number" data-line-number="901"></td>
-          <td id="LC901" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L902" class="blob-num js-line-number js-code-nav-line-number" data-line-number="902"></td>
-          <td id="LC902" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L903" class="blob-num js-line-number js-code-nav-line-number" data-line-number="903"></td>
-          <td id="LC903" class="blob-code blob-code-inner js-file-line">By default, <span class="pl-c1">`folds_rolling_origin`</span> will increase the size of the training set by</td>
-        </tr>
-        <tr>
-          <td id="L904" class="blob-num js-line-number js-code-nav-line-number" data-line-number="904"></td>
-          <td id="LC904" class="blob-code blob-code-inner js-file-line">one time point each fold. Had we followed the default option, we would have 85</td>
-        </tr>
-        <tr>
-          <td id="L905" class="blob-num js-line-number js-code-nav-line-number" data-line-number="905"></td>
-          <td id="LC905" class="blob-code blob-code-inner js-file-line">folds to train! Luckily, we can pass the <span class="pl-c1">`batch`</span> as option to</td>
-        </tr>
-        <tr>
-          <td id="L906" class="blob-num js-line-number js-code-nav-line-number" data-line-number="906"></td>
-          <td id="LC906" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`folds_rolling_origin`</span> that tells it to increase the size of the training set by</td>
-        </tr>
-        <tr>
-          <td id="L907" class="blob-num js-line-number js-code-nav-line-number" data-line-number="907"></td>
-          <td id="LC907" class="blob-code blob-code-inner js-file-line">10 points each iteration.  Since we want to forecast the immediate next point,</td>
-        </tr>
-        <tr>
-          <td id="L908" class="blob-num js-line-number js-code-nav-line-number" data-line-number="908"></td>
-          <td id="LC908" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">`gap`</span> argument remains the default (0).</td>
-        </tr>
-        <tr>
-          <td id="L909" class="blob-num js-line-number js-code-nav-line-number" data-line-number="909"></td>
-          <td id="LC909" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L910" class="blob-num js-line-number js-code-nav-line-number" data-line-number="910"></td>
-          <td id="LC910" class="blob-code blob-code-inner js-file-line"><span class="pl-c1">```{r fit_airpass}</span><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L911" class="blob-num js-line-number js-code-nav-line-number" data-line-number="911"></td>
-          <td id="LC911" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> make sure to load the package!</span></span></td>
-        </tr>
-        <tr>
-          <td id="L912" class="blob-num js-line-number js-code-nav-line-number" data-line-number="912"></td>
-          <td id="LC912" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">library(<span class="pl-smi">forecast</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L913" class="blob-num js-line-number js-code-nav-line-number" data-line-number="913"></td>
-          <td id="LC913" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L914" class="blob-num js-line-number js-code-nav-line-number" data-line-number="914"></td>
-          <td id="LC914" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-c"><span class="pl-c">#</span> function to calculate cross-validated squared error</span></span></td>
-        </tr>
-        <tr>
-          <td id="L915" class="blob-num js-line-number js-code-nav-line-number" data-line-number="915"></td>
-          <td id="LC915" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-en">cv_forecasts</span> <span class="pl-k">&lt;-</span> <span class="pl-k">function</span>(<span class="pl-smi">fold</span>, <span class="pl-smi">data</span>) {</span></td>
-        </tr>
-        <tr>
-          <td id="L916" class="blob-num js-line-number js-code-nav-line-number" data-line-number="916"></td>
-          <td id="LC916" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> Get training and validation data</span></span></td>
-        </tr>
-        <tr>
-          <td id="L917" class="blob-num js-line-number js-code-nav-line-number" data-line-number="917"></td>
-          <td id="LC917" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">train_data</span> <span class="pl-k">&lt;-</span> training(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L918" class="blob-num js-line-number js-code-nav-line-number" data-line-number="918"></td>
-          <td id="LC918" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_data</span> <span class="pl-k">&lt;-</span> validation(<span class="pl-smi">data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L919" class="blob-num js-line-number js-code-nav-line-number" data-line-number="919"></td>
-          <td id="LC919" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">valid_size</span> <span class="pl-k">&lt;-</span> length(<span class="pl-smi">valid_data</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L920" class="blob-num js-line-number js-code-nav-line-number" data-line-number="920"></td>
-          <td id="LC920" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L921" class="blob-num js-line-number js-code-nav-line-number" data-line-number="921"></td>
-          <td id="LC921" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">train_ts</span> <span class="pl-k">&lt;-</span> ts(log10(<span class="pl-smi">train_data</span>), <span class="pl-v">frequency</span> <span class="pl-k">=</span> <span class="pl-c1">12</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L922" class="blob-num js-line-number js-code-nav-line-number" data-line-number="922"></td>
-          <td id="LC922" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L923" class="blob-num js-line-number js-code-nav-line-number" data-line-number="923"></td>
-          <td id="LC923" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> First arima model</span></span></td>
-        </tr>
-        <tr>
-          <td id="L924" class="blob-num js-line-number js-code-nav-line-number" data-line-number="924"></td>
-          <td id="LC924" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_fit</span> <span class="pl-k">&lt;-</span> arima(<span class="pl-smi">train_ts</span>, c(<span class="pl-c1">0</span>, <span class="pl-c1">1</span>, <span class="pl-c1">1</span>),</span></td>
-        </tr>
-        <tr>
-          <td id="L925" class="blob-num js-line-number js-code-nav-line-number" data-line-number="925"></td>
-          <td id="LC925" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">seasonal</span> <span class="pl-k">=</span> <span class="pl-k">list</span>(</span></td>
-        </tr>
-        <tr>
-          <td id="L926" class="blob-num js-line-number js-code-nav-line-number" data-line-number="926"></td>
-          <td id="LC926" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">      <span class="pl-v">order</span> <span class="pl-k">=</span> c(<span class="pl-c1">0</span>, <span class="pl-c1">1</span>, <span class="pl-c1">1</span>),</span></td>
-        </tr>
-        <tr>
-          <td id="L927" class="blob-num js-line-number js-code-nav-line-number" data-line-number="927"></td>
-          <td id="LC927" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">      <span class="pl-v">period</span> <span class="pl-k">=</span> <span class="pl-c1">12</span></span></td>
-        </tr>
-        <tr>
-          <td id="L928" class="blob-num js-line-number js-code-nav-line-number" data-line-number="928"></td>
-          <td id="LC928" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    )</span></td>
-        </tr>
-        <tr>
-          <td id="L929" class="blob-num js-line-number js-code-nav-line-number" data-line-number="929"></td>
-          <td id="LC929" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  )</span></td>
-        </tr>
-        <tr>
-          <td id="L930" class="blob-num js-line-number js-code-nav-line-number" data-line-number="930"></td>
-          <td id="LC930" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">raw_arima_pred</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">arima_fit</span>, <span class="pl-v">n.ahead</span> <span class="pl-k">=</span> <span class="pl-smi">valid_size</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L931" class="blob-num js-line-number js-code-nav-line-number" data-line-number="931"></td>
-          <td id="LC931" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_pred</span> <span class="pl-k">&lt;-</span> <span class="pl-c1">10</span><span class="pl-k">^</span><span class="pl-smi">raw_arima_pred</span><span class="pl-k">$</span><span class="pl-smi">pred</span></span></td>
-        </tr>
-        <tr>
-          <td id="L932" class="blob-num js-line-number js-code-nav-line-number" data-line-number="932"></td>
-          <td id="LC932" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_MSE</span> <span class="pl-k">&lt;-</span> mean((<span class="pl-smi">arima_pred</span> <span class="pl-k">-</span> <span class="pl-smi">valid_data</span>)<span class="pl-k">^</span><span class="pl-c1">2</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L933" class="blob-num js-line-number js-code-nav-line-number" data-line-number="933"></td>
-          <td id="LC933" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L934" class="blob-num js-line-number js-code-nav-line-number" data-line-number="934"></td>
-          <td id="LC934" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-c"><span class="pl-c">#</span> Second arima model</span></span></td>
-        </tr>
-        <tr>
-          <td id="L935" class="blob-num js-line-number js-code-nav-line-number" data-line-number="935"></td>
-          <td id="LC935" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_fit2</span> <span class="pl-k">&lt;-</span> arima(<span class="pl-smi">train_ts</span>, c(<span class="pl-c1">5</span>, <span class="pl-c1">1</span>, <span class="pl-c1">1</span>),</span></td>
-        </tr>
-        <tr>
-          <td id="L936" class="blob-num js-line-number js-code-nav-line-number" data-line-number="936"></td>
-          <td id="LC936" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">seasonal</span> <span class="pl-k">=</span> <span class="pl-k">list</span>(</span></td>
-        </tr>
-        <tr>
-          <td id="L937" class="blob-num js-line-number js-code-nav-line-number" data-line-number="937"></td>
-          <td id="LC937" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">      <span class="pl-v">order</span> <span class="pl-k">=</span> c(<span class="pl-c1">0</span>, <span class="pl-c1">1</span>, <span class="pl-c1">1</span>),</span></td>
-        </tr>
-        <tr>
-          <td id="L938" class="blob-num js-line-number js-code-nav-line-number" data-line-number="938"></td>
-          <td id="LC938" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">      <span class="pl-v">period</span> <span class="pl-k">=</span> <span class="pl-c1">12</span></span></td>
-        </tr>
-        <tr>
-          <td id="L939" class="blob-num js-line-number js-code-nav-line-number" data-line-number="939"></td>
-          <td id="LC939" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    )</span></td>
-        </tr>
-        <tr>
-          <td id="L940" class="blob-num js-line-number js-code-nav-line-number" data-line-number="940"></td>
-          <td id="LC940" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  )</span></td>
-        </tr>
-        <tr>
-          <td id="L941" class="blob-num js-line-number js-code-nav-line-number" data-line-number="941"></td>
-          <td id="LC941" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">raw_arima_pred2</span> <span class="pl-k">&lt;-</span> predict(<span class="pl-smi">arima_fit2</span>, <span class="pl-v">n.ahead</span> <span class="pl-k">=</span> <span class="pl-smi">valid_size</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L942" class="blob-num js-line-number js-code-nav-line-number" data-line-number="942"></td>
-          <td id="LC942" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_pred2</span> <span class="pl-k">&lt;-</span> <span class="pl-c1">10</span><span class="pl-k">^</span><span class="pl-smi">raw_arima_pred2</span><span class="pl-k">$</span><span class="pl-smi">pred</span></span></td>
-        </tr>
-        <tr>
-          <td id="L943" class="blob-num js-line-number js-code-nav-line-number" data-line-number="943"></td>
-          <td id="LC943" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">arima_MSE2</span> <span class="pl-k">&lt;-</span> mean((<span class="pl-smi">arima_pred2</span> <span class="pl-k">-</span> <span class="pl-smi">valid_data</span>)<span class="pl-k">^</span><span class="pl-c1">2</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L944" class="blob-num js-line-number js-code-nav-line-number" data-line-number="944"></td>
-          <td id="LC944" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L945" class="blob-num js-line-number js-code-nav-line-number" data-line-number="945"></td>
-          <td id="LC945" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-smi">out</span> <span class="pl-k">&lt;-</span> <span class="pl-k">list</span>(<span class="pl-v">mse</span> <span class="pl-k">=</span> <span class="pl-k">data.frame</span>(</span></td>
-        </tr>
-        <tr>
-          <td id="L946" class="blob-num js-line-number js-code-nav-line-number" data-line-number="946"></td>
-          <td id="LC946" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">fold</span> <span class="pl-k">=</span> fold_index(),</span></td>
-        </tr>
-        <tr>
-          <td id="L947" class="blob-num js-line-number js-code-nav-line-number" data-line-number="947"></td>
-          <td id="LC947" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">    <span class="pl-v">arima</span> <span class="pl-k">=</span> <span class="pl-smi">arima_MSE</span>, <span class="pl-v">arima2</span> <span class="pl-k">=</span> <span class="pl-smi">arima_MSE2</span></span></td>
-        </tr>
-        <tr>
-          <td id="L948" class="blob-num js-line-number js-code-nav-line-number" data-line-number="948"></td>
-          <td id="LC948" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  ))</span></td>
-        </tr>
-        <tr>
-          <td id="L949" class="blob-num js-line-number js-code-nav-line-number" data-line-number="949"></td>
-          <td id="LC949" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-k">return</span>(<span class="pl-smi">out</span>)</span></td>
-        </tr>
-        <tr>
-          <td id="L950" class="blob-num js-line-number js-code-nav-line-number" data-line-number="950"></td>
-          <td id="LC950" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">}</span></td>
-        </tr>
-        <tr>
-          <td id="L951" class="blob-num js-line-number js-code-nav-line-number" data-line-number="951"></td>
-          <td id="LC951" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span></td>
-        </tr>
-        <tr>
-          <td id="L952" class="blob-num js-line-number js-code-nav-line-number" data-line-number="952"></td>
-          <td id="LC952" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">mses</span> <span class="pl-k">&lt;-</span> cross_validate(</span></td>
-        </tr>
-        <tr>
-          <td id="L953" class="blob-num js-line-number js-code-nav-line-number" data-line-number="953"></td>
-          <td id="LC953" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">cv_fun</span> <span class="pl-k">=</span> <span class="pl-smi">cv_forecasts</span>, <span class="pl-v">folds</span> <span class="pl-k">=</span> <span class="pl-smi">folds</span>, <span class="pl-v">data</span> <span class="pl-k">=</span> <span class="pl-smi">AirPassengers</span>,</span></td>
-        </tr>
-        <tr>
-          <td id="L954" class="blob-num js-line-number js-code-nav-line-number" data-line-number="954"></td>
-          <td id="LC954" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">  <span class="pl-v">use_future</span> <span class="pl-k">=</span> <span class="pl-c1">FALSE</span></span></td>
-        </tr>
-        <tr>
-          <td id="L955" class="blob-num js-line-number js-code-nav-line-number" data-line-number="955"></td>
-          <td id="LC955" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">)</span></td>
-        </tr>
-        <tr>
-          <td id="L956" class="blob-num js-line-number js-code-nav-line-number" data-line-number="956"></td>
-          <td id="LC956" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-smi">mses</span><span class="pl-k">$</span><span class="pl-smi">mse</span></span></td>
-        </tr>
-        <tr>
-          <td id="L957" class="blob-num js-line-number js-code-nav-line-number" data-line-number="957"></td>
-          <td id="LC957" class="blob-code blob-code-inner js-file-line"><span class="pl-s1">colMeans(<span class="pl-smi">mses</span><span class="pl-k">$</span><span class="pl-smi">mse</span>[, c(<span class="pl-s"><span class="pl-pds">&quot;</span>arima<span class="pl-pds">&quot;</span></span>, <span class="pl-s"><span class="pl-pds">&quot;</span>arima2<span class="pl-pds">&quot;</span></span>)])</span></td>
-        </tr>
-        <tr>
-          <td id="L958" class="blob-num js-line-number js-code-nav-line-number" data-line-number="958"></td>
-          <td id="LC958" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"></span><span class="pl-c1">```</span></td>
-        </tr>
-        <tr>
-          <td id="L959" class="blob-num js-line-number js-code-nav-line-number" data-line-number="959"></td>
-          <td id="LC959" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L960" class="blob-num js-line-number js-code-nav-line-number" data-line-number="960"></td>
-          <td id="LC960" class="blob-code blob-code-inner js-file-line">The arima model with no AR component seems to be a better fit for this data.</td>
-        </tr>
-        <tr>
-          <td id="L961" class="blob-num js-line-number js-code-nav-line-number" data-line-number="961"></td>
-          <td id="LC961" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L962" class="blob-num js-line-number js-code-nav-line-number" data-line-number="962"></td>
-          <td id="LC962" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">##</span><span class="pl-mh"> </span>Exercises</span></td>
-        </tr>
-        <tr>
-          <td id="L963" class="blob-num js-line-number js-code-nav-line-number" data-line-number="963"></td>
-          <td id="LC963" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L964" class="blob-num js-line-number js-code-nav-line-number" data-line-number="964"></td>
-          <td id="LC964" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Review of Key Concepts</span></td>
-        </tr>
-        <tr>
-          <td id="L965" class="blob-num js-line-number js-code-nav-line-number" data-line-number="965"></td>
-          <td id="LC965" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L966" class="blob-num js-line-number js-code-nav-line-number" data-line-number="966"></td>
-          <td id="LC966" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> Compare and contrast V-fold cross-validation with resubstitution</td>
-        </tr>
-        <tr>
-          <td id="L967" class="blob-num js-line-number js-code-nav-line-number" data-line-number="967"></td>
-          <td id="LC967" class="blob-code blob-code-inner js-file-line">   cross-validation. What are some of the differences between the two methods?</td>
-        </tr>
-        <tr>
-          <td id="L968" class="blob-num js-line-number js-code-nav-line-number" data-line-number="968"></td>
-          <td id="LC968" class="blob-code blob-code-inner js-file-line">   How are they similar? Describe a scenario when you would use one over the</td>
-        </tr>
-        <tr>
-          <td id="L969" class="blob-num js-line-number js-code-nav-line-number" data-line-number="969"></td>
-          <td id="LC969" class="blob-code blob-code-inner js-file-line">   other.</td>
-        </tr>
-        <tr>
-          <td id="L970" class="blob-num js-line-number js-code-nav-line-number" data-line-number="970"></td>
-          <td id="LC970" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L971" class="blob-num js-line-number js-code-nav-line-number" data-line-number="971"></td>
-          <td id="LC971" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> What are the advantages and disadvantages of $v$-fold CV relative to:</td>
-        </tr>
-        <tr>
-          <td id="L972" class="blob-num js-line-number js-code-nav-line-number" data-line-number="972"></td>
-          <td id="LC972" class="blob-code blob-code-inner js-file-line">   a. holdout CV?</td>
-        </tr>
-        <tr>
-          <td id="L973" class="blob-num js-line-number js-code-nav-line-number" data-line-number="973"></td>
-          <td id="LC973" class="blob-code blob-code-inner js-file-line">   b. leave-one-out CV?</td>
-        </tr>
-        <tr>
-          <td id="L974" class="blob-num js-line-number js-code-nav-line-number" data-line-number="974"></td>
-          <td id="LC974" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L975" class="blob-num js-line-number js-code-nav-line-number" data-line-number="975"></td>
-          <td id="LC975" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> Why can&#39;t we use V-fold cross-validation for time-series data?</td>
-        </tr>
-        <tr>
-          <td id="L976" class="blob-num js-line-number js-code-nav-line-number" data-line-number="976"></td>
-          <td id="LC976" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L977" class="blob-num js-line-number js-code-nav-line-number" data-line-number="977"></td>
-          <td id="LC977" class="blob-code blob-code-inner js-file-line"><span class="pl-v">4.</span> Would you use rolling window or origin for non-stationary time-series? Why?</td>
-        </tr>
-        <tr>
-          <td id="L978" class="blob-num js-line-number js-code-nav-line-number" data-line-number="978"></td>
-          <td id="LC978" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L979" class="blob-num js-line-number js-code-nav-line-number" data-line-number="979"></td>
-          <td id="LC979" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>The Ideas in Action</span></td>
-        </tr>
-        <tr>
-          <td id="L980" class="blob-num js-line-number js-code-nav-line-number" data-line-number="980"></td>
-          <td id="LC980" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L981" class="blob-num js-line-number js-code-nav-line-number" data-line-number="981"></td>
-          <td id="LC981" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> Let $Y$ be a binary variable with $P(Y=1 <span class="pl-cce">\m</span>id W) = 0.01$. What kind of</td>
-        </tr>
-        <tr>
-          <td id="L982" class="blob-num js-line-number js-code-nav-line-number" data-line-number="982"></td>
-          <td id="LC982" class="blob-code blob-code-inner js-file-line">   cross-validation scheme should be used for a rare outcome? How can we do this</td>
-        </tr>
-        <tr>
-          <td id="L983" class="blob-num js-line-number js-code-nav-line-number" data-line-number="983"></td>
-          <td id="LC983" class="blob-code blob-code-inner js-file-line">   with the <span class="pl-c1">`origami`</span> package?</td>
-        </tr>
-        <tr>
-          <td id="L984" class="blob-num js-line-number js-code-nav-line-number" data-line-number="984"></td>
-          <td id="LC984" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L985" class="blob-num js-line-number js-code-nav-line-number" data-line-number="985"></td>
-          <td id="LC985" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> Consider the WASH benefits dataset presented in this chapter. How can we</td>
-        </tr>
-        <tr>
-          <td id="L986" class="blob-num js-line-number js-code-nav-line-number" data-line-number="986"></td>
-          <td id="LC986" class="blob-code blob-code-inner js-file-line">   include cluster information into cross-validation? How can we do this with</td>
-        </tr>
-        <tr>
-          <td id="L987" class="blob-num js-line-number js-code-nav-line-number" data-line-number="987"></td>
-          <td id="LC987" class="blob-code blob-code-inner js-file-line">   the <span class="pl-c1">`origami`</span> package?</td>
-        </tr>
-        <tr>
-          <td id="L988" class="blob-num js-line-number js-code-nav-line-number" data-line-number="988"></td>
-          <td id="LC988" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L989" class="blob-num js-line-number js-code-nav-line-number" data-line-number="989"></td>
-          <td id="LC989" class="blob-code blob-code-inner js-file-line"><span class="pl-mh"><span class="pl-mh">###</span><span class="pl-mh"> </span>Advanced Topics</span></td>
-        </tr>
-        <tr>
-          <td id="L990" class="blob-num js-line-number js-code-nav-line-number" data-line-number="990"></td>
-          <td id="LC990" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L991" class="blob-num js-line-number js-code-nav-line-number" data-line-number="991"></td>
-          <td id="LC991" class="blob-code blob-code-inner js-file-line"><span class="pl-v">1.</span> Think about a dataset with arbitrary spatial dependence, where we know</td>
-        </tr>
-        <tr>
-          <td id="L992" class="blob-num js-line-number js-code-nav-line-number" data-line-number="992"></td>
-          <td id="LC992" class="blob-code blob-code-inner js-file-line">   the extent of dependence, and groups formed by such dependence are clear</td>
-        </tr>
-        <tr>
-          <td id="L993" class="blob-num js-line-number js-code-nav-line-number" data-line-number="993"></td>
-          <td id="LC993" class="blob-code blob-code-inner js-file-line">   with no spillover effects. What kind of cross-validation can we use?</td>
-        </tr>
-        <tr>
-          <td id="L994" class="blob-num js-line-number js-code-nav-line-number" data-line-number="994"></td>
-          <td id="LC994" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L995" class="blob-num js-line-number js-code-nav-line-number" data-line-number="995"></td>
-          <td id="LC995" class="blob-code blob-code-inner js-file-line"><span class="pl-v">2.</span> Continuing on the last problem, what kind of procedure, and cross-validation</td>
-        </tr>
-        <tr>
-          <td id="L996" class="blob-num js-line-number js-code-nav-line-number" data-line-number="996"></td>
-          <td id="LC996" class="blob-code blob-code-inner js-file-line">   method, can we use if the spatial dependence is not clearly defined as in the</td>
-        </tr>
-        <tr>
-          <td id="L997" class="blob-num js-line-number js-code-nav-line-number" data-line-number="997"></td>
-          <td id="LC997" class="blob-code blob-code-inner js-file-line">   previous problem?</td>
-        </tr>
-        <tr>
-          <td id="L998" class="blob-num js-line-number js-code-nav-line-number" data-line-number="998"></td>
-          <td id="LC998" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L999" class="blob-num js-line-number js-code-nav-line-number" data-line-number="999"></td>
-          <td id="LC999" class="blob-code blob-code-inner js-file-line"><span class="pl-v">3.</span> Consider a classification problem with a large number of predictors. A</td>
-        </tr>
-        <tr>
-          <td id="L1000" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1000"></td>
-          <td id="LC1000" class="blob-code blob-code-inner js-file-line">   statistician proposes the following analysis:</td>
-        </tr>
-        <tr>
-          <td id="L1001" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1001"></td>
-          <td id="LC1001" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L1002" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1002"></td>
-          <td id="LC1002" class="blob-code blob-code-inner js-file-line">   a. First screen the predictors, leaving only covariates with a strong</td>
-        </tr>
-        <tr>
-          <td id="L1003" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1003"></td>
-          <td id="LC1003" class="blob-code blob-code-inner js-file-line">      correlation with the class labels.</td>
-        </tr>
-        <tr>
-          <td id="L1004" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1004"></td>
-          <td id="LC1004" class="blob-code blob-code-inner js-file-line">   b. Fit some algorithm using only the subset of highly correlated covariates.</td>
-        </tr>
-        <tr>
-          <td id="L1005" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1005"></td>
-          <td id="LC1005" class="blob-code blob-code-inner js-file-line">   c. Use cross-validation to estimate the tuning parameters and the performance</td>
-        </tr>
-        <tr>
-          <td id="L1006" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1006"></td>
-          <td id="LC1006" class="blob-code blob-code-inner js-file-line">      of the proposed algorithm.</td>
-        </tr>
-        <tr>
-          <td id="L1007" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1007"></td>
-          <td id="LC1007" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L1008" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1008"></td>
-          <td id="LC1008" class="blob-code blob-code-inner js-file-line">   Is this a correct application of cross-validation? Why?</td>
-        </tr>
-        <tr>
-          <td id="L1009" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1009"></td>
-          <td id="LC1009" class="blob-code blob-code-inner js-file-line">
-</td>
-        </tr>
-        <tr>
-          <td id="L1010" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1010"></td>
-          <td id="LC1010" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">&lt;!--</span></span></td>
-        </tr>
-        <tr>
-          <td id="L1011" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1011"></td>
-          <td id="LC1011" class="blob-code blob-code-inner js-file-line"><span class="pl-c">## Appendix</span></td>
-        </tr>
-        <tr>
-          <td id="L1012" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1012"></td>
-          <td id="LC1012" class="blob-code blob-code-inner js-file-line"><span class="pl-c"></span></td>
-        </tr>
-        <tr>
-          <td id="L1013" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1013"></td>
-          <td id="LC1013" class="blob-code blob-code-inner js-file-line"><span class="pl-c">### Exercise solutions</span></td>
-        </tr>
-        <tr>
-          <td id="L1014" class="blob-num js-line-number js-code-nav-line-number" data-line-number="1014"></td>
-          <td id="LC1014" class="blob-code blob-code-inner js-file-line"><span class="pl-c"><span class="pl-c">--&gt;</span></span></td>
+          <td id="LC668" class="blob-code blob-code-inner js-file-line">})</td>
         </tr>
   </table>
 </div>
@@ -6585,7 +5122,7 @@
             Copy permalink
           </clipboard-copy>
         </li>
-        <li><a class="dropdown-item js-update-url-with-hash" id="js-view-git-blame" role="menuitem" href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd">View git blame</a></li>
+        <li><a class="dropdown-item js-update-url-with-hash" id="js-view-git-blame" role="menuitem" href="/tlverse/tlverse-handbook/blame/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R">View git blame</a></li>
           <li><a class="dropdown-item" id="js-new-issue" role="menuitem" href="/tlverse/tlverse-handbook/issues/new">Reference in new issue</a></li>
       </ul>
     </details-menu>
@@ -6637,16 +5174,16 @@
       </li>
     </ul>
     <ul class="list-style-none d-flex flex-wrap col-12 col-lg-8 flex-justify-start flex-lg-justify-between mb-2 mb-lg-0">
-        <li class="mr-3 mr-lg-0"><a href="https://docs.github.com/en/github/site-policy/github-terms-of-service" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to terms&quot;,&quot;label&quot;:&quot;text:terms&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="54c65e8269ea27b2b272a09ad00171e8d3fad6a4a8c23cfe31e6ec13758b84b9" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to terms&quot;,&quot;label&quot;:&quot;text:terms&quot;}">Terms</a></li>
-        <li class="mr-3 mr-lg-0"><a href="https://docs.github.com/en/github/site-policy/github-privacy-statement" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to privacy&quot;,&quot;label&quot;:&quot;text:privacy&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="bfcfc4917e8a4f8a668fe3074c55e9d73ab46cf208402cf55da0e9ac60b4c438" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to privacy&quot;,&quot;label&quot;:&quot;text:privacy&quot;}">Privacy</a></li>
-        <li class="mr-3 mr-lg-0"><a data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to security&quot;,&quot;label&quot;:&quot;text:security&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="2ffa506ec617906a996f2cfbb9315d74248c8ef6f1301d301a373b02ca4b5883" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to security&quot;,&quot;label&quot;:&quot;text:security&quot;}" href="https://github.com/security">Security</a></li>
-        <li class="mr-3 mr-lg-0"><a href="https://www.githubstatus.com/" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to status&quot;,&quot;label&quot;:&quot;text:status&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="c3ff94fe3a53b609e74265c6856df74544bb3b4849279092058ce9c334ba4500" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to status&quot;,&quot;label&quot;:&quot;text:status&quot;}">Status</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://docs.github.com/en/github/site-policy/github-terms-of-service" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to terms&quot;,&quot;label&quot;:&quot;text:terms&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="e3767a0f4edfa8ec71d446dac3739b25eaff077ab2092a97f4b5bf330e47ac2e" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to terms&quot;,&quot;label&quot;:&quot;text:terms&quot;}">Terms</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://docs.github.com/en/github/site-policy/github-privacy-statement" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to privacy&quot;,&quot;label&quot;:&quot;text:privacy&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="536329e6ff2933cbbf10cfc9c9e93b2098ed768d121c6cf0e965017ee58281b5" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to privacy&quot;,&quot;label&quot;:&quot;text:privacy&quot;}">Privacy</a></li>
+        <li class="mr-3 mr-lg-0"><a data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to security&quot;,&quot;label&quot;:&quot;text:security&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="35232ea2ffa9031b54c4f9b3ba5558fe608e0aae1b8775e3dde9c03c10f349ac" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to security&quot;,&quot;label&quot;:&quot;text:security&quot;}" href="https://github.com/security">Security</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://www.githubstatus.com/" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to status&quot;,&quot;label&quot;:&quot;text:status&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="dfefbc0e097acbefc6f0f9ba536fbf7b32db3b95cf3497422e14a8da510b0405" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to status&quot;,&quot;label&quot;:&quot;text:status&quot;}">Status</a></li>
         <li class="mr-3 mr-lg-0"><a data-ga-click="Footer, go to help, text:Docs" href="https://docs.github.com">Docs</a></li>
-        <li class="mr-3 mr-lg-0"><a href="https://support.github.com?tags=dotcom-footer" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to contact&quot;,&quot;label&quot;:&quot;text:contact&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="6b4a82322877886eefb911b09e80c6da508f0f18ce14b5c80dfc4f49c25b5b4e" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to contact&quot;,&quot;label&quot;:&quot;text:contact&quot;}">Contact GitHub</a></li>
-        <li class="mr-3 mr-lg-0"><a href="https://github.com/pricing" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to Pricing&quot;,&quot;label&quot;:&quot;text:Pricing&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="ec3708a458ec76519e17a47ac12a483dfaea224982d5f565eb82aeca2c6ba0b5" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to Pricing&quot;,&quot;label&quot;:&quot;text:Pricing&quot;}">Pricing</a></li>
-      <li class="mr-3 mr-lg-0"><a href="https://docs.github.com" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to api&quot;,&quot;label&quot;:&quot;text:api&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="3ddb4846240e0f337258ec9dc5fde42355cf40bf0c2204cc88c03d8ccd4af5b9" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to api&quot;,&quot;label&quot;:&quot;text:api&quot;}">API</a></li>
-      <li class="mr-3 mr-lg-0"><a href="https://services.github.com" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to training&quot;,&quot;label&quot;:&quot;text:training&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="d037701b91ec832a641836cf7e9ea962317f502b728b28edc676bc612c07ed73" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to training&quot;,&quot;label&quot;:&quot;text:training&quot;}">Training</a></li>
-        <li class="mr-3 mr-lg-0"><a href="https://github.blog" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to blog&quot;,&quot;label&quot;:&quot;text:blog&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/05-origami.Rmd&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="b3132cfb44a6539838ff81002ea2e870fe1dd8cec54466dfcd91b831ec130f6d" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to blog&quot;,&quot;label&quot;:&quot;text:blog&quot;}">Blog</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://support.github.com?tags=dotcom-footer" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to contact&quot;,&quot;label&quot;:&quot;text:contact&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="cad6e7ceb84ed3b474a2b5183a3f0c8b7b90925dd402ce43b7b9eb94f159d79f" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to contact&quot;,&quot;label&quot;:&quot;text:contact&quot;}">Contact GitHub</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://github.com/pricing" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to Pricing&quot;,&quot;label&quot;:&quot;text:Pricing&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="af0bb68e53b3ce2fe75fe5fd2083d0bc6eec47f858c48e74f8adf24309a2d6e9" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to Pricing&quot;,&quot;label&quot;:&quot;text:Pricing&quot;}">Pricing</a></li>
+      <li class="mr-3 mr-lg-0"><a href="https://docs.github.com" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to api&quot;,&quot;label&quot;:&quot;text:api&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="87193214e73ca3a1b511d6383a325cacc949aea7dcad34754d0b16a96847b819" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to api&quot;,&quot;label&quot;:&quot;text:api&quot;}">API</a></li>
+      <li class="mr-3 mr-lg-0"><a href="https://services.github.com" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to training&quot;,&quot;label&quot;:&quot;text:training&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="17f7404acd93a184b83410564c235a51c034a4b9ae276a1aca53b1dda5289ca7" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to training&quot;,&quot;label&quot;:&quot;text:training&quot;}">Training</a></li>
+        <li class="mr-3 mr-lg-0"><a href="https://github.blog" data-hydro-click="{&quot;event_type&quot;:&quot;analytics.event&quot;,&quot;payload&quot;:{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to blog&quot;,&quot;label&quot;:&quot;text:blog&quot;,&quot;originating_url&quot;:&quot;https://github.com/tlverse/tlverse-handbook/blob/f1e0a164992cb9bbd8478dfe86a332f6eb554b9b/renv/activate.R&quot;,&quot;user_id&quot;:8527276}}" data-hydro-click-hmac="6cc4c737b103805a20e697b4812f9651581c46f86d6c901b5b6649593d310bcc" data-analytics-event="{&quot;category&quot;:&quot;Footer&quot;,&quot;action&quot;:&quot;go to blog&quot;,&quot;label&quot;:&quot;text:blog&quot;}">Blog</a></li>
         <li><a data-ga-click="Footer, go to about, text:about" href="https://github.com/about">About</a></li>
     </ul>
   </div>

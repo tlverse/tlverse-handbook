@@ -2,27 +2,13 @@
 local({
 
   # the requested version of renv
-  version <- "0.14.0"
+  version <- "0.13.2"
 
   # the project directory
   project <- getwd()
 
-  # allow environment variable to control activation
-  activate <- Sys.getenv("RENV_ACTIVATE_PROJECT")
-  if (!nzchar(activate)) {
-
-    # don't auto-activate when R CMD INSTALL is running
-    if (nzchar(Sys.getenv("R_INSTALL_PKG")))
-      return(FALSE)
-
-  }
-
-  # bail if activation was explicitly disabled
-  if (tolower(activate) %in% c("false", "f", "0"))
-    return(FALSE)
-
   # avoid recursion
-  if (nzchar(Sys.getenv("RENV_R_INITIALIZING")))
+  if (!is.na(Sys.getenv("RENV_R_INITIALIZING", unset = NA)))
     return(invisible(TRUE))
 
   # signal that we're loading renv during R startup
