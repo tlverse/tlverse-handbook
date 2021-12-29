@@ -85,9 +85,9 @@ data-generating distribution $P_0$.
 As in preceding chapters, a structural causal model (SCM) [@pearl2009causality]
 helps to formalize the definition of our counterfactual variables:
 \begin{align}
-  W &= f_W(U_W) \\
-  A &= f_A(W, U_A) \\
-  Z &= f_Z(W, A, U_Z) \\
+  W &= f_W(U_W) \\ \nonumber
+  A &= f_A(W, U_A) \\ \nonumber
+  Z &= f_Z(W, A, U_Z) \\ \nonumber
   Y &= f_Y(W, A, Z, U_Y).
   (\#eq:npsem-mediate)
 \end{align}
@@ -101,10 +101,10 @@ $U_Z$; and finally appears the outcome $Y$. We assume neither access to the set
 of exogenous factors $\{U_W, U_A, U_Z, U_Y\}$ nor knowledge of the forms of the
 deterministic generating functions $\{f_W, f_A, f_Z, f_Y\}$. In practice, any
 available knowledge about the data-generating experiment should be incorporated
--- for example, if the data from a randomized controlled trial (RCT), the form
-of $f_A$ may be known. The SCM corresponds to the following DAG:
+into this model -- for example, if the data from a randomized controlled trial
+(RCT), the form of $f_A$ may be known. The SCM corresponds to the following DAG:
 
-```{r mediation-DAG, out.width = "70%"}
+```{r mediation-DAG, echo = FALSE, out.width = "60%"}
 library(dagitty)
 library(ggdag)
 
@@ -130,13 +130,13 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-By factorizing the likelihood of the data $O$, we can express $p_0^O$, the
+By factorizing the likelihood of the data $O$, we can express $p_0$, the
 density of $O$ with respect to the product measure, when evaluated on a
 particular observation $o$, in terms of several orthogonal components:
 \begin{align}
-  p_0(x) = &q_{0,Y}(y \mid Z = z, A = a, W = w) \cdot \\ \nonumber
-    &q_{0,Z}(z \mid A = a, W = w) \cdot \\ \nonumber
-    &g_{0,A}(a \mid W = w) \cdot \\ \nonumber
+  p_0(x) = &q_{0,Y}(y \mid Z = z, A = a, W = w) \\ \nonumber
+    &q_{0,Z}(z \mid A = a, W = w) \\ \nonumber
+    &g_{0,A}(a \mid W = w) \\ \nonumber
     &q_{0,W}(w).\\ \nonumber
   (\#eq:likelihood-factorization-mediate)
 \end{align}
@@ -144,26 +144,39 @@ In Equation \@ref(eq:likelihood-factorization-mediate), $q_{0, Y}$ is the
 conditional density of $Y$ given $\{Z, A, W\}$, $q_{0, Z}$ is the conditional
 density of $Z$ given $\{A, W\}$, $g_{0, A}$ is the conditional density of $A$
 given $W$, and $q_{0, W}$ is the marginal density of $W$. For convenience and
-consistency of notation, we will define $\overline{Q}_Y(Z, A, W) :=
-\E[Y \mid Z, A, W]$, $Q_Z(Z \mid A, W) := \P[Z \mid A, W]$, and
-$g(A \mid W) := \P(A \mid W)$.
+consistency of notation, we will define $\overline{Q}_Y(Z, A, W) := \E[Y \mid Z,
+A, W]$ and $g(A \mid W) := \P(A \mid W)$ (i.e., the propensity score).
 
-Finally, note that we have explicitly excluded potential confounders of the
-mediator-outcome relationship affected by exposure (i.e., variables affected by
-$A$ and affecting both $Z$ and $Y$). Mediation analysis in the presence of such
-variables is exceptionally challenging [@avin2005identifiability]; thus, most
-efforts to develop definitions of causal direct and indirect effects explicitly
-disallowed such a form of confounding. While we will refrain from discussing the
-matter further, the interested reader may consult recent advances in the vast
-literature on causal mediation analysis, including _interventional_ direct and
-indirect effects [@didelez2006direct; @vanderweele2014effect; @lok2016defining;
+We have explicitly excluded potential confounders of the mediator-outcome
+relationship affected by exposure (i.e., variables affected by $A$ and affecting
+both $Z$ and $Y$). Mediation analysis in the presence of such variables is
+challenging [@avin2005identifiability]; thus, most efforts to develop
+definitions of causal direct and indirect effects explicitly assume the absence
+of such confounders. While we will refrain from discussing the matter in detail,
+the interested reader may wish to consult recent advances in the vast literature
+on causal mediation analysis, including _interventional_ direct and indirect
+effects [@didelez2006direct; @vanderweele2014effect; @lok2016defining;
 @vansteelandt2017interventional; @rudolph2017robust; @nguyen2019clarifying],
-whose identification is robust to this complex form of post-treatment (or
-intermediate) confounding. Within this thread of the literature,
-@diaz2020nonparametric and @benkeser2020nonparametric provide considerations of
-nonparametric effect decompositions and efficiency theory, while
-@hejazi2021nonparametric formulate a novel class of effects utilizing stochastic
-interventions.
+whose identification is robust to this complex form of post-treatment
+confounding. Within this thread of the literature, @diaz2020nonparametric and
+@benkeser2020nonparametric provide considerations of nonparametric effect
+decompositions and efficiency theory, while @hejazi2021nonparametric formulate a
+novel class of effects utilizing stochastic interventions.
+
+<!--
+Mark notes,
+"are you saying these methods allow that Z is subject to unmeaured confounding?
+dont think so. it is all about a joint intervention on (A,Z) so yes we normally
+use A,Z is randomized conditional on W. In recent note with Phil and Nima I
+suggest a method taht appears to have someextra robustness but that is not
+scope of this chapter"
+
+Nima: "no, these approaches do not address _unmeasured_ confounding, they only
+accommodate the presence of a measured intermediate confounder, which the
+effects that we describe below cannot handle. the data structure required by
+the introduction of these measured confounders brings us one step closer to the
+standard longitudinal data structure"
+-->
 
 ## Defining the Natural Direct and Indirect Effects
 
@@ -181,53 +194,75 @@ the natural direct effect (NDE) measures the effect of the treatment on the
 outcome _through all other paths_. Identification of the natural direct and
 indirect effects requires the following non-testable causal assumptions. Note
 that the standard assumptions of consistency and no interference (i.e., SUTVA
-[@rubin1978bayesian; @rubin1980randomization]) hold owing to the fact that the
-SCM we consider is restricted so as to give rise only to independent and
-identically distributed units $O$.
+[@rubin1978bayesian; @rubin1980randomization]) hold owing to the fact that (1)
+the SCM we consider is restricted so as to give rise only to independent and
+identically distributed units; and (2) consistency is an implied property of
+the SCM, as counterfactuals are derived quantities (as opposed to primitive
+quantities in the potential outcomes framework). @pearl2010brief provides an
+illuminating discussion on this latter point.
 
-1. _Exchangeability_: $Y(a, z) \indep (A, Z) \mid W$, which further implies that
-   $\E\{Y(a, z) \mid A=a, W=w, Z=z\} \equiv \E\{Y(a, z) \mid W=w\}$. This is a
-   special, more restrictive case of the standard assumption of no unmeasured
-   counfounding in the presence of mediators. The analogous randomization
-   assumption requires randomization of both treatment and mediators.
-2. _Treatment positivity_: For any $a \in \mathcal{A}$ and $w \in \mathcal{W}$,
-   the conditional probability of treatment $g(a \mid w)$ is bounded away from
-   the limits of the unit interval by a small factor $\xi > 0$. More precisely,
-   $\xi < g(a \mid w) < 1 - \xi$. This mirrors the standard positivity
-   assumption required for static interventions, [discussed previously](#tmle3).
-3. _Mediator positivity_: For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and
-   $w \in \mathcal{W}$, the conditional mediator density must be bounded away
-   from zero by a small factor $\epsilon > 0$, specifically, $\epsilon < Q_Z(z
-   \mid a, w)$. Essentially, this requires that the conditional mediator density
-   be bounded away from zero for all $\{z, a, w\}$ in their joint support
-   $\mathcal{Z} \times \mathcal{A} \times \mathcal{W}$, which is to say that it
-   must be possible to observe any given mediator value across all strata.
-4. _Cross-world counterfactual independence_: For all $a \neq a'$, where $a, a'
-   \in \mathcal{A}$, and $z \in \mathcal{Z}$, $Y(a', z)$ must be independent of
-   $Z(a)$, given $W$. That is, the counterfactual outcome under the treatment
-   contrast $a' \in \mathcal{A}$ and the counterfactual mediator value $Z(a) \in
-   \mathcal{Z}$ (under the alternative contrast $a \in \mathcal{A}$) must be
-   independent. The term "cross-world" refers to the two counterfactuals $Z(a)$
-   and $Y(a', z)$ existing under incompatible treatment contrasts. Though the
-   joint distributions of these counterfactuals are well-defined, they cannot be
-   jointly realized.
+::: {.proposition name = "Exchangeability"}
+$Y(a, z) \indep (A, Z) \mid W$, which further implies that $\E\{Y(a, z) \mid
+A=a, W=w, Z=z\} \equiv \E\{Y(a, z) \mid W=w\}$. This is a special, more
+restrictive case of the standard assumption of no unmeasured counfounding in the
+presence of mediators. The analogous randomization assumption is simply the
+standard randomization assumption applied to a joint intervention on both
+treatment and mediators.
+:::
 
-While the first three assumptions may be familiar based on their simpler analogs
-discussed in preceding chapters, the last assumption is unique to the NDE and
-NIE. The _cross-world_ counterfactual independence (i.e., independence of
-counterfactuals indexed by distinct interventions) is, in fact, a serious
-limitation to the scientific relevance of these effect definitions, as the NDE
-and NIE are unidentifiable in randomized trials [@robins2010alternative],
-directly implying that corresponding scientific claims cannot be falsified
-through experimentation [@popper1934logic; @dawid2000causal], a key pillar of
-the scientific method. While many attempts have been made to weaken this last
-assumption [@petersen2006estimation; @imai2010identification;
-@vansteelandt2012imputation; @vansteelandt2012natural], these results either
-impose stringent modeling assumptions, propose alternative interpretations of
-the natural effects, or provide a limited degree of additional flexibility by
-developing alternative estimation strategies. The motivated reader may wish to
-further examine these details independently. We next review estimation of the
-NDE and NIE, which remain widely used in modern applications of causal mediation
+::: {.proposition name = "Treatment positivity"}
+For any $a \in \mathcal{A}$ and $w \in \mathcal{W}$, the conditional probability
+of treatment $g(a \mid w)$ is bounded away from the limits of the unit interval
+by a small factor $\xi > 0$. More precisely, $\xi < g(a \mid w) < 1 - \xi$. This
+mirrors the standard positivity assumption required for static interventions,
+[discussed previously](#tmle3).
+:::
+
+::: {.proposition name = "Mediator positivity"}
+For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and $w \in \mathcal{W}$, the
+conditional mediator density must be bounded away from zero by a small factor
+$\epsilon > 0$, specifically, $\epsilon < q_{0,Z}(z \mid a, w)$. Essentially,
+this requires that the conditional mediator density be bounded away from zero
+for all $\{z, a, w\}$ in their joint support $\mathcal{Z} \times \mathcal{A}
+\times \mathcal{W}$, which is to say that it must be possible to observe any
+given mediator value across all strata defined by both treatment and baseline
+covariates. A less restrictive form of this assumption is also possible --
+specifically, that the ratio of the mediator densities under both treatment
+contrasts be bounded for both realizations of the mediator density.
+:::
+
+::: {.proposition name = "Cross-world counterfactual independence"}
+For all $a \neq a'$, where $a, a' \in \mathcal{A}$, and $z \in \mathcal{Z}$,
+$Y(a', z)$ must be independent of $Z(a)$, given $W$. That is, the counterfactual
+outcome under the treatment contrast $a' \in \mathcal{A}$ and the counterfactual
+mediator value $Z(a) \in \mathcal{Z}$ (under the alternative contrast $a \in
+\mathcal{A}$) must both be observable. The term "cross-world" refers to the two
+counterfactuals $Z(a)$ and $Y(a', z)$ existing under two differing treatment
+contrasts. Though the joint distributions of these counterfactuals are
+well-defined, they cannot be jointly realized.
+:::
+
+While the first three assumptions may be familiar based on their simpler
+analogs, the cross-world independence requirement is unique to the NDE and NIE.
+This assumption resolves a thorny complication to the identification of these
+path-specific effects, which has been termed the "recanting witness" by
+@avin2005identifiability, who introduce a graphical resolution equivalent to
+this assumption.  This independence of counterfactuals indexed by distinct
+interventions is, in fact, a serious limitation to the scientific relevance of
+these effect definitions, as it results in the NDE and NIE being unidentifiable
+in randomized trials [@robins2010alternative], directly implying that
+corresponding scientific claims cannot be falsified through experimentation
+[@popper1934logic; @dawid2000causal], contradicting a key pillar of the
+scientific method.
+
+While many attempts have been made to weaken this last assumption
+[@petersen2006estimation; @imai2010identification; @vansteelandt2012imputation;
+@vansteelandt2012natural], these results either impose stringent modeling
+assumptions, propose alternative interpretations of the natural effects, or
+provide a limited degree of additional flexibility by developing conditions
+that may more easily be satisfied. The motivated reader may wish to further
+examine these details independently. We next review estimation of the NDE and
+NIE, which remain widely used in modern applications of causal mediation
 analysis.
 
 ### Estimating the Natural Direct Effect
@@ -236,13 +271,13 @@ The NDE is defined as
 \begin{align*}
   \Psi_{NDE} =& \E[Y(1, Z(0)) - Y(0, Z(0))] \\
   \overset{\text{rand.}}{=}& \sum_w \sum_z
-  [\underbrace{\E(Y \mid A = 1, z, w)}_{\bar{Q}_Y(A = 1, z, w)} -
-  \underbrace{\E(Y \mid A = 0, z, w)}_{\bar{Q}_Y(A = 0, z, w)}] \\&\times
+  [\underbrace{\E(Y \mid A = 1, z, w)}_{\overline{Q}_Y(A = 1, z, w)} -
+  \underbrace{\E(Y \mid A = 0, z, w)}_{\overline{Q}_Y(A = 0, z, w)}] \\&\times
   \underbrace{p(z \mid A = 0, w)}_{q_Z(Z \mid 0, w))}
   \underbrace{p(w)}_{q_W},
 \end{align*}
-where the likelihood factors $p(z \mid A = 0, w)$ and $p(w)$ (among other
-conditional densities) arise from a factorization of the joint likelihood:
+where the likelihood factors arise from a factorization of the joint
+likelihood:
 \begin{equation*}
   p(w, a, z, y) = \underbrace{p(y \mid w, a, z)}_{q_Y(A, W, Z)}
   \underbrace{p(z \mid w, a)}_{q_Z(Z \mid A, W)}
@@ -253,34 +288,36 @@ conditional densities) arise from a factorization of the joint likelihood:
 The process of estimating the NDE begins by constructing $\overline{Q}_{Y, n}$,
 an estimate of the conditional mean of the outcome, given $Z$, $A$, and $W$.
 With an estimate of this conditional mean in hand, predictions of the
-counterfactual quantities $\overline{Q}_Y(Z, 1, W)$ (setting $A = 1$) and,
+quantities $\overline{Q}_Y(Z, 1, W)$ (setting $A = 1$) and,
 likewise, $\overline{Q}_Y(Z, 0, W)$ (setting $A = 0$) are readily obtained. We
-denote the difference of these quantities $\overline{Q}_{\text{diff}} =
-\overline{Q}_Y(Z, 1, W) - \overline{Q}_Y(Z, 0, W)$. $\bar{Q}_{\text{diff}}$
-represents the difference in the conditional mean of $Y$ across contrasts of
-$A$.
+denote the difference of these conditional means $\overline{Q}_{\text{diff}} =
+\overline{Q}_Y(Z, 1, W) - \overline{Q}_Y(Z, 0, W)$.
+$\overline{Q}_{\text{diff}}$ represents the difference in the conditional mean
+of $Y$ across contrasts of $A$.
 
-The estimation procedure treats $\overline{Q}_{\text{diff}}$ itself as a
-nuisance parameter, regressing its estimate $\overline{Q}_{\text{diff}, n}$ on
-$W$, among control observations only (i.e., those for whom $A = 0$ is observed);
-the goal of this step is to remove part of the marginal impact of $Z$ on
-$\overline{Q}_{\text{diff}}$, since $W$ is a parent of $Z$. Regressing this
-difference on $W$ among the controls recovers the expected
-$\overline{Q}_{\text{diff}}$, had all individuals been set to the control
-condition $A = 0$. Any residual additive effect of $Z$ on
+A procedure for constructing a targeted maximum likelihood (TML) estimator of
+the NDE treats $\overline{Q}_{\text{diff}}$ itself as a nuisance parameter,
+regressing its estimate $\overline{Q}_{\text{diff}, n}$ on baseline covariates
+$W$, among observations in the control condition only (i.e., those for whom $A =
+0$ is observed); the goal of this step is to remove part of the marginal impact
+of $Z$ on $\overline{Q}_{\text{diff}}$, since the covariates $W$ precede the
+mediators $Z$ in time. Regressing this difference on $W$ among the controls
+recovers the expected $\overline{Q}_{\text{diff}}$, had all individuals been set
+to the control condition $A = 0$. Any residual additive effect of $Z$ on
 $\overline{Q}_{\text{diff}}$ is removed during the TML estimation step using the
 auxiliary (or "clever") covariate, which accounts for the mediators $Z$. This
 auxiliary covariate takes the form
+
 \begin{equation*}
-  C_Y(Q_Z, g)(O) = \Bigg\{\frac{\mathbb{I}(A = 1)}{g(1 \mid W)}
-  \frac{Q_Z(Z \mid 0, W)}{Q_Z(Z \mid 1, W)} -
+  C_Y(q_Z, g)(O) = \Bigg\{\frac{\mathbb{I}(A = 1)}{g(1 \mid W)}
+  \frac{q_Z(Z \mid 0, W)}{q_Z(Z \mid 1, W)} -
   \frac{\mathbb{I}(A = 0)}{g(0 \mid W)} \Bigg\}.
 \end{equation*}
-Breaking this down, $\frac{\mathbb{I}(A = 1)}{g(1 \mid W)}$ is the inverse
-propensity score weight for $A = 1$ and, likewise, $\frac{\mathbb{I}(A = 0)}
-{g(0 \mid W)}$ is the inverse propensity score weight for $A = 0$. The middle
-term is the ratio of the conditional densities of the mediator under the control
-($A = 0$) and treatment ($A = 1$) conditions.
+Breaking this down, $\mathbb{I}(A = 1) / g(1 \mid W)$ is the inverse propensity
+score weight for $A = 1$ and, likewise, $\mathbb{I}(A = 0) / g(0 \mid W)$ is the
+inverse propensity score weight for $A = 0$. The middle term is the ratio of the
+conditional densities of the mediator under the control ($A = 0$) and treatment
+($A = 1$) conditions (n.b., recall the mediator positivity condition above).
 
 This subtle appearance of a ratio of conditional densities is concerning --
 tools to estimate such quantities are sparse in the statistics literature,
@@ -291,17 +328,18 @@ densities is required, a convenient re-parametrization may be achieved, that is,
   \frac{p(A = 0 \mid Z, W) g(0 \mid W)}{p(A = 1 \mid Z, W) g(1 \mid W)}.
 \end{equation*}
 Going forward, we will denote this re-parameterized conditional probability
-$e(A \mid Z, W) := p(A \mid Z, W)$. Similar re-parameterizations have been used
-in @zheng2012targeted and @tchetgen2013inverse. This is particularly useful
-since this reformulation reduces the problem to one concerning only the
-estimation of conditional means, opening the door to the use of a [wide range of
-machine learning algorithms](#sl3).
+$e(A \mid Z, W) := p(A \mid Z, W)$. The same re-parameterization technique has
+been used by @zheng2012targeted, @tchetgen2013inverse, @diaz2020causal, and
+@diaz2020nonparametric in similar contexts. This reformulation is particularly
+useful for the fact that it reduces the estimation problem to one requiring
+only the estimation of conditional means, opening the door to the use of a
+[wide range of machine learning algorithms, as discussed previously](#sl3).
 
-Underneath the hood, the counterfactual outcome difference
-$\bar{Q}_{\text{diff}}$ and $e(A \mid Z, W)$, the conditional probability of $A$
-given $Z$ and $W$, are used in constructing the auxiliary covariate for TML
-estimation. These nuisance parameters play an important role in the
-bias-correcting update step of the TMLE procedure.
+Underneath the hood, the outcome difference $\overline{Q}_{\text{diff}}$ and
+$e(A \mid Z, W)$, the conditional probability of $A$ given $Z$ and $W$, are used
+in constructing the auxiliary covariate for TML estimation. These nuisance
+parameters play an important role in the bias-correcting update step of the TML
+estimation procedure.
 
 ### Estimating the Natural Indirect Effect
 
@@ -633,20 +671,37 @@ initial_likelihood <- tmle_spec_pie_decomp$make_initial_likelihood(
 
 ### Review of Key Concepts
 
-1. Examine the WASH Benefits dataset and choose a different set of potential
-   mediators of the effect of the treatment on weight-for-height Z-score. Using
-   this newly chosen set of mediators (or single mediator), estimate the
-   natural direct and indirect effects. Provide an interpretation of these
-   estimates.
+::: {.exercise name = "Estimating the Natural Direct and Indirect Effects"}
+Examine the WASH Benefits dataset and choose a different set of potential
+mediators of the effect of the treatment on weight-for-height Z-score. Using
+this newly chosen set of mediators (or single mediator), estimate the natural
+direct and indirect effects. Provide an interpretation of these estimates.
+:::
 
-2. Assess whether additivity of the natural direct and indirect effects holds.
-   Using the natural direct and indirect effects estimated above, does their
-   sum recover the ATE?
+::: {.solution}
+Forthcoming
+:::
 
-3. Evaluate whether the assumptions required for identification of the natural
-   direct and indirect effects is plausible in the WASH Benefits example. In
-   particular, position this evaluation in terms of empirical diagnostics of
-   treatment and mediator positivity.
+::: {.exercise name = "The Natural Effects and the Average Treatment Effect"}
+Assess whether additivity of the natural direct and indirect effects holds.
+Using the natural direct and indirect effects estimated above, does their sum
+recover the ATE?
+:::
+
+::: {.solution}
+Forthcoming
+:::
+
+::: {.exercise name = "Real-world Identification of the Natural Effects"}
+Evaluate whether the assumptions required for identification of the natural
+direct and indirect effects are plausible in the WASH Benefits example. In
+particular, position this evaluation in terms of empirical diagnostics of
+treatment and mediator positivity.
+:::
+
+::: {.solution}
+Forthcoming
+:::
 
 ### The Ideas in Action
 
