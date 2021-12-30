@@ -2,10 +2,7 @@
 
 _Nima Hejazi_
 
-Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
-by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
-
-Updated: `r Sys.Date()`
+Featuring the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift).
 
 ::: {.infobox .tlverse data-latex="tlverse-logo" name="Learning Objectives"}
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
@@ -82,12 +79,14 @@ exogenous variable is assumed to contain all unobserved causes of the
 corresponding observed variable.
 
 We can factorize the likelihood of the data unit $O$ as follows, revealing
-orthogonal components of the density, $p_0^O$, when evaluated on a typical
+orthogonal components of the density, $p_0$, when evaluated on a typical
 observation $o$:
-\begin{equation}
-  p_0(x) = q_{0,Y}(y \mid A = a, W = w) g_{0,A}(a \mid W = w) q_{0,W}(w),
+\begin{align}
+  p_0(o) = &q_{0,Y}(y \mid A = a, W = w) \\ \nonumber
+    &g_{0,A}(a \mid W = w) \\ \nonumber
+    &q_{0,W}(w),\\ \nonumber
   (\#eq:likelihood-factorization-shift)
-\end{equation}
+\end{align}
 where $q_{0, Y}$ is the conditional density of $Y$ given $\{A, W\}$ with respect
 to some dominating measure, $g_{0, A}$ is the conditional density of $A$ given
 $W$ with respect to dominating measure $\mu$, and $q_{0, W}$ is the density of
@@ -348,7 +347,7 @@ $$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-```{r, fig.cap="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention", results = "asis", echo=FALSE}
+```{r, fig.cap="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention", results = "asis", echo=FALSE, out.width = "100%"}
 knitr::include_graphics(path = "img/gif/shift_animation.gif")
 ```
 
@@ -671,13 +670,14 @@ $\vec{\psi}$.
 Now, say, $\psi = (\psi(\delta): \delta)$ is d-dimensional. We may express the
 EIF of the MSM parameter $\beta_0$ in terms of the EIFs of the individual
 counterfactual means:
-\begin{equation}
-   D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
+\begin{align}
+   D_{\beta}(O) = &\left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
    m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1}
-   \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
+   \\ \nonumber
+   &\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
    D_{\psi_{\delta}}(O).
    (\#eq:eif-msm-shift)
-\end{equation}
+\end{align}
 Here, in Equation \@ref(eq:eif-msm-shift), the first component is of dimension
 $d \times d$ and the second is of dimension $d \times 1$. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
