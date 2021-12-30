@@ -5,7 +5,7 @@ _Nima Hejazi_
 Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
 by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2021-12-29
+Updated: 2021-12-30
 
 \begin{VT1}
 \VH{Learning Objectives}
@@ -532,7 +532,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
+Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -645,8 +645,8 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.99992954 0.00007046
-Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
+Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
+Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
@@ -891,7 +891,7 @@ washb_tmle_fit
 
 ### The Ideas in Action
 
-:::{ .exercise name = "The Effect of the Shift Intervention at $\delta = 0$"}
+:::{.exercise}
 Set the `sl3` library of algorithms for the Super Learner to a simple,
 interpretable library and use this new library to estimate the counterfactual
 mean of mother's age at child's birth (`momage`) under a shift $\delta = 0$.
@@ -904,7 +904,7 @@ Forthcoming
 
 :::
 
-:::{ .exercise name = "Evaluating Effects for a Grid of Shift Interventions"}
+:::{.exercise}
 Using a grid of values of the shift parameter $\delta$ (e.g., $\{-1, 0, +1\}$),
 repeat the analysis on the variable chosen in the preceding question,
 summarizing the trend for this sequence of shifts using a marginal structural
@@ -917,7 +917,7 @@ Forthcoming
 
 :::
 
-:::{ .exercise name = "Assessing the Trend for Effects of Shift Interventions"}
+:::{.exercise}
 Repeat the preceding analysis, using the same grid of shifts, but instead
 directly targeting the parameters of the marginal structural model. Interpret
 the results -- that is, what does the slope of the marginal structural model
@@ -932,7 +932,7 @@ Forthcoming
 
 ### Review of Key Concepts
 
-:::{ .exercise name = "Interpreting the Causal Effects of Shift Interventions"}
+:::{.exercise}
 Describe two (equivalent) ways in which the causal effects of stochastic
 interventions may be interpreted.
 :::
@@ -941,7 +941,7 @@ interventions may be interpreted.
 Forthcoming
 :::
 
-:::{ .exercise name = "Summarizing Trends Across Shift Interventions"}
+:::{.exercise}
 How can the information provided by estimates across several shifts $\{
 \delta_1, \ldots, \delta_k \}$ and the marginal structural model parameter
 summarizing the trend in $\delta$ be used to enrich the interpretation of our
@@ -952,7 +952,7 @@ findings?
 Forthcoming
 :::
 
-:::{ .exercise name = "Directly Targeting MSM Parameters"}
+:::{.exercise}
 What advantages, if any, are there to targeting directly the parameters of a
 marginal structural model?
 :::
