@@ -2,15 +2,12 @@
 
 _Nima Hejazi_
 
-Based on the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift)
-by _Nima Hejazi, Jeremy Coyle, and Mark van der Laan_.
+Featuring the [`tmle3shift` `R` package](https://github.com/tlverse/tmle3shift).
 
-Updated: 2021-12-30
-
-\begin{VT1}
-\VH{Learning Objectives}
-
-
+:::: {.infobox .tlverse data-latex=""}
+:::{.center data-latex=""}
+**Learning Objectives**
+:::
 
 1. Differentiate stochastic treatment regimes from static, dynamic, and optimal
    dynamic treatment regimes.
@@ -27,8 +24,7 @@ Updated: 2021-12-30
 7. Implement, with the `tmle3shift` `R` package, modified treatment policies
    that shift individual units only to the extent supported by the observed
    data.
-
-\end{VT1}
+::::
 
 ## Why _Stochastic_ Interventions?
 
@@ -87,12 +83,14 @@ exogenous variable is assumed to contain all unobserved causes of the
 corresponding observed variable.
 
 We can factorize the likelihood of the data unit $O$ as follows, revealing
-orthogonal components of the density, $p_0^O$, when evaluated on a typical
+orthogonal components of the density, $p_0$, when evaluated on a typical
 observation $o$:
-\begin{equation}
-  p_0(x) = q_{0,Y}(y \mid A = a, W = w) g_{0,A}(a \mid W = w) q_{0,W}(w),
+\begin{align}
+  p_0(o) = &q_{0,Y}(y \mid A = a, W = w) \\ \nonumber
+    &g_{0,A}(a \mid W = w) \\ \nonumber
+    &q_{0,W}(w),\\ \nonumber
   (\#eq:likelihood-factorization-shift)
-\end{equation}
+\end{align}
 where $q_{0, Y}$ is the conditional density of $Y$ given $\{A, W\}$ with respect
 to some dominating measure, $g_{0, A}$ is the conditional density of $A$ given
 $W$ with respect to dominating measure $\mu$, and $q_{0, W}$ is the density of
@@ -212,12 +210,18 @@ event $A_i = d(a_i, w_i)$, for $i = 1, \ldots, n$) and lack of interference
 and $j \neq i$) hold.  Beyond these, we require no unmeasured confounding (the
 analog to the randomization assumption in observational studies) and positivity.
 
-1. _No unmeasured confounders_: $A_i \indep Y^{A_{\delta,i}}_i \mid W_i$, for
-   $i = 1, \ldots, n$. This is the observational study analog to the well-known
-   randomization assumption.
-2. _Positivity (or overlap)_: $a_i \in \mathcal{A} \implies d(a_i, w_i) \in
-   \mathcal{A}$ for all $w \in \mathcal{W}$, where $\mathcal{A}$ denotes the
-   support of $A \mid W = w_i \quad \forall i = 1, \ldots n$.
+::: {.definition name="No Unmeasured Confounding"}
+$A_i \indep Y^{A_{\delta,i}}_i \mid W_i$, for $i = 1, \ldots, n$. This is the
+observational study analog to the well-known randomization assumption.
+:::
+<!-- TODO: explain this-->
+
+::: {.definition name="Treatment Positivity"}
+$a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}$ for all $w \in
+\mathcal{W}$, where $\mathcal{A}$ denotes the support of $A \mid W = w_i \quad
+\forall i = 1, \ldots n$.
+:::
+<!-- TODO: explain this-->
 
 ## Estimating the Causal Effect of a Stochastic Intervention
 
@@ -343,20 +347,16 @@ may be obtained using the bootstrap or computed directly via the following
 $$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
 -->
 
-<!--
+
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-\begin{figure}
+<div class="figure" style="text-align: center">
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="100%" />
+<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
+</div>
 
-{\centering \includegraphics[width=0.8\linewidth]{img/gif/shift_animation} 
 
-}
-
-\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
-\end{figure}
-
--->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
@@ -645,8 +645,8 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
-Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
+Iter: 1 fn: 547.4323	 Pars:  0.99992954 0.00007046
+Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
@@ -721,13 +721,14 @@ $\vec{\psi}$.
 Now, say, $\psi = (\psi(\delta): \delta)$ is d-dimensional. We may express the
 EIF of the MSM parameter $\beta_0$ in terms of the EIFs of the individual
 counterfactual means:
-\begin{equation}
-   D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
+\begin{align}
+   D_{\beta}(O) = &\left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
    m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1}
-   \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
+   \\ \nonumber
+   &\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
    D_{\psi_{\delta}}(O).
    (\#eq:eif-msm-shift)
-\end{equation}
+\end{align}
 Here, in Equation \@ref(eq:eif-msm-shift), the first component is of dimension
 $d \times d$ and the second is of dimension $d \times 1$. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
@@ -891,7 +892,7 @@ washb_tmle_fit
 
 ### The Ideas in Action
 
-:::{.exercise}
+::: {.exercise}
 Set the `sl3` library of algorithms for the Super Learner to a simple,
 interpretable library and use this new library to estimate the counterfactual
 mean of mother's age at child's birth (`momage`) under a shift $\delta = 0$.
@@ -904,7 +905,7 @@ Forthcoming
 
 :::
 
-:::{.exercise}
+::: {.exercise}
 Using a grid of values of the shift parameter $\delta$ (e.g., $\{-1, 0, +1\}$),
 repeat the analysis on the variable chosen in the preceding question,
 summarizing the trend for this sequence of shifts using a marginal structural
@@ -917,7 +918,7 @@ Forthcoming
 
 :::
 
-:::{.exercise}
+::: {.exercise}
 Repeat the preceding analysis, using the same grid of shifts, but instead
 directly targeting the parameters of the marginal structural model. Interpret
 the results -- that is, what does the slope of the marginal structural model
@@ -932,7 +933,7 @@ Forthcoming
 
 ### Review of Key Concepts
 
-:::{.exercise}
+::: {.exercise}
 Describe two (equivalent) ways in which the causal effects of stochastic
 interventions may be interpreted.
 :::
@@ -941,7 +942,7 @@ interventions may be interpreted.
 Forthcoming
 :::
 
-:::{.exercise}
+::: {.exercise}
 How can the information provided by estimates across several shifts $\{
 \delta_1, \ldots, \delta_k \}$ and the marginal structural model parameter
 summarizing the trend in $\delta$ be used to enrich the interpretation of our
@@ -952,7 +953,7 @@ findings?
 Forthcoming
 :::
 
-:::{.exercise}
+::: {.exercise}
 What advantages, if any, are there to targeting directly the parameters of a
 marginal structural model?
 :::

@@ -69,12 +69,11 @@
 <span class="header-section-number">9</span> Stochastic Treatment Regimes<a class="anchor" aria-label="anchor" href="#stochastic-treatment-regimes"><i class="fas fa-link"></i></a>
 </h1>
 <p><em>Nima Hejazi</em></p>
-<p>Based on the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>
-by <em>Nima Hejazi, Jeremy Coyle, and Mark van der Laan</em>.</p>
-<p>Updated: 2021-12-30</p>
-<div id="learning-objectives-5" class="section level2 unnumbered">
-<h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-5"><i class="fas fa-link"></i></a>
-</h2>
+<p>Featuring the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>.</p>
+<div class="infobox tlverse">
+<div class="center">
+<p><strong>Learning Objectives</strong></p>
+</div>
 <ol style="list-style-type: decimal">
 <li>Differentiate stochastic treatment regimes from static, dynamic, and optimal
 dynamic treatment regimes.</li>
@@ -150,12 +149,14 @@ exogenous (unobserved) variable <span class="math inline">\(\{U_W, U_A, U_Y\}\)<
 exogenous variable is assumed to contain all unobserved causes of the
 corresponding observed variable.</p>
 <p>We can factorize the likelihood of the data unit <span class="math inline">\(O\)</span> as follows, revealing
-orthogonal components of the density, <span class="math inline">\(p_0^O\)</span>, when evaluated on a typical
+orthogonal components of the density, <span class="math inline">\(p_0\)</span>, when evaluated on a typical
 observation <span class="math inline">\(o\)</span>:
-<span class="math display" id="eq:likelihood-factorization-shift">\[\begin{equation}
-  p_0(x) = q_{0,Y}(y \mid A = a, W = w) g_{0,A}(a \mid W = w) q_{0,W}(w),
+<span class="math display" id="eq:likelihood-factorization-shift">\[\begin{align}
+  p_0(o) = &amp;q_{0,Y}(y \mid A = a, W = w) \\ \nonumber
+    &amp;g_{0,A}(a \mid W = w) \\ \nonumber
+    &amp;q_{0,W}(w),\\ \nonumber
   \tag{9.2}
-\end{equation}\]</span>
+\end{align}\]</span>
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\(\{A, W\}\)</span> with respect
 to some dominating measure, <span class="math inline">\(g_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
 <span class="math inline">\(W\)</span> with respect to dominating measure <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(q_{0, W}\)</span> is the density of
@@ -263,15 +264,15 @@ event <span class="math inline">\(A_i = d(a_i, w_i)\)</span>, for <span class="m
 (<span class="math inline">\(Y^{A_{\delta,i}}_i\)</span> does not depend on <span class="math inline">\(d(a_j, w_j)\)</span> for <span class="math inline">\(i = 1, \ldots, n\)</span>
 and <span class="math inline">\(j \neq i\)</span>) hold. Beyond these, we require no unmeasured confounding (the
 analog to the randomization assumption in observational studies) and positivity.</p>
-<ol style="list-style-type: decimal">
-<li>
-<em>No unmeasured confounders</em>: <span class="math inline">\(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\)</span>, for
-<span class="math inline">\(i = 1, \ldots, n\)</span>. This is the observational study analog to the well-known
-randomization assumption.</li>
-<li>
-<em>Positivity (or overlap)</em>: <span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the
-support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</li>
-</ol>
+<div class="definition">
+<p><span id="def:unlabeled-div-2" class="definition"><strong>Definition 9.2  (No Unmeasured Confounding) </strong></span><span class="math inline">\(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. This is the
+observational study analog to the well-known randomization assumption.</p>
+</div>
+<!-- TODO: explain this-->
+<div class="definition">
+<p><span id="def:unlabeled-div-3" class="definition"><strong>Definition 9.3  (Treatment Positivity) </strong></span><span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</p>
+</div>
+<!-- TODO: explain this-->
 </div>
 <div id="estimating-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
@@ -405,7 +406,7 @@ $$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
 </h2>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-1"></span>
-<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="80%"><p class="caption">
+<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="100%"><p class="caption">
 FIGURE 5.1: How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention
 </p>
 </div>
@@ -556,7 +557,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 </h3>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="stochastic-treatment-regimes.html#cb120-1"></a>tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</span>
 <span id="cb120-2"><a href="stochastic-treatment-regimes.html#cb120-2"></a></span>
-<span id="cb120-3"><a href="stochastic-treatment-regimes.html#cb120-3"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94735</span> <span class="fl">0.05265</span></span>
+<span id="cb120-3"><a href="stochastic-treatment-regimes.html#cb120-3"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">1</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94736</span> <span class="fl">0.05264</span></span>
 <span id="cb120-4"><a href="stochastic-treatment-regimes.html#cb120-4"></a>Iter<span class="op">:</span><span class="st"> </span><span class="dv">2</span> fn<span class="op">:</span><span class="st"> </span><span class="fl">548.8338</span>     Pars<span class="op">:</span><span class="st">  </span><span class="fl">0.94736</span> <span class="fl">0.05264</span></span>
 <span id="cb120-5"><a href="stochastic-treatment-regimes.html#cb120-5"></a>solnp<span class="op">-</span>-&gt;<span class="st"> </span>Completed <span class="cf">in</span> <span class="dv">2</span> iterations</span>
 <span id="cb120-6"><a href="stochastic-treatment-regimes.html#cb120-6"></a>tmle_fit</span>
@@ -732,13 +733,14 @@ $\vec{\psi}$.
 Now, say, <span class="math inline">\(\psi = (\psi(\delta): \delta)\)</span> is d-dimensional. We may express the
 EIF of the MSM parameter <span class="math inline">\(\beta_0\)</span> in terms of the EIFs of the individual
 counterfactual means:
-<span class="math display" id="eq:eif-msm-shift">\[\begin{equation}
-   D_{\beta}(O) = \left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
+<span class="math display" id="eq:eif-msm-shift">\[\begin{align}
+   D_{\beta}(O) = &amp;\left(\sum_{\delta} h(\delta) \frac{d}{d\beta}
    m_{\beta}(\delta) \frac{d}{d\beta} m_{\beta}(\delta)^t \right)^{-1}
-   \sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
+   \\ \nonumber
+   &amp;\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
    D_{\psi_{\delta}}(O).
    \tag{9.14}
-\end{equation}\]</span>
+\end{align}\]</span>
 Here, in Equation <a href="stochastic-treatment-regimes.html#eq:eif-msm-shift">(9.14)</a>, the first component is of dimension
 <span class="math inline">\(d \times d\)</span> and the second is of dimension <span class="math inline">\(d \times 1\)</span>. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
@@ -879,31 +881,31 @@ a simple call to our <code>tmle3</code> wrapper function:</p>
 <span class="header-section-number">9.8.1</span> The Ideas in Action<a class="anchor" aria-label="anchor" href="#the-ideas-in-action-1"><i class="fas fa-link"></i></a>
 </h3>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-2" class="exercise"><strong>Exercise 9.1  </strong></span>Set the <code>sl3</code> library of algorithms for the Super Learner to a simple,
+<p><span id="exr:unlabeled-div-4" class="exercise"><strong>Exercise 9.1  </strong></span>Set the <code>sl3</code> library of algorithms for the Super Learner to a simple,
 interpretable library and use this new library to estimate the counterfactual
 mean of mother’s age at child’s birth (<code>momage</code>) under a shift <span class="math inline">\(\delta = 0\)</span>.
 What does this counterfactual mean equate to in terms of the observed data?</p>
 </div>
 <div class="solution">
-<p><span id="unlabeled-div-3" class="solution"><em>Solution</em>. </span>Forthcoming</p>
+<p><span id="unlabeled-div-5" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-4" class="exercise"><strong>Exercise 9.2  </strong></span>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>),
+<p><span id="exr:unlabeled-div-6" class="exercise"><strong>Exercise 9.2  </strong></span>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>),
 repeat the analysis on the variable chosen in the preceding question,
 summarizing the trend for this sequence of shifts using a marginal structural
 model.</p>
 </div>
 <div class="solution">
-<p><span id="unlabeled-div-5" class="solution"><em>Solution</em>. </span>Forthcoming</p>
+<p><span id="unlabeled-div-7" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-6" class="exercise"><strong>Exercise 9.3  </strong></span>Repeat the preceding analysis, using the same grid of shifts, but instead
+<p><span id="exr:unlabeled-div-8" class="exercise"><strong>Exercise 9.3  </strong></span>Repeat the preceding analysis, using the same grid of shifts, but instead
 directly targeting the parameters of the marginal structural model. Interpret
 the results – that is, what does the slope of the marginal structural model
 tell us about the trend across the chosen sequence of shifts?</p>
 </div>
 <div class="solution">
-<p><span id="unlabeled-div-7" class="solution"><em>Solution</em>. </span>Forthcoming</p>
+<p><span id="unlabeled-div-9" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 </div>
 <div id="review-of-key-concepts-2" class="section level3">
@@ -911,26 +913,26 @@ tell us about the trend across the chosen sequence of shifts?</p>
 <span class="header-section-number">9.8.2</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-2"><i class="fas fa-link"></i></a>
 </h3>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-8" class="exercise"><strong>Exercise 9.4  </strong></span>Describe two (equivalent) ways in which the causal effects of stochastic
+<p><span id="exr:unlabeled-div-10" class="exercise"><strong>Exercise 9.4  </strong></span>Describe two (equivalent) ways in which the causal effects of stochastic
 interventions may be interpreted.</p>
-</div>
-<div class="solution">
-<p><span id="unlabeled-div-9" class="solution"><em>Solution</em>. </span>Forthcoming</p>
-</div>
-<div class="exercise">
-<p><span id="exr:unlabeled-div-10" class="exercise"><strong>Exercise 9.5  </strong></span>How can the information provided by estimates across several shifts <span class="math inline">\(\{ \delta_1, \ldots, \delta_k \}\)</span> and the marginal structural model parameter
-summarizing the trend in <span class="math inline">\(\delta\)</span> be used to enrich the interpretation of our
-findings?</p>
 </div>
 <div class="solution">
 <p><span id="unlabeled-div-11" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-12" class="exercise"><strong>Exercise 9.6  </strong></span>What advantages, if any, are there to targeting directly the parameters of a
-marginal structural model?</p>
+<p><span id="exr:unlabeled-div-12" class="exercise"><strong>Exercise 9.5  </strong></span>How can the information provided by estimates across several shifts <span class="math inline">\(\{ \delta_1, \ldots, \delta_k \}\)</span> and the marginal structural model parameter
+summarizing the trend in <span class="math inline">\(\delta\)</span> be used to enrich the interpretation of our
+findings?</p>
 </div>
 <div class="solution">
 <p><span id="unlabeled-div-13" class="solution"><em>Solution</em>. </span>Forthcoming</p>
+</div>
+<div class="exercise">
+<p><span id="exr:unlabeled-div-14" class="exercise"><strong>Exercise 9.6  </strong></span>What advantages, if any, are there to targeting directly the parameters of a
+marginal structural model?</p>
+</div>
+<div class="solution">
+<p><span id="unlabeled-div-15" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <!--
 - @haneuse2013estimation characterization of stochastic interventions as
@@ -1000,7 +1002,6 @@ nonparametric model $\M$ by solving the efficient influence function.
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#stochastic-treatment-regimes"><span class="header-section-number">9</span> Stochastic Treatment Regimes</a></li>
-<li><a class="nav-link" href="#learning-objectives-5">Learning Objectives</a></li>
 <li><a class="nav-link" href="#why-stochastic-interventions"><span class="header-section-number">9.1</span> Why Stochastic Interventions?</a></li>
 <li><a class="nav-link" href="#data-structure-and-notation-1"><span class="header-section-number">9.2</span> Data Structure and Notation</a></li>
 <li><a class="nav-link" href="#defining-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">9.3</span> Defining the Causal Effect of a Stochastic Intervention</a></li>
@@ -1043,7 +1044,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on December 29, 2021.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on February 11, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

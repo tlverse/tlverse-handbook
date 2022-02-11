@@ -2,14 +2,12 @@
 
 _Nima Hejazi_ and _Rachael Phillips_
 
-Updated: 2021-12-30
+Updated: 2022-02-11
 
-\begin{VT1}
-\VH{Learning Objectives}
-
-
-
-In this chapter, we provide guidance on how to
+:::: {.infobox .tlverse data-latex=""}
+:::{.center data-latex=""}
+**Learning Objectives**
+:::
 
 1. Translate scientific questions to statistical questions.
 2. Define a statistical model based on the knowledge of the experiment that
@@ -18,8 +16,7 @@ In this chapter, we provide guidance on how to
 4. Explain the following statistical and causal assumptions and their
    implications: i.i.d., consistency, no unmeasured confounding, interference,
    positivity.
-
-\end{VT1}
+::::
 
 ## Introduction {-}
 
@@ -290,9 +287,7 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-
-
-\begin{center}\includegraphics[width=0.8\linewidth]{02-roadmap_files/figure-latex/simple-DAG-1} \end{center}
+<img src="02-roadmap_files/figure-html/simple-DAG-1.png" width="60%" style="display: block; margin: auto;" />
 
 While DAGs like the above provide a convenient means by which to visualize
 causal relations between variables, the same causal relations among variables
@@ -378,44 +373,46 @@ specified in the NPSEM above, we can, with a handful of untestable assumptions,
 estimate the ATE from observational data. These assumptions may be summarized as
 follows.
 
-1. _No unmeasured confounding_: $A \perp Y(a) \mid W$ for all $a \in
-   \mathcal{A}$, which states that the potential outcomes $(Y(a) : a \in
-   \mathcal{A})$ arise independently from exposure status $A$, conditional on
-   the observed covariates $W$. This is the analog of the _randomization_
-   assumption in data arising from natural experiments, ensuring that the effect
-   of $A$ on $Y$ can be disentangled from that of $W$ on $Y$, even though $W$
-   affects both.
-2. _No interference_ between units: the outcome for unit $i$, $Y_i$, cannot
-   be affected by the exposure of unit $j$, $A_j$, for all $i \neq j$.
-   <!--
-   NH: This is a standard assumption of causal inference, and not everyone will
-   agree that it is the same as the i.i.d. assumption, myself included. This is
-   an assumption about the fundamental nature of the system under study (for
-   example, could my drinking coffee possibly influence your choice to have a
-   caffeinated beverage) -- simply sampling units in a way that makes them
-   independent does not speak to the nature of the system itself.
-   -->
-3. _Consistency_ of the treatment mechanism is also required, i.e., the outcome
-   for unit $i$ is $Y_i(a)$ whenever $A_i = a$, an assumption also known as "no
-   other versions of treatment".
-4. _Positivity_ or _overlap_: All observed units, across strata defined by $W$,
-   must have a bounded (non-deterministic) probability of receiving treatment --
-   that is, $0 < \P(A = a \mid W) < 1$ for all $a$ and $W$).
+::: {#consist-ass .definition name="Consistency"}
+The outcome for unit $i$ is $Y_i(a)$ whenever $A_i = a$, which may be thought of
+as "no other versions of treatment" or "no side effects of treatment."
+:::
+
+::: {#interf-ass .definition name="No Interference"}
+The outcome for unit $i$, $Y_i$, cannot be affected by the exposure of unit $j$,
+$A_j$, for all $i \neq j$.
+:::
+
+::: {#noconf-ass .definition name="No Unmeasured Confounding"}
+$A \perp Y(a) \mid W$ for all $a \in \mathcal{A}$, which states that the
+potential outcomes $(Y(a) : a \in \mathcal{A})$ arise independently from
+exposure status $A$, conditional on the observed covariates $W$. This is the
+analog of the _randomization_ assumption in data arising from natural
+experiments, ensuring that the effect of $A$ on $Y$ can be disentangled from
+that of $W$ on $Y$, even though $W$ affects both.
+:::
+
+::: {#posit-ass .definition name="Positivity (or Overlap)"}
+All observed units, across strata defined by $W$, must have a bounded
+(non-deterministic) probability of receiving treatment -- that is, $0 < \P(A = a
+\mid W) < 1$ for all $a$ and $W$).
+:::
 
 <!--
-_Remark_: Together, (2) and (3), the assumptions of no interference and
-consistency, respectively, are jointly referred to as the *stable unit
-treatment value assumption* (SUTVA).
+NH: we should note that consistency is an implied property of the SCM framework
+(not so in PO framework) and that no interference is captured in the DAG we
+present (but must be explicitly stated in PO).
 -->
 
 Given these assumptions, the ATE may be re-written as a function of $P_0$,
 specifically
 
-\begin{equation}
-  ATE = \E_0(Y(1) - Y(0)) = \E_0
-    \left(\E_0[Y \mid A = 1, W] - \E_0[Y \mid A = 0, W]\right).
+\begin{align}
+  \psi_{\text{ATE} &= \E_0(Y(1) - Y(0)) \\ \nonumber
+                   &= \E_0 \left(\E_0[Y \mid A = 1, W] -
+                      \E_0[Y \mid A = 0, W]\right).
   (\#eq:estimand)
-\end{equation}
+\end{align}
 In words, the ATE is the difference in the predicted outcome values for each
 subject, under the contrast of treatment conditions ($A = 0$ versus $A = 1$),
 in the population, averaged over all observations. Thus, a parameter of a

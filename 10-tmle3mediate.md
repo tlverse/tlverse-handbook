@@ -2,16 +2,13 @@
 
 _Nima Hejazi_
 
-Based on the [`tmle3mediate` `R`
-package](https://github.com/tlverse/tmle3mediate) by _Nima Hejazi, James
-Duncan, and David McCoy_.
+Featuring the [`tmle3mediate` `R`
+package](https://github.com/tlverse/tmle3mediate).
 
-Updated: 2021-12-30
-
-\begin{VT1}
-\VH{Learning Objectives}
-
-
+:::: {.infobox .tlverse data-latex=""}
+:::{.center data-latex=""}
+**Learning Objectives**
+:::
 
 1. Examine how the presence of post-treatment mediating variables can complicate
    a causal analysis, and how direct and indirect effects can be defined to
@@ -31,8 +28,7 @@ Updated: 2021-12-30
    including differences in the assumptions required for their identification.
 7. Estimate the population intervention direct effect of a binary treatment
    using the `tmle3mediate` `R` package.
-
-\end{VT1}
+::::
 
 ## Causal Mediation Analysis
 
@@ -105,14 +101,13 @@ available knowledge about the data-generating experiment should be incorporated
 into this model -- for example, if the data from a randomized controlled trial
 (RCT), the form of $f_A$ may be known. The SCM corresponds to the following DAG:
 
-
-\begin{center}\includegraphics[width=0.6\linewidth]{10-tmle3mediate_files/figure-latex/mediation-DAG-1} \end{center}
+<img src="10-tmle3mediate_files/figure-html/mediation-DAG-1.png" width="60%" style="display: block; margin: auto;" />
 
 By factorizing the likelihood of the data $O$, we can express $p_0$, the
 density of $O$ with respect to the product measure, when evaluated on a
 particular observation $o$, in terms of several orthogonal components:
 \begin{align}
-  p_0(x) = &q_{0,Y}(y \mid Z = z, A = a, W = w) \\ \nonumber
+  p_0(o) = &q_{0,Y}(y \mid Z = z, A = a, W = w) \\ \nonumber
     &q_{0,Z}(z \mid A = a, W = w) \\ \nonumber
     &g_{0,A}(a \mid W = w) \\ \nonumber
     &q_{0,W}(w).\\ \nonumber
@@ -161,11 +156,11 @@ standard longitudinal data structure"
 ### Decomposing the Average Treatment Effect
 
 The natural direct and indirect effects arise from a decomposition of the ATE:
-\begin{equation*}
+\begin{align*}
   \E[Y(1) - Y(0)] =
-    \underbrace{\E[Y(1, Z(0)) - Y(0, Z(0))]}_{\text{NDE}} +
+    &\underbrace{\E[Y(1, Z(0)) - Y(0, Z(0))]}_{\text{NDE}} \\ &+
     \underbrace{\E[Y(1, Z(1)) - Y(1, Z(0))]}_{\text{NIE}}.
-\end{equation*}
+\end{align*}
 In particular, the natural indirect effect (NIE) measures the effect of the
 treatment $A \in \{0, 1\}$ on the outcome $Y$ through the mediators $Z$, while
 the natural direct effect (NDE) measures the effect of the treatment on the
@@ -179,7 +174,7 @@ the SCM, as counterfactuals are derived quantities (as opposed to primitive
 quantities in the potential outcomes framework). @pearl2010brief provides an
 illuminating discussion on this latter point.
 
-::: {.definition name = "Exchangeability"}
+::: {.definition name="Exchangeability"}
 $Y(a, z) \indep (A, Z) \mid W$, which further implies that $\E\{Y(a, z) \mid
 A=a, W=w, Z=z\} \equiv \E\{Y(a, z) \mid W=w\}$. This is a special, more
 restrictive case of the standard assumption of no unmeasured counfounding in the
@@ -189,7 +184,7 @@ treatment and mediators.
 :::
 <!-- TODO: explain this-->
 
-::: {.definition name = "Treatment positivity"}
+::: {.definition name="Treatment Positivity"}
 For any $a \in \mathcal{A}$ and $w \in \mathcal{W}$, the conditional probability
 of treatment $g(a \mid w)$ is bounded away from the limits of the unit interval
 by a small factor $\xi > 0$. More precisely, $\xi < g(a \mid w) < 1 - \xi$. This
@@ -198,7 +193,7 @@ mirrors the standard positivity assumption required for static interventions,
 :::
 <!-- TODO: explain this-->
 
-::: {.definition name = "Mediator positivity"}
+::: {.definition name="Mediator Positivity"}
 For any $z \in \mathcal{Z}$, $a \in \mathcal{A}$, and $w \in \mathcal{W}$, the
 conditional mediator density must be bounded away from zero by a small factor
 $\epsilon > 0$, specifically, $\epsilon < q_{0,Z}(z \mid a, w)$. Essentially,
@@ -212,7 +207,7 @@ contrasts be bounded for both realizations of the mediator density.
 :::
 <!-- TODO: explain this-->
 
-::: {.definition name = "Cross-world counterfactual independence"}
+::: {.definition name="Cross-world Counterfactual Independence"}
 For all $a \neq a'$, where $a, a' \in \mathcal{A}$, and $z \in \mathcal{Z}$,
 $Y(a', z)$ must be independent of $Z(a)$, given $W$. That is, the counterfactual
 outcome under the treatment contrast $a' \in \mathcal{A}$ and the counterfactual
@@ -232,10 +227,9 @@ path-specific effects, which has been termed the "recanting witness" by
 this assumption.  This independence of counterfactuals indexed by distinct
 interventions is, in fact, a serious limitation to the scientific relevance of
 these effect definitions, as it results in the NDE and NIE being unidentifiable
-in randomized trials [@robins2010alternative], directly implying that
-corresponding scientific claims cannot be falsified through experimentation
-[@popper1934logic; @dawid2000causal], contradicting a key pillar of the
-scientific method.
+in randomized trials [@robins2010alternative], implying that corresponding
+scientific claims cannot be falsified through experimentation [@popper1934logic;
+@dawid2000causal], contradicting a pillar of the scientific method.
 
 While many attempts have been made to weaken this last assumption
 [@petersen2006estimation; @imai2010identification; @vansteelandt2012imputation;
@@ -705,7 +699,21 @@ Forthcoming
 
 ### The Ideas in Action
 
-Forthcoming.
+::: {.exercise}
+Forthcoming
+:::
+
+::: {.solution}
+Forthcoming
+:::
+
+::: {.exercise}
+Forthcoming
+:::
+
+::: {.solution}
+Forthcoming
+:::
 
 <!--
 1. Incremental propensity score interventions.
