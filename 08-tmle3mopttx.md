@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2022-03-03
+Updated: 2022-03-16
 
 ## Learning Objectives
 
