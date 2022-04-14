@@ -1,0 +1,191 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Super Learning {#sl3-advanced}
+
+Based on the [`sl3` `R` package](https://github.com/tlverse/sl3) by _Jeremy
+Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
+
+Updated: `r Sys.Date()`
+
+## Learning Objectives{-}
+1. Estimate the cross-validated predictive performance of the ensemble super 
+   learner.
+2. Evaluate `sl3` variable importance metrics.
+3. 
+4. 
+
+## Cross-validated super learner
+
+We can cross-validate the SL to see how well the SL performs on unseen data, and
+obtain an estimate of the cross-validated risk of the SL.
+
+This estimation procedure requires an outer/external layer of
+cross-validation, also called nested cross-validation, which involves setting
+aside a separate holdout sample that we don’t use to fit the SL. This external
+cross-validation procedure may also incorporate 10 folds, which is the default
+in `sl3`. However, we will incorporate 2 outer/external folds of
+cross-validation for computational efficiency.
+
+We also need to specify a loss function to evaluate SL. Documentation for the
+available loss functions can be found in the [`sl3` Loss Function
+Reference](https://tlverse.org/sl3/reference/loss_functions.html).
+
+```{r CVsl}
+washb_task_new <- make_sl3_Task(
+  data = washb_data,
+  covariates = covars,
+  outcome = outcome,
+  folds = origami::make_folds(washb_data, fold_fun = folds_vfold, V = 2)
+)
+CVsl <- CV_lrnr_sl(
+  lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
+)
+CVsl %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
+```
+<!-- Explain summary!!!! -->
+
+## Variable importance measures
+
+Variable importance can be interesting and informative. It can also be
+contradictory and confusing. Nevertheless, we like it, and so do our
+collaborators, so we created a variable importance function in `sl3`! The `sl3`
+`importance` function returns a table with variables listed in decreasing order
+of importance (i.e., most important on the first row).
+
+The measure of importance in `sl3` is based on a risk ratio, or risk difference,
+between the learner fit with a removed, or permuted, covariate and the learner
+fit with the true covariate, across all covariates. In this manner, the larger
+the risk difference, the more important the variable is in the prediction.
+
+The intuition of this measure is that it calculates the risk (in terms of the
+average loss in predictive accuracy) of losing one covariate, while keeping
+everything else fixed, and compares it to the risk if the covariate was not
+lost. If this risk ratio is one, or risk difference is zero, then losing that
+covariate had no impact, and is thus not important by this measure. We do this
+across all of the covariates. As stated above, we can remove the covariate and
+refit the SL without it, or we just permute the covariate (faster)
+and hope for the shuffling to distort any meaningful information that was
+present in the covariate. This idea of permuting instead of removing saves a lot
+of time, and is also incorporated in the `randomForest` variable importance
+measures. However, the permutation approach is risky, so the importance function
+default is to remove and refit.
+
+Let's explore the `sl3` variable importance measurements for the `washb` data.
+
+```{r varimp, eval = FALSE}
+washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
+washb_varimp %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
+```
+
+```{r varimp-plot, out.width = "100%", eval = FALSE}
+# plot variable importance
+importance_plot(
+  washb_varimp,
+  main = "sl3 Variable Importance for WASH Benefits Example Data"
+)
+```
+<!-- Explain summary!!!! -->
+
+## Categorical outcome prediction
+
+## Multivariate outcome prediction
+
+## Super learning of a conditional density
+<!--
+OPTIONAL NOTES TO CONSIDER ON THIS TOPIC FROM MARK'S VIDEO LECTURE:
+Suppose we want to construct a Super Learner of the conditional probability
+distribution $g_0(a\mid W)=P_0(A=a\mid W)$, where $a\in {\cal A}$.
+Let's denote the values of $a$ with $\{0,1,\ldots,K\}$. A valid loss function
+for the conditional density is
+\[
+L(g)(O)=-\log g(A\mid W).\]
+That is, $g_0=\arg\min_g P_0L(g)$, i.e., $g_0$ is the minimizer of the
+expectation of the log-likelihood loss.
+
+**Candidate estimators**
+
+1. Candidate estimators based on multinomial logistic regression: To start
+with, one can use existing parametric model based MLE and machine learning
+algorithms in `R` that fit a multinomial regression. For example, parametric
+model multinomial logistic regression is available in `R` so that one can
+already build a rich library of such estimators based on  different candidate
+parametric models. In addition, `polyclass()` is a multinomial logistic
+regression machine learning algorithm in `R`.
+
+2. Candidate estimators based on machine learning for multinomial logistic
+regression: Secondly, one can use a machine learning algorithm such as
+`polyclass()` in `R` that data adaptively fits a multinomial logistic
+regression, which itself has tuning parameters, again generating a class of
+candidate estimators.
+
+3. Incorporating screening: Note that one can also marry any of these choices
+with a screening algorithm, thereby creating more candidate estimators of
+interest. The screening can be particularly important when there are many
+variables.
+
+4. Candidate estimators by fitting separate logistic regressions and using
+post-normalization
+
+* Code $A$ in terms of Bernoullis $B_k=I(A=k)$, $k=0,\ldots,K$.
+* Construct an estimator $\bar{g}_{nk}$ of $\bar{g}_{0k}(W)\equiv P_0(B_k=1\mid
+  W)$ using any of the logistic regression algorithms, for all $k=0,\ldots,K$.
+* This implies an estimator
+\[
+g_n(a\mid W)=\frac{\bar{g}_{na}(W)}{\sum_{k=0}^K \bar{g}_{nk}(W)}.\]
+* In other words, we simply normalize these separate logistic regression
+estimators so that we obtain a valid conditional distribution.
+* This generates an enormous amount of interesting algorithms, since we have
+available the whole machine learning literature for binary outcome regression.
+
+5. Candidate estimators by estimating the conditional "hazard" with pooled
+logistic regression.
+Note that
+\[
+g_0(a\mid W)=\lambda_0(a\mid W) S_0(a\mid W),\]
+where \[
+\lambda_0(a\mid W)=P_0(A=a\mid A\geq a,W),\]
+
+and $S_0(a\mid W)=\prod_{s\leq a}(1-\lambda_0(s\mid W))$ is the conditional
+survival function $P_0(A>a\mid W)$. So we have now parameterized the
+conditional distribution of $A$, given $W$, by a conditional hazard
+$\lambda_0(a\mid W)$: $g_0=g_{\lambda_0}$.
+
+* We could now focus on constructing candidate estimators of
+$\lambda_0(a\mid W)$, which implies candidate estimators of $g_0$.
+
+* For every observation $A_i$, we can create $A_i+1$ rows of data
+$(W,s,I(A_i=s))$, $s=0,\ldots,A_i$, $i=1,\ldots,n$. We now run a logistic
+regression estimator based on the pooled data set, ignoring ID, where we
+regress the binary outcome $I(A_i=s)$ on the covariates $(W,s)$.
+
+* If one assumes a parametric model, then this is nothing else then using the
+maximum likelihood estimator, demonstrating that ignoring the ID is not
+inefficient.
+
+* This defines now an estimator of $\lambda_0(s\mid W)=P_0(A=s\mid W,A\geq s)$
+as a function of $(s,W)$.
+
+* Different choices of logistic regression based estimators will define
+different estimators.
+
+* The pooling across $s$ is not very sensible if $A$ is not an ordered variable
+If $A$ is categorical, we recommend to compute  a separate logistic regression
+estimator of $\lambda_0(a\mid W)$ for each $a$ (i.e., stratify by $s$ in the
+  above pooled data set).
+
+* For non-categorical $A$, one could include both stratified (by level) as well
+as pooled (across levels) based logistic regression estimators.
+
+-->
+
+## Time series forecasting
