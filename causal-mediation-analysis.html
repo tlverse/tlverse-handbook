@@ -502,14 +502,14 @@ standard decomposition of the average treatment effect. In the sequel, we will
 compute each of the components of the direct and indirect effects above using
 appropriate estimators as follows</p>
 <ul>
-<li>For <span class="math inline">\(\mathbb{E}\{Y(A, Z)\}\)</span>, the sample mean <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n Y_i\)</span> is
+<li>For <span class="math inline">\(\E\{Y(A, Z)\}\)</span>, the sample mean <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n Y_i\)</span> is
 consistent;</li>
-<li>for <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z)\}\)</span>, a TML estimator for the effect of a
-joint intervention altering the treatment mechanism but not the mediation
-mechanism, based on the proposal in <span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>; and,</li>
-<li>for <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z_{A_{\delta}})\}\)</span>, an efficient estimator for
-the effect of a joint intervention on both the treatment and mediation
-mechanisms, as per <span class="citation">Kennedy (<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">2019</a>)</span>.</li>
+<li>for <span class="math inline">\(\E\{Y(A_{\delta}, Z)\}\)</span>, a TML estimator for the effect of a joint
+intervention altering the treatment mechanism but not the mediation mechanism,
+based on the proposal in <span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>; and,</li>
+<li>for <span class="math inline">\(\E\{Y(A_{\delta}, Z_{A_{\delta}})\}\)</span>, an efficient estimator for the
+effect of a joint intervention on both the treatment and mediation mechanisms,
+as per <span class="citation">Kennedy (<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">2019</a>)</span>.</li>
 </ul>
 </div>
 <div id="estimating-the-effect-decomposition-term" class="section level3">
@@ -517,9 +517,8 @@ mechanisms, as per <span class="citation">Kennedy (<a href="references.html#ref-
 <span class="header-section-number">10.4.2</span> Estimating the Effect Decomposition Term<a class="anchor" aria-label="anchor" href="#estimating-the-effect-decomposition-term"><i class="fas fa-link"></i></a>
 </h3>
 <p>As described by <span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>, the statistical functional identifying the
-decomposition term that appears in both the PIDE and PIIE
-<span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z)\}\)</span>, which corresponds to altering the treatment
-mechanism while keeping the mediation mechanism fixed, is
+decomposition term that appears in both the PIDE and PIIE <span class="math inline">\(\E\{Y(A_{\delta}, Z)\}\)</span>, which corresponds to altering the treatment mechanism while keeping the
+mediation mechanism fixed, is
 <span class="math display">\[\begin{equation*}
   \psi_0(\delta) = \int \overline{Q}_{0,Y}(a, z, w)
     g_{0,\delta}(a \mid w) p_0(z, w) d\nu(a, z, w),
@@ -530,26 +529,27 @@ for which a TML estimator is available. In the case of <span class="math inline"
 components of the EIF are defined as follows:</p>
 <ul>
 <li>
-<span class="math inline">\(D^Y_{\delta} = \frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y - \overline{Q}_{Y}(z,a,w)\}\)</span>,</li>
+<span class="math inline">\(D^Y_{\delta}(o) = \frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y - \overline{Q}_{Y}(z,a,w)\}\)</span>,</li>
 <li>
-<span class="math inline">\(D^A_{\delta} = \frac{\delta\phi(w) \{a - g(1 \mid w)\}}{\{\delta g(1 \mid w) + g(0 \mid w)\}^2}\)</span>, for <span class="math inline">\(\phi(w) = \mathbb{E}\{\overline{Q}_{Y}(1, Z, W) - \overline{Q}_{Y}(0, Z, W) \mid W = w\}\)</span>, and</li>
+<span class="math inline">\(D^A_{\delta}(o) = \frac{\delta\phi(w) \{a - g(1 \mid w)\}} {\{\delta g(1 \mid w) + g(0 \mid w)\}^2}\)</span>, for <span class="math inline">\(\phi(w) = \E\{\overline{Q}_{Y}(1, Z, W) - \overline{Q}_{Y}(0, Z, W) \mid W = w\}\)</span>,</li>
 <li>
-<span class="math inline">\(D^{Z,W}_{\delta} = \int \overline{Q}_{Y}(z, a, w) g_{\delta}(a \mid w) d\kappa(a)\)</span>.</li>
+<span class="math inline">\(D^{Z,W}_{\delta}(o) = \int \overline{Q}_{Y}(z, a, w) g_{\delta}(a \mid w) d\kappa(a)\)</span>.</li>
 </ul>
 <p>The TML estimator may be computed by fluctuating initial estimates of the
 nuisance parameters so as to solve the EIF estimating equation. The resultant
 TML estimator is
 <span class="math display">\[\begin{equation*}
-  \psi_{n,\text{TMLE}}(\delta) = \int \frac{1}{n} \sum_{i=1}^n
+  \psi_{n}^{\star}(\delta) = \int \frac{1}{n} \sum_{i=1}^n
   \overline{Q}_{Y,n}^{\star}(Z, a, W)
   g_{\delta, n}^{\star}(a \mid W) d\kappa(a),
 \end{equation*}\]</span>
 where <span class="math inline">\(g_{\delta,n}^{\star}(a \mid w)\)</span> and <span class="math inline">\(\overline{Q}_{Y,n}^{\star}(z,a,w)\)</span>
 are generated by  regressions that fluctuate (or tilt) initial
-estimates towards solutions of the score equations
-<span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^A(O_i) = 0\)</span> and <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^Y(O_i) = 0\)</span>, respectively. This estimator is implemented in <code>tmle3mediate</code> package. We
-demonstrate the use of <code>tmle3mediate</code> to obtain <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z)\}\)</span>
-via its TML estimator in the sequel.</p>
+estimates towards solutions of the score equations <span class="math inline">\(n^{-1} \sum_{i=1}^n D^A_{\delta}(O_i) = 0\)</span> and <span class="math inline">\(n^{-1} \sum_{i=1}^n D^Y_{\delta}(O_i) = 0\)</span>,
+respectively. This TML estimator <span class="math inline">\(\psi_{n}^{\star}(\delta)\)</span> is implemented in
+<code>tmle3mediate</code> package. We demonstrate the use of <code>tmle3mediate</code> to obtain
+<span class="math inline">\(\E\{Y(A_{\delta}, Z)\}\)</span> via its TML estimator in the following worked code
+examples.</p>
 </div>
 </div>
 <div id="evaluating-the-direct-and-indirect-effects" class="section level2">
@@ -589,7 +589,7 @@ and outcome <span class="math inline">\(Y\)</span> nodes of the NPSEM via a “N
   Z <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sex"</span>, <span class="st">"month"</span>, <span class="st">"aged"</span><span class="op">)</span>,
   Y <span class="op">=</span> <span class="st">"whz"</span>
 <span class="op">)</span></code></pre></div>
-<p>Here the <code>node_list</code> encodes the parents of each node – for example, <span class="math inline">\(Z\)</span> (the
+<p>Here, the <code>node_list</code> encodes the parents of each node – for example, <span class="math inline">\(Z\)</span> (the
 mediators) have parents <span class="math inline">\(A\)</span> (the treatment) and <span class="math inline">\(W\)</span> (the baseline confounders),
 and <span class="math inline">\(Y\)</span> (the outcome) has parents <span class="math inline">\(Z\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(W\)</span>. We’ll also handle any
 missingness in the data by invoking <code>process_missing</code>:</p>
@@ -725,11 +725,11 @@ approach, we postulate a motivational intervention that <em>triples the odds</em
 <span class="co"># get the PIDE</span>
 <span class="va">washb_pie_decomp</span><span class="op">$</span><span class="va">summary</span><span class="op">$</span><span class="va">tmle_est</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">washb_data</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/get.html">get</a></span><span class="op">(</span><span class="va">node_list</span><span class="op">$</span><span class="va">Y</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
 <p>Recall that, based on the decomposition outlined previously, the PIDE may be
-denoted <span class="math inline">\(\beta_{\text{PIDE}}(\delta) = \theta_0(\delta) - \mathbb{E}Y\)</span>. Thus,
+denoted <span class="math inline">\(\beta_{\text{PIDE}}(\delta) = \psi_0(\delta) - \mathbb{E}Y\)</span>. Thus,
 an estimator of the PIDE, <span class="math inline">\(\hat{\beta}_{\text{PIDE}}(\delta)\)</span> may be expressed
 as a composition of estimators of its constituent parameters:
 <span class="math display">\[\begin{equation*}
-  \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\theta}(\delta) -
+  \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\psi}(\delta) -
   \frac{1}{n} \sum_{i = 1}^n Y_i.
 \end{equation*}\]</span></p>
 <!--
