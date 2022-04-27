@@ -1,4 +1,4 @@
-# Stochastic Treatment Regimes
+# Stochastic Treatment Regimes {#shift}
 
 _Nima Hejazi_
 
@@ -61,9 +61,9 @@ continuous-valued (i.e., $A \in \R$) or ordinal with many levels. For a given
 study, we consider observing $n$ independent and identically distributed units
 $O_1, \ldots, O_n$.
 
-Following [the roadmap](#roadmap), let $O \sim P \in \M$, where $\M$ is the
+Following [the roadmap](#roadmap), let $O \sim P_0 \in \M$, where $\M$ is the
 nonparametric statistical model, minimizing any restrictions on the form of the
-data-generating distribution $P$. To formalize the definition of stochastic
+data-generating distribution $P_0$. To formalize the definition of stochastic
 interventions and their corresponding causal effects, we introduce a structural
 causal model (SCM), based on @pearl2009causality, to define how the system
 changes under posited interventions:
@@ -532,7 +532,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
+Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit

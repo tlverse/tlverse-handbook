@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2022-03-16
+Updated: 2022-04-27
 
 ## Learning Objectives
 
@@ -65,13 +65,13 @@ treatment-decision stage are allowed to respond to the currently available
 treatment and covariate history. A dynamic treatment rule can be thought of as
 a rule where the input is the available set of collected covariates, and the 
 output is an individualized treatment for each patient 
-[@bembom2007realistic, @robins1986, @moodie2013].
+[@bembom2007realistic; @robins1986; @moodie2013].
 
 In the statistics community such a treatment strategy is termed an
 __individualized treatment regime__ (ITR), also known as the optimal
 dynamic treatment rule, optimal treatment regime, optimal strategy, 
-and optimal policy [@murphy2003, @robins2004]. The (counterfactual) 
-population mean outcome under an ITR is the value of the ITR [@murphy2003, @robins2004].
+and optimal policy [@murphy2003; @robins2004]. The (counterfactual) 
+population mean outcome under an ITR is the value of the ITR [@murphy2003; @robins2004].
 Even more, suppose one wishes to maximize the population mean of an
 outcome, where for each individual we have access to some set of measured
 covariates. This means, for example, that we can learn for which individual
