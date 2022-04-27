@@ -700,11 +700,11 @@ washb_pie_decomp$summary$tmle_est - mean(washb_data[, get(node_list$Y)])
 ```
 
 Recall that, based on the decomposition outlined previously, the PIDE may be
-denoted $\beta_{\text{PIDE}}(\delta) = \psi_0(\delta) - \mathbb{E}Y$. Thus,
+denoted $\beta_{\text{PIDE}}(\delta) = \theta_0(\delta) - \mathbb{E}Y$. Thus,
 an estimator of the PIDE, $\hat{\beta}_{\text{PIDE}}(\delta)$ may be expressed
 as a composition of estimators of its constituent parameters:
 \begin{equation*}
-  \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\psi}(\delta) -
+  \hat{\beta}_{\text{PIDE}}({\delta}) = \hat{\theta}(\delta) -
   \frac{1}{n} \sum_{i = 1}^n Y_i.
 \end{equation*}
 
