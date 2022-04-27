@@ -128,12 +128,12 @@ of Biostatistics at the [Harvard T.H. Chan School of Public
 Health](https://www.hsph.harvard.edu/biostatistics/). He received his PhD in
 biostatistics at UC Berkeley, working under the supervision of Mark van der Laan
 and Alan Hubbard, and afterwards held an NSF postdoctoral research fellowship.
-Nima's research interests combine causal inference, machine learning,
-non/semi-parametric estimation, and computational statistics -- areas of recent
+Nima's research interests blend causal inference, machine learning,
+semiparametric estimation, and computational statistics -- areas of recent
 emphasis include causal mediation analysis, efficiency under biased sampling
 designs, nonparametric sieve estimation with machine learning, and targeted
 loss-based estimation. His work is primarily driven by applications in clinical
-trials (esp., vaccine efficacy trials), infectious disease epidemiology, and
+trials (esp. vaccine efficacy trials), infectious disease epidemiology, and
 computational biology. Nima is also passionate about statistical computing and
 open source software design standards for statistical data science, and he has
 co-led or contributed significantly to many `tlverse` packages (`hal9001`,
