@@ -277,8 +277,8 @@ under differing treatment contrasts.</p>
 outcome under the treatment contrast <span class="math inline">\(a' \in \mathcal{A}\)</span> and the counterfactual
 mediator value <span class="math inline">\(Z(a) \in \mathcal{Z}\)</span> (under the alternative contrast <span class="math inline">\(a \in \mathcal{A}\)</span>) must both be <em>observable</em>. The term “cross-world” refers to the two
 counterfactuals <span class="math inline">\(Z(a)\)</span> and <span class="math inline">\(Y(a', z)\)</span> existing under two differing treatment
-contrasts. Though the joint distributions of these counterfactuals are
-well-defined, they can never be jointly realized.</p>
+contrasts. Though their joint distribution is well-defined, these
+counterfactuals can never be jointly realized.</p>
 </div>
 <!-- TODO: explain this-->
 <p>While the first three assumptions may be familiar based on their analogs in
@@ -312,10 +312,10 @@ applications of causal mediation analysis.</p>
 <p>The NDE is defined as
 <span class="math display">\[\begin{align*}
   \psi_{\text{NDE}} =&amp; \E[Y(1, Z(0)) - Y(0, Z(0))] \\
-  \overset{\text{rand.}}{=}&amp; \sum_w \sum_z
+  &amp;= \sum_w \sum_z
   [\underbrace{\E(Y \mid A = 1, z, w)}_{\overline{Q}_Y(A = 1, z, w)} -
-  \underbrace{\E(Y \mid A = 0, z, w)}_{\overline{Q}_Y(A = 0, z, w)}] \\&amp;\times
-  \underbrace{p(z \mid A = 0, w)}_{q_Z(Z \mid 0, w))}
+  \underbrace{\E(Y \mid A = 0, z, w)}_{\overline{Q}_Y(A = 0, z, w)}] \\
+  &amp;\times \underbrace{p(z \mid A = 0, w)}_{q_Z(Z \mid 0, w))}
   \underbrace{p(w)}_{q_W},
 \end{align*}\]</span>
 where the likelihood factors arise from a factorization of the joint
@@ -443,12 +443,12 @@ cross-world counterfactual independence is not at all required.</p>
 stronger than and implied by the assumption <span class="math inline">\(Y(a, z) \indep (A,Z) \mid W\)</span>,
 originally proposed by <span class="citation">Vansteelandt and VanderWeele (<a href="references.html#ref-vansteelandt2012natural" role="doc-biblioref">2012</a>)</span> for identification of mediated
 effects among the treated. In introducing this assumption <span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span> state
-that " This assumption would be satisfied for any pre-exposure <span class="math inline">\(W\)</span> in a
+that “This assumption would be satisfied for any pre-exposure <span class="math inline">\(W\)</span> in a
 randomized experiment in which exposure and mediators are randomized. Thus, the
 direct effect for a population intervention corresponds to contrasts between
 treatment regimes of a randomized experiment via interventions on <span class="math inline">\(A\)</span> and <span class="math inline">\(Z\)</span>,
 unlike the natural direct effect for the average treatment effect
-<span class="citation">(Robins and Richardson <a href="references.html#ref-robins2010alternative" role="doc-biblioref">2010</a>)</span>."</p>
+<span class="citation">(Robins and Richardson <a href="references.html#ref-robins2010alternative" role="doc-biblioref">2010</a>)</span>.”</p>
 </div>
 <!-- TODO: explain this-->
 <div class="definition">
@@ -508,8 +508,8 @@ consistent;</li>
 joint intervention altering the treatment mechanism but not the mediation
 mechanism, based on the proposal in <span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>; and,</li>
 <li>for <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z_{A_{\delta}})\}\)</span>, an efficient estimator for
-the effect of a joint intervention altering both the treatment and mediation
-mechanisms, as proposed by <span class="citation">Kennedy (<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">2019</a>)</span>.</li>
+the effect of a joint intervention on both the treatment and mediation
+mechanisms, as per <span class="citation">Kennedy (<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">2019</a>)</span>.</li>
 </ul>
 </div>
 <div id="estimating-the-effect-decomposition-term" class="section level3">
@@ -525,26 +525,24 @@ mechanism while keeping the mediation mechanism fixed, is
     g_{0,\delta}(a \mid w) p_0(z, w) d\nu(a, z, w),
 \end{equation*}\]</span>
 for which a TML estimator is available. In the case of <span class="math inline">\(A \in \{0, 1\}\)</span>, the
-corresponding <em>efficient influence function</em> (EIF) with respect to the
-nonparametric model <span class="math inline">\(\mathcal{M}\)</span> is <span class="math inline">\(D_{\eta,\delta}(o) = D^Y_{\eta,\delta}(o) + D^A_{\eta,\delta}(o) + D^{Z,W}_{\eta,\delta}(o) - \psi(\delta)\)</span>, where the
-orthogonal components of the EIF are defined as follows:
-<span class="math inline">\(D^Y_{\eta,\delta} = \frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y - \overline{Q}_{Y}(z,a,w)\}\)</span>,
-<span class="math inline">\(D^A_{\eta,\delta} = \frac{\delta\phi(w) \{a - g(1 \mid w)\}} {\{\delta g(1 \mid w) + g(0 \mid w)\}^2}\)</span>, and
-<span class="math inline">\(D^{Z,W}_{\eta,\delta} = \int \overline{Q}_{Y}(z, a, w) g_{\delta}(a \mid w) d\kappa(a)\)</span>, and where <span class="math inline">\(\phi(w) = \mathbb{E}\{\overline{Q}_{Y}(1, Z, W) - \overline{Q}_{Y}(0, Z, W) \mid W = w\}\)</span>.</p>
+<em>efficient influence function</em> (EIF) with respect to the nonparametric model
+<span class="math inline">\(\mathcal{M}\)</span> is <span class="math inline">\(D_{\delta}(o) = D^Y_{\delta}(o) + D^A_{\delta}(o) + D^{Z,W}_{\delta}(o) - \psi(\delta)\)</span>, where the
+components of the EIF are defined as follows: <span class="math inline">\(D^Y_{\delta} = \frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y - \overline{Q}_{Y}(z,a,w)\}\)</span>,
+<span class="math inline">\(D^A_{\delta} = \frac{\delta\phi(w) \{a - g(1 \mid w)\}} {\{\delta g(1 \mid w) + g(0 \mid w)\}^2}\)</span>, and <span class="math inline">\(D^{Z,W}_{\delta} = \int \overline{Q}_{Y}(z, a, w) g_{\delta}(a \mid w) d\kappa(a)\)</span>, and where <span class="math inline">\(\phi(w) = \mathbb{E}\{\overline{Q}_{Y}(1, Z, W) - \overline{Q}_{Y}(0, Z, W) \mid W = w\}\)</span>.</p>
 <p>The TML estimator may be computed by fluctuating initial estimates of the
 nuisance parameters so as to solve the EIF estimating equation. The resultant
 TML estimator is
 <span class="math display">\[\begin{equation*}
   \psi_{n,\text{TMLE}}(\delta) = \int \frac{1}{n} \sum_{i=1}^n
   \overline{Q}_{Y,n}^{\star}(Z, a, W)
-  g_{\delta, n,}^{\star}(a \mid W) d\kappa(a),
+  g_{\delta, n}^{\star}(a \mid W) d\kappa(a),
 \end{equation*}\]</span>
 where <span class="math inline">\(g_{\delta,n}^{\star}(a \mid w)\)</span> and <span class="math inline">\(\overline{Q}_{Y,n}^{\star}(z,a,w)\)</span>
 are generated by  regressions that fluctuate (or tilt) initial
-estimates towards solutions of scores <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^A(O_i) = 0\)</span> and
-<span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^Y(O_i) = 0\)</span>, respectively. This estimator is
-implemented in <code>tmle3mediate</code> package. We demonstrate the use of <code>tmle3mediate</code>
-to obtain <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z)\}\)</span> via its TML estimator in the sequel.</p>
+estimates towards solutions of the score equations
+<span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^A(O_i) = 0\)</span> and <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n D^Y(O_i) = 0\)</span>, respectively. This estimator is implemented in <code>tmle3mediate</code> package. We
+demonstrate the use of <code>tmle3mediate</code> to obtain <span class="math inline">\(\mathbb{E}\{Y(A_{\delta}, Z)\}\)</span>
+via its TML estimator in the sequel.</p>
 </div>
 </div>
 <div id="evaluating-the-direct-and-indirect-effects" class="section level2">
