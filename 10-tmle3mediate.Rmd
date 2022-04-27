@@ -279,8 +279,8 @@ applications of causal mediation analysis.
 
 The NDE is defined as
 \begin{align*}
-  \psi_{\text{NDE}} =& \E[Y(1, Z(0)) - Y(0, Z(0))] \\
-  &= \sum_w \sum_z
+  \psi_{\text{NDE}} =&~\E[Y(1, Z(0)) - Y(0, Z(0))] \\
+  =& \sum_w \sum_z
   [\underbrace{\E(Y \mid A = 1, z, w)}_{\overline{Q}_Y(A = 1, z, w)} -
   \underbrace{\E(Y \mid A = 0, z, w)}_{\overline{Q}_Y(A = 0, z, w)}] \\
   &\times \underbrace{p(z \mid A = 0, w)}_{q_Z(Z \mid 0, w))}
@@ -428,7 +428,7 @@ unlike the natural direct effect for the average treatment effect
 <!-- TODO: explain this-->
 
 ::: {.definition name="Common Support of Treatment and Mediators"}
-Assume that $\text{supp}\{g_{\delta}(\cdot \mid w)\} \subset
+Assume that $\text{supp}\{g_{\delta}(\cdot \mid w)\} \subseteq
 \text{supp}\{g(\cdot \mid w)\}~\forall~w \in \mathcal{W}$. This assumption is
 standard and requires only that the post-intervention value of $A$ be supported
 in the data. Note that this is significantly weaker than the treatment and
@@ -503,13 +503,14 @@ for which a TML estimator is available. In the case of $A \in \{0, 1\}$, the
 _efficient influence function_ (EIF) with respect to the nonparametric model
 $\mathcal{M}$ is $D_{\delta}(o) = D^Y_{\delta}(o)
 + D^A_{\delta}(o) + D^{Z,W}_{\delta}(o) - \psi(\delta)$, where the
-components of the EIF are defined as follows: $D^Y_{\delta} =
-\frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y - \overline{Q}_{Y}(z,a,w)\}$,
-$D^A_{\delta} = \frac{\delta\phi(w) \{a - g(1 \mid w)\}} {\{\delta g(1 \mid w)
-+ g(0 \mid w)\}^2}$, and $D^{Z,W}_{\delta} = \int \overline{Q}_{Y}(z, a, w)
-g_{\delta}(a \mid w) d\kappa(a)$, and where $\phi(w) =
-\mathbb{E}\{\overline{Q}_{Y}(1, Z, W)
-- \overline{Q}_{Y}(0, Z, W) \mid W = w\}$.
+components of the EIF are defined as follows:
+* $D^Y_{\delta} = \frac{g_{\delta}(a \mid w)}{e(a \mid z, w)}\{y -
+  \overline{Q}_{Y}(z,a,w)\}$,
+* $D^A_{\delta} = \frac{\delta\phi(w) \{a - g(1 \mid w)\}}{\{\delta g(1 \mid w)
+  + g(0 \mid w)\}^2}$, for $\phi(w) = \mathbb{E}\{\overline{Q}_{Y}(1, Z, W) -
+  \overline{Q}_{Y}(0, Z, W) \mid W = w\}$, and
+* $D^{Z,W}_{\delta} = \int \overline{Q}_{Y}(z, a, w) g_{\delta}(a \mid w)
+  d\kappa(a)$.
 
 The TML estimator may be computed by fluctuating initial estimates of the
 nuisance parameters so as to solve the EIF estimating equation. The resultant

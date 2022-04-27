@@ -121,24 +121,25 @@ of Alan Hubbard.
 
 ### Nima Hejazi {-}
 
-[Nima Hejazi](https://nimahejazi.org) is an NSF postdoctoral research fellow in
-the Division of Biostatistics at Weill Cornell Medicine and an affiliate
-postdoctoral researcher in the Vaccine and Infectious Disease Division at the
-Fred Hutchinson Cancer Research Center. In 2021, he completed his PhD in
-biostatistics under the supervision of Mark van der Laan and Alan Hubbard.
-Broadly, Nima's research interests combine causal inference, machine learning,
-and computational statistics, drawing on ideas from non/semi-parametric
-estimation to develop robust statistical procedures with efficiency guarantees.
-Particular methodological areas of current emphasis include causal mediation
-analysis, efficient inference under two-phase sampling designs, sieve estimation
-with machine learning, and targeted loss-based estimation. His work is usually
-inspired by applications in vaccine clinical trials, computational biology, and
-epidemiology. He is also passionate about statistical computing, open source
-software design for applied statistics, and research software engineering.  Nima
-has made significant contributions to the `hal9001`, `sl3`, `tmle3`, and
-`origami` packages, is the primary author of the `tmle3shift` and `tmle3mediate`
-packages, and has been responsible for package maintenance and distribution
-across the `tlverse` ecosystem.
+[Nima Hejazi](https://nimahejazi.org) is an incoming Assistant Professor of
+Biostatistics at the [Harvard T.H. Chan School of Public
+Health](https://www.hsph.harvard.edu/biostatistics/). Nima completed a PhD in
+biostatistics under the supervision of Mark van der Laan and Alan Hubbard and
+held an NSF postdoctoral research fellowship from 2021-2022. His research
+interests combine causal inference, machine learning, and computational
+statistics, drawing on ideas from non/semi-parametric estimation to develop
+robust statistical procedures with efficiency guarantees, tailored to problems
+arising in the biomedical and health sciences. Particular methodological areas
+of current emphasis include causal mediation analysis, estimation under biased
+sampling designs, sieve estimation with machine learning, and targeted
+loss-based estimation. Nima's methodological work is driven by applications in
+clinical trials (especially vaccine efficacy trials), computational biology, and
+epidemiology. He is also passionate about statistical computing and open source
+software design for applied statistics. Accordingly, Nima has made significant
+contributions to the `hal9001`, `sl3`, `tmle3`, and `origami` packages, is the
+primary author of the `tmle3shift` and `tmle3mediate` packages, and has been
+responsible for package maintenance and distribution across the `tlverse`
+ecosystem.
 
 ### Ivana Malenica {-}
 
