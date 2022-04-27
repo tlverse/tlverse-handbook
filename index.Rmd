@@ -97,49 +97,47 @@ include many of the most recent advances in Targeted Learning and related areas.
 ### Mark van der Laan {-}
 
 Mark van der Laan, PhD, is Professor of Biostatistics and Statistics at UC
-Berkeley. His research interests include statistical methods in computational
-biology, survival analysis, censored data, adaptive designs, targeted maximum
-likelihood estimation, causal inference, data-adaptive loss-based learning, and
-multiple testing. His research group developed loss-based super learning in
-semiparametric models, based on cross-validation, as a generic optimal tool for
-the estimation of infinite-dimensional parameters, such as nonparametric density
-estimation and prediction with both censored and uncensored data. Building on
-this work, his research group developed targeted maximum likelihood estimation
-for a target parameter of the data-generating distribution in arbitrary
-semiparametric and nonparametric models, as a generic optimal methodology for
-statistical and causal inference. Most recently, Mark's group has focused in
-part on the development of a centralized, principled set of software tools for
-targeted learning, the `tlverse`.
+Berkeley and co-director of UC Berkeley's [Center for Targeted Machine Learning
+and Causal Inference](https://ctml.berkeley.edu/). His research interests
+include statistical methods in computational biology, survival analysis,
+censored data, adaptive designs, targeted maximum likelihood estimation, causal
+inference, data-adaptive loss-based learning, and multiple testing. His research
+group developed loss-based super learning in semiparametric models, based on
+cross-validation, as a generic optimal tool for the estimation of
+infinite-dimensional parameters, such as nonparametric density estimation and
+prediction with both censored and uncensored data. Building on this work, his
+research group developed targeted maximum likelihood estimation for a target
+parameter of the data-generating distribution in arbitrary semiparametric and
+nonparametric models, as a generic optimal methodology for statistical and
+causal inference. Since mid-2017, Mark's group has focused in part on the
+development of a centralized, principled set of software tools for targeted
+learning, the `tlverse`.
 
 ### Jeremy Coyle {-}
 
 Jeremy Coyle, PhD, is a consulting data scientist and statistical programmer,
 currently leading the software development effort that has produced the
 `tlverse` ecosystem of R packages and related software tools. Jeremy earned his
-PhD in Biostatistics from UC Berkeley in 2016, primarily under the supervision
+PhD in Biostatistics from UC Berkeley in 2017, primarily under the supervision
 of Alan Hubbard.
 
 ### Nima Hejazi {-}
 
-[Nima Hejazi](https://nimahejazi.org) is an incoming Assistant Professor of
-Biostatistics at the [Harvard T.H. Chan School of Public
-Health](https://www.hsph.harvard.edu/biostatistics/). Nima completed a PhD in
-biostatistics under the supervision of Mark van der Laan and Alan Hubbard and
-held an NSF postdoctoral research fellowship from 2021-2022. His research
-interests combine causal inference, machine learning, and computational
-statistics, drawing on ideas from non/semi-parametric estimation to develop
-robust statistical procedures with efficiency guarantees, tailored to problems
-arising in the biomedical and health sciences. Particular methodological areas
-of current emphasis include causal mediation analysis, estimation under biased
-sampling designs, sieve estimation with machine learning, and targeted
-loss-based estimation. Nima's methodological work is driven by applications in
-clinical trials (especially vaccine efficacy trials), computational biology, and
-epidemiology. He is also passionate about statistical computing and open source
-software design for applied statistics. Accordingly, Nima has made significant
-contributions to the `hal9001`, `sl3`, `tmle3`, and `origami` packages, is the
-primary author of the `tmle3shift` and `tmle3mediate` packages, and has been
-responsible for package maintenance and distribution across the `tlverse`
-ecosystem.
+[Nima Hejazi](https://nimahejazi.org), PhD, is an incoming Assistant Professor
+of Biostatistics at the [Harvard T.H. Chan School of Public
+Health](https://www.hsph.harvard.edu/biostatistics/). He received his PhD in
+biostatistics at UC Berkeley, working under the supervision of Mark van der Laan
+and Alan Hubbard, and afterwards held an NSF postdoctoral research fellowship.
+Nima's research interests combine causal inference, machine learning,
+non/semi-parametric estimation, and computational statistics -- areas of recent
+emphasis include causal mediation analysis, efficiency under biased sampling
+designs, nonparametric sieve estimation with machine learning, and targeted
+loss-based estimation. His work is primarily driven by applications in clinical
+trials (esp., vaccine efficacy trials), infectious disease epidemiology, and
+computational biology. Nima is also passionate about statistical computing and
+open source software design standards for statistical data science, and he has
+co-led or contributed significantly to many `tlverse` packages (`hal9001`,
+`sl3`, `tmle3`, `origami`, `tmle3shift`, `tmle3mediate`).
 
 ### Ivana Malenica {-}
 
@@ -169,10 +167,12 @@ R packages in the `tlverse`.
 
 ### Alan Hubbard {-}
 
-Alan Hubbard is Professor of Biostatistics, former head of the Division of
-Biostatistics at UC Berkeley, and head of data analytics core at UC Berkeley's
-SuperFund research program. His current research interests include causal
-inference, variable importance analysis, statistical machine learning,
+Alan Hubbard, PhD, is Professor of Biostatistics at UC Berkeley, current chair
+of the Division of Biostatistics of the UC Berkeley School of Public Health,
+head of the data analytics core of UC Berkeley's SuperFund research program, and
+co-director of UC Berkeley's [Center for Targeted Machine Learning and Causal
+Inference](https://ctml.berkeley.edu/). His current research interests include
+causal inference, variable importance analysis, statistical machine learning,
 estimation of and inference for data-adaptive statistical target parameters, and
 targeted minimum loss-based estimation. Research in his group is generally
 motivated by applications to problems in computational biology, epidemiology,
