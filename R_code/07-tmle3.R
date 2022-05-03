@@ -1,13 +1,13 @@
 ## ----tmle_fig1, results="asis", echo = FALSE----------------------------------
-knitr::include_graphics("img/misc/tmle_sim/schematic_1_truedgd.png")
+knitr::include_graphics("img/png/schematic_1_truedgd.png")
 
 
 ## ----tmle_fig2, results="asis", echo = FALSE----------------------------------
-knitr::include_graphics("img/misc/tmle_sim/schematic_2b_sllik.png")
+knitr::include_graphics("img/png/schematic_2b_sllik.png")
 
 
 ## ----tmle_fig3, results="asis", echo = FALSE----------------------------------
-knitr::include_graphics("img/misc/tmle_sim/schematic_3_effects.png")
+knitr::include_graphics("img/png/schematic_3_effects.png")
 
 
 ## ----tmle3-load-data----------------------------------------------------------
@@ -173,14 +173,5 @@ metalearner <- make_learner(
   Lrnr_solnp,
   loss_function = loss_loglik_binomial,
   learner_function = metalearner_logistic_binomial
-)
-
-
-## ----tmle3-ex2----------------------------------------------------------------
-ist_data <- fread(
-  paste0(
-    "https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
-    "master/data/ist_sample.csv"
-  )
 )
 

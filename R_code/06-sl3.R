@@ -1,5 +1,9 @@
 ## ----cv_fig, fig.show="hold", echo = FALSE------------------------------------
-knitr::include_graphics("img/misc/SLKaiserNew.pdf")
+knitr::include_graphics("img/png/vs.png")
+
+
+## ----cv_sl_alg, fig.show="hold", echo = FALSE---------------------------------
+knitr::include_graphics("img/png/SLKaiserNew.png")
 
 
 ## ----setup--------------------------------------------------------------------
@@ -21,18 +25,10 @@ washb_data <- fread(
   ),
   stringsAsFactors = TRUE
 )
-
-
-## ----sl3_washb_example_table1, echo=FALSE-------------------------------------
-if (knitr::is_latex_output()) {
-  head(washb_data) %>%
-    kable(format = "latex")
-} else if (knitr::is_html_output()) {
-  head(washb_data) %>%
-    kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
-    scroll_box(width = "100%", height = "300px")
-}
+head(washb_data) %>%
+  kable() %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
 
 
 ## ----task, warning=TRUE-------------------------------------------------------
@@ -59,8 +55,7 @@ head(washb_task$folds[[1]]$training_set) # row indexes for fold 1 training
 head(washb_task$folds[[1]]$validation_set) # row indexes for fold 1 validation
 
 any(
-  washb_task$folds[[1]]$training_set %in%
-    washb_task$folds[[1]]$validation_set
+  washb_task$folds[[1]]$training_set %in% washb_task$folds[[1]]$validation_set
 )
 
 
@@ -100,7 +95,7 @@ lrn_interaction <- make_learner(Lrnr_define_interactions, interactions)
 
 
 ## ----interaction-pipe---------------------------------------------------------
-# we already instantiated a linear model learner above, no need to do it again
+# we already instantiated a linear model learner, no need to do that again
 lrn_glm_interaction <- make_learner(Pipeline, lrn_interaction, lrn_glm)
 lrn_glm_interaction
 
@@ -122,7 +117,6 @@ lrn_bayesglm <- Lrnr_pkg_SuperLearner$new("SL.bayesglm")
 ##   do.call(Lrnr_svm$new, as.list(tuning_params))
 ## })
 
-
 ## ----extra-lrnr-mindblown-xgboost---------------------------------------------
 grid_params <- list(
   max_depth = c(2, 4, 6),
@@ -138,7 +132,7 @@ xgb_learners <- apply(grid, MARGIN = 1, function(tuning_params) {
 xgb_learners
 
 
-## ----carotene, eval=FALSE-----------------------------------------------------
+## ----carotene, eval = FALSE---------------------------------------------------
 ## # Unlike xgboost, I have no idea how to tune a neural net or BART machine, so
 ## # I let caret take the reins
 ## lrnr_caret_nnet <- make_learner(Lrnr_caret, algorithm = "nnet")
@@ -158,7 +152,9 @@ stack
 
 ## ----alt-stack----------------------------------------------------------------
 # named vector of learners first
-learners <- c(lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50)
+learners <- c(
+  lrn_glm, lrn_polspline, lrn_enet.5, lrn_ridge, lrn_lasso, xgb_50
+)
 names(learners) <- c(
   "glm", "polspline", "enet.5", "ridge", "lasso", "xgboost50"
 )
@@ -245,17 +241,18 @@ head(sl_preds)
 
 
 ## ---- plot-predvobs-woohoo, eval=FALSE----------------------------------------
+## 
 ## # df_plot <- data.frame(Observed = washb_data[["whz"]], Predicted = sl_preds,
 ## #                        count = seq(1:nrow(washb_data))
-##
+## 
 ## # df_plot_melted <- melt(df_plot, id.vars = "count",
 ## #                         measure.vars = c("Observed", "Predicted"))
-##
+## 
 ## # ggplot(df_plot_melted, aes(value, count, color = variable)) + geom_point()
 
 
 ## ---- sl-summary--------------------------------------------------------------
-sl_fit_summary <- sl_fit$print()
+sl_fit$cv_risk(loss_fun = loss_squared_error)
 
 
 ## ----CVsl---------------------------------------------------------------------
@@ -268,37 +265,21 @@ washb_task_new <- make_sl3_Task(
 CVsl <- CV_lrnr_sl(
   lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
 )
-
-
-## ----CVsl_table---------------------------------------------------------------
-if (knitr::is_latex_output()) {
-  CVsl %>%
-    kable(format = "latex")
-} else if (knitr::is_html_output()) {
-  CVsl %>%
-    kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
-    scroll_box(width = "100%", height = "300px")
-}
+CVsl %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
 
 
 ## ----varimp-------------------------------------------------------------------
 washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
+washb_varimp %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
 
 
-## ----varimp_table-------------------------------------------------------------
-if (knitr::is_latex_output()) {
-  washb_varimp %>%
-    kable(format = "latex")
-} else if (knitr::is_html_output()) {
-  washb_varimp %>%
-    kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
-    scroll_box(width = "100%", height = "300px")
-}
-
-
-## ----varimp-plot--------------------------------------------------------------
+## ----varimp-plot, out.width = "100%"------------------------------------------
 # plot variable importance
 importance_plot(
   washb_varimp,
@@ -329,56 +310,37 @@ if (knitr::is_latex_output()) {
 }
 
 
-## ----ex-setup2----------------------------------------------------------------
-ist_data <- paste0(
-  "https://raw.githubusercontent.com/tlverse/",
-  "tlverse-handbook/master/data/ist_sample.csv"
-) %>% fread()
-
-# number 3 help
-ist_task_CVsl <- make_sl3_Task(
-  data = ist_data,
-  outcome = "DRSISC",
-  covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
-  drop_missing_outcome = TRUE,
-  folds = origami::make_folds(
-    n = sum(!is.na(ist_data$DRSISC)),
-    fold_fun = folds_vfold,
-    V = 5
-  )
-)
-
-
 ## ----ex-key, eval=FALSE-------------------------------------------------------
 ## db_data <- url(
 ##   "https://raw.githubusercontent.com/benkeser/sllecture/master/chspred.csv"
 ## )
 ## chspred <- read_csv(file = db_data, col_names = TRUE)
-##
+## data.table::setDT(chspred)
+## 
 ## # make task
 ## chspred_task <- make_sl3_Task(
 ##   data = chspred,
-##   covariates = head(colnames(chspred), -1),
+##   covariates = colnames(chspred)[-1],
 ##   outcome = "mi"
 ## )
-##
+## 
 ## # make learners
 ## glm_learner <- Lrnr_glm$new()
 ## lasso_learner <- Lrnr_glmnet$new(alpha = 1)
 ## ridge_learner <- Lrnr_glmnet$new(alpha = 0)
 ## enet_learner <- Lrnr_glmnet$new(alpha = 0.5)
-## # curated_glm_learner uses formula = "mi ~ smoke + beta + waist"
-## curated_glm_learner <- Lrnr_glm_fast$new(covariates = c("smoke, beta, waist"))
+## # curated_glm_learner uses formula = "mi ~ smoke + beta"
+## curated_glm_learner <- Lrnr_glm_fast$new(covariates = c("smoke", "beta"))
 ## mean_learner <- Lrnr_mean$new() # That is one mean learner!
 ## glm_fast_learner <- Lrnr_glm_fast$new()
 ## ranger_learner <- Lrnr_ranger$new()
 ## svm_learner <- Lrnr_svm$new()
 ## xgb_learner <- Lrnr_xgboost$new()
-##
+## 
 ## # screening
 ## screen_cor <- make_learner(Lrnr_screener_correlation)
 ## glm_pipeline <- make_learner(Pipeline, screen_cor, glm_learner)
-##
+## 
 ## # stack learners together
 ## stack <- make_learner(
 ##   Stack,
@@ -387,32 +349,29 @@ ist_task_CVsl <- make_sl3_Task(
 ##   curated_glm_learner, mean_learner, glm_fast_learner,
 ##   ranger_learner, svm_learner, xgb_learner
 ## )
-##
+## 
 ## # make and train SL
 ## sl <- Lrnr_sl$new(
 ##   learners = stack
 ## )
 ## sl_fit <- sl$train(chspred_task)
-## sl_fit$print()
-##
-## CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_loglik_binomial)
+## sl_fit$cv_risk(loss_squared_error)
+## 
+## CVsl <- CV_lrnr_sl(sl_fit, chspred_task, loss_squared_error)
 ## CVsl
-##
-## varimp <- importance(sl_fit, type = "permute")
-## varimp %>%
-##   importance_plot(
-##     main = "sl3 Variable Importance for Myocardial Infarction Prediction"
-##   )
+## 
+## varimp <- importance(sl_fit)
+## importance_plot(varimp)
 
 
 ## ----ex2-key, eval=FALSE------------------------------------------------------
 ## library(ROCR) # for AUC calculation
-##
+## 
 ## ist_data <- paste0(
 ##   "https://raw.githubusercontent.com/tlverse/",
 ##   "tlverse-handbook/master/data/ist_sample.csv"
 ## ) %>% fread()
-##
+## 
 ## # stack
 ## ist_task <- make_sl3_Task(
 ##   data = ist_data,
@@ -420,7 +379,7 @@ ist_task_CVsl <- make_sl3_Task(
 ##   covariates = colnames(ist_data)[-which(names(ist_data) == "DRSISC")],
 ##   drop_missing_outcome = TRUE
 ## )
-##
+## 
 ## # learner library
 ## lrn_glm <- Lrnr_glm$new()
 ## lrn_lasso <- Lrnr_glmnet$new(alpha = 1)
@@ -435,9 +394,8 @@ ist_task_CVsl <- make_sl3_Task(
 ##   eta = c(0.01, 0.15, 0.3)
 ## )
 ## grid <- expand.grid(grid_params, KEEP.OUT.ATTRS = FALSE)
-## params_default <- list(nthread = getOption("sl.cores.learners", 1))
 ## xgb_learners <- apply(grid, MARGIN = 1, function(params_tune) {
-##   do.call(Lrnr_xgboost$new, c(params_default, as.list(params_tune)))
+##   do.call(Lrnr_xgboost$new, as.list(params_tune))
 ## })
 ## learners <- unlist(list(
 ##   xgb_learners, lrn_ridge, lrn_mean, lrn_lasso,
@@ -445,17 +403,17 @@ ist_task_CVsl <- make_sl3_Task(
 ## ),
 ## recursive = TRUE
 ## )
-##
+## 
 ## # SL
 ## sl <- Lrnr_sl$new(learners)
 ## sl_fit <- sl$train(ist_task)
-##
+## 
 ## # AUC
 ## preds <- sl_fit$predict()
 ## obs <- c(na.omit(ist_data$DRSISC))
 ## AUC <- performance(prediction(sl_preds, obs), measure = "auc")@y.values[[1]]
 ## plot(performance(prediction(sl_preds, obs), "tpr", "fpr"))
-##
+## 
 ## # CVsl
 ## ist_task_CVsl <- make_sl3_Task(
 ##   data = ist_data,
@@ -470,7 +428,7 @@ ist_task_CVsl <- make_sl3_Task(
 ## )
 ## CVsl <- CV_lrnr_sl(sl_fit, ist_task_CVsl, loss_loglik_binomial)
 ## CVsl
-##
+## 
 ## # sl3 variable importance plot
 ## ist_varimp <- importance(sl_fit, type = "permute")
 ## ist_varimp %>%
@@ -481,3 +439,4 @@ ist_task_CVsl <- make_sl3_Task(
 
 ## ----ex3-key, eval=FALSE------------------------------------------------------
 ## # TODO
+

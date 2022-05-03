@@ -1,4 +1,4 @@
-## ---- fig.cap="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention", results = "asis", echo=FALSE----
+## ---- fig.cap="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention", results = "asis", echo=FALSE, out.width = "100%"----
 knitr::include_graphics(path = "img/gif/shift_animation.gif")
 
 
@@ -29,16 +29,16 @@ sl3_list_learners("density")
 
 
 ## ----sl3_lrnrs-gfit-shift-----------------------------------------------------
-# learners used for conditional densities (i.e., generalized propensity score)
+# learners used for conditional densities for (g_n)
 haldensify_lrnr <- Lrnr_haldensify$new(
-  n_bins = c(3, 5),
+  n_bins = c(5, 10, 20),
   lambda_seq = exp(seq(-1, -10, length = 200))
 )
-# semiparametric density estimator based on homoscedastic errors (HOSE)
+# semiparametric density estimator with homoscedastic errors (HOSE)
 hose_hal_lrnr <- make_learner(Lrnr_density_semiparametric,
   mean_learner = hal_lrnr
 )
-# semiparametric density estimator based on heteroscedastic errors (HESE)
+# semiparametric density estimator with heteroscedastic errors (HESE)
 hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
   mean_learner = rf_lrnr,
   var_learner = fglm_lrnr
@@ -46,7 +46,7 @@ hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
 
 # SL for the conditional treatment density
 sl_dens_lrnr <- Lrnr_sl$new(
-  learners = list(haldensify_lrnr, hose_hal_lrnr, hese_rf_glm_lrnr),
+  learners = list(hose_hal_lrnr, hese_rf_glm_lrnr),
   metalearner = Lrnr_solnp_density$new()
 )
 
@@ -105,9 +105,9 @@ tmle_spec <- tmle_vimshift_delta(
 )
 
 
-## ----fit_tmle_wrapper_vimshift, eval=FALSE------------------------------------
-## tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
-## tmle_fit
+## ----fit_tmle_wrapper_vimshift------------------------------------------------
+tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
+tmle_fit
 
 
 ## ----vim_targeted_msm_fit, eval=FALSE-----------------------------------------
@@ -116,7 +116,7 @@ tmle_spec <- tmle_vimshift_delta(
 ##   shift_grid = delta_grid,
 ##   max_shifted_ratio = 2
 ## )
-##
+## 
 ## # fit the TML estimator and examine the results
 ## tmle_msm_fit <- tmle3(tmle_msm_spec, data, node_list, learner_list)
 ## tmle_msm_fit
@@ -175,11 +175,3 @@ learner_list <- list(Y = sl_reg_lrnr, A = cv_hose_hal_lrnr)
 
 ## ----shift-action-ex3-sol, echo=FALSE-----------------------------------------
 
-
-## ----shift-review-ex1-sol, echo=FALSE-----------------------------------------
-
-
-## ----shift-review-ex2-sol, echo=FALSE-----------------------------------------
-
-
-## ----shift-review-ex3-sol, echo=FALSE-----------------------------------------
