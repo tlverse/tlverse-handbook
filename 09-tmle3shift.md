@@ -532,7 +532,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
+Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -645,8 +645,8 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
-Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
+Iter: 1 fn: 547.4323	 Pars:  0.99992954 0.00007046
+Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)

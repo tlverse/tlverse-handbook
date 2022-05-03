@@ -641,50 +641,6 @@ you will need to explicitly make a copy of the data (to work around
 use the <code>cpp2</code> data going forward.</li>
 </ol>
 </div>
-<div id="tmle3-ex2" class="section level3">
-<h3>
-<span class="header-section-number">7.8.2</span> Estimation of Strata-Specific ATEs with <code>tmle3</code><a class="anchor" aria-label="anchor" href="#tmle3-ex2"><i class="fas fa-link"></i></a>
-</h3>
-<p>For this exercise, we will work with a random sample of 5,000 patients who
-participated in the International Stroke Trial (IST). This data is described in
-the <a href="#ist">Chapter 3.2 of the <code>tlverse</code> handbook</a>. We included the data below
-and a summarized description that is relevant for this exercise.</p>
-<p>The outcome, <span class="math inline">\(Y\)</span>, indicates recurrent ischemic stroke within 14 days after
-randomization (<code>DRSISC</code>); the treatment of interest, <span class="math inline">\(A\)</span>, is the randomized
-aspirin vs. no aspirin treatment allocation (<code>RXASP</code> in <code>ist</code>); and the
-adjustment set, <span class="math inline">\(W\)</span>, consists simply of other variables measured at baseline. In
-this data, the outcome is occasionally missing, but there is no need to create a
-variable indicating this missingness (such as <span class="math inline">\(\Delta\)</span>) for analyses in the
-<code>tlverse</code>, since the missingness is automatically detected when <code>NA</code> are present
-in the outcome. Covariates with missing values (<code>RATRIAL</code>, <code>RASP3</code> and <code>RHEP24</code>)
-have already been imputed. Additional covariates were created
-(<code>MISSING_RATRIAL_RASP3</code> and <code>MISSING_RHEP24</code>), which indicate whether or not
-the covariate was imputed. The missingness was identical for <code>RATRIAL</code> and
-<code>RASP3</code>, which is why only one covariate indicating imputation for these two
-covariates was created.</p>
-<ol style="list-style-type: decimal">
-<li>Estimate the average effect of randomized aspirin treatment (<code>RXASP</code> = 1) on
-recurrent ischemic stroke. Even though the missingness mechanism on <span class="math inline">\(Y\)</span>,
-<span class="math inline">\(\Delta\)</span>, does not need to be specified in the node list, it does still need
-to be accounted for in the TMLE. In other words, for this estimation problem,
-<span class="math inline">\(\Delta\)</span> is a relevant factor of the likelihood. Thus, when defining the
-list of <code>sl3</code> learners for each likelihood factor, be sure to include a list
-of learners for estimation of <span class="math inline">\(\Delta\)</span>, say <code>sl_Delta</code>, and specify this in
-the learner list, like so
-<code>learner_list &lt;- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)</code>.</li>
-<li>Recall that this RCT was conducted internationally. Suppose there is concern
-that the dose of aspirin may have varied across geographical regions, and an
-average across all geographical regions may not be warranted. Calculate the
-strata specific ATEs according to geographical region (<code>REGION</code>).</li>
-</ol>
-<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">ist_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/fread.html">fread</a></span><span class="op">(</span>
-  <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span>
-    <span class="st">"https://raw.githubusercontent.com/tlverse/deming2019-workshop/"</span>,
-    <span class="st">"master/data/ist_sample.csv"</span>
-  <span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-</div>
 </div>
 <div id="summary" class="section level2">
 <h2>
@@ -742,10 +698,7 @@ optimal treatments and stochastic shift interventions.</p>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#exercises-1"><span class="header-section-number">7.8</span> Exercises</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#tmle3-ex1"><span class="header-section-number">7.8.1</span> Estimation of the ATE with tmle3</a></li>
-<li><a class="nav-link" href="#tmle3-ex2"><span class="header-section-number">7.8.2</span> Estimation of Strata-Specific ATEs with tmle3</a></li>
-</ul>
+<a class="nav-link" href="#exercises-1"><span class="header-section-number">7.8</span> Exercises</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#tmle3-ex1"><span class="header-section-number">7.8.1</span> Estimation of the ATE with tmle3</a></li></ul>
 </li>
 <li><a class="nav-link" href="#summary"><span class="header-section-number">7.9</span> Summary</a></li>
 </ul>
