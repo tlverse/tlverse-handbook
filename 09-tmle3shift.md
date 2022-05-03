@@ -144,7 +144,7 @@ For each $w \in \mathcal{W}$, assume that the interval $\mathcal{I}(w) =
 (l(w,), u(w))$ may be partitioned into subintervals $\mathcal{I}_{\delta,j}(w):
 j = 1, \ldots, J(w)$ such that $d(a, w; \delta)$ is equal to some $d_j(a, w;
 \delta)$ in $\mathcal{I}_{\delta,j}(w)$ and $d_j(\cdot,w; \delta)$ has inverse
-function $h_j(\cdot, w; \delta)$ with derivative $h_j'(\cdot, w; \delta)$.
+function $b_j(\cdot, w; \delta)$ with derivative $b_j'(\cdot, w; \delta)$.
 :::
 <!-- TODO: explain this
 Essentially, for a given $d(A,W; \delta)$ to exhibit this property, the
@@ -207,7 +207,7 @@ generates independent and identically distributed units $O$, the common
 identification assumptions of consistency ($Y^{A_{\delta,i}}_i = Y_i$ in the
 event $A_i = d(a_i, w_i)$, for $i = 1, \ldots, n$) and lack of interference
 ($Y^{A_{\delta,i}}_i$ does not depend on $d(a_j, w_j)$ for $i = 1, \ldots, n$
-and $j \neq i$) hold.  Beyond these, we require no unmeasured confounding (the
+and $j \neq i$) hold. Beyond these, we require no unmeasured confounding (the
 analog to the randomization assumption in observational studies) and positivity.
 
 ::: {.definition name="No Unmeasured Confounding"}
@@ -532,7 +532,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
+Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -645,8 +645,8 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.99992954 0.00007046
-Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
+Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
+Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
