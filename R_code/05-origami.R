@@ -73,7 +73,7 @@ t <- length(AP)
 
 
 ## ---- fig.cap="Rolling origin CV", results="asis", echo=FALSE-----------------
-knitr::include_graphics(path = "img/image/rolling_origin.png")
+knitr::include_graphics(path = "img/png/rolling_origin.png")
 
 
 ## ----rolling_origin-----------------------------------------------------------
@@ -86,7 +86,7 @@ folds[[2]]
 
 
 ## ---- fig.cap="Rolling window CV", results="asis", echo=FALSE-----------------
-knitr::include_graphics(path = "img/image/rolling_window.png")
+knitr::include_graphics(path = "img/png/rolling_window.png")
 
 
 ## ----rolling_window-----------------------------------------------------------
@@ -99,11 +99,11 @@ folds[[2]]
 
 
 ## ---- fig.cap="Rolling origin V-fold CV", results="asis", echo=FALSE----------
-knitr::include_graphics(path = "img/image/rolling_origin_v_fold.png")
+knitr::include_graphics(path = "img/png/rolling_origin_v_fold.png")
 
 
 ## ---- fig.cap="Rolling window V-fold CV", results="asis", echo=FALSE----------
-knitr::include_graphics(path = "img/image/rolling_window_v_fold.png")
+knitr::include_graphics(path = "img/png/rolling_window_v_fold.png")
 
 
 ## ----setup_ex-----------------------------------------------------------------
@@ -227,7 +227,8 @@ cv_rf <- function(fold, data, reg_form) {
 # now, let's cross-validate...
 folds <- make_folds(washb_data)
 cvrf_results <- cross_validate(
-  cv_fun = cv_rf, folds = folds, data = washb_data, reg_form = "whz ~ .",
+  cv_fun = cv_rf, folds = folds, 
+  data = washb_data, reg_form = "whz ~ .",
   use_future = FALSE
 )
 mean(cvrf_results$SE)
@@ -300,3 +301,4 @@ mses <- cross_validate(
 )
 mses$mse
 colMeans(mses$mse[, c("arima", "arima2")])
+
