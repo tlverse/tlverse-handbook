@@ -1,0 +1,382 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+
+# Super Learning {#sl3-advanced}
+
+Based on the [`sl3` `R` package](https://github.com/tlverse/sl3) by _Jeremy
+Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
+
+Updated: `r Sys.Date()`
+
+## Learning Objectives{-}
+1. Estimate the cross-validated predictive performance of the ensemble super
+   learner.
+2. Evaluate `sl3` variable importance metrics.
+3. Flexibly estimate conditional density functionals with `sl3`.
+4. TODO
+
+## Cross-validated super learner
+
+We can cross-validate the SL to see how well the SL performs on unseen data, and
+obtain an estimate of the cross-validated risk of the SL.
+
+This estimation procedure requires an outer/external layer of
+cross-validation, also called nested cross-validation, which involves setting
+aside a separate holdout sample that we don’t use to fit the SL. This external
+cross-validation procedure may also incorporate 10 folds, which is the default
+in `sl3`. However, we will incorporate 2 outer/external folds of
+cross-validation for computational efficiency.
+
+We also need to specify a loss function to evaluate SL. Documentation for the
+available loss functions can be found in the [`sl3` Loss Function
+Reference](https://tlverse.org/sl3/reference/loss_functions.html).
+
+```{r CVsl}
+washb_task_new <- make_sl3_Task(
+  data = washb_data,
+  covariates = covars,
+  outcome = outcome,
+  folds = origami::make_folds(washb_data, fold_fun = folds_vfold, V = 2)
+)
+CVsl <- CV_lrnr_sl(
+  lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
+)
+CVsl %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = T) %>%
+  scroll_box(width = "100%", height = "300px")
+```
+<!-- Explain summary!!!! -->
+
+## Variable importance measures
+
+Variable importance can be interesting and informative. It can also be
+contradictory and confusing. Nevertheless, we like it, and so do our
+collaborators, so we created a variable importance function in `sl3`! The `sl3`
+`importance` function returns a table with variables listed in decreasing order
+of importance (i.e., most important on the first row).
+
+The measure of importance in `sl3` is based on a risk ratio, or risk difference,
+between the learner fit with a removed, or permuted, covariate and the learner
+fit with the true covariate, across all covariates. In this manner, the larger
+the risk difference, the more important the variable is in the prediction.
+
+The intuition of this measure is that it calculates the risk (in terms of the
+average loss in predictive accuracy) of losing one covariate, while keeping
+everything else fixed, and compares it to the risk if the covariate was not
+lost. If this risk ratio is one, or risk difference is zero, then losing that
+covariate had no impact, and is thus not important by this measure. We do this
+across all of the covariates. As stated above, we can remove the covariate and
+refit the SL without it, or we just permute the covariate (faster)
+and hope for the shuffling to distort any meaningful information that was
+present in the covariate. This idea of permuting instead of removing saves a lot
+of time, and is also incorporated in the `randomForest` variable importance
+measures. However, the permutation approach is risky, so the importance function
+default is to remove and refit.
+
+Let's explore the `sl3` variable importance measurements for the `washb` data.
+
+```{r varimp, eval = FALSE}
+washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
+washb_varimp %>%
+  kable(digits = 4) %>%
+  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+  scroll_box(width = "100%", height = "300px")
+```
+
+```{r varimp-plot, out.width = "100%", eval = FALSE}
+# plot variable importance
+importance_plot(
+  washb_varimp,
+  main = "sl3 Variable Importance for WASH Benefits Example Data"
+)
+```
+<!-- Explain summary!!!! -->
+
+## Categorical outcome prediction
+
+## Multivariate outcome prediction
+
+## Super learning of a conditional density
+<!--
+OPTIONAL NOTES TO CONSIDER ON THIS TOPIC FROM MARK'S VIDEO LECTURE:
+Suppose we want to construct a Super Learner of the conditional probability
+distribution $g_0(a\mid W)=P_0(A=a\mid W)$, where $a\in {\cal A}$.
+Let's denote the values of $a$ with $\{0,1,\ldots,K\}$. A valid loss function
+for the conditional density is
+\[
+L(g)(O)=-\log g(A\mid W).\]
+That is, $g_0=\arg\min_g P_0L(g)$, i.e., $g_0$ is the minimizer of the
+expectation of the log-likelihood loss.
+
+**Candidate estimators**
+
+1. Candidate estimators based on multinomial logistic regression: To start
+with, one can use existing parametric model based MLE and machine learning
+algorithms in `R` that fit a multinomial regression. For example, parametric
+model multinomial logistic regression is available in `R` so that one can
+already build a rich library of such estimators based on  different candidate
+parametric models. In addition, `polyclass()` is a multinomial logistic
+regression machine learning algorithm in `R`.
+
+2. Candidate estimators based on machine learning for multinomial logistic
+regression: Secondly, one can use a machine learning algorithm such as
+`polyclass()` in `R` that data adaptively fits a multinomial logistic
+regression, which itself has tuning parameters, again generating a class of
+candidate estimators.
+
+3. Incorporating screening: Note that one can also marry any of these choices
+with a screening algorithm, thereby creating more candidate estimators of
+interest. The screening can be particularly important when there are many
+variables.
+
+4. Candidate estimators by fitting separate logistic regressions and using
+post-normalization
+
+* Code $A$ in terms of Bernoullis $B_k=I(A=k)$, $k=0,\ldots,K$.
+* Construct an estimator $\bar{g}_{nk}$ of $\bar{g}_{0k}(W)\equiv P_0(B_k=1\mid
+  W)$ using any of the logistic regression algorithms, for all $k=0,\ldots,K$.
+* This implies an estimator
+\[
+g_n(a\mid W)=\frac{\bar{g}_{na}(W)}{\sum_{k=0}^K \bar{g}_{nk}(W)}.\]
+* In other words, we simply normalize these separate logistic regression
+estimators so that we obtain a valid conditional distribution.
+* This generates an enormous amount of interesting algorithms, since we have
+available the whole machine learning literature for binary outcome regression.
+
+5. Candidate estimators by estimating the conditional "hazard" with pooled
+logistic regression.
+Note that
+\[
+g_0(a\mid W)=\lambda_0(a\mid W) S_0(a\mid W),\]
+where \[
+\lambda_0(a\mid W)=P_0(A=a\mid A\geq a,W),\]
+
+and $S_0(a\mid W)=\prod_{s\leq a}(1-\lambda_0(s\mid W))$ is the conditional
+survival function $P_0(A>a\mid W)$. So we have now parameterized the
+conditional distribution of $A$, given $W$, by a conditional hazard
+$\lambda_0(a\mid W)$: $g_0=g_{\lambda_0}$.
+
+* We could now focus on constructing candidate estimators of
+$\lambda_0(a\mid W)$, which implies candidate estimators of $g_0$.
+
+* For every observation $A_i$, we can create $A_i+1$ rows of data
+$(W,s,I(A_i=s))$, $s=0,\ldots,A_i$, $i=1,\ldots,n$. We now run a logistic
+regression estimator based on the pooled data set, ignoring ID, where we
+regress the binary outcome $I(A_i=s)$ on the covariates $(W,s)$.
+
+* If one assumes a parametric model, then this is nothing else then using the
+maximum likelihood estimator, demonstrating that ignoring the ID is not
+inefficient.
+
+* This defines now an estimator of $\lambda_0(s\mid W)=P_0(A=s\mid W,A\geq s)$
+as a function of $(s,W)$.
+
+* Different choices of logistic regression based estimators will define
+different estimators.
+
+* The pooling across $s$ is not very sensible if $A$ is not an ordered variable
+If $A$ is categorical, we recommend to compute  a separate logistic regression
+estimator of $\lambda_0(a\mid W)$ for each $a$ (i.e., stratify by $s$ in the
+  above pooled data set).
+
+* For non-categorical $A$, one could include both stratified (by level) as well
+as pooled (across levels) based logistic regression estimators.
+-->
+
+In many contexts it may be useful to estimate the conditional density of a given
+random variable, given certain variables that precede them in time. In the
+context of causal inference, this arises most readily when working with
+continuous-valued treatments, in which case the classical propensity score
+$\mathbb{P}(A = 1 \mid W)$ becomes instead the conditional density of treatment
+$A$, given covariates $W$, often called the _generalized propensity score_. The
+estimation of such quantities often requires specialized approaches tied to
+very specific algorithmic implementations. To our knowledge, general and
+flexible algorithms for conditional density estimation (CDE) have been proposed
+only sparsely in the literature -- we are aware of and have implemented two such
+approaches in `sl3`. The first of these is a semiparametric conditional density
+estimation approach that makes certain assumptions about the constancy of
+(higher) moments of the underlying distribution, while the second exploits the
+relationship between the (conditional) hazard and density functions to allow CDE
+via pooled hazard regression. Both approaches are flexible in that they allow
+the use of arbitrary regression functions or machine learning algorithms for the
+estimation of nuisance quantities (the conditional mean or the conditional
+hazard, respectively). We elaborate on these two frameworks below. Importantly,
+when considering the use of CV to select an optimal CDE approach or to create an
+ensemble of several candidate CDE methods, we stress that, per
+@dudoit2005asymptotics and related works, a loss function appropriate for
+density estimation is the negative log-density loss $L(\cdot) = -\log(p_n)$.
+
+## Moment-restricted Location-scale Conditional Density Estimation
+
+This family of semiparametric CDE approaches exploits the general form $\rho(Y -
+\mu(X) / \sigma(X))$, where $\rho$ is a given marginal density function and
+$\mu(X)$ and $\sigma(X)$ are nuisance quantities that may be estimated flexibly.
+CDE procedures formulated within this framework may be characterized as
+belonging to a _conditional location-scale_ family, that is, in which
+$p_n(Y \mid X) = \rho((Y - \mu_n(X)) / \sigma_n(X))$. Here, the marginal
+density mapping $\rho$ is selected _a priori_, leaving only the relevant moments
+$\mu(X)$ and $\sigma(X)$ to be estimated. While the limitation to (conditional)
+location-scale families is not without its potential disadvantages (leading to
+possible misspecification bias), this strategy is flexible in that it allows for
+arbitrary machine learning algorithms to be used in estimating $\mu(X) = \E(Y
+\mid X)$ and, optionally, the conditional variance $\sigma(X) = \E[(Y -
+\mu(X))^2 \mid X]$.
+
+In settings with limited data, the additional structure imposed by the
+assumption that the target density belongs to a location-scale family may prove
+advantageous, though, in practice, it is impossible to know whether and when
+this assumption holds. This procedure is not a novel contribution of our own
+(and we have been unable to locate a formal description of it in the
+literature); nevertheless, we provide an informal algorithm sketch below. This
+algorithm considers access to $n$ copies of an observed data random variable
+$O = (Y, X)$, an _a priori_-specified kernel function specification $\rho$, a
+candidate regression procedure $f_{\mu}$ to estimation the conditional mean
+$\mu(X)$, and a candidate regression procedure $f_{\sigma}$ to estimate the
+conditional variance $\sigma(W)$.
+
+1. Estimate $\mu(X) = \E[Y \mid X]$, the conditional mean of $Y$ given $X$, by
+   applying the regression estimator $f_{\mu}$, yielding $\hat{\mu}(X)$.
+2. Estimate $\sigma(X) = \mathbb{V}[A \mid W]$, the conditional variance of $Y$
+   given $X$, by applying the regression estimator $f_{\sigma}$, yielding
+   $\hat{\sigma}^2(X)$. Note that this step involves only estimation of the
+   conditional mean $\E[(Y - \hat{\mu}(X))^2 \mid X]$.
+3. Estimate the one-dimensional density of $(Y - \hat{\mu}(X))^2 /
+   \hat{\sigma}^2(X)$, using kernel smoothing to obtain $\hat{\rho}(Y)$.
+4. Construct the estimated conditional density $p_n(Y \mid X) = \hat{\rho}((Y
+   - \hat{\mu}(X)) / \hat{\sigma}(X))$.
+
+This algorithm sketch encompasses two forms of this CDE approach, which diverge
+at the second step above. To simplify the approach, one may elect to estimate
+only the conditional mean $\mu(X)$ via a regression procedure, leaving the
+conditional variance to be assumed constant constant (i.e., estimated simply as
+the marginal mean of $\E[(Y - \hat{\mu}(X))^2]$). This class of CDE approaches
+have _homoscedastic error_ based on the variance assumption made. When
+additional flexibility is required, one may also estimate the conditional
+variance $\sigma^2(X)$ via the residuals of the estimated conditional mean, that
+is, estimating instead the conditional mean $\E[(Y - \hat{\mu}(X))^2 \mid X]$,
+where the candidate algorithm $f_{\sigma}$ is used to evaluate the expectation.
+These two approaches have been implemented in `sl3`, in the learner
+`Lrnr_density_semiparametric`, for which the `mean_learner` argument specifies
+$f_{\mu}$ and the (optional) `var_learner` argument specific $f_{\sigma}$. We
+demonstrate CDE with this approach below.
+
+```{r cde_using_locscale, eval = FALSE}
+# TODO: fix code block and flesh out into demo
+
+# semiparametric density estimator with homoscedastic errors (HOSE)
+hose_hal_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = hal_lrnr
+)
+# semiparametric density estimator with heteroscedastic errors (HESE)
+hese_rf_glm_lrnr <- make_learner(Lrnr_density_semiparametric,
+  mean_learner = rf_lrnr,
+  var_learner = fglm_lrnr
+)
+
+# SL for the conditional treatment density
+sl_dens_lrnr <- Lrnr_sl$new(
+  learners = list(hose_hal_lrnr, hese_rf_glm_lrnr),
+  metalearner = Lrnr_solnp_density$new()
+)
+```
+
+## Conditional Density Estimation via Pooled Hazard Regression
+
+When there is very limited information about the form of the conditional density
+function itself, making it hard to justify assumptions it belonging to a
+location-scale family, an alternative family of CDE approach can be leveraged.
+In this vein, @diaz2011super proposed constructing conditional density
+estimators (specifically in the context of estimating the generalized propensity
+score) by a combination of pooled regression and exploitation of the
+relationship between the (conditional) hazard and density functions. To develop
+their CDE framework, @diaz2011super proposed discretizing a given $Y \in
+\mathcal{Y}$ based on a number of bins $T$ and a binning procedure (e.g.,
+cutting the support set $\mathcal{Y}$ into $T$ bins of exactly the same length).
+This tuning parameter $T$ conceptually corresponds to the choice of bandwidth in
+classical kernel density estimation. Following this discretization step, their
+proposal represents each unit by a collection of records, with the number of
+records for a given $O_i$ depending on the rank of the bin (along the
+discretized support) into which the corresponding $Y_i$ falls.
+
+To take an example, an instantiation of this procedure would divide the observed
+support of $Y$ into, say, $T = 4$, bins of equal length, with such a
+partitioning requiring $T + 1$ cutpoints along this support to yield $T$ bins:
+$[\alpha_1, \alpha_2), [\alpha_2, \alpha_3), [\alpha_3, \alpha_4), [\alpha_4,
+\alpha_5]$ (n.b., the rightmost interval is fully closed while the others are
+only partially closed). Next, an artificial, repeated measures dataset would be
+created in which each unit $O_i$ would be represented by up to $T$ records. To
+better see this structure, consider an individual unit $O_i = (Y_i, X_i)$ for
+which the value $Y_i$ falls in the third bin of the four into which the support
+has been partitioned (i.e., $[\alpha_3, \alpha_4)$); this unit would be
+represented by three distinct records: $\{Y_{ij}, X_{ij}\}_{j=1}^3$, where
+$\{\{A_{ij} = 0\}_{j=1}^2$, $A_{i3} = 1\}$ and three exact copies of $X_i$,
+$\{X_{ij}\}_{j=1}^3$. This representation in terms of multiple records allows
+for the conditional hazard probability of $Y_i$ falling in a given bin along the
+discretized support to be evaluated via standard binary regression techniques.
+
+In fact, this proposal reformulates the binary regression problem into a
+corresponding set of hazard regressions: $\mathbb{P} (Y \in [\alpha_{t-1},
+\alpha_t) \mid X) = \mathbb{P} (Y \in [\alpha_{t-1}, \alpha_t) \mid Y \geq
+\alpha_{t-1}, X) \times  \prod_{j = 1}^{t -1} \{1 - \mathbb{P} (Y \in
+[\alpha_{j-1}, \alpha_j) \mid Y \geq \alpha_{j-1}, X) \}$. Here, the probability
+of $Y \in \mathcal{Y}$ falling in bin $[\alpha_{t-1}, \alpha_t)$ may be directly
+estimated via a binary regression procedure, by re-expressing the corresponding
+likelihood in terms of the likelihood of a binary variable in a dataset with
+this repeated measures structure. Finally, the hazard estimates can be mapped to
+density estimates by re-scaling the hazard estimates by the bin sizes $\lvert
+\alpha_t - \alpha_{t-1} \rvert$, that is, $p_{n, \alpha}(Y \mid X) =
+\mathbb{P}(Y \in [\alpha_{t-1}, \alpha_t) \mid X) / \lvert \alpha_t -
+\alpha_{t-1} \rvert$, for $\alpha_{t-1} \leq a < \alpha_t$. We provide an
+informal sketch of this algorithm below.
+
+1. Apply a procedure to divide the observed support of $Y$, $\max(Y) - \min(Y)$,
+   into $T$ bins: $[\alpha_1, \alpha_2), \ldots, [\alpha_{T-1}, \alpha_T),
+   [\alpha_T, \alpha_{T+1}]$.
+2. Expand the observed data into a repeated measures data structure, expressing
+   each individual observation as a set of up to $T$ records, recording the
+   observation ID alongside each such record. For a single unit $i$, the set of
+   records takes the form $\{Y_{ij}, X_{ij}\}_{j=1}^{T_i}$, where $X_{ij}$ are
+   constant in the index set $\mathcal{J}$, $Y_{ij}$ is a binary counting
+   process that jumps from $0$ to $1$ at its final index (at the bin into which
+   $Y_i$ falls), and $T_i \leq T$ indicates the bin along its support into which
+   $Y_i$ falls.
+3. Estimate the hazard probability, conditional on $X$, of bin membership
+   $\mathbb{P}(Y_i \in [\alpha_{t-1}, \alpha_t) \mid X)$ using any binary
+   regression estimator or appropriate machine learning algorithm. So long as
+   an appropriate loss function (see above) is used, cross-validation may be
+   incorporated to select any tuning parameters.
+4. Rescale the conditional hazard probability estimates to the conditional
+   density scale by dividing the cumulative hazard by the width of the bin into
+   which $X_i$ falls, for each observation $i = 1, \ldots, n$. If the support
+   set is partitioned into an equal number of bins, this amounts to rescaling
+   by a constant.
+
+A key element of this proposal is the flexibility to use any binary regression
+procedure or appropriate machine learning algorithm to estimate $\prob(Y \in
+[\alpha_{t-1}, \alpha_t) \mid X)$, facilitating the incorporation of flexible
+regression techniques like ensemble modeling [@breiman1996stacked;
+@vdl2007super]. This extreme degree of flexibility integrates perfectly with the
+underlying design principles of `sl3`; however, we have not yet implemented this
+approach in its full generality. For now, this approach may be used through the
+[`haldensify` package](https://github.com/nhejazi/haldensify)
+[@hejazi2020haldensify], which limits the original proposal by replacing the use
+of arbitrary binary regression with the HAL regression function, implemented in
+the [`hal9001` package](https://github.com/tlverse/hal9001) [@coyle2020hal9001;
+@hejazi2020hal9001]. This CDE algorithm can be used through `sl3` via the
+learner `Lrnr_haldensify`, as we demonstrate below.
+
+```{r cde_using_pooledhaz, eval = FALSE}
+# TODO: fix code block and flesh out into demo
+
+# learners used for conditional densities for (g_n)
+haldensify_lrnr <- Lrnr_haldensify$new(
+  n_bins = c(5, 10),
+  lambda_seq = exp(seq(-1, -10, length = 200))
+)
+```
+
+## Time series forecasting
