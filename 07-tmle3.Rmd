@@ -510,50 +510,6 @@ metalearner <- make_learner(
    `data.table` optimizations), e.g., (`cpp2 <- data.table::copy(cpp)`), then
    use the `cpp2` data going forward.
 
-### Estimation of Strata-Specific ATEs with `tmle3` {#tmle3-ex2}
-
-For this exercise, we will work with a random sample of 5,000 patients who
-participated in the International Stroke Trial (IST). This data is described in
-the [Chapter 3.2 of the `tlverse` handbook](#ist). We included the data below
-and a summarized description that is relevant for this exercise.
-
-The outcome, $Y$, indicates recurrent ischemic stroke within 14 days after
-randomization (`DRSISC`); the treatment of interest, $A$, is the randomized
-aspirin vs. no aspirin treatment allocation (`RXASP` in `ist`); and the
-adjustment set, $W$, consists simply of other variables measured at baseline. In
-this data, the outcome is occasionally missing, but there is no need to create a
-variable indicating this missingness (such as $\Delta$) for analyses in the
-`tlverse`, since the missingness is automatically detected when `NA` are present
-in the outcome. Covariates with missing values (`RATRIAL`, `RASP3` and `RHEP24`)
-have already been imputed. Additional covariates were created
-(`MISSING_RATRIAL_RASP3` and `MISSING_RHEP24`), which indicate whether or not
-the covariate was imputed. The missingness was identical for `RATRIAL` and
-`RASP3`, which is why only one covariate indicating imputation for these two
-covariates was created.
-
-1. Estimate the average effect of randomized aspirin treatment (`RXASP` = 1) on
-   recurrent ischemic stroke. Even though the missingness mechanism on $Y$,
-   $\Delta$, does not need to be specified in the node list, it does still need
-   to be accounted for in the TMLE. In other words, for this estimation problem,
-   $\Delta$ is a relevant factor of the likelihood.  Thus, when defining the
-   list of `sl3` learners for each likelihood factor, be sure to include a list
-   of learners for estimation of $\Delta$, say `sl_Delta`, and specify this in
-   the learner list, like so
-   `learner_list <- list(A = sl_A, delta_Y = sl_Delta, Y = sl_Y)`.
-2. Recall that this RCT was conducted internationally. Suppose there is concern
-   that the dose of aspirin may have varied across geographical regions, and an
-   average across all geographical regions may not be warranted. Calculate the
-   strata specific ATEs according to geographical region (`REGION`).
-
-```{r tmle3-ex2}
-ist_data <- fread(
-  paste0(
-    "https://raw.githubusercontent.com/tlverse/deming2019-workshop/",
-    "master/data/ist_sample.csv"
-  )
-)
-```
-
 ## Summary
 
 `tmle3` is a general purpose framework for generating TML estimates. The easiest
