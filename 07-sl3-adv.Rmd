@@ -4,101 +4,18 @@ output:
   html_document: default
 ---
 
-# Super Learning {#sl3-advanced}
+# Additional `sl3` Functionality {#sl3-advanced}
 
 Based on the [`sl3` `R` package](https://github.com/tlverse/sl3) by _Jeremy
 Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 
 Updated: `r Sys.Date()`
 
+<!--
 ## Learning Objectives{-}
-1. Estimate the cross-validated predictive performance of the ensemble super
-   learner.
-2. Evaluate `sl3` variable importance metrics.
-3. Flexibly estimate conditional density functionals with `sl3`.
-4. TODO
-
-## Cross-validated super learner
-
-We can cross-validate the SL to see how well the SL performs on unseen data, and
-obtain an estimate of the cross-validated risk of the SL.
-
-This estimation procedure requires an outer/external layer of
-cross-validation, also called nested cross-validation, which involves setting
-aside a separate holdout sample that we don’t use to fit the SL. This external
-cross-validation procedure may also incorporate 10 folds, which is the default
-in `sl3`. However, we will incorporate 2 outer/external folds of
-cross-validation for computational efficiency.
-
-We also need to specify a loss function to evaluate SL. Documentation for the
-available loss functions can be found in the [`sl3` Loss Function
-Reference](https://tlverse.org/sl3/reference/loss_functions.html).
-
-```{r CVsl}
-washb_task_new <- make_sl3_Task(
-  data = washb_data,
-  covariates = covars,
-  outcome = outcome,
-  folds = origami::make_folds(washb_data, fold_fun = folds_vfold, V = 2)
-)
-CVsl <- CV_lrnr_sl(
-  lrnr_sl = sl_fit, task = washb_task_new, loss_fun = loss_squared_error
-)
-CVsl %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = T) %>%
-  scroll_box(width = "100%", height = "300px")
-```
-<!-- Explain summary!!!! -->
-
-## Variable importance measures
-
-Variable importance can be interesting and informative. It can also be
-contradictory and confusing. Nevertheless, we like it, and so do our
-collaborators, so we created a variable importance function in `sl3`! The `sl3`
-`importance` function returns a table with variables listed in decreasing order
-of importance (i.e., most important on the first row).
-
-The measure of importance in `sl3` is based on a risk ratio, or risk difference,
-between the learner fit with a removed, or permuted, covariate and the learner
-fit with the true covariate, across all covariates. In this manner, the larger
-the risk difference, the more important the variable is in the prediction.
-
-The intuition of this measure is that it calculates the risk (in terms of the
-average loss in predictive accuracy) of losing one covariate, while keeping
-everything else fixed, and compares it to the risk if the covariate was not
-lost. If this risk ratio is one, or risk difference is zero, then losing that
-covariate had no impact, and is thus not important by this measure. We do this
-across all of the covariates. As stated above, we can remove the covariate and
-refit the SL without it, or we just permute the covariate (faster)
-and hope for the shuffling to distort any meaningful information that was
-present in the covariate. This idea of permuting instead of removing saves a lot
-of time, and is also incorporated in the `randomForest` variable importance
-measures. However, the permutation approach is risky, so the importance function
-default is to remove and refit.
-
-Let's explore the `sl3` variable importance measurements for the `washb` data.
-
-```{r varimp, eval = FALSE}
-washb_varimp <- importance(sl_fit, loss = loss_squared_error, type = "permute")
-washb_varimp %>%
-  kable(digits = 4) %>%
-  kableExtra:::kable_styling(fixed_thead = TRUE) %>%
-  scroll_box(width = "100%", height = "300px")
-```
-
-```{r varimp-plot, out.width = "100%", eval = FALSE}
-# plot variable importance
-importance_plot(
-  washb_varimp,
-  main = "sl3 Variable Importance for WASH Benefits Example Data"
-)
-```
-<!-- Explain summary!!!! -->
-
-## Categorical outcome prediction
-
-## Multivariate outcome prediction
+1. Flexibly estimate conditional density functionals with `sl3`.
+2. work in pro
+-->
 
 ## Conditional density estimation
 
@@ -294,3 +211,7 @@ haldensify_lrnr <- Lrnr_haldensify$new(
 ```
 
 ## Time series forecasting
+
+## Categorical outcome prediction
+
+## Multivariate outcome prediction
