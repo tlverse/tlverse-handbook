@@ -948,7 +948,9 @@ This `screeners_stack` could be inputted as `learners` in `Lrnr_sl` to
 define the SL that considers as candidates learners with no screening, and 
 learners coupled with various screeners. 
 
-## Variable importance measures
+## Advanced `sl3` Functionality {#sl3-advanced}
+
+### Variable Importance Measures
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, our collaborators tend to ask for it, 
@@ -1000,6 +1002,209 @@ importance_plot(
 )
 ```
 <!-- Explain summary!!!! -->
+
+### Conditional density estimation
+
+In certain scenarios it may be useful to estimate the conditional density of a 
+dependent variable, given predictors/covariates that precede it. In the
+context of causal inference, this arises most readily when working with
+continuous-valued treatments. Specifically, conditional density estimation (CDE) 
+is necessary when estimating the treatment mechanism for a continuous-valued 
+treatment, often called the _generalized propensity score_. Compared the 
+classical propensity score (PS) for binary treatments (the conditional 
+probability of receiving the treatment given covariates), 
+$\mathbb{P}(A = 1 \mid W)$, the generalized PS is the conditional density of 
+treatment $A$, given covariates $W$, $\mathbb{P}(A \mid W)$. 
+
+CDE often requires specialized approaches tied to very specific algorithmic 
+implementations. To our knowledge, general and flexible algorithms for 
+CDE have been proposed only sparsely in the literature. We have implemented two 
+such approaches in `sl3`: a semiparametric CDE approach that makes certain 
+assumptions about the constancy of (higher) moments of the underlying 
+distribution, and second approach that exploits the relationship between the 
+conditional hazard and density functions to allow CDE via pooled hazard 
+regression. Both approaches are flexible in that they allow
+the use of arbitrary regression functions or machine learning algorithms for the
+estimation of nuisance quantities (the conditional mean or the conditional
+hazard, respectively). We elaborate on these two frameworks below. Importantly,
+per @dudoit2005asymptotics and related works, a loss function appropriate for
+density estimation is the negative log-density loss $L(\cdot) = -\log(p_n(\cdot))$.
+
+#### Moment-restricted location-scale
+
+This family of semiparametric CDE approaches exploits the general form $\rho(Y -
+\mu(X) / \sigma(X))$, where $Y$ is the dependent variable of interest (e.g., 
+treatment $A$ in the PS), $X$ are the predictors (e.g., covariates $W$ in the 
+PS), \rho$ is a specified marginal density function, and $\mu(X) = \E(Y \mid X)$ 
+and $\sigma(X) = \E[(Y - \mu(X))^2 \mid X]$ are nuisance functions of the 
+dependent variable that may be estimated flexibly. CDE procedures formulated 
+within this framework may be characterized as belonging to a 
+_conditional location-scale_ family, that is, in which
+$p_n(Y \mid X) = \rho((Y - \mu_n(X)) / \sigma_n(X))$. While CDE with 
+conditional location-scale families is not without potential disadvantages 
+(e.g., the restriction on the density's functional form could lead to 
+misspecification bias), this strategy is flexible in that it allows for
+arbitrary machine learning algorithms to be used in estimating the conditional 
+mean of $Y$ given $X$, \mu(X) = \E(Y \mid X)$, and the conditional variance
+of $Y$ given $X$, $\sigma(X) = \E[(Y - \mu(X))^2 \mid X]$.
+
+In settings with limited data, the additional structure imposed by the
+assumption that the target density belongs to a location-scale family may prove
+advantageous by smoothing over areas of low support in the data. However, in 
+practice, it is impossible to know whether and when this assumption holds. This 
+procedure is not a novel contribution of our own (and we have been unable to 
+locate a formal description of it in the literature); nevertheless, we provide 
+an informal algorithm sketch below. This algorithm considers access to $n$ 
+independendent and identically distributed (i.i.d.) copies of an observed data 
+random variable $O = (Y, X)$, an _a priori_-specified kernel function $\rho$, a 
+candidate regression procedure $f_{\mu}$ to estimate $\mu(X)$, and a candidate 
+regression procedure $f_{\sigma}$ to estimate $\sigma(X)$.
+
+1. Estimate $\mu(X) = \E[Y \mid X]$, the conditional mean of $Y$ given $X$, by
+   applying the regression estimator $f_{\mu}$, yielding $\hat{\mu}(X)$.
+2. Estimate $\sigma(X) = \mathbb{V}[Y \mid X]$, the conditional variance of $Y$
+   given $X$, by applying the regression estimator $f_{\sigma}$, yielding
+   $\hat{\sigma}^2(X)$. Note that this step involves only estimation of the
+   conditional mean $\E[(Y - \hat{\mu}(X))^2 \mid X]$.
+3. Estimate the one-dimensional density of $(Y - \hat{\mu}(X))^2 /
+   \hat{\sigma}^2(X)$, using kernel smoothing to obtain $\hat{\rho}(Y)$.
+4. Construct the estimated conditional density $p_n(Y \mid X) = \hat{\rho}((Y
+   - \hat{\mu}(X)) / \hat{\sigma}(X))$.
+
+This algorithm sketch encompasses two forms of this CDE approach, which diverge
+at the second step above. To simplify the approach, one may elect to estimate
+only the conditional mean $\mu(X)$, leaving the conditional variance to be 
+assumed constant (i.e., estimated simply as the marginal mean of the 
+residuals $\E[(Y - \hat{\mu}(X))^2]$). This subclass of CDE approaches have 
+_homoscedastic error_ based on the variance assumption made. The conditional 
+variance can instead by estimated as the conditional mean of the residuals 
+$(Y - \hat{\mu}(X))^2$ given $X$, $\E[(Y - \hat{\mu}(X))^2 \mid X]$, where the 
+candidate algorithm $f_{\sigma}$ is used to evaluate the expectation. 
+Both approaches have been implemented in `sl3`, in the learner
+`Lrnr_density_semiparametric`. The `mean_learner` argument specifies
+$f_{\mu}$ and the optional `var_learner` argument specifies $f_{\sigma}$. We
+demonstrate CDE with this approach below.
+
+```{r cde_using_locscale, eval = FALSE}
+# TODO: fix code block and flesh out into demo
+
+# semiparametric density estimator with homoscedastic errors (HOSE)
+hose_hal_lrnr <- Lrnr_density_semiparametric$new(
+  mean_learner = Lrnr_hal9001$new()
+)
+# semiparametric density estimator with heteroscedastic errors (HESE)
+hese_rf_glm_lrnr <- Lrnr_density_semiparametric$new(
+  mean_learner = Lrnr_ranger$new()
+  var_learner = Lrnr_glm$new()
+)
+
+# SL for the conditional treatment density
+sl_dens_lrnr <- Lrnr_sl$new(
+  learners = list(hose_hal_lrnr, hese_rf_glm_lrnr),
+  metalearner = Lrnr_solnp_density$new()
+)
+```
+
+#### Pooled hazard regression
+
+Another approach for CDE available in `sl3`, and originally proposed in 
+@diaz2011super, leverages the relationship between the (conditional) hazard and 
+density functions. To develop their CDE framework, @diaz2011super proposed 
+discretizing a continuous dependent variable $Y$ with support $\mathcal{Y}$ 
+based on a number of bins $T$ and a binning procedure (e.g., cutting 
+$\mathcal{Y}$ into $T$ bins of exactly the same length). The tuning parameter
+$T$ conceptually corresponds to the choice of bandwidth in classical kernel 
+density estimation. Following discretization, each unit is represented by 
+a collection of records, and the number of records representing a given unit 
+depends on the rank of the bin (along the discretized support) into which the 
+unit falls.
+
+To take an example, an instantiation of this procedure might divide the support 
+of $Y$ into, say, $T = 4$, bins of equal length (note this requires $T+1$ cut 
+points): $[\alpha_1, \alpha_2), [\alpha_2, \alpha_3), [\alpha_3, \alpha_4), 
+[\alpha_4, \alpha_5]$ (n.b., the rightmost interval is fully closed while the 
+others are only partially closed). Next, an artificial, repeated measures 
+dataset would be created in which each unit would be represented by up to $T$ 
+records. To better see this structure, consider an individual unit 
+$O_i = (Y_i, X_i)$ whose $Y_i$ value is within $[\alpha_3, \alpha_4)$, the 
+third bin. This unit would be represented by three distinct records: 
+$\{Y_{ij}, X_{ij}\}_{j=1}^3$, where $\{\{Y_{ij} = 0\}_{j=1}^2$, $Y_{i3} = 1\}$  
+and three exact copies of $X_i$, $\{X_{ij}\}_{j=1}^3$. This representation in 
+terms of multiple records for the same unit allows for the conditional hazard 
+probability of $Y_i$ falling in a given bin along the discretized support to 
+be evaluated via standard binary regression techniques.
+
+In fact, this proposal reformulates the binary regression problem into a
+corresponding set of hazard regressions: $\mathbb{P} (Y \in [\alpha_{t-1},
+\alpha_t) \mid X) = \mathbb{P} (Y \in [\alpha_{t-1}, \alpha_t) \mid Y \geq
+\alpha_{t-1}, X) \times  \prod_{j = 1}^{t -1} \{1 - \mathbb{P} (Y \in
+[\alpha_{j-1}, \alpha_j) \mid Y \geq \alpha_{j-1}, X) \}$. Here, the probability
+of $Y \in \mathcal{Y}$ falling in bin $[\alpha_{t-1}, \alpha_t)$ may be directly
+estimated via a binary regression procedure, by re-expressing the corresponding
+likelihood in terms of the likelihood of a binary variable in a dataset with
+this repeated measures structure. Finally, the hazard estimates can be mapped into
+density estimates by re-scaling the hazard estimates by the bin sizes $\lvert
+\alpha_t - \alpha_{t-1} \rvert$, that is, $p_{n, \alpha}(Y \mid X) =
+\mathbb{P}(Y \in [\alpha_{t-1}, \alpha_t) \mid X) / \lvert \alpha_t -
+\alpha_{t-1} \rvert$, for $\alpha_{t-1} \leq a < \alpha_t$. We provide an
+informal sketch of this algorithm below.
+
+1. Apply a procedure to divide the observed support of $Y$, $\max(Y) - \min(Y)$,
+   into $T$ bins: $[\alpha_1, \alpha_2), \ldots, [\alpha_{t-1}, \alpha_t),
+   [\alpha_t, \alpha_{t+1}]$.
+2. Expand the observed data into a repeated measures data structure, expressing
+   each individual observation as a set of up to $T$ records, recording the
+   observation ID alongside each such record. For a single unit $i$, the set of
+   records takes the form $\{Y_{ij}, X_{ij}\}_{j=1}^{T_i}$, where $X_{ij}$ are
+   constant in the index set $\mathcal{J}$, $Y_{ij}$ is a binary counting
+   process that jumps from $0$ to $1$ at its final index (at the bin into which
+   $Y_i$ falls), and $T_i \leq T$ indicates the bin along its support into which
+   $Y_i$ falls.
+3. Estimate the hazard probability, conditional on $X$, of bin membership
+   $\mathbb{P}(Y_i \in [\alpha_{t-1}, \alpha_t) \mid X)$ using any binary
+   regression estimator or appropriate machine learning algorithm. 
+4. Rescale the conditional hazard probability estimates to the conditional
+   density scale by dividing the cumulative hazard by the width of the bin into
+   which $X_i$ falls, for each observation $i = 1, \ldots, n$. If the support
+   set is partitioned into bins of equal size (approximately $n/T$ samples in 
+   each bin), this amounts to rescaling by a constant. If the support
+   set is partitioned into bins of equal range, then the rescaling might vary 
+   across bins. 
+
+A key element of this proposal is the flexibility to use any binary regression
+procedure or appropriate machine learning algorithm to estimate $\prob(Y \in
+[\alpha_{t-1}, \alpha_t) \mid X)$, facilitating the incorporation of flexible
+techniques like ensemble learning [@breiman1996stacked; @vdl2007super]. This 
+extreme degree of flexibility integrates perfectly with the underlying design 
+principles of `sl3`; however, we have not yet implemented this approach in its 
+full generality. A version of this CDE approach, which limits the original 
+proposal by replacing the use of arbitrary binary regression with the highly 
+adaptive lasso (HAL) algorithm [@benkeser2016hal] is supported in the
+[`haldensify` package](https://github.com/nhejazi/haldensify)
+[@hejazi2020haldensify] (the HAL implementation in `haldensify` is provided the 
+[`hal9001` package](https://github.com tlverse/hal9001)
+[@coyle2020hal9001; @hejazi2020hal9001]). This CDE algorithm that uses 
+`haldensify` is incorporated as learner `Lrnr_haldensify` in `sl3`, as we 
+demonstrate below.
+
+```{r cde_using_pooledhaz, eval = FALSE}
+# TODO: fix code block and flesh out into demo
+
+# learners used for conditional densities for (g_n)
+haldensify_lrnr <- Lrnr_haldensify$new(
+  n_bins = c(5, 10)
+)
+```
+
+<!--
+
+### Time series forecasting
+
+### Categorical outcome prediction
+
+### Multivariate outcome prediction
+
+-->
 
 ## Exercises {#sl3-exercises}
 
