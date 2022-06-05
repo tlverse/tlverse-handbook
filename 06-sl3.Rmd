@@ -145,10 +145,11 @@ tab "Session" then "Clear Workspace", and then clicking "Session" again then
 "Restart R".
 
 We can install `sl3` using the function `install_github` provided in the 
-`devtools` R package:
+`devtools` R package. We are using the development ("devel") version of `sl3` 
+in these materials, so we show how to install that version below. 
 ```{r install-sl3, eval = FALSE}
 library(devtools)
-install_github("tlverse/sl3")
+install_github("tlverse/sl3@devel")
 ```
 
 Once the R package is installed, we recommend restarting the R session again. 
@@ -208,10 +209,11 @@ Console). For more details on `sl3_Task`, refer to its documentation (e.g., by i
 RStudio), you can view all of the active and public fields, and methods that 
 can be accessed from the `task$` object. This `$` is like the key to access
 many internals of an object. In the next section, will see how we can use `$`
-to dig into SL fit objects as well, to obtain predictions from an SL fit or candidate learners, examine an SL fit or its candidates, and summarize an
-SL fit.
+to dig into SL fit objects as well, to obtain predictions from an SL fit or 
+candidate learners, examine an SL fit or its candidates, and summarize an SL 
+fit.
 
-### 2. Instantiate the SL with `Lrnr_sl`
+### 2. Instantiate the SL with `Lrnr_sl` {-}
 
 In order to create `Lrnr_sl` we need to specify, at the minimum, a set of 
 learners for the SL to consider as candidates. This set of algorithms is 
@@ -323,15 +325,21 @@ outcomes, and we will still go ahead and specify it for illustrative purposes.
 sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
 ```
 
-### 3. Fit the SL to the task with `train`
+### 3. Fit the SL to the task with `train` {-}
 
 The last step for fitting the SL to the prediction task is to call `train` and 
 supply the task. We will also set a random number generator before calling 
 train so the results are reproducible. 
 
 ```{r train-sl}
+# we will also set a stopwatch so we can measure how long this takes
+start_time <- proc.time()
+
 set.seed(4197)
-sl_fit <- sl$train(task)
+sl_fit <- sl$train(task = task)
+
+runtime_sl_fit <- proc.time() - start_time
+runtime_sl_fit
 ```
 
 ### Summary {-}
@@ -351,11 +359,13 @@ prediction task at hand.
 
 ### Obtaining Predictions
 
+#### SL and candidate learner predictions {-}
+
 We will draw on the fitted SL object from above, `sl_fit`, to obtain the
 SL's predicted `whz` value for each subject.
 
 ```{r sl-predictions}
-sl_preds <- sl_fit$predict(task)
+sl_preds <- sl_fit$predict(task = task)
 head(sl_preds)
 ```
 
@@ -363,7 +373,7 @@ We can also obtain predicted values from a candidate learner in the SL. Below
 we obtain predictions for the GLM learner.
 
 ```{r lrnr-predictions}
-glm_preds <- sl_fit$learner_fits$Lrnr_glm_TRUE$predict(task)
+glm_preds <- sl_fit$learner_fits$Lrnr_glm_TRUE$predict(task = task)
 head(glm_preds)
 ```
 
@@ -408,24 +418,85 @@ ggplot(df_plot_melted, aes(id, value, color = variable)) +
         axis.text.x = element_blank(), axis.ticks.x = element_blank())
 ```
 
-We can also obtain the cross-validated predictions for the candidate learners:
+#### Cross-validated predictions {-}
+
+We can also obtain the cross-validated (CV) predictions for the candidate 
+learners in a few ways:
 ```{r cv-predictions}
-cv_preds <- sl_fit$fit_object$cv_fit$predict_fold(task, "validation")
+# one way to obtain the CV predictions for the candidate learners
+cv_preds_option1 <- sl_fit$fit_object$cv_fit$predict_fold(
+  task = task, fold_number = "validation"
+)
+# another way to obtain the CV predictions for the candidate learners
+cv_preds_option2 <- sl_fit$fit_object$cv_fit$predict(task = task)
+
+# we can check that they are identical
+identical(cv_preds_option1, cv_preds_option2)
 ```
+
 ```{r cv-predictions-head, eval = FALSE}
-head(cv_preds)
+head(cv_preds_option1)
 ```
 ```{r cv-predictions-head-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
-  head(cv_preds) %>%
+  head(cv_preds_option1) %>%
     kable(format = "latex")
 } else if (knitr::is_html_output()) {
-  head(cv_preds) %>%
+  head(cv_preds_option1) %>%
     kable() %>%
     kableExtra:::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
+
+We can also get the CV predictions "by hand", by tapping into each of the folds, 
+and then using the fitted candidate learners (which were trained to the training
+set for each fold) to predict validation set outcomes (which were not seen in 
+training).
+
+```{r cv-predictions-long}
+##### CV predictions "by hand" #####
+# for each fold, i, we obtain validation set predictions:
+cv_preds_list <- lapply(seq_along(task$folds), function(i){
+  
+  # get validation dataset for fold i:
+  v_data <- task$data[task$folds[[i]]$validation_set, ]
+  
+  # get observed outcomes in fold i's validation dataset:
+  v_outcomes <- v_data[["whz"]]
+
+  # make task (for prediction) using fold i's validation dataset as data, 
+  # and keeping all else the same:
+  v_task <- make_sl3_Task(covariates = task$nodes$covariates, data = v_data)
+  
+  # get predicted outcomes for fold i's validation dataset, using candidates 
+  # trained to fold i's training dataset
+  v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(
+    task = v_task
+  )
+  # note: v_preds is a matrix of candidate learner predictions, where the 
+  # number of rows is the number of observations in fold i's validation dataset 
+  # and the number of columns is the number of candidate learners (excluding 
+  # any that might have failed)
+  
+  # we will also return the row indices for fold i's validation set, so we 
+  # can later reorder the CV predictions and make sure they are equal to what 
+  # we obtained above
+  return(list("v_preds" = v_preds, "v_index" = task$folds[[i]]$validation_set))
+})
+
+# extract the validation set predictions across all folds
+cv_preds_byhand <- do.call(rbind, lapply(cv_preds_list, "[[", "v_preds"))
+
+# extract the indices of validation set observations across all folds
+# then reorder cv_preds_byhand to correspond to the ordering in the data
+row_index_in_data <- unlist(lapply(cv_preds_list, "[[", "v_index"))
+cv_preds_byhand_ordered <- cv_preds_byhand[order(row_index_in_data), ]
+# now we can check that they are identical
+identical(cv_preds_option1, cv_preds_byhand_ordered)
+```
+
+#### Predictions with new data {-}
 
 If we wanted to obtain predicted values for new data then we would need to 
 create a new task from the new data. Also, the covariates in this new task
@@ -433,11 +504,8 @@ must be identical to the covariates in the task for training. As an example,
 let's assume we have data `washb_data_new` for which we want to SL predictions.
 
 ```{r predictions-new-task, eval = FALSE}
-washb_data_new$whz <- rep(NA, nrow(washb_data_new)) # create a fake outcome
-pred_task <- make_sl3_Task(
-  data = washb_data_new,
-  outcome = "whz", 
-  outcome_type = "continuous",
+prediction_task <- make_sl3_Task(
+  data = new_data, # assuming we have some new data for predictions
   covariates = c("tr", "fracode", "month", "aged", "sex", "momage", "momedu", 
                  "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin", "elec", 
                  "floor", "walls", "roof", "asset_wardrobe", "asset_table", 
@@ -445,12 +513,12 @@ pred_task <- make_sl3_Task(
                  "asset_refrig", "asset_bike", "asset_moto", "asset_sewmach", 
                  "asset_mobile")
 )
-sl_preds_new_task <- sl_fit$predict(pred_task)
+sl_preds_new_task <- sl_fit$predict(task = prediction_task)
 ```
 
 ### Summarizing SL Fits 
 
-#### Coefficients
+#### Coefficients {-}
 
 We can see how the meta-learner created a function of the learners in a few 
 ways. In our illustrative example, we considered the default, NNLS meta-learner
@@ -473,7 +541,7 @@ Direct access to the meta-learner fit object is also handy for more
 complex meta-learners (e.g., non-parametric meta-learners) that are not defined 
 by a simple set of  main terms regression coefficients. 
 
-#### Cross-validated predictive performance
+#### Cross-validated predictive performance {-}
 
 We can obtain a table of the cross-validated (CV) predictive performance, i.e., 
 the CV risk, for each learner included in the SL. Below, we use the 
@@ -502,6 +570,56 @@ if (knitr::is_latex_output()) {
 }
 ```
 
+Similar to how we got the CV predictions "by hand", we can also calculate the 
+CV risk. Specifically, this is done by tapping into each of the folds, and then 
+using the fitted candidate learners (which were trained to the training set for 
+each fold) to predict validation set outcomes (which were not seen in training) 
+and then measure the predictive performance (i.e., risk). Each candidate 
+learner's fold-specific risk is then averaged across all folds to obtain the 
+CV risk. The function `cv_risk` does all of this internally and we show how 
+to do it "by hand" below, which can be helpful for understanding the CV risk
+and how it is calculated. 
+
+```{r cv-risk-byhand}
+##### CV risk "by hand" #####
+# for each fold, i, we obtain predictive performance/risk for each candidate:
+cv_risks_list <- lapply(seq_along(task$folds), function(i){
+  
+  # get validation dataset for fold i:
+  v_data <- task$data[task$folds[[i]]$validation_set, ]
+  
+  # get observed outcomes in fold i's validation dataset:
+  v_outcomes <- v_data[["whz"]]
+
+  # make task (for prediction) using fold i's validation dataset as data, 
+  # and keeping all else the same:
+  v_task <- make_sl3_Task(covariates = task$nodes$covariates, data = v_data)
+  
+  # get predicted outcomes for fold i's validation dataset, using candidates 
+  # trained to fold i's training dataset
+  v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(v_task)
+  # note: v_preds is a matrix of candidate learner predictions, where the 
+  # number of rows is the number of observations in fold i's validation dataset 
+  # and the number of columns is the number of candidate learners (excluding 
+  # any that might have failed)
+  
+  # calculate predictive performance for fold i for each candidate
+  eval_function <- loss_squared_error # valid for estimation of conditional mean
+  v_losses <- apply(v_preds, 2, eval_function, v_outcomes)
+  cv_risks <- colMeans(v_losses)
+  return(cv_risks)
+})
+# average the predictive performance across all folds for each candidate
+cv_risks_byhand <- colMeans(do.call(rbind, cv_risks_list))
+cv_risk_table_byhand <- data.table(
+  learner = names(cv_risks_byhand), MSE = cv_risks_byhand
+)
+# check that the CV risks are identical when calculated by hand and function
+# (ignoring small differences by rounding to the fourth decimal place)
+identical(
+  round(cv_risk_table_byhand$MSE,4), round(as.numeric(cv_risk_table$MSE),4)
+)
+```
 <!--
 We can plot the CV risks as well. 
 ```{r sl-summary-plot, eval = F}
@@ -527,25 +645,34 @@ Column "se" in the CV risk table is the standard error across all losses for a l
 Column "fold_sd" in the CV risk table is the standard deviation of the V-fold-specific risks, i.e., fold_sd = sd(risk), where risk is a V length vector of the mean loss across the folds.
 -->
 
-#### Cross-validated SL
+#### Cross-validated SL {-}
 
 We can see from the CV risk table above that the SL is not contained. This is
 because we do not have a CV risk for the SL unless we cross-validate it or
 include it as a candidate in another SL; the latter is shown in the next
 subsection. Below we show how to obtain a cross-validated risk estimate for the
-SL using `cv_sl`. (Note: we set `eval = FALSE` for this part of the code as 
-it was killing the build).
+SL using `cv_sl`. 
 
-```{r cvsl, eval = FALSE}
+<!--
+(Note: we did not evaluate this part of the code, as it was 
+taking too long).
+-->
+```{r cvsl, eval=F}
+# we will also set a stopwatch so we can measure how long this takes
+start_time <- proc.time()
+
 set.seed(569)
 cv_sl_fit <- cv_sl(lrnr_sl = sl_fit, task = task, eval_fun = loss_squared_error)
+
+runtime_cv_sl_fit <- proc.time() - start_time
+runtime_cv_sl_fit
 ```
 
 ```{r cvsl-risk-summary, eval = FALSE}
 cv_sl_fit$cv_risk[,c(1:3)]
 ```
 
-```{r cvsl-risk-summary-handbook, eval = FALSE, echo = FALSE}
+```{r cvsl-risk-summary-handbook, echo = FALSE, eval=F}
 if (knitr::is_latex_output()) {
   cv_sl_fit$cv_risk[,c(1:3)] %>%
     kable(format = "latex")
@@ -557,6 +684,106 @@ if (knitr::is_latex_output()) {
 }
 ```
 
+#### Revere-based predictive performance for SL {-}
+
+We can also obtain the so-called "revere"-based predictive performance for the 
+SL, which is a partial CV risk for the SL, where the SL candidate learner fits 
+are cross-validated but the meta-learner fit is not. The revere-based risk can 
+be thought of as an approximate lower bound on the true CV risk estimate for 
+the SL when the meta-learner is a simple model, like NNLS. We can output the 
+revere-based risk estimate by setting `get_sl_revere_risk = TRUE` when we
+call `cv_risk`.
+
+```{r sl-revere-risk}
+cv_risk_table_revere <- sl_fit$cv_risk(
+  eval_fun = loss_squared_error, get_sl_revere_risk = TRUE
+)
+```
+
+```{r sl-revere-risk-summary, eval = FALSE}
+cv_risk_table_revere[,c(1:3)]
+```
+
+```{r sl-revere-risk-handbook, eval = FALSE, echo = FALSE}
+if (knitr::is_latex_output()) {
+  cv_risk_table_revere[,c(1:3)] %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  cv_risk_table_revere[,c(1:3)] %>%
+    kable() %>%
+    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
+```
+
+```{r sl-revere-risk-byhand}
+##### revere-based risk "by hand" #####
+# for each fold, i, we obtain predictive performance/risk for the SL
+sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
+  # get validation dataset for fold i:
+  v_data <- task$data[task$folds[[i]]$validation_set, ]
+  
+  # get observed outcomes in fold i's validation dataset:
+  v_outcomes <- v_data[["whz"]]
+  
+  # make task (for prediction) using fold i's validation dataset as data, 
+  # and keeping all else the same:
+  v_task <- make_sl3_Task(
+    covariates = task$nodes$covariates, data = v_data
+  )
+  
+  # get predicted outcomes for fold i's validation dataset, using candidates 
+  # trained to fold i's training dataset
+  v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(v_task)
+
+  # make a metalevel task (for prediction with sl):
+  v_meta_task <- make_sl3_Task(
+    covariates = sl_fit$fit_object$cv_meta_task$nodes$covariates,
+    data = v_preds
+  )
+  
+  # get predicted outcomes for fold i's metalevel dataset, using the fitted
+  # metalearner, cv_meta_fit 
+  sl_revere_v_preds <- sl_fit$fit_object$cv_meta_fit$predict(task = v_meta_task)
+  # note: cv_meta_fit was trained on the metalevel dataset, which contains the
+  # candidates' cv predictions and validation dataset outcomes across ALL folds, 
+  # so cv_meta_fit has already seen fold i's validation dataset outcomes.
+  
+  # calculate predictive performance for fold i for the SL
+    eval_function <- loss_squared_error # valid for estimation of conditional mean
+  # note: by evaluating the predictive performance of the SL using outcomes 
+  # that were already seen by the metalearner, this is not a cross-validated 
+  # measure of predictive performance for the SL. 
+  sl_revere_v_loss <- eval_function(
+    pred = sl_revere_v_preds, observed = v_outcomes
+  )
+  sl_revere_v_risk <- mean(sl_revere_v_loss)
+  return(sl_revere_v_risk)
+})
+# average the predictive performance across all folds for the SL
+sl_revere_risk_byhand <- mean(unlist(sl_revere_risk_list))
+sl_revere_risk_byhand
+
+# check that our calculation by hand equals what is output in cv_risk_table_revere
+sl_revere_risk <- as.numeric(cv_risk_table_revere[learner == "SuperLearner", "MSE"])
+identical(sl_revere_risk_byhand, sl_revere_risk)
+```
+
+The reason why this is not a true cross-validated risk is because the 
+`cv_meta_fit` object, which is the trained meta-learner, was previously fit to 
+the *entire* matrix of CV predictions from *every* fold, i.e., the meta-level 
+dataset (see Figure 2 in @rvp2022super for explanation of meta-level dataset). 
+This is why revere-based risks are not a true CV risk. If the meta-learner is 
+not a simple regression function, and instead a more data-adaptive learner
+(e.g., random forest) is used as a meta-learner, then the revere-based risk of 
+the resulting SL is likely a worse approximation of the actual CV risk. This is 
+because more data-adaptive learners are more likely to overfit. When simple 
+parametric regressions are used as a meta-learner, like what we considered 
+(NNLS with `Lrnr_nnls`), and like all of the default meta-learners in `sl3`, 
+then the revere-based risk is a quick way to examine an approximation of the CV 
+risk estimate of the SL and it can thought of as an approximate lower bound on 
+it.
+
 ### Discrete SL
 
 The discrete SL (dSL), is a SL that uses a winner-take-all meta-learner called
@@ -565,10 +792,8 @@ with the best cross-validated performance; its predictions will be the same as
 this candidate’s predictions. The dSL meta-learner specification can be invoked
 in `sl3` with `Lrnr_cv_selector`.
 
-```{r make-sl-discrete}
+```{r make-Lrnr_cv_selector}
 cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
-stack_with_sl <- Stack$new(stack, sl)
-dSL <- Lrnr_sl$new(learners = stack_with_sl, metalearner = cv_selector)
 ```
 
 We can examine the CV risk for an ensemble SL (eSL), or multiple eSLs, by
@@ -576,7 +801,24 @@ including it as a candidate in a dSL. An eSL is a SL that uses any parametric or
 non-parametric algorithm as its meta-learner. Therefore, the eSL is defined by a
 combination of multiple candidates; its predictions are defined by a combination
 of multiple candidates’ predictions. The `sl` object defined in the previous
-section, `sl`, is an eSL since it used NNLS as the meta-learner.
+section, `sl`, is an eSL since it used NNLS as the meta-learner. We rename `sl`
+to `eSL_metaNNLS` below to clarify that this is an eSL that uses NNLS as its
+meta-learner.
+
+```{r make-dSL}
+# recall we defined "sl" as
+# sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
+# let's rename it to clarify that this is an eSL that uses NNLS as meta-learner
+eSL_metaNNLS <- sl
+
+# first we add eSL (that we named "sl") to existing stack (that we named "stack")
+# to create new stack that includes the original candidate learners and the eSL
+stack_with_eSL <- Stack$new(stack, eSL_metaNNLS)
+
+# now we define the meta-learner for dSL, and then instantiate Lrnr_sl as a dSL
+cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
+dSL <- Lrnr_sl$new(learners = stack_with_eSL, metalearner = cv_selector)
+```
 
 When we include an eSL as a candidate in the dSL, this allows the eSL’s CV
 performance to be compared to that from the other learners from which it was
@@ -587,16 +829,82 @@ CV predictive performance, i.e., lowest CV risk. If the eSL performs better than
 any other candidate, the dSL will end up selecting it. As mentioned in
 @rvp2022super, "another advantage of this approach is that multiple eSLs that
 use more flexible meta-learner methods (e.g., non-parametric machine learning
-algorithms like HAL) can be evaluated simultaneously.
+algorithms like HAL) can be evaluated simultaneously." 
 
-<!--
-In the plot below, we visualize the steps for executing the Super Learner in
-the `tlverse/delayed` framework. For those like myself who are not particularly
-keen on understanding the intricacies of `delayed`, let's focus on the main
-point of this figure: we can see there are 10 realizations of the stack which
-represent the 10 cross-validation folds and there is a separate hold-out
-(top branch of the figure) that will not be used to fit the Super Learner.
---->
+Below, we show how multiple eSLs can be included as candidates in a dSL:
+```{r make-sl-discrete-multi-esl}
+eSL_metaNNLSconvex <- Lrnr_sl$new(
+  learners = stack, metalearner = Lrnr_nnls$new(convex = TRUE)
+)
+eSL_metaLasso <- Lrnr_sl$new(learners = stack, metalearner = lrn_lasso)
+eSL_metaEarth <- Lrnr_sl$new(learners = stack, metalearner = lrn_earth)
+eSL_metaRanger <- Lrnr_sl$new(learners = stack, metalearner = lrn_ranger)
+eSL_metaHAL <- Lrnr_sl$new(learners = stack, metalearner = lrn_hal)
+# now we can create the stack by adding the eSLs to the existing stack
+stack_with_eSLs <- Stack$new(
+  stack, eSL_metaNNLS, eSL_metaNNLSconvex, eSL_metaLasso, eSL_metaEarth, 
+  eSL_metaRanger, eSL_metaHAL
+)
+dSL <- Lrnr_sl$new(learners = stack_with_eSLs, metalearner = cv_selector)
+```
+
+We included as candidates in the dSL: (i) the same eSL as before; (ii) the 
+learners considered as candidates in (i); (iii) an eSL that considered the same 
+candidate learners as (i) and convex combination-constrained NNLS as the 
+meta-learner; (iv) an eSL that considered the same candidate learners as (i) 
+and a lasso meta-learner, using as lasso meta-learner the already 
+instantiated `lrn_lasso` that we created above; (v) an eSL that considered the 
+same candidate learners as (i) and an EARTH meta-learner, using as EARTH 
+meta-learner the already instantiated `lrn_earth` that we created above; (vi) an 
+eSL that considered the same candidate learners as (i) and a ranger 
+meta-learner, using as ranger meta-learner the already instantiated 
+`lrn_ranger` that we created above; and (vii) an eSL that considered the same 
+candidate learners as (i) and a highly adaptive lasso (HAL) meta-learner, 
+using as HAL meta-learner the already instantiated `lrn_hal` that we created 
+above. Even though we did not consider this in this illustrative example, 
+different sets of candidate learners can be considered in the eSLs.
+
+Running this many eSLs in the dSL is very computationally intensive, as it is 
+akin to running cross-validated SL for each eSL. Parallel programming (reviewed 
+below) is recommended for training learners that are computationally intensive, 
+like `dSL` defined above. That is, a parallel processing scheme should be 
+defined before calling `dSL$train(task)`.
+
+### Parallel Processing 
+
+It's straightforward to take advantage of `sl3`'s built-in parallel processing 
+support, which draws on the [`future` R package](https://cran.r-project.org/web/packages/future/index.html), which
+provides a lightweight, unified Future API for sequential and parallel 
+processing of R expressions via futures. From the `future` package 
+documentation: "This package implements sequential, multicore, multisession, and cluster futures. With these, R expressions can be evaluated on the local 
+machine, in parallel a set of local machines, or distributed on a mix of local 
+and remote machines. Extensions to this package implement additional backends 
+for processing futures via compute cluster schedulers, etc. Because of its 
+unified API, there is no need to modify any code in order switch from 
+sequential on the local machine to, say, distributed processing on a remote 
+compute cluster. Another strength of this package is that global variables and 
+functions are automatically identified and exported as needed, making it 
+straightforward to tweak existing code to make use of futures."
+
+To use `future` with `sl3`, you can simply choose a futures `plan()`, as shown
+below. 
+
+```{r fit-sl-parallel}
+# let's load the future package and set n-1 cores for parallel processing
+library(future)
+ncores <- availableCores()-1
+ncores
+plan(multicore, workers = ncores)
+# now, let's re-train sl in parallel for demonstrative purposes
+# we will also set a stopwatch so we can see how long this takes
+start_time <- proc.time()
+
+set.seed(4197)
+sl_fit_parallel <- sl$train(task)
+
+runtime_sl_fit_parallel <- proc.time() - start_time
+runtime_sl_fit_parallel
+```
 
 ### Default Data Pre-processing
 
@@ -635,7 +943,7 @@ task <- make_sl3_Task(
 )
 ```
 
-#### Imputation and missingness indicators
+#### Imputation and missingness indicators {-}
 
 Notice the warning that appeared when we created the task above. (We muted this 
 warning when we created the task in the previous section). This warning states 
@@ -702,7 +1010,7 @@ function that is approximated (e.g., with SL) and incorporated that in the
 estimation of the target parameter and the inference / uncertainty
 quantification.
 
-#### Character and categorical covariates
+#### Character and categorical covariates {-}
 
 First any character covariates are converted to factors. Then all factor
 covariates are one-hot encoded, i.e., the levels of a factor become a set of
@@ -723,8 +1031,8 @@ last rows of `cats_onehot` are zero across all columns, to denote this level
 that does not appear explicitly in the table.
 
 The learners in `sl3` are trained to the object `X` in the task, or a sample of
-`X` for learners that use cross-validation. Let's check out the first six rows
-of our task's `X` object:
+`X` for learners that use CV. Let's check out the first six rows of our task's 
+`X` object:
 
 ```{r show-X, eval = FALSE}
 head(task$X)
@@ -823,7 +1131,7 @@ require the user to have specialized knowledge of an algorithm (although some
 understanding is still helpful); it uses the `caret` software to automatically 
 select an "optimal" set of tuning parameters over a grid of them.
 
-#### Do-it-yourself grid
+#### Do-it-yourself grid {-}
 
 Below, we show how we can create several variations of an XGBoost learner, 
 `Lrnr_xgboost`, by hand. This example is just for demonstrative purposes; users 
@@ -857,7 +1165,7 @@ names(xgb_learners) <- c(
 )
 ```
 
-#### Automatic grid and selection with `caret`
+#### Automatic grid and selection with `caret` {-}
 
 We can use the `Lrnr_caret` to use the `caret` software. As described in the 
 `Lrnr_caret` documentation, `Lrnr_caret` "uses the `caret` package's `train`
@@ -926,7 +1234,7 @@ we need to create a `Pipeline`. A `Pipeline` is a set of learners
 to be fit sequentially, where the fit from one learner is used to define the
 task for the next learner.
 
-#### Variable importance-based screeners
+#### Variable importance-based screeners {-}
 
 Variable importance-based screeners retain the top $j$ most important covariates 
 according to some importance metric. This screener is provided by 
@@ -965,7 +1273,7 @@ learner in it is fit to the screener-selected, reduced set of ten covariates.
 RFscreen_top10_stack <- Pipeline$new(RFscreen_top10, stack)
 ```
 
-#### Coefficient threshold-based screeners
+#### Coefficient threshold-based screeners {-}
 
 `Lrnr_screener_coefs` provides screening of covariates based on the magnitude 
 of their estimated coefficients in a (possibly regularized) GLM. The 
@@ -994,7 +1302,7 @@ learner in it is fit to the lasso screener-selected, reduced set of covariates.
 lasso_screen_stack <- Pipeline$new(lasso_screen, stack)
 ```
 
-#### Correlation-based screeners
+#### Correlation-based screeners {-}
 
 `Lrnr_screener_correlation` provides covariate screening procedures by 
 running a test of correlation (Pearson default), and then selecting the (1) top 
@@ -1020,7 +1328,7 @@ corP_screen <- Lrnr_screener_correlation$new(
 corP_screen_stack <- Pipeline$new(corP_screen, stack)
 ```
 
-#### Augmented screeners
+#### Augmented screeners {-}
 
 Augmented screeners are special in that they enforce certain covariates to 
 always be included. That is, if a screener removes a "mandatory" covariate then 
@@ -1042,7 +1350,7 @@ corRank_screen_augmented_glm <- Pipeline$new(corRank_screen_augmented, lrn_glm)
 `Lrnr_screener_augment` is useful when subject-matter experts feel strongly 
 that certain covariate sets must be included, even under screening procedures. 
 
-#### Stack with range of screeners
+#### Stack with range of screeners {-}
 
 Above, we mentioned that we'd like to consider a range of screeners to 
 diversify the library. Here we show how we can create a new `Stack` from other 
@@ -1128,7 +1436,7 @@ importance_plot(x = washb_varimp)
 ```
 <!-- Explain summary!!!! -->
 
-### Conditional density estimation
+### Conditional Density Estimation
 
 In certain scenarios it may be useful to estimate the conditional density of a 
 dependent variable, given predictors/covariates that precede it. In the
@@ -1155,7 +1463,7 @@ hazard, respectively). We elaborate on these two frameworks below. Importantly,
 per @dudoit2005asymptotics and related works, a loss function appropriate for
 density estimation is the negative log-density loss $L(\cdot) = -\log(p_n(\cdot))$.
 
-#### Moment-restricted location-scale
+#### Moment-restricted location-scale {-}
 
 This family of semiparametric CDE approaches exploits the general form $\rho(Y -
 \mu(X) / \sigma(X))$, where $Y$ is the dependent variable of interest (e.g., 
@@ -1228,7 +1536,7 @@ sl_dens_lrnr <- Lrnr_sl$new(
 )
 ```
 
-#### Pooled hazard regression
+#### Pooled hazard regression {-}
 
 Another approach for CDE available in `sl3`, and originally proposed in 
 @diaz2011super, leverages the relationship between the (conditional) hazard and 
@@ -1295,14 +1603,14 @@ informal sketch of this algorithm below.
    across bins. 
 
 A key element of this proposal is the flexibility to use any binary regression
-procedure or appropriate machine learning algorithm to estimate $\prob(Y \in
-[\alpha_{t-1}, \alpha_t) \mid X)$, facilitating the incorporation of flexible
-techniques like ensemble learning [@breiman1996stacked; @vdl2007super]. This 
-extreme degree of flexibility integrates perfectly with the underlying design 
-principles of `sl3`; however, we have not yet implemented this approach in its 
-full generality. A version of this CDE approach, which limits the original 
-proposal by replacing the use of arbitrary binary regression with the highly 
-adaptive lasso (HAL) algorithm [@benkeser2016hal] is supported in the
+procedure or appropriate machine learning algorithm to estimate $\mathbb{P}(Y 
+\in [\alpha_{t-1}, \alpha_t) \mid X)$, facilitating the incorporation of 
+flexibletechniques like ensemble learning [@breiman1996stacked; @vdl2007super]. 
+This extreme degree of flexibility integrates perfectly with the underlying 
+design principles of `sl3`; however, we have not yet implemented this approach 
+in its full generality. A version of this CDE approach, which limits the 
+original proposal by replacing the use of arbitrary binary regression with the 
+highly adaptive lasso (HAL) algorithm [@benkeser2016hal] is supported in the
 [`haldensify` package](https://github.com/nhejazi/haldensify)
 [@hejazi2020haldensify] (the HAL implementation in `haldensify` is provided the 
 [`hal9001` package](https://github.com tlverse/hal9001)
@@ -1403,47 +1711,52 @@ head(chspred)
       level that pertains to not receiving the treatment) for the treatment
       column in the data.
 - It's a worthwhile exercise to obtain the predicted counterfactual outcomes
-  and create these counterfactual `sl3` tasks. It's too biased; however, to
+  and create these counterfactual `sl3` tasks. It's too biased, however, to
   plug the SL fit into the target parameter mapping, (e.g., calling the result
   of `mean(sl_fit$predict(A1_task)) - mean(sl_fit$predict(A0_task))` the
   estimated ATE. We would end up with an estimator for the ATE that was
   optimized for estimation of the prediction function, and not the ATE!
-- At the end of the "analysis day", we want an estimator that is optimized for
-  our target estimand of interest. We ultimately care about doing a good job
-  estimating $\psi_0$. The SL is an essential step to help us get there. In
-  fact, we will use the counterfactual predicted outcomes that were explained
-  at length above. However, SL is not the end of the estimation procedure.
-  Specifically, the Super Learner would not be an asymptotically linear
-  estimator of the target estimand; and it is not an efficient substitution
-  estimator. This begs the question, why is it so important for an estimator to
-  possess these properties?
+- Ultimately, we want an estimator that is does the best job in approximating 
+  our question of interest. That is, we care about doing a the best job
+  possible estimating $\psi_0$. The SL is an essential step to help us get 
+  there: the counterfactual predicted outcome estimates (like those 
+  explained above), and other SL-derived estimates (like a propensity score) 
+  play a key role in estimating $\psi_0$. However, SL is not the end of the 
+  estimation procedure. Specifically, if we simply plugged in the SL estimates 
+  into the target parameter, we would not have an asymptotically linear
+  estimator of the target estimand; the SL is not an efficient substitution
+  estimator and does not admit statistical inference. Why does this matter?
 
-  + An asymptotically linear estimator converges to the estimand a
-    $\frac{1}{\sqrt{n}}$ rate, thereby permitting formal statistical inference
-    (i.e., confidence intervals and $p$-values) [ADD REF].
-  + Substitution, or plug-in, estimators of the estimand are desirable because
-    they respect both the local and global constraints of the statistical model
-    (e.g., bounds), and have they have better finite-sample properties[ADD REF].
+  + An asymptotically linear estimator is one that converges to the estimand a
+    $\frac{1}{\sqrt{n}}$ rate, thereby permitting formal statistical inference,
+    i.e., confidence intervals and $p$-values, (see Chapters 4--6 of 
+    @vdl2011targeted).
+  + Substitution, or plug-in, estimators are desirable because they respect 
+    both the local and global constraints of the statistical model, such as 
+    bounds on an outcome, and have they have better finite-sample properties 
+    (see Chapter 6 of @vdl2011targeted).
   + An efficient estimator is optimal in the sense that it has the lowest
     possible variance, and is thus the most precise. An estimator is efficient
     if and only if is asymptotically linear with influence curve equal to the
-    canonical gradient [ADD REF].
+    canonical gradient (see Chapter 6 of @vdl2011targeted).
 
       + The canonical gradient is a mathematical object that is specific to
         the target estimand, and it provides information on the level of
-        difficulty of the estimation problem [ADD REF]. Various canonical 
-        gradient are shown in the chapters that follow.
-      + Practitioner's do not need to know how to calculate a canonical
-        gradient in order to understand efficiency and use Targeted Maximum
-        Likelihood Estimation (TMLE). Metaphorically, you do not need to be
-        Yoda in order to be a Jedi.
+        difficulty of the estimation problem (Chapter 5 of @vdl2011targeted). 
+        Various canonical gradients are shown in the chapters that follow.
+      + Practitioners do not need to know how to calculate a canonical
+        gradient to explain properties that are desirable for an 
+        estimator to possess (like substitution/plug-in, admits valid inference, 
+        efficient, and ability to optimize finite sample performance).
+        These properties motivate the use TMLE, since TMLE satisfies them. 
 
 - TMLE is a general strategy that succeeds in constructing efficient and
-  asymptotically linear plug-in estimators.
-- SL is fantastic for pure prediction, and for obtaining an initial
-  estimate in the first step of TMLE, but we need the second step of TMLE to
-  have the desirable statistical properties mentioned above.
-- In the chapters that follow, we focus on the targeted maximum likelihood
+  asymptotically linear plug-in estimators that are robust in finite samples.
+- SL is fantastic for pure prediction, and for obtaining initial
+  estimates of components in the likelihood (the first step of TMLE), but we 
+  need the second, targeting/updating/fluctuation, step to have the desirable 
+  statistical properties mentioned above.
+- In the chapters that follow, we focus on various targeted maximum likelihood
   estimator and the targeted minimum loss-based estimator, both referred to as
   TMLE.
 
