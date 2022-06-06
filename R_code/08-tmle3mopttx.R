@@ -152,7 +152,7 @@ Q_learner <- Lrnr_sl$new(
 # Define the g learner, which is a multinomial learner:
 # specify the appropriate loss of the multinomial learner:
 mn_metalearner <- make_learner(Lrnr_solnp,
-  loss_function = loss_loglik_multinomial,
+  eval_function = loss_loglik_multinomial,
   learner_function = metalearner_linear_multinomial
 )
 g_learner <- make_learner(Lrnr_sl, list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean), mn_metalearner)
