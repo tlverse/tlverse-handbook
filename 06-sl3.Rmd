@@ -99,7 +99,7 @@ the Data"](https://tlverse.org/tlverse-handbook/data.html) chapter.
 
 First, we need to load the data and relevant packages into the R session.
 
-#### Load the data {-}
+#### Load the data 
 ```{r setup-handbook-utils-noecho, echo = FALSE}
 library(knitr)
 library(kableExtra)
@@ -137,7 +137,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-#### Install the `sl3` software (as needed) {-}
+#### Install the `sl3` software (as needed)
 
 To install any package, we recommend first clearing the R workspace and then 
 restarting the R session. In RStudio, this can be achieved by clicking the 
@@ -161,7 +161,7 @@ of the package (i.e., `usethis::install_github(tlverse/sl3@devel)`), re-start
 your `R` session, and then re-load the `sl3` package.
 -->
 
-#### Load the `sl3` software {-}
+#### Load the `sl3` software
 
 Once `sl3` is installed, we can load it like any other `R` package:
 ```{r load-sl3}
@@ -328,19 +328,21 @@ sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
 ### 3. Fit the SL to the task with `train` {-}
 
 The last step for fitting the SL to the prediction task is to call `train` and 
-supply the task. We will also set a random number generator before calling 
-train so the results are reproducible. 
+supply the task. Before we call `train`, we will set a random number generator 
+so the results are reproducible, and we will also time it.
 
 ```{r train-sl}
-# we will also set a stopwatch so we can measure how long this takes
-start_time <- proc.time()
+start_time <- proc.time() # start time
 
 set.seed(4197)
 sl_fit <- sl$train(task = task)
 
-runtime_sl_fit <- proc.time() - start_time
+runtime_sl_fit <- proc.time() - start_time # end time - start time = run time
 runtime_sl_fit
 ```
+
+It took `r round(as.numeric(runtime_sl_fit["elapsed"]),1)` seconds, `r round(as.numeric(runtime_sl_fit["elapsed"])/60,1)` minutes, to fit the SL 
+prediction function. 
 
 ### Summary {-}
 
@@ -372,11 +374,27 @@ head(sl_preds)
 We can also obtain predicted values from a candidate learner in the SL. Below
 we obtain predictions for the GLM learner.
 
-```{r lrnr-predictions}
+```{r glm-predictions}
 glm_preds <- sl_fit$learner_fits$Lrnr_glm_TRUE$predict(task = task)
 head(glm_preds)
 ```
 
+Note that the predicted values for the SL correspond to so-called "full fits" 
+of the candidate learners, in which the candidates are fit to the entire 
+analytic dataset, i.e., all of the data supplied as `data` to `sl3_Task`. 
+Figure 2 in @rvp2022super provides a visual overview of the SL fitting 
+procedure. 
+
+```{r glm-predictions-fullfit}
+# we can also access the candidate learner full fits directly and obtain
+# the same "full fit" candidate predictions from there 
+# (we split this into two lines to avoid overflow)
+stack_full_fits <- sl_fit$fit_object$full_fit$learner_fits$Stack$learner_fits
+glm_preds_full_fit <- stack_full_fits$Lrnr_glm_TRUE$predict(task)
+
+# check that they are identical
+identical(glm_preds, glm_preds_full_fit)
+```
 Below we visualize the observed values for `whz` and predicted `whz` values for 
 SL, GLM and the mean.
 ```{r predvobs}
@@ -401,7 +419,7 @@ if (knitr::is_latex_output()) {
     scroll_box(width = "100%", height = "300px")
 }
 ```
-```{r predobs-plot}
+```{r predobs-plot, out.width = '60%', fig.asp = .62}
 # melt the table so we can plot observed and predicted values
 df_plot$id <- seq(1:nrow(df_plot))
 df_plot_melted <- melt(
@@ -421,7 +439,7 @@ ggplot(df_plot_melted, aes(id, value, color = variable)) +
 #### Cross-validated predictions {-}
 
 We can also obtain the cross-validated (CV) predictions for the candidate 
-learners in a few ways:
+learners. We can do this is a few different ways. 
 ```{r cv-predictions}
 # one way to obtain the CV predictions for the candidate learners
 cv_preds_option1 <- sl_fit$fit_object$cv_fit$predict_fold(
@@ -449,10 +467,34 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-We can also get the CV predictions "by hand", by tapping into each of the folds, 
-and then using the fitted candidate learners (which were trained to the training
-set for each fold) to predict validation set outcomes (which were not seen in 
-training).
+**`predict_fold`**: The first option to obtain CV predictions, 
+`cv_preds_option1`, used the `predict_fold` function to obtain validation set 
+predictions across all folds. This function only exists for learner fits that 
+are cross-validated, like those in `Lrnr_sl`. In addition to supplying 
+`fold_number = "validation"` in `predict_fold`, we can set 
+`fold_number = "full"` to obtain predictions from learners fit to the entire 
+dataset (i.e., all of the data supplied to `sl3_Task`). For instance, below we 
+show that `glm_preds` we calculated above can also be obtained by setting 
+`fold_number = "full"`.
+
+```{r glm-predict-fold}
+full_fit_preds <- sl_fit$fit_object$cv_fit$predict_fold(
+  task = task, fold_number = "full"
+)
+glm_full_fit_preds <- full_fit_preds$Lrnr_glm_TRUE
+
+# check that they are identical
+identical(glm_preds, glm_full_fit_preds)
+```
+
+We can also supply a specific an integer between 1 and the number of CV folds 
+to the  `fold_number` argument in `predict_fold`, and an example of this 
+functionality is shown in the next part.  
+
+**CV predictions "by hand"**: We can get the CV predictions by hand, by tapping 
+into each of the folds, and then using the fitted candidate learners (which 
+were trained to the training set for each fold) to predict validation set 
+outcomes (which were not seen in training).
 
 ```{r cv-predictions-long}
 ##### CV predictions "by hand" #####
@@ -471,13 +513,19 @@ cv_preds_list <- lapply(seq_along(task$folds), function(i){
   
   # get predicted outcomes for fold i's validation dataset, using candidates 
   # trained to fold i's training dataset
-  v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(
-    task = v_task
+  v_preds <- sl_fit$fit_object$cv_fit$predict_fold(
+    task = v_task, fold_number = i
   )
   # note: v_preds is a matrix of candidate learner predictions, where the 
   # number of rows is the number of observations in fold i's validation dataset 
   # and the number of columns is the number of candidate learners (excluding 
   # any that might have failed)
+  
+  # an identical way to get v_preds, which is used when we calculate the 
+  # cv risk by hand in a later part of this chapter:
+  # v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(
+  #   task = v_task
+  # )
   
   # we will also return the row indices for fold i's validation set, so we 
   # can later reorder the CV predictions and make sure they are equal to what 
@@ -502,10 +550,11 @@ If we wanted to obtain predicted values for new data then we would need to
 create a new task from the new data. Also, the covariates in this new task
 must be identical to the covariates in the task for training. As an example, 
 let's assume we have data `washb_data_new` for which we want to SL predictions.
+(We do not evaluate the code chunk below, as `washb_data_new` does not exist)
 
 ```{r predictions-new-task, eval = FALSE}
 prediction_task <- make_sl3_Task(
-  data = new_data, # assuming we have some new data for predictions
+  data = washb_data_new, # assuming we have some new data for predictions
   covariates = c("tr", "fracode", "month", "aged", "sex", "momage", "momedu", 
                  "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin", "elec", 
                  "floor", "walls", "roof", "asset_wardrobe", "asset_table", 
@@ -570,14 +619,15 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-Similar to how we got the CV predictions "by hand", we can also calculate the 
-CV risk. Specifically, this is done by tapping into each of the folds, and then 
-using the fitted candidate learners (which were trained to the training set for 
+**CV risk "by hand"**: Similar to how we got the CV predictions by hand, we 
+can also calculate the CV risk in a way that exposes the procedure. 
+Specifically, this is done by tapping into each of the folds, and then using the 
+fitted candidate learners (which were trained to the training set for 
 each fold) to predict validation set outcomes (which were not seen in training) 
 and then measure the predictive performance (i.e., risk). Each candidate 
 learner's fold-specific risk is then averaged across all folds to obtain the 
 CV risk. The function `cv_risk` does all of this internally and we show how 
-to do it "by hand" below, which can be helpful for understanding the CV risk
+to do it by hand below, which can be helpful for understanding the CV risk
 and how it is calculated. 
 
 ```{r cv-risk-byhand}
@@ -651,14 +701,14 @@ We can see from the CV risk table above that the SL is not contained. This is
 because we do not have a CV risk for the SL unless we cross-validate it or
 include it as a candidate in another SL; the latter is shown in the next
 subsection. Below we show how to obtain a cross-validated risk estimate for the
-SL using `cv_sl`. 
+SL using `cv_sl`. Like before we called `sl$train`, we will set a random number 
+generator so the results are reproducible, and we will also time this.
 
 <!--
 (Note: we did not evaluate this part of the code, as it was 
 taking too long).
 -->
-```{r cvsl, eval=F}
-# we will also set a stopwatch so we can measure how long this takes
+```{r cvsl, eval = FALSE}
 start_time <- proc.time()
 
 set.seed(569)
@@ -668,11 +718,27 @@ runtime_cv_sl_fit <- proc.time() - start_time
 runtime_cv_sl_fit
 ```
 
-```{r cvsl-risk-summary, eval = FALSE}
+```{r cvsl-save, eval = FALSE, echo = FALSE}
+library(here)
+save(cv_sl_fit, file=here("data", "fit_objects", "cv_sl_fit.Rdata"), compress=T)
+save(runtime_cv_sl_fit, file=here("data", "fit_objects", "runtime_cv_sl_fit.Rdata"))
+```
+
+```{r cvsl-load, eval = TRUE, echo = FALSE}
+library(here)
+load(here("data", "fit_objects", "cv_sl_fit.Rdata"))
+load(here("data", "fit_objects", "runtime_cv_sl_fit.Rdata"))
+runtime_cv_sl_fit
+```
+
+It took `r round(as.numeric(runtime_cv_sl_fit["elapsed"]),1)` seconds, `r round(as.numeric(runtime_cv_sl_fit["elapsed"])/60,1)` minutes, to fit the SL 
+prediction function. 
+
+```{r cvsl-risk-summary}
 cv_sl_fit$cv_risk[,c(1:3)]
 ```
 
-```{r cvsl-risk-summary-handbook, echo = FALSE, eval=F}
+```{r cvsl-risk-summary-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   cv_sl_fit$cv_risk[,c(1:3)] %>%
     kable(format = "latex")
@@ -684,32 +750,39 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-#### Revere-based predictive performance for SL {-}
+The CV risk of the SL is 
+`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),3], 4)`, which is lower 
+than all of the candidates' CV risks. 
 
-We can also obtain the so-called "revere"-based predictive performance for the 
+#### Revere-CV predictive performance for SL {-}
+
+We can also obtain the so-called "revere"-CV predictive performance for the 
 SL, which is a partial CV risk for the SL, where the SL candidate learner fits 
-are cross-validated but the meta-learner fit is not. The revere-based risk can 
-be thought of as an approximate lower bound on the true CV risk estimate for 
-the SL when the meta-learner is a simple model, like NNLS. We can output the 
+are cross-validated but the meta-learner fit is not. It takes
+essentially no extra time to calculate a revere-based risk estimate of the SL,
+since we already have the cross-validated fits of the candidates. This 
+isn't to say that revere-CV SL can replace actual CV SL, but that it can be 
+used to quickly examine an approximate lower bound on the SL's CV risk 
+*when the meta-learner is a simple model*, like NNLS. We can output the 
 revere-based risk estimate by setting `get_sl_revere_risk = TRUE` when we
 call `cv_risk`.
 
 ```{r sl-revere-risk}
-cv_risk_table_revere <- sl_fit$cv_risk(
+cv_risk_w_sl_revere <- sl_fit$cv_risk(
   eval_fun = loss_squared_error, get_sl_revere_risk = TRUE
 )
 ```
 
 ```{r sl-revere-risk-summary, eval = FALSE}
-cv_risk_table_revere[,c(1:3)]
+cv_risk_w_sl_revere[,c(1:3)]
 ```
 
 ```{r sl-revere-risk-handbook, eval = FALSE, echo = FALSE}
 if (knitr::is_latex_output()) {
-  cv_risk_table_revere[,c(1:3)] %>%
+  cv_risk_w_sl_revere[,c(1:3)] %>%
     kable(format = "latex")
 } else if (knitr::is_html_output()) {
-  cv_risk_table_revere[,c(1:3)] %>%
+  cv_risk_w_sl_revere[,c(1:3)] %>%
     kable() %>%
     kableExtra:::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
@@ -744,13 +817,13 @@ sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
   
   # get predicted outcomes for fold i's metalevel dataset, using the fitted
   # metalearner, cv_meta_fit 
-  sl_revere_v_preds <- sl_fit$fit_object$cv_meta_fit$predict(task = v_meta_task)
+  sl_revere_v_preds <- sl_fit$fit_object$cv_meta_fit$predict(task=v_meta_task)
   # note: cv_meta_fit was trained on the metalevel dataset, which contains the
   # candidates' cv predictions and validation dataset outcomes across ALL folds, 
   # so cv_meta_fit has already seen fold i's validation dataset outcomes.
   
   # calculate predictive performance for fold i for the SL
-    eval_function <- loss_squared_error # valid for estimation of conditional mean
+  eval_function <- loss_squared_error # valid for estimation of conditional mean
   # note: by evaluating the predictive performance of the SL using outcomes 
   # that were already seen by the metalearner, this is not a cross-validated 
   # measure of predictive performance for the SL. 
@@ -765,24 +838,28 @@ sl_revere_risk_byhand <- mean(unlist(sl_revere_risk_list))
 sl_revere_risk_byhand
 
 # check that our calculation by hand equals what is output in cv_risk_table_revere
-sl_revere_risk <- as.numeric(cv_risk_table_revere[learner == "SuperLearner", "MSE"])
-identical(sl_revere_risk_byhand, sl_revere_risk)
+sl_revere_risk <- as.numeric(cv_risk_w_sl_revere[learner=="SuperLearner","MSE"])
+identical(sl_revere_risk, sl_revere_risk_byhand)
 ```
 
 The reason why this is not a true cross-validated risk is because the 
 `cv_meta_fit` object, which is the trained meta-learner, was previously fit to 
 the *entire* matrix of CV predictions from *every* fold, i.e., the meta-level 
-dataset (see Figure 2 in @rvp2022super for explanation of meta-level dataset). 
-This is why revere-based risks are not a true CV risk. If the meta-learner is 
-not a simple regression function, and instead a more data-adaptive learner
-(e.g., random forest) is used as a meta-learner, then the revere-based risk of 
-the resulting SL is likely a worse approximation of the actual CV risk. This is 
-because more data-adaptive learners are more likely to overfit. When simple 
-parametric regressions are used as a meta-learner, like what we considered 
-(NNLS with `Lrnr_nnls`), and like all of the default meta-learners in `sl3`, 
-then the revere-based risk is a quick way to examine an approximation of the CV 
-risk estimate of the SL and it can thought of as an approximate lower bound on 
-it.
+dataset (see Figure 2 in @rvp2022super for a visual overview of the meta-level 
+dataset). This is why revere-based risks are not a true CV risk. If the 
+meta-learner is not a simple regression function, and instead a more 
+data-adaptive learner (e.g., random forest) is used as a meta-learner, then the 
+revere-based risk of the resulting SL is likely a worse approximation of the 
+actual CV risk. This is because more data-adaptive learners are more likely to 
+overfit. When simple parametric regressions are used as a meta-learner, like 
+what we considered (NNLS with `Lrnr_nnls`), and like all of the default 
+meta-learners in `sl3`, then the revere-based risk is a quick way to examine an 
+approximation of the CV risk estimate of the SL and it can thought of as an 
+approximate lower bound on it. This idea holds in our example; that is, with 
+the simple NNLS meta-learner the revere-based risk estimate of the SL 
+(`r round(sl_revere_risk, 4)`) is very close to, and slightly lower than, the CV 
+risk estimate for the SL 
+(`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),3], 4)`). 
 
 ### Discrete SL
 
@@ -792,7 +869,7 @@ with the best cross-validated performance; its predictions will be the same as
 this candidate’s predictions. The dSL meta-learner specification can be invoked
 in `sl3` with `Lrnr_cv_selector`.
 
-```{r make-Lrnr_cv_selector}
+```{r make-Lrnr-cv-selector}
 cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
 ```
 
@@ -1017,7 +1094,7 @@ covariates are one-hot encoded, i.e., the levels of a factor become a set of
 binary indicators. For example, the factor `cats` and it's one-hot encoding are
 shown below:
 
-```{r fruit}
+```{r kitty}
 cats <- c("calico", "tabby", "cow", "ragdoll", "mancoon", "dwarf", "calico")
 cats <- factor(cats)
 cats_onehot <- factor_to_indicators(cats)
@@ -1430,7 +1507,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r varimp-plot, out.width = "100%"}
+```{r varimp-plot, out.width = '60%', fig.asp = .62}
 # plot variable importance
 importance_plot(x = washb_varimp)
 ```
@@ -1518,7 +1595,7 @@ Both approaches have been implemented in `sl3`, in the learner
 $f_{\mu}$ and the optional `var_learner` argument specifies $f_{\sigma}$. We
 demonstrate CDE with this approach below.
 
-```{r cde_using_locscale, eval = FALSE}
+```{r cde-using-locscale, eval = FALSE}
 # semiparametric density estimator with homoscedastic errors (HOSE)
 hose_hal_lrnr <- Lrnr_density_semiparametric$new(
   mean_learner = Lrnr_hal9001$new()
@@ -1618,7 +1695,7 @@ highly adaptive lasso (HAL) algorithm [@benkeser2016hal] is supported in the
 `haldensify` is incorporated as learner `Lrnr_haldensify` in `sl3`, as we 
 demonstrate below.
 
-```{r cde_using_pooledhaz, eval = FALSE}
+```{r cde-using-pooledhaz, eval = FALSE}
 # learners used for conditional densities for (g_n)
 haldensify_lrnr <- Lrnr_haldensify$new(
   n_bins = c(5, 10)
