@@ -243,19 +243,19 @@ delta_learner <- Lrnr_sl$new(
 learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner, delta_Y=delta_learner)
 
 
-## ----spec_init_missingness----------------------------------------------------
-# initialize a tmle specification
-tmle_spec_cat_miss <- tmle3_mopttx_blip_revere(
-  V = c("W1", "W2", "W3", "W4"), type = "blip2",
-  learners = learner_list, maximize = TRUE, complex = TRUE,
-  realistic = FALSE
-)
+## ----spec_init_missingness, eval = FALSE--------------------------------------
+## # initialize a tmle specification
+## tmle_spec_cat_miss <- tmle3_mopttx_blip_revere(
+##   V = c("W1", "W2", "W3", "W4"), type = "blip2",
+##   learners = learner_list, maximize = TRUE, complex = TRUE,
+##   realistic = FALSE
+## )
 
 
-## ----fit_tmle_auto2, eval=T---------------------------------------------------
-# fit the TML estimator
-fit_cat_miss <- tmle3(tmle_spec_cat_miss, data_missing, node_list, learner_list)
-fit_cat_miss
+## ----fit_tmle_auto2, eval = FALSE---------------------------------------------
+## # fit the TML estimator
+## fit_cat_miss <- tmle3(tmle_spec_cat_miss, data_missing, node_list, learner_list)
+## fit_cat_miss
 
 
 ## ----spec_init_Qlearning2, eval=FALSE-----------------------------------------
