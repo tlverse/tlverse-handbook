@@ -13,7 +13,7 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 
 Updated: `r Sys.Date()`
 
-## Learning Objectives {-}
+### Learning Objectives {-}
 
 By the end of this chapter you will be able to:
 
@@ -37,7 +37,7 @@ By the end of this chapter you will be able to:
    estimates and the super learner coefficients.
 
 
-## Super Learner (SL) Introduction
+## Introduction
 
 A common task in data analysis is prediction, or using the observed data to
 learn a function that takes as input data on covariates/predictors and outputs a
@@ -75,7 +75,7 @@ Add more about sl3: how it's different from SuperLearner, supported features,
 GitHub, filing issues, support, documentation, etc.
 -->
 
-## How to fit a SL with `sl3`
+## Recipe for Fitting a Super Learner with `sl3`
 
 In this section, the core functionality for fitting any SL with `sl3` is
 illustrated. In the sections that follow, additional `sl3` functionality is
@@ -87,19 +87,21 @@ Fitting any SL with `sl3` consists of the following three steps:
 2. Instantiate the SL with `Lrnr_sl`.
 3. Fit the SL to the task with `train`.
 
-### WASH Benefits Study Example {-}
+#### Running example with WASH Benefits dataset {-}
 
-Using the WASH Benefits Bangladesh data, we are interested in predicting
-weight-for-height z-score `whz` from a set of predictors/covariates (i.e., 
-variables measured before weight-for-height z-score). More
-information on this dataset is described in the ["Meet 
-the Data"](https://tlverse.org/tlverse-handbook/data.html) chapter. 
+We will use the WASH Benefits Bangladesh study as an example to guide this 
+overview of `sl3`. In this study, say we are interested in predicting the child development outcome, weight-for-height z-score, from covariates/predictors, 
+including socio-economic status variables, gestational age, and maternal 
+features. More information on this dataset is described in the ["Meet 
+the Data"](https://tlverse.org/tlverse-handbook/data.html#wash) chapter of the 
+`tlverse` handbook. 
 
-### Preliminaries {-}
+#### Preliminaries {-}
 
 First, we need to load the data and relevant packages into the R session.
 
-#### Load the data {-}
+##### Load the data {-}
+
 ```{r setup-handbook-utils-noecho, echo = FALSE}
 library(knitr)
 library(kableExtra)
@@ -137,7 +139,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-#### Install the `sl3` software (as needed) {-}
+##### Install `sl3` software (as needed) {-}
 
 To install any package, we recommend first clearing the R workspace and then 
 restarting the R session. In RStudio, this can be achieved by clicking the 
@@ -161,7 +163,7 @@ of the package (i.e., `usethis::install_github(tlverse/sl3@devel)`), re-start
 your `R` session, and then re-load the `sl3` package.
 -->
 
-#### Load the `sl3` software {-}
+##### Load `sl3` software {-}
 
 Once `sl3` is installed, we can load it like any other `R` package:
 ```{r load-sl3}
@@ -214,7 +216,7 @@ to dig into SL fit objects as well, to obtain predictions from an SL fit or
 candidate learners, examine an SL fit or its candidates, and summarize an SL 
 fit.
 
-### 2. Instantiate the SL with `Lrnr_sl` {-}
+### 2. Instantiate the Super Learner with `Lrnr_sl` {-}
 
 In order to create `Lrnr_sl` we need to specify, at the minimum, a set of 
 learners for the SL to consider as candidates. This set of algorithms is 
@@ -314,7 +316,7 @@ We can see that the names of the learners in the stack are long. This is
 because the default naming of a learner in `sl3` is clunky: for each learner, 
 every tuning parameter in `sl3` is contained in the name. In the next section, 
 ["Naming 
-learners"](https://tlverse.org/tlverse-workshops/sl3.html#naming-learners),
+Learners"](https://tlverse.org/tlverse-handbook/sl3.html#naming-learners),
 we show a few different ways for the user to name learners as they wish.
 
 Now that we have instantiated a set of learners and stacked them together, we 
@@ -326,7 +328,7 @@ outcomes, and we will still go ahead and specify it for illustrative purposes.
 sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
 ```
 
-### 3. Fit the SL to the task with `train` {-}
+### 3. Fit the Super Learner to the prediction task with `train` {-}
 
 The last step for fitting the SL to the prediction task is to call `train` and 
 supply the task. Before we call `train`, we will set a random number generator 
@@ -342,10 +344,10 @@ runtime_sl_fit <- proc.time() - start_time # end time - start time = run time
 runtime_sl_fit
 ```
 
-It took `r round(as.numeric(runtime_sl_fit["elapsed"]),1)` seconds, `r round(as.numeric(runtime_sl_fit["elapsed"])/60,1)` minutes, to fit the SL 
-prediction function. 
+It took `r round(as.numeric(runtime_sl_fit["elapsed"]),1)` seconds 
+(`r round(as.numeric(runtime_sl_fit["elapsed"])/60,1)` minutes) to fit the SL. 
 
-### Summary {-}
+#### Summary {-}
 
 In this section, the core functionality for fitting any SL with `sl3` was
 illustrated. This consists of the following three steps:
@@ -362,7 +364,7 @@ prediction task at hand.
 
 ### Obtaining Predictions
 
-#### SL and candidate learner predictions
+#### Super Learner and candidate learner predictions
 
 We will draw on the fitted SL object from above, `sl_fit`, to obtain the
 SL's predicted `whz` value for each subject.
@@ -382,7 +384,7 @@ head(glm_preds)
 
 Note that the predicted values for the SL correspond to so-called "full fits" 
 of the candidate learners, in which the candidates are fit to the entire 
-analytic dataset, i.e., all of the data supplied as `data` to `sl3_Task`. 
+analytic dataset, i.e., all of the data supplied as `data` to `make_sl3_Task`. 
 Figure 2 in @rvp2022super provides a visual overview of the SL fitting 
 procedure. 
 
@@ -420,24 +422,25 @@ if (knitr::is_latex_output()) {
     scroll_box(width = "100%", height = "300px")
 }
 ```
-```{r predobs-plot, out.width = '60%', fig.asp = .62}
+```{r predobs-plot, fig.asp = .55, fig.cap = "Observed and predicted values for weight-for-height z-score (whz)"}
 # melt the table so we can plot observed and predicted values
 df_plot$id <- seq(1:nrow(df_plot))
 df_plot_melted <- melt(
   df_plot, id.vars = "id",
-  measure.vars = c("Obs", "SL_Pred", "GLM_Pred", "Mean_Pred")
+  measure.vars = c("Observed", "SL_Pred", "GLM_Pred", "Mean_Pred")
 )
 
 library(ggplot2)
 ggplot(df_plot_melted, aes(id, value, color = variable)) + 
   geom_point(size = 0.1) + 
-  labs(x = "Subject id (ordered by increasing whz)", 
-       y = "Weight-for-height z-score (whz)") +
+  labs(x = "Subjects (ordered by increasing whz)", 
+       y = "whz") +
   theme(legend.position = "bottom", legend.title = element_blank(),
-        axis.text.x = element_blank(), axis.ticks.x = element_blank())
+        axis.text.x = element_blank(), axis.ticks.x = element_blank()) + 
+  guides(color = guide_legend(override.aes = list(size = 1)))
 ```
 
-#### Cross-validated predictions {-}
+#### Cross-validated predictions
 
 We can also obtain the cross-validated (CV) predictions for the candidate 
 learners. We can do this is a few different ways. 
@@ -468,16 +471,15 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-
-**`predict_fold`**: The first option to obtain CV predictions, 
-`cv_preds_option1`, used the `predict_fold` function to obtain validation set 
-predictions across all folds. This function only exists for learner fits that 
-are cross-validated, like those in `Lrnr_sl`. In addition to supplying 
-`fold_number = "validation"` in `predict_fold`, we can set 
-`fold_number = "full"` to obtain predictions from learners fit to the entire 
-dataset (i.e., all of the data supplied to `sl3_Task`). For instance, below we 
-show that `glm_preds` we calculated above can also be obtained by setting 
-`fold_number = "full"`.
+##### `predict_fold` {-}
+Our first option to get CV predictions, `cv_preds_option1`, used the 
+`predict_fold` function to obtain validation set predictions across all folds. 
+This function only exists for learner fits that are cross-validated in `sl3`, 
+like those in `Lrnr_sl`. In addition to supplying `fold_number = "validation"` 
+in `predict_fold`, we can set `fold_number = "full"` to obtain predictions from 
+learners fit to the entire analytic dataset (i.e., all of the data supplied to 
+`make_sl3_Task`). For instance, below we show that `glm_preds` we calculated 
+above can also be obtained by setting `fold_number = "full"`.
 
 ```{r glm-predict-fold}
 full_fit_preds <- sl_fit$fit_object$cv_fit$predict_fold(
@@ -490,13 +492,14 @@ identical(glm_preds, glm_full_fit_preds)
 ```
 
 We can also supply a specific an integer between 1 and the number of CV folds 
-to the  `fold_number` argument in `predict_fold`, and an example of this 
+to the `fold_number` argument in `predict_fold`, and an example of this 
 functionality is shown in the next part.  
 
-**CV predictions "by hand"**: We can get the CV predictions by hand, by tapping 
-into each of the folds, and then using the fitted candidate learners (which 
-were trained to the training set for each fold) to predict validation set 
-outcomes (which were not seen in training).
+##### Cross-validated predictions by hand {-}
+We can get the CV predictions "by hand", by tapping into each of the folds, and 
+then using the fitted candidate learners (which were trained to the training 
+set for each fold) to predict validation set outcomes (which were not seen in 
+training).
 
 ```{r cv-predictions-long}
 ##### CV predictions "by hand" #####
@@ -552,7 +555,7 @@ If we wanted to obtain predicted values for new data then we would need to
 create a new task from the new data. Also, the covariates in this new task
 must be identical to the covariates in the task for training. As an example, 
 let's assume we have data `washb_data_new` for which we want to SL predictions.
-(We do not evaluate the code chunk below, as `washb_data_new` does not exist)
+(We do not evaluate the code chunk below, as `washb_data_new` does not exist.)
 
 ```{r predictions-new-task, eval = FALSE}
 prediction_task <- make_sl3_Task(
@@ -567,9 +570,9 @@ prediction_task <- make_sl3_Task(
 sl_preds_new_task <- sl_fit$predict(task = prediction_task)
 ```
 
-### Summarizing SL Fits 
+### Summarizing Super Learner Fits 
 
-#### Coefficients
+#### Super Learner coefficients / fitted meta-learner summary
 
 We can see how the meta-learner created a function of the learners in a few 
 ways. In our illustrative example, we considered the default, NNLS meta-learner
@@ -621,16 +624,16 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-**CV risk "by hand"**: Similar to how we got the CV predictions by hand, we 
-can also calculate the CV risk in a way that exposes the procedure. 
-Specifically, this is done by tapping into each of the folds, and then using the 
-fitted candidate learners (which were trained to the training set for 
-each fold) to predict validation set outcomes (which were not seen in training) 
-and then measure the predictive performance (i.e., risk). Each candidate 
-learner's fold-specific risk is then averaged across all folds to obtain the 
-CV risk. The function `cv_risk` does all of this internally and we show how 
-to do it by hand below, which can be helpful for understanding the CV risk
-and how it is calculated. 
+##### Cross-validated predictive performance by hand {-} 
+Similar to how we got the CV predictions "by hand", we can also calculate the CV 
+performance/risk in a way that exposes the procedure. Specifically, this is done 
+by tapping into each of the folds, and then using the fitted candidate learners 
+(which were trained to the training set for each fold) to predict validation set 
+outcomes (which were not seen in training) and then measure the predictive 
+performance (i.e., risk). Each candidate learner's fold-specific risk is then 
+averaged across all folds to obtain the CV risk. The function `cv_risk` does 
+all of this internally and we show how to do it by hand below, which can be 
+helpful for understanding the CV risk and how it is calculated. 
 
 ```{r cv-risk-byhand}
 ##### CV risk "by hand" #####
@@ -697,13 +700,14 @@ Column "se" in the CV risk table is the standard error across all losses for a l
 Column "fold_sd" in the CV risk table is the standard deviation of the V-fold-specific risks, i.e., fold_sd = sd(risk), where risk is a V length vector of the mean loss across the folds.
 -->
 
-#### Cross-validated SL
+#### Cross-validated Super Learner 
 
-We can see from the CV risk table above that the SL is not contained. This is
+We can see from the CV risk table above that the SL is not listed. This is
 because we do not have a CV risk for the SL unless we cross-validate it or
-include it as a candidate in another SL; the latter is shown in the next
-subsection. Below we show how to obtain a cross-validated risk estimate for the
-SL using `cv_sl`. Like before we called `sl$train`, we will set a random number 
+include it as a candidate in another SL; the latter is shown in [the next
+subsection](https://tlverse.org/tlverse-handbook/sl3.html#discrete-super-learner). 
+Below, we show how to obtain a CV risk estimate for the SL using function 
+`cv_sl`. Like before when we called `sl$train`, we will set a random number 
 generator so the results are reproducible, and we will also time this.
 
 <!--
@@ -733,10 +737,9 @@ load(here("data", "fit_objects", "runtime_cv_sl_fit.Rdata"))
 runtime_cv_sl_fit
 ```
 
-It took `r round(as.numeric(runtime_cv_sl_fit["elapsed"]),1)` seconds, `r round(as.numeric(runtime_cv_sl_fit["elapsed"])/60,1)` minutes, to fit the SL 
-prediction function. 
+It took `r round(as.numeric(runtime_cv_sl_fit["elapsed"]),1)` seconds (`r round(as.numeric(runtime_cv_sl_fit["elapsed"])/60,1)` minutes) to fit the CV SL. 
 
-```{r cvsl-risk-summary}
+```{r cvsl-risk-summary, eval = FALSE}
 cv_sl_fit$cv_risk[,c(1:3)]
 ```
 
@@ -756,18 +759,33 @@ The CV risk of the SL is
 `r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),3], 4)`, which is lower 
 than all of the candidates' CV risks. 
 
-#### Revere-CV predictive performance for SL
+We can see how the SL fits varied across the folds by the coefficients for the 
+SL on each fold.
+```{r cvsl-risk-summary-coefs, eval = FALSE}
+round(cv_sl_fit$coef, 3)
+```
+```{r cvsl-risk-summary-coefs-handbook, echo = FALSE}
+if (knitr::is_latex_output()) {
+  round(cv_sl_fit$coef, 3) %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  round(cv_sl_fit$coef, 3) %>%
+    kable() %>%
+    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
+```
+#### Revere-cross-validated predictive performance of Super Learner
 
-We can also obtain the so-called "revere"-CV predictive performance for the 
-SL, which is a partial CV risk for the SL, where the SL candidate learner fits 
-are cross-validated but the meta-learner fit is not. It takes
-essentially no extra time to calculate a revere-based risk estimate of the SL,
-since we already have the cross-validated fits of the candidates. This 
-isn't to say that revere-CV SL can replace actual CV SL, but that it can be 
-used to quickly examine an approximate lower bound on the SL's CV risk 
-*when the meta-learner is a simple model*, like NNLS. We can output the 
-revere-based risk estimate by setting `get_sl_revere_risk = TRUE` when we
-call `cv_risk`.
+We can also use so-called "revere", to obtain a partial CV risk for the SL, 
+where the SL candidate learner fits are cross-validated but the meta-learner fit 
+is not. It takes essentially no extra time to calculate a revere-CV 
+performance/risk estimate of the SL, since we already have the CV fits of the 
+candidates. This isn't to say that revere-CV SL performance can replace that 
+obtained from actual CV SL. Revere can be used to very quickly examine an 
+approximate lower bound on the SL's CV risk *when the meta-learner is a simple model*,
+like NNLS. We can output the revere-based CV risk estimate by setting 
+`get_sl_revere_risk = TRUE` in `cv_risk`.
 
 ```{r sl-revere-risk}
 cv_risk_w_sl_revere <- sl_fit$cv_risk(
@@ -779,7 +797,7 @@ cv_risk_w_sl_revere <- sl_fit$cv_risk(
 cv_risk_w_sl_revere[,c(1:3)]
 ```
 
-```{r sl-revere-risk-handbook, eval = FALSE, echo = FALSE}
+```{r sl-revere-risk-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   cv_risk_w_sl_revere[,c(1:3)] %>%
     kable(format = "latex")
@@ -790,6 +808,11 @@ if (knitr::is_latex_output()) {
     scroll_box(width = "100%", height = "300px")
 }
 ```
+##### Revere-cross-validated predictive performance of Super Learner by hand {-} 
+We show how to calculate the revere-CV predictive performance/risk of 
+the SL by hand below, as this might be helpful for understanding revere and 
+how it can be used to obtain a partial CV performance/risk estimate for the 
+SL. 
 
 ```{r sl-revere-risk-byhand}
 ##### revere-based risk "by hand" #####
@@ -841,77 +864,153 @@ sl_revere_risk_byhand
 
 # check that our calculation by hand equals what is output in cv_risk_table_revere
 sl_revere_risk <- as.numeric(cv_risk_w_sl_revere[learner=="SuperLearner","MSE"])
-identical(sl_revere_risk, sl_revere_risk_byhand)
+sl_revere_risk
 ```
 
-The reason why this is not a true cross-validated risk is because the 
-`cv_meta_fit` object, which is the trained meta-learner, was previously fit to 
-the *entire* matrix of CV predictions from *every* fold, i.e., the meta-level 
-dataset (see Figure 2 in @rvp2022super for a visual overview of the meta-level 
-dataset). This is why revere-based risks are not a true CV risk. If the 
-meta-learner is not a simple regression function, and instead a more 
-data-adaptive learner (e.g., random forest) is used as a meta-learner, then the 
-revere-based risk of the resulting SL is likely a worse approximation of the 
-actual CV risk. This is because more data-adaptive learners are more likely to 
-overfit. When simple parametric regressions are used as a meta-learner, like 
-what we considered (NNLS with `Lrnr_nnls`), and like all of the default 
-meta-learners in `sl3`, then the revere-based risk is a quick way to examine an 
-approximation of the CV risk estimate of the SL and it can thought of as an 
-approximate lower bound on it. This idea holds in our example; that is, with 
-the simple NNLS meta-learner the revere-based risk estimate of the SL 
-(`r round(sl_revere_risk, 4)`) is very close to, and slightly lower than, the CV 
-risk estimate for the SL 
-(`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),3], 4)`). 
+The reason why this is not a fully cross-validated risk estimate is because the 
+`cv_meta_fit` object above (which is the trained meta-learner), was previously 
+fit to the *entire* matrix of CV predictions from *every* fold (i.e., the 
+meta-level dataset; see Figure 2 in @rvp2022super for more detail). This is why 
+revere-based risks are not a true CV risk. If the meta-learner is not a simple 
+regression function, and instead a more data-adaptive learner (e.g., random 
+forest) is used as the meta-learner, then the revere-CV risk estimate of the 
+resulting SL will be a worse approximation of the CV risk estimate. This is 
+because more data-adaptive learners are more likely to overfit. When simple 
+parametric regressions are used as a meta-learner, like what we considered in 
+our SL (NNLS with `Lrnr_nnls`), and like all of the default meta-learners in 
+`sl3`, then the revere-CV risk is a quick way to examine an approximation of 
+the CV risk estimate of the SL and it can thought of as a ballpark lower bound 
+on it. This idea holds in our example; that is, with the simple NNLS 
+meta-learner the revere risk estimate of the SL (`r round(sl_revere_risk, 4)`) 
+is very close to, and slightly lower than, the CV risk estimate for the SL 
+(`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),2], 4)`). 
 
-### Discrete SL
+### Discrete Super Learner
 
-The discrete SL (dSL), is a SL that uses a winner-take-all meta-learner called
+From the glossary (Table 1) entry for discrete SL (dSL) in @rvp2022super, 
+the dSL is "a SL that uses a winner-take-all meta-learner called
 the cross-validated selector. The dSL is therefore identical to the candidate
 with the best cross-validated performance; its predictions will be the same as
-this candidate’s predictions. The dSL meta-learner specification can be invoked
-in `sl3` with `Lrnr_cv_selector`.
-
-```{r make-Lrnr-cv-selector}
-cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
-```
-
-We can examine the CV risk for an ensemble SL (eSL), or multiple eSLs, by
-including it as a candidate in a dSL. An eSL is a SL that uses any parametric or
-non-parametric algorithm as its meta-learner. Therefore, the eSL is defined by a
-combination of multiple candidates; its predictions are defined by a combination
-of multiple candidates’ predictions. The `sl` object defined in the previous
-section, `sl`, is an eSL since it used NNLS as the meta-learner. We rename `sl`
-to `eSL_metaNNLS` below to clarify that this is an eSL that uses NNLS as its
-meta-learner.
+this candidate’s predictions". The cross-validated selector is 
+`Lrnr_cv_selector` in `sl3` (see `Lrnr_cv_selector` documentation for more 
+detail) and a dSL is instantiated in `sl3` by using `Lrnr_cv_selector` as the 
+meta-learner in `Lrnr_sl`.
 
 ```{r make-dSL}
-# recall we defined "sl" as
+cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
+dSL <- Lrnr_sl$new(learners = stack, metalearner = cv_selector)
+```
+
+Just like before, we use the learner's `train` method to fit it to the 
+prediction task. 
+```{r fit-dSL}
+set.seed(4197)
+dSL_fit <- dSL$train(task)
+```
+
+Following from subsection ["Summarizing Super Learner 
+Fits"](https://tlverse.org/tlverse-handbook/sl3.html#summarizing-super-learner-fits) 
+above, we can see how the `Lrnr_cv_selector` meta-learner created a function of 
+the candidates.
+
+```{r summarize-dSL-coefs}
+round(dSL_fit$coefficients, 3)
+```
+
+We can also examine the CV risk of the candidates alongside the coefficients:
+```{r summarize-dSL-cv-risk}
+dSL_cv_risk_table <- dSL_fit$cv_risk(eval_fun = loss_squared_error)
+```
+```{r summarize-dSL-cv-risk-tbl, eval = FALSE}
+dSL_cv_risk_table[,c(1:3)]
+```
+```{r summarize-dSL-cv-risk-tbl-handbook, echo = FALSE}
+if (knitr::is_latex_output()) {
+  dSL_cv_risk_table[,c(1:3)] %>%
+    kable(format = "latex")
+} else if (knitr::is_html_output()) {
+  dSL_cv_risk_table[,c(1:3)] %>%
+    kable() %>%
+    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    scroll_box(width = "100%", height = "300px")
+}
+```
+The multivariate adaptive splines regression candidate (`Lrnr_earth`) has the 
+lowest CV risk. Indeed, our winner-take-all meta-learner `Lrnr_cv_selector`
+gave it a weight of one and all others zero weight; the resulting dSL will be 
+defined by this weighted combination, i.e., `dSL_fit` will be identical to the 
+full fit `Lrnr_earth`. We verify that the `dSL_fit`'s predictions are identical 
+to `Lrnr_earth`'s below. 
+
+```{r verify-dSL-preds}
+dSL_pred <- dSL_fit$predict(task)
+earth_pred <- dSL_fit$learner_fits$Lrnr_earth_2_3_backward_0_1_0_0$predict(task)
+identical(dSL_pred, earth_pred)
+```
+#### Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner
+
+We recommend using CV to evaluate the predictive performance of the SL. We 
+showed how to do this with `cv_sl` above. We have also seen that when we 
+include a learner as a candidate in the SL (in `sl3` terms, when we include a 
+learner in the `Stack` passed to `Lrnr_sl` as `learners`), we are able to 
+examine its CV risk. Also, when we use the dSL, the candidate that achieved the 
+lowest CV risk defines the resulting SL. We therefore can use the dSL automate 
+a procedure for obtaining a final SL that represents the candidate with the 
+best cross-validated predictive performance. When the ensemble SL (eSL) and 
+its candidate learners are considered in a dSL as candidates, the eSL’s CV 
+performance can be compared to that from the learners from which it was 
+constructed, and the final SL will be the candidate that achieved the lowest CV 
+risk. From the glossary (Table 1) entry for eSL in @rvp2022super, an 
+eSL is "a SL that uses any parametric or non-parametric algorithm as its 
+meta-learner. Therefore, the eSL is defined by a combination of multiple 
+candidates; its predictions are defined by a combination of multiple candidates’ 
+predictions." In the following, we show how to include the eSL, and multiple 
+eSLs, as candidates in the dSL. 
+
+Recall the SL object, `sl`, defined in section 2:
+```{r recall-eSL}
+# in the section 2 we defined Lrnr_sl as
 # sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
+````
+`sl` is an eSL since it used NNLS as the meta-learner. We rename `sl` to 
+`eSL_metaNNLS` below to clarify that this is an eSL that uses NNLS as its 
+meta-learner. Note that the candidate learners in this eSL are those passed 
+to the `learners` argument, i.e., `stack`.
+
+```{r rename-eSL}
 # let's rename it to clarify that this is an eSL that uses NNLS as meta-learner
 eSL_metaNNLS <- sl
+```
 
-# first we add eSL (that we named "sl") to existing stack (that we named "stack")
-# to create new stack that includes the original candidate learners and the eSL
+To consider the `eSL_metaNNLS` as an additional candidate in `stack`, we can
+create a new stack that includes the original candidate learners and the eSL.
+```{r eSL-in-stack}
 stack_with_eSL <- Stack$new(stack, eSL_metaNNLS)
+```
+To instantiate the dSL that considers as its candidates `eSL_metaNNLS` and the 
+individual learners from which `eSL_metaNNLS` was constructed, we define 
+a new `Lrnr_sl` that considers `stack_with_eSL` as candidates and 
+`Lrnr_cv_selector` as the meta-learner.
 
-# now we define the meta-learner for dSL, and then instantiate Lrnr_sl as a dSL
+```{r eSL-in-dSL}
 cv_selector <- Lrnr_cv_selector$new(eval_function = loss_squared_error)
 dSL <- Lrnr_sl$new(learners = stack_with_eSL, metalearner = cv_selector)
 ```
-
 When we include an eSL as a candidate in the dSL, this allows the eSL’s CV
 performance to be compared to that from the other learners from which it was
 constructed. This is similar to calling CV SL, `cv_sl`, above. The difference
-between including the eSL in the dSL and calling `cv_sl` is that the former
-automates a procedure for the final SL to be the learner that achieved the best
-CV predictive performance, i.e., lowest CV risk. If the eSL performs better than
-any other candidate, the dSL will end up selecting it. As mentioned in
-@rvp2022super, "another advantage of this approach is that multiple eSLs that
-use more flexible meta-learner methods (e.g., non-parametric machine learning
-algorithms like HAL) can be evaluated simultaneously." 
+between including the eSL as a candidate in the dSL and calling `cv_sl` is that 
+the former automates a procedure for the final SL to be the learner that 
+achieved the best CV predictive performance, i.e., lowest CV risk. If the eSL 
+outperforms any other candidate, the dSL will end up selecting it and the 
+resulting SL will be the eSL. As mentioned in @rvp2022super, "another advantage 
+of this approach is that multiple eSLs that use more flexible meta-learner 
+methods (e.g., non-parametric machine learning algorithms like HAL) can be 
+evaluated simultaneously." 
 
 Below, we show how multiple eSLs can be included as candidates in a dSL:
 ```{r make-sl-discrete-multi-esl}
+# instantiate more eSLs
 eSL_metaNNLSconvex <- Lrnr_sl$new(
   learners = stack, metalearner = Lrnr_nnls$new(convex = TRUE)
 )
@@ -919,40 +1018,43 @@ eSL_metaLasso <- Lrnr_sl$new(learners = stack, metalearner = lrn_lasso)
 eSL_metaEarth <- Lrnr_sl$new(learners = stack, metalearner = lrn_earth)
 eSL_metaRanger <- Lrnr_sl$new(learners = stack, metalearner = lrn_ranger)
 eSL_metaHAL <- Lrnr_sl$new(learners = stack, metalearner = lrn_hal)
-# now we can create the stack by adding the eSLs to the existing stack
+# adding the eSLs to the stack that defined them
 stack_with_eSLs <- Stack$new(
   stack, eSL_metaNNLS, eSL_metaNNLSconvex, eSL_metaLasso, eSL_metaEarth, 
   eSL_metaRanger, eSL_metaHAL
 )
+# specify dSL
 dSL <- Lrnr_sl$new(learners = stack_with_eSLs, metalearner = cv_selector)
 ```
 
-We included as candidates in the dSL: (i) the same eSL as before; (ii) the 
-learners considered as candidates in (i); (iii) an eSL that considered the same 
-candidate learners as (i) and convex combination-constrained NNLS as the 
-meta-learner; (iv) an eSL that considered the same candidate learners as (i) 
-and a lasso meta-learner, using as lasso meta-learner the already 
-instantiated `lrn_lasso` that we created above; (v) an eSL that considered the 
-same candidate learners as (i) and an EARTH meta-learner, using as EARTH 
-meta-learner the already instantiated `lrn_earth` that we created above; (vi) an 
-eSL that considered the same candidate learners as (i) and a ranger 
-meta-learner, using as ranger meta-learner the already instantiated 
-`lrn_ranger` that we created above; and (vii) an eSL that considered the same 
-candidate learners as (i) and a highly adaptive lasso (HAL) meta-learner, 
-using as HAL meta-learner the already instantiated `lrn_hal` that we created 
-above. Even though we did not consider this in this illustrative example, 
-different sets of candidate learners can be considered in the eSLs.
+We included as candidates in the dSL: 
 
-Running this many eSLs in the dSL is very computationally intensive, as it is 
-akin to running cross-validated SL for each eSL. Parallel programming (reviewed 
-below) is recommended for training learners that are computationally intensive, 
-like `dSL` defined above. That is, a parallel processing scheme should be 
-defined before calling `dSL$train(task)`.
+1. the same eSL as before, `eSL_metaNNLS`; 
+2. the learners considered as candidates in (1); 
+3. an eSL that considered the same candidate learners as (1) and a convex 
+   combination-constrained NNLS as the meta-learner; 
+4. an eSL that considered the same candidate learners as (1) and a lasso 
+   meta-learner, using `lrn_lasso` which was instantiated in section 2;
+5. an eSL that considered the same candidate learners as (1) and a 
+   multivariate adaptive regression splines (earth) meta-learner, using 
+   `lrn_earth` which was instantiated in section 2; 
+6. an eSL that considered the same candidate learners as (1) and a 
+   ranger meta-learner, using `lrn_ranger` which was instantiated in section 2; and
+7. an eSL that considered the same candidate learners as (1) and a 
+   HAL meta-learner, using `lrn_hal` which was instantiated in section 2.
+
+Running this many eSLs in the dSL is currently very computationally intensive
+in `sl3`, as it is akin to running cross-validated SL for each eSL. Parallel 
+programming (reviewed below) is recommended for training learners that are 
+computationally intensive, like the `dSL` defined above. That is, a parallel 
+processing scheme should be defined before calling `dSL$train(task)` in order 
+to speed up the run time.
 
 ### Parallel Processing 
 
 It's straightforward to take advantage of `sl3`'s built-in parallel processing 
-support, which draws on the [`future` R package](https://cran.r-project.org/web/packages/future/index.html), which
+support, which draws on the [`future` R 
+package](https://cran.r-project.org/web/packages/future/index.html), which
 provides a lightweight, unified Future API for sequential and parallel 
 processing of R expressions via futures. From the `future` package 
 documentation: "This package implements sequential, multicore, multisession, and cluster futures. With these, R expressions can be evaluated on the local 
@@ -1281,7 +1383,7 @@ As we can see from above, the general behavior of `formula`in R applies in
 this syntax (e.g,. in RStudio, type "?formula" in the Console and information 
 will appear in the Help tab).
 
-### Screeners
+### Covariate Screening
 
 One characteristic of a rich library of learners is that it is effective at 
 handling covariates of high dimension. When there are many covariates in the
@@ -1429,7 +1531,7 @@ corRank_screen_augmented_glm <- Pipeline$new(corRank_screen_augmented, lrn_glm)
 `Lrnr_screener_augment` is useful when subject-matter experts feel strongly 
 that certain covariate sets must be included, even under screening procedures. 
 
-#### Stack with range of screeners
+#### `Stack` with range of screeners
 
 Above, we mentioned that we'd like to consider a range of screeners to 
 diversify the library. Here we show how we can create a new `Stack` from other 
@@ -1445,15 +1547,18 @@ This `screeners_stack` could be inputted as `learners` in `Lrnr_sl` to
 define the SL that considers as candidates learners with no screening, and 
 learners coupled with various screeners. 
 
+<!--
+#### Defining Novel Performance Metrics with `ROCR`
+-->
 ## Advanced `sl3` Functionality {#sl3-advanced}
 
 ### Variable Importance Measures
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, our collaborators tend to like it, 
-so we created a variable importance function in `sl3`. The `sl3`
+so we created a function to assess variable importance in `sl3`. The `sl3`
 `importance` function returns a table with variables listed in decreasing order
-of importance (i.e., most important on the first row).
+of importance (i.e., most important listed on the first row).
 
 The measure of importance in `sl3` is based on a ratio or difference of 
 predictive performance between the SL fit with a removed or permuted
@@ -1478,9 +1583,10 @@ each covariate and then refit. Below, we use the `permute` approach because it
 is so much faster.
 
 Let's explore the `sl3` variable importance measurements for `sl_fit`, the 
-SL we fit above to the WASH Benefits example dataset. We will define a grouping 
-of covariates based on household assets, so these covariates will be considered 
-together in the importance. 
+SL we fit above to the WASH Benefits example dataset. We define a grouping 
+of covariates to consider in the importance evaluation that is based on 
+household assets, as this collection of variables reflects the socio-economic 
+status (SES) of the study's participants. 
 
 ```{r varimp}
 assets <- c("asset_wardrobe", "asset_table", "asset_chair", "asset_khat",
@@ -1509,11 +1615,15 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-```{r varimp-plot, out.width = '60%', fig.asp = .62}
+```{r varimp-plot, fig.asp = .62, fig.cap = "sl3 variable importance for predicting weight-for-height z-score with WASH Benefits example dataset"}
 # plot variable importance
 importance_plot(x = washb_varimp)
 ```
-<!-- Explain summary!!!! -->
+According to the `sl3` variable importance measures, which were assessed by 
+the mean squared error (MSE) difference under permutations of each covariate, 
+the fitted SL's (`sl_fit`) most important variables for predicting 
+weight-for-height z-score (`whz`) are child age (`aged`) and household assets 
+(`assets`) that reflect the socio-economic status of the study's subjects.
 
 ### Conditional Density Estimation
 
@@ -1735,7 +1845,9 @@ chspred <- read_csv(file = db_data, col_names = TRUE)
 ```
 
 Let's take a quick peek at the data:
-
+```{r ex-head, eval = FALSE}
+head(chspred)
+```
 ```{r ex-head-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   head(chspred) %>%
@@ -1746,9 +1858,6 @@ if (knitr::is_latex_output()) {
     kableExtra:::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
-```
-```{r ex-head, eval = FALSE}
-head(chspred)
 ```
 1. Create an `sl3` task, setting myocardial infarction `mi` as the outcome and
    using all available covariate data.
@@ -1838,50 +1947,6 @@ head(chspred)
 - In the chapters that follow, we focus on various targeted maximum likelihood
   estimator and the targeted minimum loss-based estimator, both referred to as
   TMLE.
-
-<!--
-We could just plug-in the estimator returned by Super Learner; however, this is
-problematic because the Super Learner estimators are trading off bias and
-variance in an optimal way and as a result their bias is essentially the rate
-of convergence of these algorithms, which is always slower than $1/\sqrt{n}$.
-Therefore, if we plug-in the estimator returned by Super Learner into the
-target parameter mapping, we would end up with an estimator which has the same
-bias as what we plugged in, which is greater than $1/\sqrt{n}$. Thus, we end up
-with an estimator which is not asymptotically normal, since it does not
-converge to the estimand at $1/\sqrt{n}$ rate.
-
-An asymptotically linear estimator has no meaningful bias ($ < 1/\sqrt{n}$),
-and can be written as an empirical mean in first order of a function of the
-data, the influence curve, plus some negligible remainder term. Once an
-estimator is asymptotically linear with an influence curve it’s normally
-distributed, so the standardized estimator converges to a normal distribution
-with mean 0 and variance is the variance of the influence curve. Thus, it is
-advantageous to construct asymptotically linear estimators since they permit
-formal statistical inference. Among the class of regular asymptotically linear
-estimators, there is an optimal estimator which is an efficient estimator, and
-that’s the one with influence curve equal to the canonical gradient of the
-path-wise derivative of the target parameter. The canonical gradient is the
-direction of the path through the data distribution where the parameter is
-steepest. An estimator is efficient if and only if is asymptotically linear
-with influence curve equal to the canonical gradient. One can calculate the
-canonical gradient with the statistical model and the statistical target
-parameter.  Techniques for calculating the canonical gradient entail projecting
-an initial gradient on the tangent space of the model at the particular
-distribution in the model in which you want to calculate the canonical
-gradient.
-
-Now we know what it takes to construct an efficient estimator. Namely, we need
-to construct an estimator which is asymptotically linear with influence curve
-the canonical gradient. There are three general classes of estimators which
-succeed in constructing asymptotically linear estimators: (1) the one-step
-estimator, but it is not a plug-in estimator; (2) the targeted maximum
-likelihood estimator, which is a Super Learner targeted towards the target
-parameter and it is a plug-in estimator; and (3) estimating equation based
-estimators, which use the canonical gradient but as an estimating function in
-the target parameter. In the chapters that follow, we focus on the targeted
-maximum likelihood estimator and the targeted minimum loss-based estimator,
-both referred to as TMLE.
--->
 
 ## Appendix 
 
