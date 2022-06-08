@@ -89,7 +89,5 @@ theme_transparent <- function(...) {
 library(ggplot2)
 theme_set(theme_transparent())
 theme_update(
-  text = element_text(size = 25),
-  axis.text.x = element_text(colour = "black", size = 30),
-  axis.text.y = element_text(colour = "black", size = 30)
+  text = element_text(size = 20)
 )
