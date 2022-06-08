@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2022-05-03
+Updated: 2022-06-08
 
 ## Learning Objectives
 
@@ -620,10 +620,10 @@ important extensions of `tmle3mopttx` in later sections.
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est      se   lower   upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.35553  0.55371 0.02598 0.50279 0.60463         0.55371
-   lower_transformed upper_transformed
-1:           0.50279           0.60463
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.35038  0.55077 0.026223 0.49938 0.60217
+   psi_transformed lower_transformed upper_transformed
+1:         0.55077           0.49938           0.60217
 ```
 
 By studying the output generated, we can see that the confidence interval covers the
@@ -656,10 +656,10 @@ tmle_spec_resource <- tmle3_mopttx_blip_revere(
 fit_resource <- tmle3(tmle_spec_resource, data, node_list, learner_list)
 fit_resource
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est      se   lower  upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.34304  0.55841 0.02612 0.50721 0.6096         0.55841
-   lower_transformed upper_transformed
-1:           0.50721            0.6096
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.35659  0.55786 0.025768 0.50735 0.60836
+   psi_transformed lower_transformed upper_transformed
+1:         0.55786           0.50735           0.60836
 ```
 
 We can compare the number of individuals that got treatment with and without the 
@@ -677,7 +677,7 @@ table(tmle_spec$return_rule)
 table(tmle_spec_resource$return_rule)
 
   0   1 
-351 649 
+274 726 
 ```
 
 #### Empty V
@@ -702,10 +702,10 @@ tmle_spec_V_empty <- tmle3_mopttx_blip_revere(
 fit_V_empty <- tmle3(tmle_spec_V_empty, data, node_list, learner_list)
 fit_V_empty
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.31575  0.51694 0.013528 0.49043 0.54346
-   psi_transformed lower_transformed upper_transformed
-1:         0.51694           0.49043           0.54346
+   type         param init_est tmle_est      se  lower   upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.32588  0.53207 0.01034 0.5118 0.55233         0.53207
+   lower_transformed upper_transformed
+1:            0.5118           0.55233
 ```
 
 ## Evaluating the Causal Effect of an optimal ITR with Categorical Treatment {#oit-eval-cat}
@@ -786,7 +786,7 @@ Q_learner <- Lrnr_sl$new(
 # Define the g learner, which is a multinomial learner:
 # specify the appropriate loss of the multinomial learner:
 mn_metalearner <- make_learner(Lrnr_solnp,
-  loss_function = loss_loglik_multinomial,
+  eval_function = loss_loglik_multinomial,
   learner_function = metalearner_linear_multinomial
 )
 g_learner <- make_learner(Lrnr_sl, list(lrn_xgboost_100, lrn_xgboost_500, lrn_mean), mn_metalearner)
@@ -809,17 +809,18 @@ $g_0(A \mid W)$ in `sl3`, we run the following:
 # See which learners support multi-class classification:
 sl3_list_learners(c("categorical"))
  [1] "Lrnr_bound"                "Lrnr_caret"               
- [3] "Lrnr_cv_selector"          "Lrnr_glmnet"              
- [5] "Lrnr_grf"                  "Lrnr_gru_keras"           
- [7] "Lrnr_h2o_glm"              "Lrnr_h2o_grid"            
- [9] "Lrnr_independent_binomial" "Lrnr_lightgbm"            
-[11] "Lrnr_lstm_keras"           "Lrnr_mean"                
-[13] "Lrnr_multivariate"         "Lrnr_nnet"                
-[15] "Lrnr_optim"                "Lrnr_polspline"           
-[17] "Lrnr_pooled_hazards"       "Lrnr_randomForest"        
-[19] "Lrnr_ranger"               "Lrnr_rpart"               
-[21] "Lrnr_screener_correlation" "Lrnr_solnp"               
-[23] "Lrnr_svm"                  "Lrnr_xgboost"             
+ [3] "Lrnr_cv_selector"          "Lrnr_ga"                  
+ [5] "Lrnr_glmnet"               "Lrnr_grf"                 
+ [7] "Lrnr_gru_keras"            "Lrnr_h2o_glm"             
+ [9] "Lrnr_h2o_grid"             "Lrnr_independent_binomial"
+[11] "Lrnr_lightgbm"             "Lrnr_lstm_keras"          
+[13] "Lrnr_mean"                 "Lrnr_multivariate"        
+[15] "Lrnr_nnet"                 "Lrnr_optim"               
+[17] "Lrnr_polspline"            "Lrnr_pooled_hazards"      
+[19] "Lrnr_randomForest"         "Lrnr_ranger"              
+[21] "Lrnr_rpart"                "Lrnr_screener_correlation"
+[23] "Lrnr_solnp"                "Lrnr_svm"                 
+[25] "Lrnr_xgboost"             
 ```
 
 Since the corresponding blip will be vector valued, we will have a
@@ -854,16 +855,16 @@ tmle_spec_cat <- tmle3_mopttx_blip_revere(
 fit_cat <- tmle3(tmle_spec_cat, data, node_list, learner_list)
 fit_cat
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.53783  0.62117 0.065863 0.49208 0.75025
-   psi_transformed lower_transformed upper_transformed
-1:         0.62117           0.49208           0.75025
+   type         param init_est tmle_est       se   lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]  0.53474  0.62129 0.066282 0.49138 0.7512         0.62129
+   lower_transformed upper_transformed
+1:           0.49138            0.7512
 
 # How many individuals got assigned each treatment?
 table(tmle_spec_cat$return_rule)
 
   1   2   3 
-250 432 318 
+249 432 319 
 ```
 
 We can see that the confidence interval covers the truth.
@@ -908,10 +909,10 @@ tmle_spec_cat_simple <- tmle3_mopttx_blip_revere(
 fit_cat_simple <- tmle3(tmle_spec_cat_simple, data, node_list, learner_list)
 fit_cat_simple
 A tmle3_Fit that took 1 step(s)
-   type          param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{d(V=W1)}]  0.54336  0.61838 0.060848 0.49912 0.73764
+   type                   param init_est tmle_est       se  lower  upper
+1:  TSM E[Y_{d(V=W4,W3,W2,W1)}]  0.53013   0.5497 0.058216 0.4356 0.6638
    psi_transformed lower_transformed upper_transformed
-1:         0.61838           0.49912           0.73764
+1:          0.5497            0.4356            0.6638
 ```
 
 Even though we  specified all baseline covariates as the basis
@@ -947,10 +948,10 @@ tmle_spec_cat_realistic <- tmle3_mopttx_blip_revere(
 fit_cat_realistic <- tmle3(tmle_spec_cat_realistic, data, node_list, learner_list)
 fit_cat_realistic
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est      se   lower   upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.54035  0.65821 0.02135 0.61636 0.70005         0.65821
-   lower_transformed upper_transformed
-1:           0.61636           0.70005
+   type         param init_est tmle_est       se   lower   upper
+1:  TSM E[Y_{A=NULL}]  0.53766  0.65819 0.021349 0.61634 0.70003
+   psi_transformed lower_transformed upper_transformed
+1:         0.65819           0.61634           0.70003
 
 # How many individuals got assigned each treatment?
 table(tmle_spec_cat_realistic$return_rule)
@@ -1020,11 +1021,6 @@ tmle_spec_cat_miss <- tmle3_mopttx_blip_revere(
 # fit the TML estimator
 fit_cat_miss <- tmle3(tmle_spec_cat_miss, data_missing, node_list, learner_list)
 fit_cat_miss
-A tmle3_Fit that took 1 step(s)
-   type                    param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL, delta_Y=1}]  0.53537    0.727 0.061309 0.60683 0.84716
-   psi_transformed lower_transformed upper_transformed
-1:           0.727           0.60683           0.84716
 ```
 
 ### Q-learning
@@ -1150,15 +1146,15 @@ vim_results <- tmle3_vim(tmle_spec_vim, data, node_list, learner_list,
 )
 
 print(vim_results)
-   type                param    init_est  tmle_est       se      lower
-1:  ATE E[Y_{A=NULL}] - E[Y]  0.00066272  0.040712 0.016866  0.0076547
-2:  ATE E[Y_{A=NULL}] - E[Y] -0.01042913 -0.039754 0.022095 -0.0830588
-       upper psi_transformed lower_transformed upper_transformed  A           W
-1: 0.0737684        0.040712         0.0076547         0.0737684  A W3,W4,W2,W1
-2: 0.0035505       -0.039754        -0.0830588         0.0035505 W1  W3,W4,W2,A
-    Z_stat      p_nz p_nz_corrected
-1:  2.4138 0.0078932       0.015786
-2: -1.7993 0.0359882       0.035988
+   type                param    init_est  tmle_est       se     lower     upper
+1:  ATE E[Y_{A=NULL}] - E[Y] -0.01301899 -0.064745 0.021715 -0.107305 -0.022184
+2:  ATE E[Y_{A=NULL}] - E[Y]  0.00033205  0.053706 0.016881  0.020621  0.086792
+   psi_transformed lower_transformed upper_transformed  A           W  Z_stat
+1:       -0.064745         -0.107305         -0.022184 W1  W3,W4,W2,A -2.9816
+2:        0.053706          0.020621          0.086792  A W3,W4,W2,W1  3.1815
+         p_nz p_nz_corrected
+1: 0.00143384      0.0014338
+2: 0.00073256      0.0014338
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list

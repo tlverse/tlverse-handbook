@@ -6,9 +6,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 5 Cross-validation | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
-<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Ivana Malenica Based on the origami R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips. Updated: 2022-06-08 Learning Objectives By the end of this chapter you will be able...">
+<meta name="generator" content="bookdown 0.26.3 with bs4_book()">
+<meta property="og:title" content="Chapter 5 Cross-validation | Targeted Learning in R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="https://tlverse.org/tlverse-handbook/origami.html">
+<meta property="og:description" content="Ivana Malenica Based on the origami R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips. Updated: 2022-06-08 Learning Objectives By the end of this chapter you will be able...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 5 Cross-validation | Targeted Learning in R">
+<meta name="twitter:site" content="@tlverse">
+<meta name="twitter:description" content="Ivana Malenica Based on the origami R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips. Updated: 2022-06-08 Learning Objectives By the end of this chapter you will be able...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body>
@@ -25,7 +35,11 @@
   \(\newcommand{\I}{\mathbb{I}}\)
   \(\newcommand{\1}{\mathbbm{1}}\)
   </span>
-    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><div class="container-fluid">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<div class="container-fluid">
 <div class="row">
   <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
 
@@ -50,7 +64,7 @@
 <li><a class="" href="tlverse.html"><span class="header-section-number">3</span> Welcome to the tlverse</a></li>
 <li><a class="" href="data.html"><span class="header-section-number">4</span> Meet the Data</a></li>
 <li><a class="active" href="origami.html"><span class="header-section-number">5</span> Cross-validation</a></li>
-<li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">6</span> Super Learning with sl3</a></li>
 <li><a class="" href="tmle3.html"><span class="header-section-number">7</span> The TMLE Framework</a></li>
 <li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">8</span> Optimal Individualized Treatment Regimes</a></li>
 <li><a class="" href="shift.html"><span class="header-section-number">9</span> Stochastic Treatment Regimes</a></li>
@@ -71,7 +85,7 @@
 <p><em>Ivana Malenica</em></p>
 <p>Based on the <a href="https://github.com/tlverse/origami"><code>origami</code> <code>R</code> package</a>
 by <em>Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips</em>.</p>
-<p>Updated: 2022-05-03</p>
+<p>Updated: 2022-06-08</p>
 <div id="learning-objectives-1" class="section level2 unnumbered">
 <h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-1"><i class="fas fa-link"></i></a>
 </h2>
@@ -268,7 +282,7 @@ doing, we will subset the data to only <span class="math inline">\(n=30\)</span>
 i.i.d. sample, indexed by the row number.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/origami">origami</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/origami/">origami</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span>
 
@@ -902,8 +916,8 @@ Severely Food Insecure
 associated with fitting a proposed algorithm on a set of observations. Here, all
 observed data is used for both training and validation set.</p>
 <p>We illustrate the usage of the re-substitution method with <code>origami</code> package
-below; we will use the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_resubstitution(n)</a></code>. In order to setup
-<code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_resubstitution(n)</a></code>, we just need the total number of samples we want to
+below; we will use the function <code>folds_resubstitution(n)</code>. In order to setup
+<code>folds_resubstitution(n)</code>, we just need the total number of samples we want to
 allocate to training and validation sets; remember that each row of data is a
 unique i.i.d. sample. Notice the structure of the <code>origami</code> output:</p>
 <ol style="list-style-type: decimal">
@@ -978,8 +992,8 @@ this approach <span class="math inline">\(n\)</span> times results in, for examp
 biased (albeit, more variable) estimate of risk than the holdout method, it
 could be expensive to implement if <span class="math inline">\(n\)</span> is large.</p>
 <p>We illustrate the usage of the leave-one-out cross-validation with <code>origami</code>
-package below; we will use the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_loo(n)</a></code>. In order to setup
-<code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_loo(n)</a></code>, similarly to the re-substitution method, we just need the total
+package below; we will use the function <code>folds_loo(n)</code>. In order to setup
+<code>folds_loo(n)</code>, similarly to the re-substitution method, we just need the total
 number of samples we want to cross-validate. We show the first two folds
 generated by the leave-one-out cross-validation below.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="origami.html#cb8-1"></a>folds &lt;-<span class="st"> </span><span class="kw">folds_loo</span>(<span class="kw">nrow</span>(washb_data))</span>
@@ -1042,8 +1056,8 @@ have higher variance than the estimate based on V-fold cross-validation.</p>
 <p>Let’s see V-fold cross-validation with <code>origami</code> in action! In the next chapter
 we will study the Super Learner — an actual algorithm that we fit and evaluate
 its performance. The Super Learner relies on V-fold cross-validation as default cross-validation scheme. In order
-to set up V-fold CV, we need to call function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold(n, V)</a></code>. Arguments
-for <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold(n, V)</a></code> require the total number of samples to be
+to set up V-fold CV, we need to call function <code>folds_vfold(n, V)</code>. Arguments
+for <code>folds_vfold(n, V)</code> require the total number of samples to be
 cross-validated, and the number of folds we want to get.</p>
 <p>At <span class="math inline">\(V=2\)</span>, we get 2 folds with <span class="math inline">\(n/2\)</span> number of samples in both training and
 validation set.</p>
@@ -1095,8 +1109,8 @@ of the risk, at a cost of an increase in bias. By having many overlapping splits
 we often also need more splits (and thus more computational time) to achieve
 V-fold performance with only <span class="math inline">\(V\)</span> splits.</p>
 <p>We illustrate the usage of the Monte Carlo cross-validation with <code>origami</code>
-package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_montecarlo(n, V, pvalidation)</a></code>. In order
-to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_montecarlo(n, V, pvalidation)</a></code>, we need:</p>
+package below using the function <code>folds_montecarlo(n, V, pvalidation)</code>. In order
+to setup <code>folds_montecarlo(n, V, pvalidation)</code>, we need:</p>
 <ol style="list-style-type: decimal">
 <li>the total number of samples we want to cross-validate;</li>
 <li>the number of folds;</li>
@@ -1144,8 +1158,8 @@ sample with replacement, hence the same samples can be in multiple training
 sets. The proportion of observations in the validation sets is a random
 variable, with expectation <span class="math inline">\(\sim 0.368\)</span>.</p>
 <p>We illustrate the usage of the bootstrap cross-validation with <code>origami</code> package
-below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_bootstrap(n, V)</a></code>. In order to setup
-<code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_bootstrap(n, V)</a></code>, we need:</p>
+below using the function <code>folds_bootstrap(n, V)</code>. In order to setup
+<code>folds_bootstrap(n, V)</code>, we need:</p>
 <ol style="list-style-type: decimal">
 <li>the total number of samples we want to cross-validate;</li>
 <li>the number of folds.</li>
@@ -1205,8 +1219,8 @@ horizon using the historical data from 1949 to 1960.</p>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">AirPassengers</span><span class="op">)</span>
 <span class="va">AP</span> <span class="op">&lt;-</span> <span class="va">AirPassengers</span>
 
-<span class="fu">autoplot</span><span class="op">(</span><span class="va">AP</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">labs</span><span class="op">(</span>
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/autoplot.html">autoplot</a></span><span class="op">(</span><span class="va">AP</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>
     x <span class="op">=</span> <span class="st">"Date"</span>,
     y <span class="op">=</span> <span class="st">"Passenger numbers (1000's)"</span>,
     title <span class="op">=</span> <span class="st">"Air Passengers from 1949 to 1961"</span>
@@ -1240,7 +1254,7 @@ FIGURE 5.1: Rolling origin CV
 </p>
 </div>
 <p>We illustrate the usage of the rolling origin cross-validation with <code>origami</code>
-package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin(n, first_window, validation_size, gap, batch)</a></code>. In order to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_origin(n, first_window, validation_size, gap, batch)</a></code>, we need:</p>
+package below using the function <code>folds_rolling_origin(n, first_window, validation_size, gap, batch)</code>. In order to setup <code>folds_rolling_origin(n, first_window, validation_size, gap, batch)</code>, we need:</p>
 <ol style="list-style-type: decimal">
 <li>the total number of time points we want to cross-validate;</li>
 <li>the size of the first training set;</li>
@@ -1312,7 +1326,7 @@ FIGURE 5.2: Rolling window CV
 </p>
 </div>
 <p>We illustrate the usage of the rolling window cross-validation with <code>origami</code>
-package below using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window(n, window_size, validation_size, gap, batch)</a></code>. In order to setup <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_rolling_window(n, window_size, validation_size, gap, batch)</a></code>, we need:</p>
+package below using the function <code>folds_rolling_window(n, window_size, validation_size, gap, batch)</code>. In order to setup <code>folds_rolling_window(n, window_size, validation_size, gap, batch)</code>, we need:</p>
 <ol style="list-style-type: decimal">
 <li>the total number of time points we want to cross-validate;</li>
 <li>the size of the training sets;</li>
@@ -1364,7 +1378,7 @@ variant encompasses <span class="math inline">\(V\)</span>-fold CV in addition t
 predictions are evaluated on the future times of time-series units not seen
 during the training step, allowing for dependence in both samples and time. One
 can use the rolling-origin-<span class="math inline">\(v\)</span>-fold cross-validation with <code>origami</code> package
-using the function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold_rolling_origin_pooled(n, t, id, time, V, first_window, validation_size, gap, batch)</a></code>. In the figure below, we show <span class="math inline">\(V=2\)</span>
+using the function <code>folds_vfold_rolling_origin_pooled(n, t, id, time, V, first_window, validation_size, gap, batch)</code>. In the figure below, we show <span class="math inline">\(V=2\)</span>
 <span class="math inline">\(V\)</span>-folds, and 2 time-series CV folds.</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-3"></span>
@@ -1380,7 +1394,7 @@ FIGURE 5.3: Rolling origin V-fold CV
 <p>Analogous to the previous section, we can extend rolling window CV to support
 multiple time-series with arbitrary sample dependence. One can use the
 rolling-window-<span class="math inline">\(V\)</span>-fold cross-validation with <code>origami</code> package using the
-function <code><a href="http://tlverse.org/origami/reference/fold_funs.html">folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size, validation_size, gap, batch)</a></code>. In the figure below, we show <span class="math inline">\(V=2\)</span> <span class="math inline">\(V\)</span>-folds, and
+function <code>folds_vfold_rolling_window_pooled(n, t, id, time, V, window_size, validation_size, gap, batch)</code>. In the figure below, we show <span class="math inline">\(V=2\)</span> <span class="math inline">\(V\)</span>-folds, and
 2 time-series CV folds.</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-4"></span>
@@ -1484,8 +1498,8 @@ the dataset; we will learn in the next chapter how to deal with missingness.</p>
 <span class="op">)</span>
 
 <span class="co"># Remove missing data, then pick just the first 500 rows</span>
-<span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="va">washb_data</span> <span class="op">%&gt;%</span>
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<span class="va">washb_data</span> <span class="op">&lt;-</span> <span class="va">washb_data</span> <span class="op"><a href="https://stringr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
+  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/drop_na.html">drop_na</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://stringr.tidyverse.org/reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">500</span><span class="op">)</span>
 
 <span class="va">outcome</span> <span class="op">&lt;-</span> <span class="st">"whz"</span>
@@ -2517,7 +2531,7 @@ of the proposed algorithm.</li>
 </div>
   <div class="chapter-nav">
 <div class="prev"><a href="data.html"><span class="header-section-number">4</span> Meet the Data</a></div>
-<div class="next"><a href="sl3.html"><span class="header-section-number">6</span> Super (Machine) Learning</a></div>
+<div class="next"><a href="sl3.html"><span class="header-section-number">6</span> Super Learning with sl3</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
@@ -2575,7 +2589,7 @@ of the proposed algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 03, 2022.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 08, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -2595,6 +2609,22 @@ of the proposed algorithm.</li>
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
 </script>
 </body>
 </html>
