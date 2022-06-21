@@ -36,7 +36,7 @@ By the end of this chapter you will be able to:
 ## Introduction
 
 In this chapter, we start elaborating on the estimation step outlined in the
-[introductory chapter](#intro), which discussed the [_Roadmap for Targeted
+chapter discussing the [_Roadmap for Targeted
 Learning_](#roadmap). In order to generate an initial estimate of our target
 parameter -- which is the focus of the following [chapter on Super
 Learning](#sl3), we first need to translate, and incorporate, our knowledge
@@ -204,7 +204,7 @@ show their use in the sequel.
 
 In order to illustrate different cross-validation schemes, we will be using the
 WASH data. Detailed information on the WASH Benefits Example Dataset can be
-found in [Chapter 3]{#data}. In particular, we are interested in predicting
+found in [Chapter 3](#wash). In particular, we are interested in predicting
 weight-for-height z-score `whz` using the available covariate data. For this
 illustration, we will start by treating the data as independent and identically
 distributed (i.i.d.) random draws. To see what each cross-validation scheme is

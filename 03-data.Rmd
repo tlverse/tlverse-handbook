@@ -1,10 +1,10 @@
-# Meet the Data {#data}
+# Example Datasets
 
-## WASH Benefits Example Dataset {#wash}
+## WASH Benefits Bangladesh Study {#wash}
 
-The data come from a study of the effect of water quality, sanitation, hand
-washing, and nutritional interventions on child development in rural Bangladesh
-(WASH Benefits Bangladesh): a cluster randomized controlled trial
+The example data come from a study of the effect of water quality, sanitation, 
+hand washing, and nutritional interventions on child development in rural 
+Bangladesh (WASH Benefits Bangladesh): a cluster randomized controlled trial
 [@luby2018effect]. The study enrolled pregnant women in their first or second
 trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
 Tangail districts of central Bangladesh, with an average of eight women per
