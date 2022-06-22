@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 5 The Roadmap for Targeted Learning | Targeted Learning in R</title>
+<meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
+<meta name="description" content="Nima Hejazi and Rachael Phillips Updated: 2022-06-21  Learning Objectives Translate scientific questions to statistical questions. Define a statistical model based on the knowledge of the...">
+<meta name="generator" content="bookdown 0.26.3 with bs4_book()">
+<meta property="og:title" content="Chapter 5 The Roadmap for Targeted Learning | Targeted Learning in R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="https://tlverse.org/tlverse-handbook/roadmap.html">
+<meta property="og:description" content="Nima Hejazi and Rachael Phillips Updated: 2022-06-21  Learning Objectives Translate scientific questions to statistical questions. Define a statistical model based on the knowledge of the...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 5 The Roadmap for Targeted Learning | Targeted Learning in R">
+<meta name="twitter:site" content="@tlverse">
+<meta name="twitter:description" content="Nima Hejazi and Rachael Phillips Updated: 2022-06-21  Learning Objectives Translate scientific questions to statistical questions. Define a statistical model based on the knowledge of the...">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+</head>
+<body>
+<span class="math inline">
+  \(\DeclareMathOperator{\expit}{expit}\)
+  \(\DeclareMathOperator{\logit}{logit}\)
+  \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
+  \(\newcommand{\indep}{\perp\!\!\!\perp}\)
+  \(\newcommand{\coloneqq}{\mathrel{=}}\)
+  \(\newcommand{\R}{\mathbb{R}}\)
+  \(\newcommand{\E}{\mathbb{E}}\)
+  \(\newcommand{\M}{\mathcal{M}}\)
+  \(\renewcommand{\P}{\mathbb{P}}\)
+  \(\newcommand{\I}{\mathbb{I}}\)
+  \(\newcommand{\1}{\mathbbm{1}}\)
+  </span>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><style type="text/css">
+    
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  </style>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style_gitbook.css">
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="Causal Data Science with the tlverse Software Ecosystem">Targeted Learning in R</a>:
+        <small class="text-muted">Causal Data Science with the tlverse Software Ecosystem</small>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">Welcome</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> Introduction</a></li>
+<li class="book-part">Preliminaries</li>
+<li><a class="" href="about-the-tlverse.html"><span class="header-section-number">3</span> About the tlverse</a></li>
+<li><a class="" href="software-setup-instructions.html">Software setup instructions</a></li>
+<li><a class="" href="example-datasets.html"><span class="header-section-number">4</span> Example Datasets</a></li>
+<li class="book-part">Foundations</li>
+<li><a class="active" href="roadmap.html"><span class="header-section-number">5</span> The Roadmap for Targeted Learning</a></li>
+<li><a class="" href="origami.html"><span class="header-section-number">6</span> Cross-validation</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">7</span> Super Learning with sl3</a></li>
+<li><a class="" href="tmle3.html"><span class="header-section-number">8</span> The TMLE Framework</a></li>
+<li class="book-part">Advanced TMLE</li>
+<li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">9</span> Optimal Individualized Treatment Regimes</a></li>
+<li><a class="" href="shift.html"><span class="header-section-number">10</span> Stochastic Treatment Regimes</a></li>
+<li><a class="" href="causal-mediation-analysis.html"><span class="header-section-number">11</span> Causal Mediation Analysis</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tlverse/tlverse-handbook">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="roadmap" class="section level1">
+<h1>
+<span class="header-section-number">5</span> The Roadmap for Targeted Learning<a class="anchor" aria-label="anchor" href="#roadmap"><i class="fas fa-link"></i></a>
+</h1>
+<p><em>Nima Hejazi</em> and <em>Rachael Phillips</em></p>
+<p>Updated: 2022-06-21</p>
+<div class="infobox tlverse">
+<div class="center">
+<p><strong>Learning Objectives</strong></p>
+</div>
+<ol style="list-style-type: decimal">
+<li>Translate scientific questions to statistical questions.</li>
+<li>Define a statistical model based on the knowledge of the experiment that
+generated the data.</li>
+<li>Identify a causal parameter as a function of the observed data distribution.</li>
+<li>Explain the following statistical and causal assumptions and their
+implications: i.i.d., consistency, no unmeasured confounding, interference,
+positivity.</li>
+</ol>
+</div>
+<div id="introduction" class="section level2 unnumbered">
+<h2>Introduction<a class="anchor" aria-label="anchor" href="#introduction"><i class="fas fa-link"></i></a>
+</h2>
+<p>The roadmap of statistical learning is concerned with the translation from
+real-world data applications to a mathematical and statistical formulation of
+the relevant estimation problem. This involves data as a random variable having
+a probability distribution, scientific knowledge represented by a statistical
+model, a statistical target parameter representing an answer to the question of
+interest, and the notion of an estimator and sampling distribution of the
+estimator.</p>
+</div>
+<div id="roadmap" class="section level2">
+<h2>
+<span class="header-section-number">5.1</span> The Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"><i class="fas fa-link"></i></a>
+</h2>
+<p>The roadmap is a five-stage process of defining the following.</p>
+<ol style="list-style-type: decimal">
+<li>Data as a random variable with a probability distribution, <span class="math inline">\(O \sim P_0\)</span>.</li>
+<li>The statistical model <span class="math inline">\(\M\)</span> such that <span class="math inline">\(P_0 \in \M\)</span>.</li>
+<li>The statistical target parameter <span class="math inline">\(\Psi\)</span> and estimand <span class="math inline">\(\Psi(P_0)\)</span>.</li>
+<li>The estimator <span class="math inline">\(\hat{\Psi}\)</span> and estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span>.</li>
+<li>A measure of uncertainty for the estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span>.</li>
+</ol>
+<div id="data-a-random-variable-with-a-probability-distribution-o-sim-p_0" class="section level3 unnumbered">
+<h3>(1) Data: A random variable with a probability distribution, <span class="math inline">\(O \sim P_0\)</span><a class="anchor" aria-label="anchor" href="#data-a-random-variable-with-a-probability-distribution-o-sim-p_0"><i class="fas fa-link"></i></a>
+</h3>
+<p>The data set we are confronted with is the collection of the results of an
+experiment, and we can view the data as a <em>random variable</em> – that is, if we
+were to repeat the experiment, we would have a different realization of the data
+generated by the experiment in question. In particular, if the experiment were
+repeated many times, the probability distribution generating the data, <span class="math inline">\(P_0\)</span>,
+could be learned. So, the observed data on a single unit, <span class="math inline">\(O\)</span>, may be thought of
+as being drawn from a probability distribution <span class="math inline">\(P_0\)</span>. Most often, we observe <span class="math inline">\(n\)</span>
+<em>independent identically distributed</em> (i.i.d.) observations of the random
+variable <span class="math inline">\(O\)</span>, so the observed data is the collection <span class="math inline">\(O_1, \ldots, O_n\)</span>, where
+the subscripts denote the individual observational units. While not all data
+are i.i.d., this is certainly the most common case in applied data analysis;
+moreover, there are a number of techniques for handling non-i.i.d. data, such as
+establishing conditional independence, stratifying data to create distinct sets
+of identically distributed data, and inferential corrections for repeated or
+clustered observations, to name but a few.</p>
+<p>It is crucial that the domain scientist (i.e., researcher) have absolute clarity
+about what is actually known about the data-generating distribution for a given
+problem of interest. Just as critical is that this scientific information be
+communicated to the statistician, whose job it is to use such knowledge to guide
+any assumptions encoded in the choice of statistical model. Unfortunately,
+communication between statisticians and researchers is often fraught with
+misinterpretation. The roadmap provides a mechanism by which to ensure clear
+communication between the researcher and the statistician – it is an invaluable
+tool for such communication!</p>
+<div id="the-empirical-probability-measure-p_n" class="section level4 unnumbered">
+<h4>The empirical probability measure, <span class="math inline">\(P_n\)</span><a class="anchor" aria-label="anchor" href="#the-empirical-probability-measure-p_n"><i class="fas fa-link"></i></a>
+</h4>
+<p>With <span class="math inline">\(n\)</span> i.i.d. observations in hand, we can define an empirical probability
+measure, <span class="math inline">\(P_n\)</span>. The empirical probability measure is an approximation of the
+true probability measure, <span class="math inline">\(P_0\)</span>, allowing us to learn from the observed data.
+For example, we can define the empirical probability measure of a set <span class="math inline">\(X\)</span> to be
+the proportion of observations that belong in <span class="math inline">\(X\)</span>. That is,
+<span class="math display">\[\begin{equation*}
+  P_n(X) = \frac{1}{n}\sum_{i=1}^{n} \I(O_i \in X)
+\end{equation*}\]</span></p>
+<p>In order to start learning from the data, we next need to ask <em>“What do we know
+about the probability distribution of the data?”</em> This brings us on to Step 2.</p>
+</div>
+</div>
+<div id="defining-the-statistical-model-m-such-that-p_0-in-m" class="section level3 unnumbered">
+<h3>(2) Defining the statistical model <span class="math inline">\(\M\)</span> such that <span class="math inline">\(P_0 \in \M\)</span><a class="anchor" aria-label="anchor" href="#defining-the-statistical-model-m-such-that-p_0-in-m"><i class="fas fa-link"></i></a>
+</h3>
+<p>The statistical model <span class="math inline">\(\M\)</span> is defined by the question we asked at the end of
+Step 1. It is the set of possible probability distributions that
+could describe our observed data, appropriately constrained by background
+scientific knowledge. Often <span class="math inline">\(\M\)</span> is very large (e.g., nonparametric),
+reflecting the fact that statistical knowledge about
+the data-generating process is limited.</p>
+<p>Alternatively, if the probability distribution of the data at hand is described
+by a finite number of parameters, then the statistical model is referred to as
+<em>parametric</em>. Such an assumption is made, for example, by the proposition that
+the random variable of interest, <span class="math inline">\(O\)</span>, has a normal distribution with mean <span class="math inline">\(\mu\)</span>
+and variance <span class="math inline">\(\sigma^2\)</span>. More generally, a parametric model may be defined as</p>
+<p><span class="math display">\[\begin{equation*}
+  \M = \{P_{\theta} : \theta \in \R^d \},
+\end{equation*}\]</span>
+which describes a statistical model consisting of all distributions
+<span class="math inline">\(P_{\theta}\)</span>, that is all distributions indexed only by the parameter <span class="math inline">\(\theta\)</span>.</p>
+<p>The assumption that the data-generating distribution has a specific, parametric
+form is made quite commonly, even when such assumptions are not supported by
+existing knowledge. This practice of oversimplification in the current culture
+of data analysis typically complicates any attempt at trying to answer the
+scientific question at hand, owing to the fact that possible model
+misspecification introduces bias of unknown magnitude. The philosophy used to
+justify such parametric assumptions is captured by the quote of George Box that
+“All models are wrong but some are useful,” which encourages the data analyst to
+make arbitrary modeling choices. The result is a practice of data science that
+often yields starkly different answers to the same scientific problem, due to
+the differing modeling decisions and assumptions made by different analysts.
+Even in the nascent days of data analysis, it was recognized that it is “far
+better [to develop] an approximate answer to the right question…than an exact
+answer to the wrong question, which can always be made precise”
+<span class="citation">(Tukey <a href="references.html#ref-tukey1962future" role="doc-biblioref">1962</a>)</span>, though traditional statistics failed to heed this advice for
+a number of decades <span class="citation">(Donoho <a href="references.html#ref-donoho2017fifty" role="doc-biblioref">2017</a>)</span>. The Targeted Learning paradigm avoids
+this bias by defining the statistical model through a representation of the true
+data-generating distribution corresponding to the observed data. The ultimate
+goal is to formulate the statistical estimation problem <em>exactly</em>, so that one
+can then set out to tailor to the problem the best possible estimation
+procedure.</p>
+<p>Now, on to Step 3: <em>“What are we trying to learn from the data?”</em></p>
+</div>
+<div id="the-statistical-target-parameter-psi-and-estimand-psip_0" class="section level3 unnumbered">
+<h3>(3) The statistical target parameter <span class="math inline">\(\Psi\)</span> and estimand <span class="math inline">\(\Psi(P_0)\)</span><a class="anchor" aria-label="anchor" href="#the-statistical-target-parameter-psi-and-estimand-psip_0"><i class="fas fa-link"></i></a>
+</h3>
+<p>The statistical target parameter, <span class="math inline">\(\Psi\)</span>, is defined as a mapping from the
+statistical model, <span class="math inline">\(\M\)</span>, to the parameter space (i.e., a real number) <span class="math inline">\(\R\)</span> –
+that is, the target parameter is the mapping <span class="math inline">\(\Psi: \M \rightarrow \R\)</span>. The
+estimand may be seen as a representation of the quantity that we wish to learn
+from the data, the answer to a well-specified (often causal) question of
+interest. In contrast to purely statistical estimands, causal estimands require
+<em>identification from the observed data</em>, based on causal models that include
+several untestable assumptions, described in greater detail in the section on
+<a href="roadmap.html#causal">causal target parameters</a>.</p>
+<p>For a simple example, consider a data set which contains observations of a
+survival time on every subject, for which our question of interest is “What’s
+the probability that someone lives longer than five years?” We have,</p>
+<p><span class="math display">\[\begin{equation*}
+  \Psi(P_0) = \P_O(O &gt; 5) = \int_5^{\infty} dP_O(o)
+\end{equation*}\]</span></p>
+<p>This answer to this question is the <strong>estimand, <span class="math inline">\(\Psi(P_0)\)</span></strong>, which is the
+quantity we wish to learn from the data. Once we have defined <span class="math inline">\(O\)</span>, <span class="math inline">\(\M\)</span> and
+<span class="math inline">\(\Psi(P_0)\)</span> we have formally defined the statistical estimation problem.</p>
+</div>
+<div id="the-estimator-hatpsi-and-estimate-hatpsip_n" class="section level3 unnumbered">
+<h3>(4) The estimator <span class="math inline">\(\hat{\Psi}\)</span> and estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span><a class="anchor" aria-label="anchor" href="#the-estimator-hatpsi-and-estimate-hatpsip_n"><i class="fas fa-link"></i></a>
+</h3>
+<p>Typically, we will focus on estimation in realistic, nonparametric models. To
+obtain a good approximation of the estimand, we need an estimator, an <em>a
+priori</em>-specified algorithm defined as a mapping from the set of possible
+empirical distributions, <span class="math inline">\(P_n\)</span>, which live in a non-parametric statistical
+model, <span class="math inline">\(\M_{NP}\)</span> (<span class="math inline">\(P_n \in \M_{NP}\)</span>), to the parameter space of the parameter of
+interest. That is, <span class="math inline">\(\hat{\Psi} : \M_{NP} \rightarrow \R^d\)</span>. The estimator is a
+function that takes as input the observed data, a realization of <span class="math inline">\(P_n\)</span>, and
+gives as output a value in the parameter space, which is the <strong>estimate,
+<span class="math inline">\(\hat{\Psi}(P_n)\)</span></strong>.</p>
+<p>Where the estimator may be seen as an operator that maps the observed data and
+corresponding empirical distribution to a value in the parameter space, the
+numerical output that produced such a function is the estimate. Thus, it is an
+element of the parameter space based on the empirical probability distribution
+of the observed data. If we plug in a realization of <span class="math inline">\(P_n\)</span> (based on a sample
+size <span class="math inline">\(n\)</span> of the random variable <span class="math inline">\(O\)</span>), we get back an estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span>
+of the true parameter value <span class="math inline">\(\Psi(P_0)\)</span>.</p>
+<p>In order to quantify the uncertainty in our estimate of the target parameter
+(i.e., to construct statistical inference), an understanding of the sampling
+distribution of our estimator will be necessary. This brings us to Step 5.</p>
+</div>
+<div id="a-measure-of-uncertainty-for-the-estimate-hatpsip_n" class="section level3 unnumbered">
+<h3>(5) A measure of uncertainty for the estimate <span class="math inline">\(\hat{\Psi}(P_n)\)</span><a class="anchor" aria-label="anchor" href="#a-measure-of-uncertainty-for-the-estimate-hatpsip_n"><i class="fas fa-link"></i></a>
+</h3>
+<p>Since the estimator <span class="math inline">\(\hat{\Psi}\)</span> is a function of the empirical distribution
+<span class="math inline">\(P_n\)</span>, the estimator itself is a random variable with a sampling distribution.
+So, if we repeat the experiment of drawing <span class="math inline">\(n\)</span> observations we would every time
+end up with a different realization of our estimate and our estimator has a
+sampling distribution.</p>
+<p>A primary goal in the construction of estimators is to be able to derive their
+asymptotic sampling distributions through a theoretical analysis of a given
+estimator. In this regard, an important property of the estimators on which we
+focus is their asymptotic linearity, which states that the difference between
+the estimator and the target estimand (i.e., the truth) can be represented,
+asymptotically, as an average of i.i.d. random variables:</p>
+<p><span class="math display">\[\begin{equation*}
+  \hat{\Psi}(P_n) - \Psi(P_0) = \frac{1}{n} \sum_{i=1}^n IC(O_i; \nu) +
+    o_p(n^{-1/2}),
+\end{equation*}\]</span>
+where <span class="math inline">\(\nu\)</span> represents possible nuisance parameters on which the influence curve
+(IC) depends. Based on the validity of the asymptotic approximation, one can
+then invoke the central limit theorem (CLT) to show</p>
+<p><span class="math display">\[\begin{equation*}
+  \sqrt{n} \left(\hat{\Psi}(P_n) - \Psi(P_0)\right) \sim N(0, \sigma^2_{IC}),
+\end{equation*}\]</span>
+where <span class="math inline">\(\sigma^2_{IC}\)</span> is the variance of <span class="math inline">\(IC(O_i; \nu)\)</span>. Given an estimate of
+<span class="math inline">\(\sigma^2_{IC}\)</span>, it is then possible to construct classic, <em>asymptotically
+accurate</em> Wald-type confidence intervals (CIs) and hypothesis tests. For
+example, a standard <span class="math inline">\((1 - \alpha)\)</span> CI of the form</p>
+<p><span class="math display">\[\begin{equation*}
+  \Psi(P_n) \pm Z_{1 - \frac{\alpha}{2}} \hat{\sigma_{IC}} / \sqrt{n},
+\end{equation*}\]</span>
+can be constructed, where <span class="math inline">\(Z_{1 - \frac{\alpha}{2}}\)</span> is the <span class="math inline">\((1 - \frac{\alpha}{2})^\text{th}\)</span> quantile of the standard normal distribution.
+Often, we will be interested in constructing 95% confidence intervals,
+corresponding to mass <span class="math inline">\(\alpha = 0.05\)</span> in either tail of the limit distribution;
+thus, we will typically take <span class="math inline">\(Z_{1 - \frac{\alpha}{2}} \approx 1.96\)</span>.</p>
+</div>
+</div>
+<div id="roadmap-summary" class="section level2">
+<h2>
+<span class="header-section-number">5.2</span> Summary of the Roadmap<a class="anchor" aria-label="anchor" href="#roadmap-summary"><i class="fas fa-link"></i></a>
+</h2>
+<p>Data collected across <span class="math inline">\(n\)</span> i.i.d. units, <span class="math inline">\(O_1, \ldots, O_n\)</span>, can be viewed as a
+collection of random variables, <span class="math inline">\(O\)</span>, all arising from the same probability
+distribution <span class="math inline">\(\P_0\)</span>. This collection of data may be expressed <span class="math inline">\(O_1, \ldots, O_n \sim P_0\)</span>, where we leverage statistical knowledge available about the
+experiment that generated the data. to support the statement that the true data
+distribution <span class="math inline">\(P_0\)</span> falls in a statistical model, <span class="math inline">\(\M\)</span>, which is itself a
+collection of candidate probability distributions reflecting the data-generating
+experiment. Often these sets – that is, the statistical model <span class="math inline">\(\M\)</span> – must be
+very large, to appropriately reflect the fact that statistical knowledge is very
+limited. Hence, these <em>realistic</em> statistical models are often termed <em>semi-</em> or
+<em>non-parametric</em>, since they are too large to be indexed by a finite-dimensional
+set of parameters. Necessarily, our statistical query must begin with, “What
+are we trying to learn from the data?”, a question whose answer is captured by
+the statistical target parameter, <span class="math inline">\(\Psi\)</span>, which maps the true data-generating
+distribution <span class="math inline">\(P_0\)</span> into the statistical estimand, <span class="math inline">\(\Psi(P_0)\)</span>. At this point the
+statistical estimation problem is formally defined, allowing for the use of
+statistical theory to guide the construction of optimal estimators.</p>
+</div>
+<div id="causal" class="section level2">
+<h2>
+<span class="header-section-number">5.3</span> Causal Target Parameters<a class="anchor" aria-label="anchor" href="#causal"><i class="fas fa-link"></i></a>
+</h2>
+<p>In many cases, we are interested in problems that ask questions regarding the
+<em>causal</em> effect of an intervention on a future outcome of interest. These causal
+effects may be defined as summaries of the population of interest (e.g., the
+population mean of a particular outcome) under different conditions (e.g.,
+treated versus untreated). For example, a causal effect could be defined as the
+difference in the means of a disease outcome between <em>causal contrasts</em> in which
+the population were to experience low pollution levels (for some pollutant) and
+the mean in the same population in the case that high pollution levels were
+experienced. There are different ways of operationalizing the theoretical
+experiments that generate the counterfactual data necessary for describing our
+causal contrasts of interest, including simply assuming that the counterfactual
+outcomes exist in theory for all treatment contrasts of interest
+<span class="citation">(Neyman <a href="references.html#ref-neyman1938contribution" role="doc-biblioref">1938</a>; Rubin <a href="references.html#ref-rubin2005causal" role="doc-biblioref">2005</a>; Imbens and Rubin <a href="references.html#ref-imbens2015causal" role="doc-biblioref">2015</a>)</span> or through
+considering interventions on directed acyclic graphs (DAGs) or nonparametric
+structural equation models (NPSEMs) <span class="citation">(Pearl <a href="references.html#ref-pearl1995causal" role="doc-biblioref">1995</a>, <a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>)</span>,
+both of which encode the known or hypothesized set of relationships between
+variables in the system under study.</p>
+<div id="the-causal-model" class="section level3 unnumbered">
+<h3>The Causal Model<a class="anchor" aria-label="anchor" href="#the-causal-model"><i class="fas fa-link"></i></a>
+</h3>
+<p>We focus on the use of DAGs and NPSEMs for the description of causal parameters.
+Estimators of statistical parameters that correspond, under standard but
+untestable <em>identifiability</em> assumptions, to these causal parameters are
+introduced below. DAGs are a particularly useful tool for expressing what we
+know about the causal relations among variables in the system under study.
+Ignoring exogenous <span class="math inline">\(U\)</span> terms (explained below), we assume the following ordering
+of the variables in the observed data <span class="math inline">\(O\)</span>. We demonstrate the construction of a
+DAG below using <code>DAGitty</code> <span class="citation">(Textor, Hardt, and Knüppel <a href="references.html#ref-textor2011dagitty" role="doc-biblioref">2011</a>)</span>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://www.dagitty.net">dagitty</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/malcolmbarrett/ggdag">ggdag</a></span><span class="op">)</span>
+
+<span class="co"># make DAG by specifying dependence structure</span>
+<span class="va">dag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/dagitty/man/dagitty.html">dagitty</a></span><span class="op">(</span>
+  <span class="st">"dag {
+    W -&gt; A
+    W -&gt; Y
+    A -&gt; Y
+    W -&gt; A -&gt; Y
+  }"</span>
+<span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/dagitty/man/VariableStatus.html">exposures</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/dagitty/man/VariableStatus.html">outcomes</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Y"</span><span class="op">)</span>
+<span class="va">tidy_dag</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ggdag/man/tidy_dagitty.html">tidy_dagitty</a></span><span class="op">(</span><span class="va">dag</span><span class="op">)</span>
+
+<span class="co"># visualize DAG</span>
+<span class="fu"><a href="https://rdrr.io/pkg/ggdag/man/ggdag.html">ggdag</a></span><span class="op">(</span><span class="va">tidy_dag</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu"><a href="https://rdrr.io/pkg/ggdag/man/theme_dag_blank.html">theme_dag</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="04-roadmap_files/figure-html/simple-DAG-1.png" width="60%" style="display: block; margin: auto;"></div>
+<p>While DAGs like the above provide a convenient means by which to visualize
+causal relations between variables, the same causal relations among variables
+can be equivalently represented by an NPSEM:
+<span class="math display">\[\begin{align*}
+  W &amp;= f_W(U_W) \\
+  A &amp;= f_A(W, U_A) \\
+  Y &amp;= f_Y(W, A, U_Y),
+\end{align*}\]</span>
+where the <span class="math inline">\(f\)</span>’s are unspecified (non-parametric) functions that generate the
+corresponding random variable as a function of the variable’s parents (i.e.,
+nodes with arrows into the variable) in the DAG and the unobserved, exogenous
+error terms (i.e., the <span class="math inline">\(U\)</span>’s). An NPSEM may be thought of as a representation
+of the algorithm that produces the data, <span class="math inline">\(O\)</span>, in the population of interest.
+Much of statistics and data science is devoted to discovering properties of this
+system of equations (e.g., estimation of the prediction function <span class="math inline">\(f_Y\)</span>).</p>
+<!--
+where $U_W$, $U_A$, and $U_Y$ represent the unmeasured exogenous background
+characteristics that influence the value of each variable. In the NPSEM, $f_W$,
+$f_A$ and $f_Y$ denote that each variable (for $W$, $A$ and $Y$, respectively)
+is a function of its parents and unmeasured background characteristics, but
+note that there is no imposition of any particular functional constraints(e.g.,
+linear, logit-linear, only one interaction, etc.). For this reason, they are
+called non-parametric structural equation models (NPSEMs). The DAG and set of
+nonparametric structural equations represent exactly the same information and
+so may be used interchangeably.
+-->
+<p>The first hypothetical experiment we will consider is assigning exposure to the
+entire population and observing the outcome, and then withholding exposure to
+the same population and observing the outcome. This corresponds to a comparison
+of the outcome distribution in the population under two interventions:</p>
+<ol style="list-style-type: decimal">
+<li>
+<span class="math inline">\(A\)</span> is set to <span class="math inline">\(1\)</span> for all individuals, and</li>
+<li>
+<span class="math inline">\(A\)</span> is set to <span class="math inline">\(0\)</span> for all individuals.</li>
+</ol>
+<p>These interventions imply two new sets of nonparametric structural equations
+For the case <span class="math inline">\(A = 1\)</span>, we have
+<span class="math display">\[\begin{align*}
+  W &amp;= f_W(U_W) \\
+  A &amp;= 1 \\
+  Y(1) &amp;= f_Y(W, 1, U_Y),
+\end{align*}\]</span>
+while, for the case <span class="math inline">\(A=0\)</span>,
+<span class="math display">\[\begin{align*}
+  W &amp;= f_W(U_W) \\
+  A &amp;= 0 \\
+  Y(0) &amp;= f_Y(W, 0, U_Y).
+\end{align*}\]</span></p>
+<p>In these equations, <span class="math inline">\(A\)</span> is no longer a function of <span class="math inline">\(W\)</span> because of the
+intervention on the system that set <span class="math inline">\(A\)</span> deterministically to either of the
+values <span class="math inline">\(1\)</span> or <span class="math inline">\(0\)</span>. The new symbols <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> indicate the outcome
+variable in the population of interest when it is generated by the respective
+NPSEMs above; these are often called <em>counterfactuals</em>. The difference between
+the means of the outcome under these two interventions defines a parameter that
+is often called the “average treatment effect” (ATE), denoted</p>
+<p><span class="math display" id="eq:ate">\[\begin{equation}
+  ATE = \E_X(Y(1) - Y(0)),
+  \tag{5.1}
+\end{equation}\]</span>
+where <span class="math inline">\(\E_X\)</span> is the mean under the theoretical (unobserved) full data <span class="math inline">\(X = (W, Y(1), Y(0))\)</span>.</p>
+<p>Note, we can define much more complicated interventions on NPSEM’s, such as
+interventions based upon rules (themselves based upon covariates), stochastic
+rules, etc. and each results in a different targeted parameter and entails
+different identifiability assumptions discussed below.</p>
+</div>
+<div id="identifiability" class="section level3 unnumbered">
+<h3>Identifiability<a class="anchor" aria-label="anchor" href="#identifiability"><i class="fas fa-link"></i></a>
+</h3>
+<p>Because we can never observe both <span class="math inline">\(Y(0)\)</span> (the counterfactual outcome when <span class="math inline">\(A=0\)</span>)
+and <span class="math inline">\(Y(1)\)</span> (similarly, the counterfactual outcome when <span class="math inline">\(A=1\)</span>), we cannot
+estimate the quantity in Equation <a href="roadmap.html#eq:ate">(5.1)</a> directly. Thus, the primary task
+of causal inference methods in our context is to <em>identify</em> the assumptions
+necessary to express causal quantities of interest as functions of the
+data-generating distribution. We have to make assumptions under which this
+quantity may be estimated from the observed data <span class="math inline">\(O \sim P_0\)</span> under the
+data-generating distribution <span class="math inline">\(P_0\)</span>. Fortunately, given the causal model
+specified in the NPSEM above, we can, with a handful of untestable assumptions,
+estimate the ATE from observational data. These assumptions may be summarized as
+follows.</p>
+<div class="definition">
+<p><span id="def:consist-ass" class="definition"><strong>Definition 5.1  (Consistency) </strong></span>The outcome for unit <span class="math inline">\(i\)</span> is <span class="math inline">\(Y_i(a)\)</span> whenever <span class="math inline">\(A_i = a\)</span>, which may be thought of
+as “no other versions of treatment” or “no side effects of treatment.”</p>
+</div>
+<div class="definition">
+<p><span id="def:interf-ass" class="definition"><strong>Definition 5.2  (No Interference) </strong></span>The outcome for unit <span class="math inline">\(i\)</span>, <span class="math inline">\(Y_i\)</span>, cannot be affected by the exposure of unit <span class="math inline">\(j\)</span>,
+<span class="math inline">\(A_j\)</span>, for all <span class="math inline">\(i \neq j\)</span>.</p>
+</div>
+<div class="definition">
+<p><span id="def:noconf-ass" class="definition"><strong>Definition 5.3  (No Unmeasured Confounding) </strong></span><span class="math inline">\(A \perp Y(a) \mid W\)</span> for all <span class="math inline">\(a \in \mathcal{A}\)</span>, which states that the
+potential outcomes <span class="math inline">\((Y(a) : a \in \mathcal{A})\)</span> arise independently from
+exposure status <span class="math inline">\(A\)</span>, conditional on the observed covariates <span class="math inline">\(W\)</span>. This is the
+analog of the <em>randomization</em> assumption in data arising from natural
+experiments, ensuring that the effect of <span class="math inline">\(A\)</span> on <span class="math inline">\(Y\)</span> can be disentangled from
+that of <span class="math inline">\(W\)</span> on <span class="math inline">\(Y\)</span>, even though <span class="math inline">\(W\)</span> affects both.</p>
+</div>
+<div class="definition">
+<p><span id="def:posit-ass" class="definition"><strong>Definition 5.4  (Positivity (or Overlap)) </strong></span>All observed units, across strata defined by <span class="math inline">\(W\)</span>, must have a bounded
+(non-deterministic) probability of receiving treatment – that is, <span class="math inline">\(0 &lt; \P(A = a \mid W) &lt; 1\)</span> for all <span class="math inline">\(a\)</span> and <span class="math inline">\(W\)</span>).</p>
+</div>
+<!--
+NH: we should note that consistency is an implied property of the SCM framework
+(not so in PO framework) and that no interference is captured in the DAG we
+present (but must be explicitly stated in PO).
+-->
+<p>Given these assumptions, the ATE may be re-written as a function of <span class="math inline">\(P_0\)</span>,
+specifically</p>
+<p><span class="math display" id="eq:estimand">\[\begin{align}
+  \psi_{\text{ATE} &amp;= \E_0(Y(1) - Y(0)) \\ \nonumber
+                   &amp;= \E_0 \left(\E_0[Y \mid A = 1, W] -
+                      \E_0[Y \mid A = 0, W]\right).
+  \tag{5.2}
+\end{align}\]</span>
+In words, the ATE is the difference in the predicted outcome values for each
+subject, under the contrast of treatment conditions (<span class="math inline">\(A = 0\)</span> versus <span class="math inline">\(A = 1\)</span>),
+in the population, averaged over all observations. Thus, a parameter of a
+theoretical “full” data distribution can be represented as an estimand of the
+observed data distribution. Significantly, there is nothing about the
+representation in Equation <a href="roadmap.html#eq:estimand">(5.2)</a> that requires parameteric
+assumptions; thus, the regressions on the right hand side may be estimated.
+With different parameters, there will be potentially different identifiability
+assumptions and the resulting estimands can be functions of different components
+of <span class="math inline">\(P_0\)</span>. We discuss several more complex estimands in later sections.</p>
+
+</div>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="prev"><a href="example-datasets.html"><span class="header-section-number">4</span> Example Datasets</a></div>
+<div class="next"><a href="origami.html"><span class="header-section-number">6</span> Cross-validation</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#roadmap"><span class="header-section-number">5</span> The Roadmap for Targeted Learning</a></li>
+<li><a class="nav-link" href="#introduction">Introduction</a></li>
+<li>
+<a class="nav-link" href="#roadmap"><span class="header-section-number">5.1</span> The Roadmap</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#data-a-random-variable-with-a-probability-distribution-o-sim-p_0">(1) Data: A random variable with a probability distribution, \(O \sim P_0\)</a></li>
+<li><a class="nav-link" href="#defining-the-statistical-model-m-such-that-p_0-in-m">(2) Defining the statistical model \(\M\) such that \(P_0 \in \M\)</a></li>
+<li><a class="nav-link" href="#the-statistical-target-parameter-psi-and-estimand-psip_0">(3) The statistical target parameter \(\Psi\) and estimand \(\Psi(P_0)\)</a></li>
+<li><a class="nav-link" href="#the-estimator-hatpsi-and-estimate-hatpsip_n">(4) The estimator \(\hat{\Psi}\) and estimate \(\hat{\Psi}(P_n)\)</a></li>
+<li><a class="nav-link" href="#a-measure-of-uncertainty-for-the-estimate-hatpsip_n">(5) A measure of uncertainty for the estimate \(\hat{\Psi}(P_n)\)</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#roadmap-summary"><span class="header-section-number">5.2</span> Summary of the Roadmap</a></li>
+<li>
+<a class="nav-link" href="#causal"><span class="header-section-number">5.3</span> Causal Target Parameters</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#the-causal-model">The Causal Model</a></li>
+<li><a class="nav-link" href="#identifiability">Identifiability</a></li>
+</ul>
+</li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/tlverse/tlverse-handbook/blob/master/04-roadmap.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/tlverse/tlverse-handbook/edit/master/04-roadmap.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 21, 2022.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

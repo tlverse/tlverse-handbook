@@ -1,4 +1,6 @@
-# The Roadmap for Targeted Learning {#intro}
+# (PART) Foundations {-}
+
+# The Roadmap for Targeted Learning {#roadmap}
 
 _Nima Hejazi_ and _Rachael Phillips_
 
@@ -287,7 +289,7 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-<img src="02-roadmap_files/figure-html/simple-DAG-1.png" width="60%" style="display: block; margin: auto;" />
+<img src="04-roadmap_files/figure-html/simple-DAG-1.png" width="60%" style="display: block; margin: auto;" />
 
 While DAGs like the above provide a convenient means by which to visualize
 causal relations between variables, the same causal relations among variables

@@ -532,7 +532,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
+Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -645,13 +645,13 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.99992955 0.00007045
-Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
+Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
+Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
          type          param init_est tmle_est        se   lower   upper
-1:        TSM  E[Y_{A=NULL}]  0.56807  0.57184 0.0214158 0.52987 0.61382
+1:        TSM  E[Y_{A=NULL}]  0.56807  0.57184 0.0214157 0.52987 0.61382
 2:        TSM  E[Y_{A=NULL}]  0.69750  0.69750 0.0229958 0.65243 0.74257
 3:        TSM  E[Y_{A=NULL}]  0.81675  0.81545 0.0171102 0.78192 0.84899
 4: MSM_linear MSM(intercept)  0.69410  0.69493 0.0191074 0.65748 0.73238

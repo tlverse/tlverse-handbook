@@ -21,7 +21,7 @@ function like $\mathbb{E}[Y \mid X]$ from data. That's an important first step
 in learning from data, but how can we use this predictive model to estimate
 statistical and causal effects?
 
-Going back to [the roadmap for targeted learning](#intro), suppose we'd like to
+Going back to [the roadmap for targeted learning](#roadmap), suppose we'd like to
 estimate the effect of a treatment variable $A$ on an outcome $Y$. As discussed,
 one potential parameter that characterizes that effect is the Average Treatment
 Effect (ATE), defined as $\psi_0 = \mathbb{E}_W[\mathbb{E}[Y \mid A=1,W] -
