@@ -85,13 +85,13 @@ enriched the field, the aptly named "Targeted Learning" methodology emphasizes a
 focus of (i.e., "targeting of") the scientific question at hand, running counter
 to the current culture problem of "convenience statistics," which opens the door
 to biased estimation, misleading analytic results, and erroneous discoveries.
-Targeted Learning embraces the fundamentals that formalized the field of
+Targeted Learning (TL) embraces the fundamentals that formalized the field of
 statistics, notably including the notions that a statistical model must
 represent real knowledge about the experiment that generated the data and that a
 target parameter represents what we are seeking to learn from the data as a
 feature of the distribution that generated it [@vdl2014entering]. In this way,
-Targeted Learning defines a truth and establishes a principled standard for
-estimation, thereby curtailing our all-too-human biases (e.g., hindsight bias,
+TL defines a truth and establishes a principled standard for estimation, 
+thereby curtailing our all-too-human biases (e.g., hindsight bias,
 confirmation bias, and outcome bias) from infiltrating our objective analytic
 efforts.
 
@@ -104,12 +104,12 @@ This handbook aims to provide practical training to students, researchers,
 industry professionals, and academicians in the sciences (whether biological,
 physical, economic, or social), public health, statistics, and numerous other
 fields, to equip them with the necessary knowledge and skills to utilize the the
-methodological developments of Targeted Learning --- a technique that provides
-tailored pre-specified machines for answering queries --- taking advantage of
-estimators that are efficient, minimally biased, and that provide formal
-statistical inference --- so that each and every data analysis incorporates
-state-of-the-art statistical methodology, all while ensuring compatibility with
-the guiding principles of computational reproducibility.
+methodological developments of TL --- a principled technique for answering 
+queries with confidence, which utilizes advances in causal inference, deep 
+statistical theory, and machine learning  --- so that each and every data 
+analysis is realistic, reflecting what is known (and unknown) about the process
+that generated the data via pre-specified and data-adaptive machines, and 
+compatible with the guiding principles of computational reproducibility.
 
 Just as the conscientious use of modern statistical methodology is necessary to
 ensure that scientific practice thrives, robust, well-tested software plays a
@@ -126,10 +126,10 @@ For a statistical methodology to be readily accessible in practice, it is
 crucial that it is accompanied by user-friendly software
 [@pullenayegum2016knowledge; @stromberg2004write]. The `tlverse` software
 ecosystem, composed of a set of package for the `R` language and environment for
-statistical computing [@R], was developed to fulfill this need for the Targeted
-Learning methodological framework. Not only does this suite of software tools
+statistical computing [@R], was developed to fulfill this need for the TL 
+methodological framework. Not only does this suite of software tools
 facilitate computationally reproducible and efficient analyses, it is also a
-tool for Targeted Learning education, since its workflow mirrors the central
+tool for TL education, since its workflow mirrors the central
 aspects of the statistical methodology. In particular, the programming paradigm
 central to the `tlverse` ecosystem does not focus on implementing a specific
 estimator or a small set of related estimators. Instead, the focus is on
@@ -139,14 +139,14 @@ the mathematical and theoretical framework of Targeted Learning. What's more,
 the `tlverse` software packages share a core set of design principles centered
 on extensibility, allowing for them all to be used in conjunction with each
 other and even used cohesively as building blocks for formulating sophisticated
-statistical analyses. For an introduction to the Targeted Learning framework, we
+statistical analyses. For an introduction to the TL framework, we
 recommend a [recent review paper](https://arxiv.org/abs/2006.07333) from
 @coyle2021targeted.
 
 In this handbook, the reader will embark on a journey through the `tlverse`
 ecosystem. Guided by `R` programming exercises, case studies, and
 intuition-building explanations, readers will learn to use a toolbox for
-applying the Targeted Learning statistical methodology, which will translate to
+applying the TL statistical methodology, which will translate to
 real-world causal inference analyses. Some preliminaries are required prior to
 this learning endeavor -- we have made available a list of [recommended learning
 resources](#learn).
