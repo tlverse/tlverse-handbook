@@ -1,10 +1,10 @@
 # (PART) Foundations {-}
 
-# The Roadmap for Targeted Learning {#roadmap}
+# Roadmap for Learning from Data {#roadmap}
 
 _Nima Hejazi_ and _Rachael Phillips_
 
-Updated: 2022-06-21
+Updated: 2022-06-23
 
 :::: {.infobox .tlverse data-latex=""}
 :::{.center data-latex=""}

@@ -4,16 +4,16 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Chapter 10 Stochastic Treatment Regimes | Targeted Learning in R</title>
+<title>Chapter 11 Stochastic Treatment Regimes | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <meta name="description" content="Nima Hejazi Featuring the tmle3shift R package.  Learning Objectives Differentiate stochastic treatment regimes from static, dynamic, and optimal dynamic treatment regimes. Describe how a...">
 <meta name="generator" content="bookdown 0.26.3 with bs4_book()">
-<meta property="og:title" content="Chapter 10 Stochastic Treatment Regimes | Targeted Learning in R">
+<meta property="og:title" content="Chapter 11 Stochastic Treatment Regimes | Targeted Learning in R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://tlverse.org/tlverse-handbook/shift.html">
 <meta property="og:description" content="Nima Hejazi Featuring the tmle3shift R package.  Learning Objectives Differentiate stochastic treatment regimes from static, dynamic, and optimal dynamic treatment regimes. Describe how a...">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Chapter 10 Stochastic Treatment Regimes | Targeted Learning in R">
+<meta name="twitter:title" content="Chapter 11 Stochastic Treatment Regimes | Targeted Learning in R">
 <meta name="twitter:site" content="@tlverse">
 <meta name="twitter:description" content="Nima Hejazi Featuring the tmle3shift R package.  Learning Objectives Differentiate stochastic treatment regimes from static, dynamic, and optimal dynamic treatment regimes. Describe how a...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -40,7 +40,6 @@
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
   </style>
 <link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/style_gitbook.css">
 <div class="container-fluid">
 <div class="row">
   <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
@@ -64,17 +63,17 @@
 <li><a class="" href="intro.html"><span class="header-section-number">1</span> Introduction</a></li>
 <li class="book-part">Preliminaries</li>
 <li><a class="" href="about-the-tlverse.html"><span class="header-section-number">3</span> About the tlverse</a></li>
-<li><a class="" href="software-setup-instructions.html">Software setup instructions</a></li>
-<li><a class="" href="example-datasets.html"><span class="header-section-number">4</span> Example Datasets</a></li>
+<li><a class="" href="software-setup.html"><span class="header-section-number">4</span> Software setup</a></li>
+<li><a class="" href="example-datasets.html"><span class="header-section-number">5</span> Example Datasets</a></li>
 <li class="book-part">Foundations</li>
-<li><a class="" href="roadmap.html"><span class="header-section-number">5</span> The Roadmap for Targeted Learning</a></li>
-<li><a class="" href="origami.html"><span class="header-section-number">6</span> Cross-validation</a></li>
-<li><a class="" href="sl3.html"><span class="header-section-number">7</span> Super Learning with sl3</a></li>
-<li><a class="" href="tmle3.html"><span class="header-section-number">8</span> The TMLE Framework</a></li>
+<li><a class="" href="roadmap.html"><span class="header-section-number">6</span> Roadmap for Learning from Data</a></li>
+<li><a class="" href="origami.html"><span class="header-section-number">7</span> Cross-validation</a></li>
+<li><a class="" href="sl3.html"><span class="header-section-number">8</span> Super Learning</a></li>
+<li><a class="" href="tmle3.html"><span class="header-section-number">9</span> The TMLE Framework</a></li>
 <li class="book-part">Advanced TMLE</li>
-<li><a class="" href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">9</span> Optimal Individualized Treatment Regimes</a></li>
-<li><a class="active" href="shift.html"><span class="header-section-number">10</span> Stochastic Treatment Regimes</a></li>
-<li><a class="" href="causal-mediation-analysis.html"><span class="header-section-number">11</span> Causal Mediation Analysis</a></li>
+<li><a class="" href="dynamic-and-optimal-individualized-treatment-regimes.html"><span class="header-section-number">10</span> Dynamic and Optimal Individualized Treatment Regimes</a></li>
+<li><a class="active" href="shift.html"><span class="header-section-number">11</span> Stochastic Treatment Regimes</a></li>
+<li><a class="" href="causal-mediation-analysis.html"><span class="header-section-number">12</span> Causal Mediation Analysis</a></li>
 <li><a class="" href="references.html">References</a></li>
 </ul>
 
@@ -85,7 +84,7 @@
 </div>
   </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="shift" class="section level1">
 <h1>
-<span class="header-section-number">10</span> Stochastic Treatment Regimes<a class="anchor" aria-label="anchor" href="#shift"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11</span> Stochastic Treatment Regimes<a class="anchor" aria-label="anchor" href="#shift"><i class="fas fa-link"></i></a>
 </h1>
 <p><em>Nima Hejazi</em></p>
 <p>Featuring the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> <code>R</code> package</a>.</p>
@@ -113,7 +112,7 @@ data.</li>
 </div>
 <div id="why-stochastic-interventions" class="section level2">
 <h2>
-<span class="header-section-number">10.1</span> Why <em>Stochastic</em> Interventions?<a class="anchor" aria-label="anchor" href="#why-stochastic-interventions"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.1</span> Why <em>Stochastic</em> Interventions?<a class="anchor" aria-label="anchor" href="#why-stochastic-interventions"><i class="fas fa-link"></i></a>
 </h2>
 <p>Stochastic treatment regimes, or <em>stochastic interventions</em>, constitute a
 relatively simple yet extremely flexible and expressive framework for defining
@@ -139,7 +138,7 @@ chapter appear in <span class="citation">Dı́az and van der Laan (<a href="refe
 </div>
 <div id="data-structure-and-notation-1" class="section level2">
 <h2>
-<span class="header-section-number">10.2</span> Data Structure and Notation<a class="anchor" aria-label="anchor" href="#data-structure-and-notation-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.2</span> Data Structure and Notation<a class="anchor" aria-label="anchor" href="#data-structure-and-notation-1"><i class="fas fa-link"></i></a>
 </h2>
 <p>Let us return to the familiar data unit <span class="math inline">\(O = (W, A, Y)\)</span>, where <span class="math inline">\(W\)</span> denote
 baseline covariates (e.g., age, biological sex, education level), <span class="math inline">\(A\)</span> a
@@ -158,7 +157,7 @@ changes under posited interventions:
   W &amp;= f_W(U_W) \\ \nonumber
   A &amp;= f_A(W, U_A) \\ \nonumber
   Y &amp;= f_Y(A, W, U_Y).
-  \tag{10.1}
+  \tag{11.1}
 \end{align}\]</span>
 The set of structural equations provide a mechanistic model describing the
 relationships between variables composing the observed data unit <span class="math inline">\(O\)</span>. The SCM
@@ -174,7 +173,7 @@ observation <span class="math inline">\(o\)</span>:
   p_0(o) = &amp;q_{0,Y}(y \mid A = a, W = w) \\ \nonumber
     &amp;g_{0,A}(a \mid W = w) \\ \nonumber
     &amp;q_{0,W}(w),\\ \nonumber
-  \tag{10.2}
+  \tag{11.2}
 \end{align}\]</span>
 where <span class="math inline">\(q_{0, Y}\)</span> is the conditional density of <span class="math inline">\(Y\)</span> given <span class="math inline">\(\{A, W\}\)</span> with respect
 to some dominating measure, <span class="math inline">\(g_{0, A}\)</span> is the conditional density of <span class="math inline">\(A\)</span> given
@@ -188,10 +187,10 @@ on the data-generating process.</p>
 </div>
 <div id="defining-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
-<span class="header-section-number">10.3</span> Defining the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#defining-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.3</span> Defining the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#defining-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <p>Causal effects are defined in terms of contrasts of hypothetical interventions
-on the SCM <a href="shift.html#eq:npsem-shift">(10.1)</a>. Stochastic interventions modifying
+on the SCM <a href="shift.html#eq:npsem-shift">(11.1)</a>. Stochastic interventions modifying
 components of the SCM may be thought of in two equivalent ways. A <em>general</em>
 stochastic intervention replaces the equation <span class="math inline">\(f_A\)</span>, which gives rise to <span class="math inline">\(A\)</span>,
 and <span class="math inline">\(g(A \mid W)\)</span>, the natural conditional density of A, with a candidate
@@ -221,7 +220,7 @@ termed a <em>modified treatment policy</em> (MTP) <span class="citation">(Haneus
 interpretations of the causal effects under modified treatment policies and
 general stochastic interventions.</p>
 <div class="definition">
-<p><span id="def:unlabeled-div-1" class="definition"><strong>Definition 10.1  (Piecewise Smooth Invertibility) </strong></span>For each <span class="math inline">\(w \in \mathcal{W}\)</span>, assume that the interval <span class="math inline">\(\mathcal{I}(w) = (l(w,), u(w))\)</span> may be partitioned into subintervals <span class="math inline">\(\mathcal{I}_{\delta,j}(w): j = 1, \ldots, J(w)\)</span> such that <span class="math inline">\(d(a, w; \delta)\)</span> is equal to some <span class="math inline">\(d_j(a, w; \delta)\)</span> in <span class="math inline">\(\mathcal{I}_{\delta,j}(w)\)</span> and <span class="math inline">\(d_j(\cdot,w; \delta)\)</span> has inverse
+<p><span id="def:unlabeled-div-1" class="definition"><strong>Definition 11.1  (Piecewise Smooth Invertibility) </strong></span>For each <span class="math inline">\(w \in \mathcal{W}\)</span>, assume that the interval <span class="math inline">\(\mathcal{I}(w) = (l(w,), u(w))\)</span> may be partitioned into subintervals <span class="math inline">\(\mathcal{I}_{\delta,j}(w): j = 1, \ldots, J(w)\)</span> such that <span class="math inline">\(d(a, w; \delta)\)</span> is equal to some <span class="math inline">\(d_j(a, w; \delta)\)</span> in <span class="math inline">\(\mathcal{I}_{\delta,j}(w)\)</span> and <span class="math inline">\(d_j(\cdot,w; \delta)\)</span> has inverse
 function <span class="math inline">\(b_j(\cdot, w; \delta)\)</span> with derivative <span class="math inline">\(b_j'(\cdot, w; \delta)\)</span>.</p>
 </div>
 <!-- TODO: explain this
@@ -239,7 +238,7 @@ remainder of this chapter, we will focus on additive MTPs of the form
     a + \delta &amp; \text{if } a + \delta \leq u(w) \\
     a &amp; \text{if } a + \delta &gt; u(w),
   \end{cases}
-  \tag{10.3}
+  \tag{11.3}
 \end{equation}\]</span>
 where <span class="math inline">\(\delta \in \mathbb{R}\)</span> defines the degree to which an observed <span class="math inline">\(A = a\)</span>
 ought to be shifted, in the context of the stratum <span class="math inline">\(W = w\)</span>, and <span class="math inline">\(l(w)\)</span> and
@@ -269,10 +268,10 @@ functional of the distribution of <span class="math inline">\(O\)</span>:
   \psi_{0,\delta} = \int_{\mathcal{W}} \int_{\mathcal{A}} &amp; \E_{P_0}
    \{Y \mid A = d(a, w), W = w\} \nonumber \\ &amp;q_{0, A}(a \mid W = w)
    q_{0, W}(w) d\mu(a)d\nu(w).
-  \tag{10.4}
+  \tag{11.4}
 \end{align}\]</span>
 Under certain identification conditions, which we will enumerate shortly, the
-statistical parameter in Equation <a href="shift.html#eq:identification2012">(10.4)</a> matches exactly
+statistical parameter in Equation <a href="shift.html#eq:identification2012">(11.4)</a> matches exactly
 the counterfactual mean <span class="math inline">\(\psi_{0, \delta}\)</span>. While this book is not concerned
 with the identification of causal parameters – that is, establishing
 statistical functionals of the observed data that have causal interpretations
@@ -285,18 +284,18 @@ event <span class="math inline">\(A_i = d(a_i, w_i)\)</span>, for <span class="m
 and <span class="math inline">\(j \neq i\)</span>) hold. Beyond these, we require no unmeasured confounding (the
 analog to the randomization assumption in observational studies) and positivity.</p>
 <div class="definition">
-<p><span id="def:unlabeled-div-2" class="definition"><strong>Definition 10.2  (No Unmeasured Confounding) </strong></span><span class="math inline">\(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. This is the
+<p><span id="def:unlabeled-div-2" class="definition"><strong>Definition 11.2  (No Unmeasured Confounding) </strong></span><span class="math inline">\(A_i \indep Y^{A_{\delta,i}}_i \mid W_i\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. This is the
 observational study analog to the well-known randomization assumption.</p>
 </div>
 <!-- TODO: explain this-->
 <div class="definition">
-<p><span id="def:unlabeled-div-3" class="definition"><strong>Definition 10.3  (Treatment Positivity) </strong></span><span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</p>
+<p><span id="def:unlabeled-div-3" class="definition"><strong>Definition 11.3  (Treatment Positivity) </strong></span><span class="math inline">\(a_i \in \mathcal{A} \implies d(a_i, w_i) \in \mathcal{A}\)</span> for all <span class="math inline">\(w \in \mathcal{W}\)</span>, where <span class="math inline">\(\mathcal{A}\)</span> denotes the support of <span class="math inline">\(A \mid W = w_i \quad \forall i = 1, \ldots n\)</span>.</p>
 </div>
 <!-- TODO: explain this-->
 </div>
 <div id="estimating-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
-<span class="header-section-number">10.4</span> Estimating the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#estimating-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.4</span> Estimating the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#estimating-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <p><span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2012population" role="doc-biblioref">2012</a>)</span> provided a derivation of the efficient influence function
 (EIF), a key quantity for constructing efficient estimators, in the
@@ -310,18 +309,18 @@ nonparametric model <span class="math inline">\(\M\)</span>, is
 <span class="math display" id="eq:eif-shift">\[\begin{equation}
   D(P_0)(x) = H(a, w)({y - \overline{Q}(a, w)}) +
   \overline{Q}(d(a, w), w) - \Psi(P_0),
-  \tag{10.5}
+  \tag{11.5}
 \end{equation}\]</span>
 where the auxiliary covariate <span class="math inline">\(H(a,w)\)</span> may be expressed
 <span class="math display" id="eq:aux-covar-full-shift">\[\begin{equation}
   H(a,w) = \mathbb{I}(a + \delta &lt; u(w)) \frac{g_0(a - \delta \mid w)}
   {g_0(a \mid w)} + \mathbb{I}(a + \delta \geq u(w)),
-  \tag{10.6}
+  \tag{11.6}
 \end{equation}\]</span>
 which may be reduced to
 <span class="math display" id="eq:aux-covar-simple-shift">\[\begin{equation}
   H(a,w) = \frac{g_0(a - \delta \mid w)}{g_0(a \mid w)} + 1
-  \tag{10.7}
+  \tag{11.7}
 \end{equation}\]</span>
 when the treatment <span class="math inline">\(A\)</span> lies within the limits defined by the covariate strata
 <span class="math inline">\(W\)</span>, that is, for <span class="math inline">\(A_i \in (u(w) - \delta, u(w))\)</span>. The efficient influence
@@ -345,7 +344,7 @@ of this regression model yields <span class="math inline">\(\overline{Q}_n^{\sta
 <span class="math display" id="eq:tmle">\[\begin{equation}
   \psi_n = \Psi(P_n^{\star}) = \frac{1}{n} \sum_{i = 1}^n
   \overline{Q}_n^{\star}(d(A_i, W_i), W_i).
-  \tag{10.8}
+  \tag{11.8}
 \end{equation}\]</span>
 </li>
 </ol>
@@ -356,7 +355,7 @@ target parameter <span class="math inline">\(\psi_0\)</span> can be expressed in
 <span class="math display" id="eq:asymplin-shift">\[\begin{equation}
   \sqrt{n}(\psi_n - \psi_0) = \frac{1}{\sqrt{n}}\sum_{i=1}^n D(P_0)(O_i) +
     o_p(1).
-  \tag{10.9}
+  \tag{11.9}
 \end{equation}\]</span>
 Together with regularity, asymptotic linearity establishes a class of estimators
 whose asymptotic variance is bounded from below by the asymptotic variance of
@@ -370,14 +369,14 @@ that the asymptotic distribution of the estimator <span class="math inline">\(\p
 <span class="math inline">\(\psi_0\)</span> and is Gaussian:
 <span class="math display" id="eq:tmle-gaussian-shift">\[\begin{equation}
   \sqrt{n}(\psi_n - \psi_0) \to \text{Normal}(0, \sigma^2(D(P_0))).
-  \tag{10.10}
+  \tag{11.10}
 \end{equation}\]</span>
 Thus, an estimate <span class="math inline">\(\sigma_n^2\)</span> of the variance <span class="math inline">\(\sigma^2(D(P_0))\)</span> may be
 computed
 <span class="math display" id="eq:eif-var-shift">\[\begin{equation}
   \sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\overline{Q}_n^{\star},
   g_n)(O_i),
-  \tag{10.11}
+  \tag{11.11}
 \end{equation}\]</span>
 allowing for Wald-style confidence intervals at coverage level <span class="math inline">\((1 - \alpha)\)</span> to
 be computed as <span class="math inline">\(\psi_n \pm z_{(1 - \alpha/2)} \cdot \sigma_n / \sqrt{n}\)</span>. Under
@@ -422,18 +421,18 @@ $$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
 </div>
 <div id="interpreting-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
-<span class="header-section-number">10.5</span> Interpreting the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#interpreting-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.5</span> Interpreting the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#interpreting-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:unnamed-chunk-1"></span>
 <img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="100%"><p class="caption">
-FIGURE 6.1: How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention
+FIGURE 7.1: How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention
 </p>
 </div>
 </div>
 <div id="evaluating-the-causal-effect-of-a-stochastic-intervention" class="section level2">
 <h2>
-<span class="header-section-number">10.6</span> Evaluating the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#evaluating-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.6</span> Evaluating the Causal Effect of a Stochastic Intervention<a class="anchor" aria-label="anchor" href="#evaluating-the-causal-effect-of-a-stochastic-intervention"><i class="fas fa-link"></i></a>
 </h2>
 <p>To start, let’s load the packages we’ll be using throughout our simple data example</p>
 <div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
@@ -514,7 +513,7 @@ makes explicit the fact that our <code>Q_learner</code> is used in fitting the o
 regression while our <code>g_learner</code> is used in estimating the treatment mechanism.</p>
 <div id="example-with-simulated-data" class="section level3">
 <h3>
-<span class="header-section-number">10.6.1</span> Example with Simulated Data<a class="anchor" aria-label="anchor" href="#example-with-simulated-data"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.6.1</span> Example with Simulated Data<a class="anchor" aria-label="anchor" href="#example-with-simulated-data"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb164"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="shift.html#cb164-1"></a><span class="co"># simulate simple data for tmle-shift sketch</span></span>
 <span id="cb164-2"><a href="shift.html#cb164-2"></a>n_obs &lt;-<span class="st"> </span><span class="dv">400</span> <span class="co"># number of observations</span></span>
@@ -573,7 +572,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 </div>
 <div id="targeted-estimation-of-stochastic-interventions-effects" class="section level3">
 <h3>
-<span class="header-section-number">10.6.2</span> Targeted Estimation of Stochastic Interventions Effects<a class="anchor" aria-label="anchor" href="#targeted-estimation-of-stochastic-interventions-effects"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.6.2</span> Targeted Estimation of Stochastic Interventions Effects<a class="anchor" aria-label="anchor" href="#targeted-estimation-of-stochastic-interventions-effects"><i class="fas fa-link"></i></a>
 </h3>
 <div class="sourceCode" id="cb166"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="shift.html#cb166-1"></a>tmle_fit &lt;-<span class="st"> </span><span class="kw">tmle3</span>(tmle_spec, data, node_list, learner_list)</span>
 <span id="cb166-2"><a href="shift.html#cb166-2"></a></span>
@@ -593,7 +592,7 @@ is computed based on the estimated EIF.</p>
 </div>
 <div id="selecting-stable-stochastic-interventions" class="section level2">
 <h2>
-<span class="header-section-number">10.7</span> Selecting Stable Stochastic Interventions<a class="anchor" aria-label="anchor" href="#selecting-stable-stochastic-interventions"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.7</span> Selecting Stable Stochastic Interventions<a class="anchor" aria-label="anchor" href="#selecting-stable-stochastic-interventions"><i class="fas fa-link"></i></a>
 </h2>
 <p>At times, a particular choice of the shift parameter <span class="math inline">\(\delta\)</span> may lead to
 positivity violations and downstream instability in the estimation process. In
@@ -616,7 +615,7 @@ can formalize this procedure by defining a new shift function <span class="math 
       \delta_{\text{max}}(a,w), &amp; \delta \geq \delta_{\text{max}}(a,w) \\
       \delta_{\text{min}}(a,w), &amp; \delta \leq \delta_{\text{min}}(a,w) \\
     \end{cases},
-    \tag{10.12}
+    \tag{11.12}
 \end{equation}\]</span>
 where <span class="math display">\[\delta_{\text{max}}(a, w) = \text{argmax}_{\left\{\delta \geq 0,
 \frac{g(a - \delta \mid w)}{g(a \mid w)} \leq M \right\}} \frac{g(a - \delta
@@ -636,7 +635,7 @@ package implements the functions <code>shift_additive_bounded</code> and
       \delta, &amp; C(\delta) \leq M \\
       0, \text{otherwise} \\
     \end{cases},
-  \tag{10.13}
+  \tag{11.13}
 \end{equation}\]</span>
 corresponding to an intervention in which the natural value of treatment <span class="math inline">\(A = a\)</span>
 is shifted by a value <span class="math inline">\(\delta\)</span> when the ratio <span class="math inline">\(C(\delta)\)</span> of the
@@ -646,7 +645,7 @@ bound <span class="math inline">\(M\)</span>, the stochastic intervention exempt
 modification, leaving them to their natural value of treatment <span class="math inline">\(A = a\)</span>.</p>
 <div id="initializing-vimshift-through-its-tmle3_spec" class="section level3">
 <h3>
-<span class="header-section-number">10.7.1</span> Initializing <code>vimshift</code> through its <code>tmle3_Spec</code><a class="anchor" aria-label="anchor" href="#initializing-vimshift-through-its-tmle3_spec"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.7.1</span> Initializing <code>vimshift</code> through its <code>tmle3_Spec</code><a class="anchor" aria-label="anchor" href="#initializing-vimshift-through-its-tmle3_spec"><i class="fas fa-link"></i></a>
 </h3>
 <p>To start, we will initialize a specification for the TMLE of our parameter of
 interest (called a <code>tmle3_Spec</code> in the <code>tlverse</code> nomenclature) simply by calling
@@ -671,7 +670,7 @@ object internally (see the <code>tmle3</code> documentation for details).</p>
 </div>
 <div id="targeted-estimation-of-stochastic-interventions-effects-1" class="section level3">
 <h3>
-<span class="header-section-number">10.7.2</span> Targeted Estimation of Stochastic Interventions Effects<a class="anchor" aria-label="anchor" href="#targeted-estimation-of-stochastic-interventions-effects-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.7.2</span> Targeted Estimation of Stochastic Interventions Effects<a class="anchor" aria-label="anchor" href="#targeted-estimation-of-stochastic-interventions-effects-1"><i class="fas fa-link"></i></a>
 </h3>
 <p>One may walk through the step-by-step procedure for fitting the TML estimator
 of the mean counterfactual outcome under each shift in the grid, using the
@@ -703,7 +702,7 @@ displays the results from computing our TML estimator.</p>
 </div>
 <div id="estimation-and-inference-with-marginal-structural-models" class="section level3">
 <h3>
-<span class="header-section-number">10.7.3</span> Estimation and Inference with Marginal Structural Models<a class="anchor" aria-label="anchor" href="#estimation-and-inference-with-marginal-structural-models"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.7.3</span> Estimation and Inference with Marginal Structural Models<a class="anchor" aria-label="anchor" href="#estimation-and-inference-with-marginal-structural-models"><i class="fas fa-link"></i></a>
 </h3>
 <p>It can be challenging to select a value of the shift parameter <span class="math inline">\(\delta\)</span> in
 advance. One solution is to specify a <em>grid</em> of such shifts <span class="math inline">\(\delta\)</span> to be used
@@ -759,9 +758,9 @@ counterfactual means:
    \\ \nonumber
    &amp;\sum_{\delta} h(\delta) \frac{d}{d\beta} m_{\beta}(\delta)
    D_{\psi_{\delta}}(O).
-   \tag{10.14}
+   \tag{11.14}
 \end{align}\]</span>
-Here, in Equation <a href="shift.html#eq:eif-msm-shift">(10.14)</a>, the first component is of dimension
+Here, in Equation <a href="shift.html#eq:eif-msm-shift">(11.14)</a>, the first component is of dimension
 <span class="math inline">\(d \times d\)</span> and the second is of dimension <span class="math inline">\(d \times 1\)</span>. In the above, we
 assume a linear working MSM; however, an analogous procedure may be applied for
 working MSMs based on GLMs.</p>
@@ -809,7 +808,7 @@ directly targets the parameters of the working MSM, we may use the
 </div>
 <div id="example-with-the-wash-benefits-data" class="section level3">
 <h3>
-<span class="header-section-number">10.7.4</span> Example with the WASH Benefits Data<a class="anchor" aria-label="anchor" href="#example-with-the-wash-benefits-data"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.7.4</span> Example with the WASH Benefits Data<a class="anchor" aria-label="anchor" href="#example-with-the-wash-benefits-data"><i class="fas fa-link"></i></a>
 </h3>
 <p>To complete our walk through, let’s turn to using stochastic interventions to
 investigate the data from the WASH Benefits trial. To start, let’s load the
@@ -894,14 +893,14 @@ a simple call to our <code>tmle3</code> wrapper function:</p>
 </div>
 <div id="exercises-3" class="section level2">
 <h2>
-<span class="header-section-number">10.8</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.8</span> Exercises<a class="anchor" aria-label="anchor" href="#exercises-3"><i class="fas fa-link"></i></a>
 </h2>
 <div id="the-ideas-in-action-1" class="section level3">
 <h3>
-<span class="header-section-number">10.8.1</span> The Ideas in Action<a class="anchor" aria-label="anchor" href="#the-ideas-in-action-1"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.8.1</span> The Ideas in Action<a class="anchor" aria-label="anchor" href="#the-ideas-in-action-1"><i class="fas fa-link"></i></a>
 </h3>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-4" class="exercise"><strong>Exercise 10.1  </strong></span>Set the <code>sl3</code> library of algorithms for the Super Learner to a simple,
+<p><span id="exr:unlabeled-div-4" class="exercise"><strong>Exercise 11.1  </strong></span>Set the <code>sl3</code> library of algorithms for the Super Learner to a simple,
 interpretable library and use this new library to estimate the counterfactual
 mean of mother’s age at child’s birth (<code>momage</code>) under a shift <span class="math inline">\(\delta = 0\)</span>.
 What does this counterfactual mean equate to in terms of the observed data?</p>
@@ -910,7 +909,7 @@ What does this counterfactual mean equate to in terms of the observed data?</p>
 <p><span id="unlabeled-div-5" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-6" class="exercise"><strong>Exercise 10.2  </strong></span>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>),
+<p><span id="exr:unlabeled-div-6" class="exercise"><strong>Exercise 11.2  </strong></span>Using a grid of values of the shift parameter <span class="math inline">\(\delta\)</span> (e.g., <span class="math inline">\(\{-1, 0, +1\}\)</span>),
 repeat the analysis on the variable chosen in the preceding question,
 summarizing the trend for this sequence of shifts using a marginal structural
 model.</p>
@@ -919,7 +918,7 @@ model.</p>
 <p><span id="unlabeled-div-7" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-8" class="exercise"><strong>Exercise 10.3  </strong></span>Repeat the preceding analysis, using the same grid of shifts, but instead
+<p><span id="exr:unlabeled-div-8" class="exercise"><strong>Exercise 11.3  </strong></span>Repeat the preceding analysis, using the same grid of shifts, but instead
 directly targeting the parameters of the marginal structural model. Interpret
 the results – that is, what does the slope of the marginal structural model
 tell us about the trend across the chosen sequence of shifts?</p>
@@ -930,17 +929,17 @@ tell us about the trend across the chosen sequence of shifts?</p>
 </div>
 <div id="review-of-key-concepts-2" class="section level3">
 <h3>
-<span class="header-section-number">10.8.2</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-2"><i class="fas fa-link"></i></a>
+<span class="header-section-number">11.8.2</span> Review of Key Concepts<a class="anchor" aria-label="anchor" href="#review-of-key-concepts-2"><i class="fas fa-link"></i></a>
 </h3>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-10" class="exercise"><strong>Exercise 10.4  </strong></span>Describe two (equivalent) ways in which the causal effects of stochastic
+<p><span id="exr:unlabeled-div-10" class="exercise"><strong>Exercise 11.4  </strong></span>Describe two (equivalent) ways in which the causal effects of stochastic
 interventions may be interpreted.</p>
 </div>
 <div class="solution">
 <p><span id="unlabeled-div-11" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-12" class="exercise"><strong>Exercise 10.5  </strong></span>How can the information provided by estimates across several shifts <span class="math inline">\(\{ \delta_1, \ldots, \delta_k \}\)</span> and the marginal structural model parameter
+<p><span id="exr:unlabeled-div-12" class="exercise"><strong>Exercise 11.5  </strong></span>How can the information provided by estimates across several shifts <span class="math inline">\(\{ \delta_1, \ldots, \delta_k \}\)</span> and the marginal structural model parameter
 summarizing the trend in <span class="math inline">\(\delta\)</span> be used to enrich the interpretation of our
 findings?</p>
 </div>
@@ -948,7 +947,7 @@ findings?</p>
 <p><span id="unlabeled-div-13" class="solution"><em>Solution</em>. </span>Forthcoming</p>
 </div>
 <div class="exercise">
-<p><span id="exr:unlabeled-div-14" class="exercise"><strong>Exercise 10.6  </strong></span>What advantages, if any, are there to targeting directly the parameters of a
+<p><span id="exr:unlabeled-div-14" class="exercise"><strong>Exercise 11.6  </strong></span>What advantages, if any, are there to targeting directly the parameters of a
 marginal structural model?</p>
 </div>
 <div class="solution">
@@ -1016,35 +1015,35 @@ nonparametric model $\M$ by solving the efficient influence function.
 </div>
 </div>
   <div class="chapter-nav">
-<div class="prev"><a href="optimal-individualized-treatment-regimes.html"><span class="header-section-number">9</span> Optimal Individualized Treatment Regimes</a></div>
-<div class="next"><a href="causal-mediation-analysis.html"><span class="header-section-number">11</span> Causal Mediation Analysis</a></div>
+<div class="prev"><a href="dynamic-and-optimal-individualized-treatment-regimes.html"><span class="header-section-number">10</span> Dynamic and Optimal Individualized Treatment Regimes</a></div>
+<div class="next"><a href="causal-mediation-analysis.html"><span class="header-section-number">12</span> Causal Mediation Analysis</a></div>
 </div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
     <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
-<li><a class="nav-link" href="#shift"><span class="header-section-number">10</span> Stochastic Treatment Regimes</a></li>
-<li><a class="nav-link" href="#why-stochastic-interventions"><span class="header-section-number">10.1</span> Why Stochastic Interventions?</a></li>
-<li><a class="nav-link" href="#data-structure-and-notation-1"><span class="header-section-number">10.2</span> Data Structure and Notation</a></li>
-<li><a class="nav-link" href="#defining-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">10.3</span> Defining the Causal Effect of a Stochastic Intervention</a></li>
-<li><a class="nav-link" href="#estimating-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">10.4</span> Estimating the Causal Effect of a Stochastic Intervention</a></li>
-<li><a class="nav-link" href="#interpreting-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">10.5</span> Interpreting the Causal Effect of a Stochastic Intervention</a></li>
+<li><a class="nav-link" href="#shift"><span class="header-section-number">11</span> Stochastic Treatment Regimes</a></li>
+<li><a class="nav-link" href="#why-stochastic-interventions"><span class="header-section-number">11.1</span> Why Stochastic Interventions?</a></li>
+<li><a class="nav-link" href="#data-structure-and-notation-1"><span class="header-section-number">11.2</span> Data Structure and Notation</a></li>
+<li><a class="nav-link" href="#defining-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">11.3</span> Defining the Causal Effect of a Stochastic Intervention</a></li>
+<li><a class="nav-link" href="#estimating-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">11.4</span> Estimating the Causal Effect of a Stochastic Intervention</a></li>
+<li><a class="nav-link" href="#interpreting-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">11.5</span> Interpreting the Causal Effect of a Stochastic Intervention</a></li>
 <li>
-<a class="nav-link" href="#evaluating-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">10.6</span> Evaluating the Causal Effect of a Stochastic Intervention</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#example-with-simulated-data"><span class="header-section-number">10.6.1</span> Example with Simulated Data</a></li>
-<li><a class="nav-link" href="#targeted-estimation-of-stochastic-interventions-effects"><span class="header-section-number">10.6.2</span> Targeted Estimation of Stochastic Interventions Effects</a></li>
+<a class="nav-link" href="#evaluating-the-causal-effect-of-a-stochastic-intervention"><span class="header-section-number">11.6</span> Evaluating the Causal Effect of a Stochastic Intervention</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#example-with-simulated-data"><span class="header-section-number">11.6.1</span> Example with Simulated Data</a></li>
+<li><a class="nav-link" href="#targeted-estimation-of-stochastic-interventions-effects"><span class="header-section-number">11.6.2</span> Targeted Estimation of Stochastic Interventions Effects</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#selecting-stable-stochastic-interventions"><span class="header-section-number">10.7</span> Selecting Stable Stochastic Interventions</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#initializing-vimshift-through-its-tmle3_spec"><span class="header-section-number">10.7.1</span> Initializing vimshift through its tmle3_Spec</a></li>
-<li><a class="nav-link" href="#targeted-estimation-of-stochastic-interventions-effects-1"><span class="header-section-number">10.7.2</span> Targeted Estimation of Stochastic Interventions Effects</a></li>
-<li><a class="nav-link" href="#estimation-and-inference-with-marginal-structural-models"><span class="header-section-number">10.7.3</span> Estimation and Inference with Marginal Structural Models</a></li>
-<li><a class="nav-link" href="#example-with-the-wash-benefits-data"><span class="header-section-number">10.7.4</span> Example with the WASH Benefits Data</a></li>
+<a class="nav-link" href="#selecting-stable-stochastic-interventions"><span class="header-section-number">11.7</span> Selecting Stable Stochastic Interventions</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#initializing-vimshift-through-its-tmle3_spec"><span class="header-section-number">11.7.1</span> Initializing vimshift through its tmle3_Spec</a></li>
+<li><a class="nav-link" href="#targeted-estimation-of-stochastic-interventions-effects-1"><span class="header-section-number">11.7.2</span> Targeted Estimation of Stochastic Interventions Effects</a></li>
+<li><a class="nav-link" href="#estimation-and-inference-with-marginal-structural-models"><span class="header-section-number">11.7.3</span> Estimation and Inference with Marginal Structural Models</a></li>
+<li><a class="nav-link" href="#example-with-the-wash-benefits-data"><span class="header-section-number">11.7.4</span> Example with the WASH Benefits Data</a></li>
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#exercises-3"><span class="header-section-number">10.8</span> Exercises</a><ul class="nav navbar-nav">
-<li><a class="nav-link" href="#the-ideas-in-action-1"><span class="header-section-number">10.8.1</span> The Ideas in Action</a></li>
-<li><a class="nav-link" href="#review-of-key-concepts-2"><span class="header-section-number">10.8.2</span> Review of Key Concepts</a></li>
+<a class="nav-link" href="#exercises-3"><span class="header-section-number">11.8</span> Exercises</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#the-ideas-in-action-1"><span class="header-section-number">11.8.1</span> The Ideas in Action</a></li>
+<li><a class="nav-link" href="#review-of-key-concepts-2"><span class="header-section-number">11.8.2</span> Review of Key Concepts</a></li>
 </ul>
 </li>
 </ul>
@@ -1064,7 +1063,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 21, 2022.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on June 23, 2022.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
