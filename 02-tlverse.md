@@ -2,7 +2,7 @@
 
 # About the `tlverse`
 
-Updated: 2022-06-23
+Updated: 2022-06-26
 
 ## What is the `tlverse`?
 

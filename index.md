@@ -1,29 +1,24 @@
 ---
-knit: "bookdown::render_book"
 title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "June 23, 2022"
+date: "June 26, 2022"
 documentclass: krantz
-site: bookdown::bookdown_site
-bibliography: [book.bib, packages.bib]
-biblio-style: apalike
+lof: yes
 fontsize: '12pt, krantz2'
 monofontoptions: "Scale=0.7"
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
 link-citations: yes
 colorlinks: yes
-lot: no
-lof: no
-always_allow_html: yes
-url: 'https\://tlverse.org/tlverse-handbook/'
-github-repo: tlverse/tlverse-handbook
-twitter-handle: tlverse
-graphics: yes
-description: "An open source handbook for causal machine learning and data
-  science with the Targeted Learning framework using the [`tlverse` software
-  ecosystem](https://github.com/tlverse)."
+site: bookdown::bookdown_site
+description: "An open source handbook for causal machine learning and data science with the Targeted Learning framework using the [`tlverse` software ecosystem](https://github.com/tlverse)."
 favicon: "img/favicons/favicon.png"
+github-repo: tlverse/tlverse-handbook
+graphics: yes
+url: 'https\://tlverse.org/tlverse-handbook/'
+twitter-handle: tlverse
 ---
 
 # Welcome {-}
@@ -230,7 +225,7 @@ following packages:
 
 
 
-## Learning resources {#learn}
+## Learning resources {-}
 
 To effectively utilize this handbook, the reader need not be a fully trained
 statistician to begin understanding and applying these methods. However, it is
@@ -258,3 +253,12 @@ For a general introduction to causal inference, we recommend
 * [Jason A. Roy's _A Crash Course in Causality: Inferring Causal Effects from
   Observational Data_ on
   Coursera](https://www.coursera.org/learn/crash-course-in-causality)
+
+Feel free to [suggest a 
+resource](https://github.com/tlverse/tlverse-handbook/issues)!
+
+## Want to help? {-}
+
+Any feedback on the book is very welcome. Feel free to [open an 
+issue](https://github.com/tlverse/tlverse-handbook/issues), or to make a 
+Pull Request if you spot a typo.

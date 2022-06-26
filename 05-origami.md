@@ -5,7 +5,7 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
-Updated: 2022-06-23
+Updated: 2022-06-26
 
 
 
@@ -271,7 +271,7 @@ washb_data <- fread(
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 30 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.40 </td>
+   <td style="text-align:right;"> 146.4 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 3 </td>
    <td style="text-align:right;"> 11 </td>
@@ -301,7 +301,7 @@ washb_data <- fread(
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 25 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.75 </td>
+   <td style="text-align:right;"> 148.8 </td>
    <td style="text-align:left;"> Moderately Food Insecure </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 4 </td>
@@ -331,7 +331,7 @@ washb_data <- fread(
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 25 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.15 </td>
+   <td style="text-align:right;"> 152.2 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 10 </td>
@@ -361,7 +361,7 @@ washb_data <- fread(
    <td style="text-align:left;"> female </td>
    <td style="text-align:right;"> 28 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.25 </td>
+   <td style="text-align:right;"> 140.2 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 3 </td>
    <td style="text-align:right;"> 5 </td>
@@ -391,7 +391,7 @@ washb_data <- fread(
    <td style="text-align:left;"> female </td>
    <td style="text-align:right;"> 19 </td>
    <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.95 </td>
+   <td style="text-align:right;"> 150.9 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 7 </td>
@@ -421,7 +421,7 @@ washb_data <- fread(
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 20 </td>
    <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.20 </td>
+   <td style="text-align:right;"> 154.2 </td>
    <td style="text-align:left;"> Severely Food Insecure </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 3 </td>
@@ -1107,7 +1107,7 @@ Here's a look at the data:
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 30 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.40 </td>
+   <td style="text-align:right;"> 146.4 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 3 </td>
    <td style="text-align:right;"> 11 </td>
@@ -1137,7 +1137,7 @@ Here's a look at the data:
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 25 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.75 </td>
+   <td style="text-align:right;"> 148.8 </td>
    <td style="text-align:left;"> Moderately Food Insecure </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 4 </td>
@@ -1167,7 +1167,7 @@ Here's a look at the data:
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 25 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.15 </td>
+   <td style="text-align:right;"> 152.2 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 1 </td>
    <td style="text-align:right;"> 10 </td>
@@ -1197,7 +1197,7 @@ Here's a look at the data:
    <td style="text-align:left;"> female </td>
    <td style="text-align:right;"> 28 </td>
    <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.25 </td>
+   <td style="text-align:right;"> 140.2 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 3 </td>
    <td style="text-align:right;"> 5 </td>
@@ -1227,7 +1227,7 @@ Here's a look at the data:
    <td style="text-align:left;"> female </td>
    <td style="text-align:right;"> 19 </td>
    <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.95 </td>
+   <td style="text-align:right;"> 150.9 </td>
    <td style="text-align:left;"> Food Secure </td>
    <td style="text-align:right;"> 2 </td>
    <td style="text-align:right;"> 7 </td>
@@ -1257,7 +1257,7 @@ Here's a look at the data:
    <td style="text-align:left;"> male </td>
    <td style="text-align:right;"> 20 </td>
    <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.20 </td>
+   <td style="text-align:right;"> 154.2 </td>
    <td style="text-align:left;"> Severely Food Insecure </td>
    <td style="text-align:right;"> 0 </td>
    <td style="text-align:right;"> 3 </td>
@@ -1384,10 +1384,10 @@ object as follows:
 
 ```r
 (err <- mean(resid(lm_mod)^2))
-[1] 0.86568
+[1] 0.8657
 ```
 
-The mean squared error is 0.86568. There is an important problem that arises
+The mean squared error is 0.8657. There is an important problem that arises
 when we assess the model in this way - that is, we have trained our linear
 regression model on the full data set and assessed the error on the full data
 set, using up all of our data. We, of course, are generally not interested in
@@ -1448,7 +1448,7 @@ the functions `make_folds` and `cv_lm`.
 resub <- make_folds(washb_data, fold_fun = folds_resubstitution)[[1]]
 resub_results <- cv_lm(fold = resub, data = washb_data, reg_form = "whz ~ .")
 mean(resub_results$SE, na.rm = TRUE)
-[1] 0.86568
+[1] 0.8657
 ```
 
 This (nearly) matches the estimate of the error that we obtained above.
@@ -1528,7 +1528,7 @@ cvrf_results <- cross_validate(
   use_future = FALSE
 )
 mean(cvrf_results$SE)
-[1] 1.0271
+[1] 1.027
 ```
 
 Using 10-fold cross-validation (the default), we obtain an honest estimate of
@@ -1663,19 +1663,19 @@ mses <- cross_validate(
   use_future = FALSE
 )
 mses$mse
-  fold   arima  arima2
-1    1   68.21  137.28
-2    2  319.68  313.15
-3    3  578.35  713.36
-4    4  428.69  505.31
-5    5  407.33  371.27
-6    6  281.82  250.99
-7    7  827.56  910.12
-8    8 2099.59 2213.15
-9    9  398.37  293.38
+  fold   arima arima2
+1    1   68.21  137.3
+2    2  319.68  313.2
+3    3  578.35  713.4
+4    4  428.69  505.3
+5    5  407.33  371.3
+6    6  281.82  251.0
+7    7  827.56  910.1
+8    8 2099.59 2213.1
+9    9  398.37  293.4
 colMeans(mses$mse[, c("arima", "arima2")])
  arima arima2 
-601.07 634.22 
+ 601.1  634.2 
 ```
 
 The arima model with no AR component seems to be a better fit for this data.

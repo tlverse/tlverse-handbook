@@ -485,13 +485,13 @@ node_list <- list(
   Y = "Y"
 )
 head(data)
-   W1 W2         A Y
-1:  1  1  0.271651 1
-2:  0  0 -0.663368 1
-3:  0  0  0.113366 0
-4:  0  1 -0.732558 0
-5:  1  1  0.388835 1
-6:  0  0  0.043986 0
+   W1 W2        A Y
+1:  1  1  0.27165 1
+2:  0  0 -0.66337 1
+3:  0  0  0.11337 0
+4:  0  1 -0.73256 0
+5:  1  1  0.38884 1
+6:  0  0  0.04399 0
 ```
 
 The above composes our observed data structure $O = (W, A, Y)$. To formally
@@ -537,10 +537,10 @@ Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.76452  0.76012 0.022839 0.71536 0.80488
-   psi_transformed lower_transformed upper_transformed
-1:         0.76012           0.71536           0.80488
+   type         param init_est tmle_est      se  lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.7645   0.7601 0.02284 0.7154 0.8049          0.7601
+   lower_transformed upper_transformed
+1:            0.7154            0.8049
 ```
 
 The `print` method of the resultant `tmle_fit` object conveniently displays the
@@ -650,18 +650,18 @@ Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)
-         type          param init_est tmle_est        se   lower   upper
-1:        TSM  E[Y_{A=NULL}]  0.56807  0.57184 0.0214157 0.52987 0.61382
-2:        TSM  E[Y_{A=NULL}]  0.69750  0.69750 0.0229958 0.65243 0.74257
-3:        TSM  E[Y_{A=NULL}]  0.81675  0.81545 0.0171102 0.78192 0.84899
-4: MSM_linear MSM(intercept)  0.69410  0.69493 0.0191074 0.65748 0.73238
-5: MSM_linear     MSM(slope)  0.12434  0.12181 0.0086027 0.10494 0.13867
+         type          param init_est tmle_est       se  lower  upper
+1:        TSM  E[Y_{A=NULL}]   0.5681   0.5718 0.021416 0.5299 0.6138
+2:        TSM  E[Y_{A=NULL}]   0.6975   0.6975 0.022996 0.6524 0.7426
+3:        TSM  E[Y_{A=NULL}]   0.8167   0.8155 0.017110 0.7819 0.8490
+4: MSM_linear MSM(intercept)   0.6941   0.6949 0.019107 0.6575 0.7324
+5: MSM_linear     MSM(slope)   0.1243   0.1218 0.008603 0.1049 0.1387
    psi_transformed lower_transformed upper_transformed
-1:         0.57184           0.52987           0.61382
-2:         0.69750           0.65243           0.74257
-3:         0.81545           0.78192           0.84899
-4:         0.69493           0.65748           0.73238
-5:         0.12181           0.10494           0.13867
+1:          0.5718            0.5299            0.6138
+2:          0.6975            0.6524            0.7426
+3:          0.8155            0.7819            0.8490
+4:          0.6949            0.6575            0.7324
+5:          0.1218            0.1049            0.1387
 ```
 
 _Remark_: The `print` method of the resultant `tmle_fit` object conveniently
@@ -801,9 +801,9 @@ washb_data <- fread(
 washb_data <- washb_data[!is.na(momage), lapply(.SD, as.numeric)]
 head(washb_data, 3)
      whz tr fracode month aged sex momage momedu momheight hfiacat Nlt18 Ncomp
-1:  0.00  1       4     9  268   2     30      2    146.40       1     3    11
-2: -1.16  1       4     9  286   2     25      2    148.75       3     2     4
-3: -1.05  1      20     9  264   2     25      2    152.15       1     1    10
+1:  0.00  1       4     9  268   2     30      2     146.4       1     3    11
+2: -1.16  1       4     9  286   2     25      2     148.8       3     2     4
+3: -1.05  1      20     9  264   2     25      2     152.2       1     1    10
    watmin elec floor walls roof asset_wardrobe asset_table asset_chair
 1:      0    1     0     1    1              0           1           1
 2:      0    1     0     1    1              0           1           0

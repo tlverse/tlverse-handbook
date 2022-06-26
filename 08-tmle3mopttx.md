@@ -7,7 +7,7 @@ _Ivana Malenica_
 Based on the [`tmle3mopttx` `R` package](https://github.com/tlverse/tmle3mopttx)
 by _Ivana Malenica, Jeremy Coyle, and Mark van der Laan_.
 
-Updated: 2022-06-23
+Updated: 2022-06-26
 
 ## Learning Objectives
 
@@ -622,10 +622,10 @@ important extensions of `tmle3mopttx` in later sections.
 fit <- tmle3(tmle_spec, data, node_list, learner_list)
 fit
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.35038  0.55077 0.026223 0.49938 0.60217
-   psi_transformed lower_transformed upper_transformed
-1:         0.55077           0.49938           0.60217
+   type         param init_est tmle_est      se  lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.3504   0.5508 0.02622 0.4994 0.6022          0.5508
+   lower_transformed upper_transformed
+1:            0.4994            0.6022
 ```
 
 By studying the output generated, we can see that the confidence interval covers the
@@ -658,10 +658,10 @@ tmle_spec_resource <- tmle3_mopttx_blip_revere(
 fit_resource <- tmle3(tmle_spec_resource, data, node_list, learner_list)
 fit_resource
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.35659  0.55786 0.025768 0.50735 0.60836
-   psi_transformed lower_transformed upper_transformed
-1:         0.55786           0.50735           0.60836
+   type         param init_est tmle_est      se  lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.3566   0.5579 0.02577 0.5074 0.6084          0.5579
+   lower_transformed upper_transformed
+1:            0.5074            0.6084
 ```
 
 We can compare the number of individuals that got treatment with and without the 
@@ -704,10 +704,10 @@ tmle_spec_V_empty <- tmle3_mopttx_blip_revere(
 fit_V_empty <- tmle3(tmle_spec_V_empty, data, node_list, learner_list)
 fit_V_empty
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est      se  lower   upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.32588  0.53207 0.01034 0.5118 0.55233         0.53207
+   type         param init_est tmle_est      se  lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.3259   0.5321 0.01034 0.5118 0.5523          0.5321
    lower_transformed upper_transformed
-1:            0.5118           0.55233
+1:            0.5118            0.5523
 ```
 
 ## Evaluating the Causal Effect of an optimal ITR with Categorical Treatment {#oit-eval-cat}
@@ -857,10 +857,10 @@ tmle_spec_cat <- tmle3_mopttx_blip_revere(
 fit_cat <- tmle3(tmle_spec_cat, data, node_list, learner_list)
 fit_cat
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower  upper psi_transformed
-1:  TSM E[Y_{A=NULL}]  0.53474  0.62129 0.066282 0.49138 0.7512         0.62129
+   type         param init_est tmle_est      se  lower  upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.5347   0.6213 0.06628 0.4914 0.7512          0.6213
    lower_transformed upper_transformed
-1:           0.49138            0.7512
+1:            0.4914            0.7512
 
 # How many individuals got assigned each treatment?
 table(tmle_spec_cat$return_rule)
@@ -911,8 +911,8 @@ tmle_spec_cat_simple <- tmle3_mopttx_blip_revere(
 fit_cat_simple <- tmle3(tmle_spec_cat_simple, data, node_list, learner_list)
 fit_cat_simple
 A tmle3_Fit that took 1 step(s)
-   type                   param init_est tmle_est       se  lower  upper
-1:  TSM E[Y_{d(V=W4,W3,W2,W1)}]  0.53013   0.5497 0.058216 0.4356 0.6638
+   type                   param init_est tmle_est      se  lower  upper
+1:  TSM E[Y_{d(V=W4,W3,W2,W1)}]   0.5301   0.5497 0.05822 0.4356 0.6638
    psi_transformed lower_transformed upper_transformed
 1:          0.5497            0.4356            0.6638
 ```
@@ -950,10 +950,10 @@ tmle_spec_cat_realistic <- tmle3_mopttx_blip_revere(
 fit_cat_realistic <- tmle3(tmle_spec_cat_realistic, data, node_list, learner_list)
 fit_cat_realistic
 A tmle3_Fit that took 1 step(s)
-   type         param init_est tmle_est       se   lower   upper
-1:  TSM E[Y_{A=NULL}]  0.53766  0.65819 0.021349 0.61634 0.70003
-   psi_transformed lower_transformed upper_transformed
-1:         0.65819           0.61634           0.70003
+   type         param init_est tmle_est      se  lower upper psi_transformed
+1:  TSM E[Y_{A=NULL}]   0.5377   0.6582 0.02135 0.6163   0.7          0.6582
+   lower_transformed upper_transformed
+1:            0.6163               0.7
 
 # How many individuals got assigned each treatment?
 table(tmle_spec_cat_realistic$return_rule)
@@ -981,7 +981,7 @@ data_missing[rr,"Y"]<-NA
 
 summary(data_missing$Y)
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
-  0.000   0.000   0.000   0.464   1.000   1.000     100 
+   0.00    0.00    0.00    0.46    1.00    1.00     100 
 ```
 
 To start, we must first add to our library --- we now also need to estimate the 
@@ -1148,15 +1148,15 @@ vim_results <- tmle3_vim(tmle_spec_vim, data, node_list, learner_list,
 )
 
 print(vim_results)
-   type                param    init_est  tmle_est       se     lower     upper
-1:  ATE E[Y_{A=NULL}] - E[Y] -0.01301899 -0.064745 0.021715 -0.107305 -0.022184
-2:  ATE E[Y_{A=NULL}] - E[Y]  0.00033205  0.053706 0.016881  0.020621  0.086792
-   psi_transformed lower_transformed upper_transformed  A           W  Z_stat
-1:       -0.064745         -0.107305         -0.022184 W1  W3,W4,W2,A -2.9816
-2:        0.053706          0.020621          0.086792  A W3,W4,W2,W1  3.1815
-         p_nz p_nz_corrected
-1: 0.00143384      0.0014338
-2: 0.00073256      0.0014338
+   type                param  init_est tmle_est      se    lower    upper
+1:  ATE E[Y_{A=NULL}] - E[Y] -0.013019 -0.06474 0.02171 -0.10730 -0.02218
+2:  ATE E[Y_{A=NULL}] - E[Y]  0.000332  0.05371 0.01688  0.02062  0.08679
+   psi_transformed lower_transformed upper_transformed  A           W Z_stat
+1:        -0.06474          -0.10730          -0.02218 W1  W3,W4,W2,A -2.982
+2:         0.05371           0.02062           0.08679  A W3,W4,W2,W1  3.182
+        p_nz p_nz_corrected
+1: 0.0014338       0.001434
+2: 0.0007326       0.001434
 ```
 
 The final result of `tmle3_vim` with the `tmle3mopttx` spec is an ordered list
