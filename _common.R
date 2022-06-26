@@ -41,7 +41,7 @@ options(
   dplyr.print_max = 5,
   crayon.enabled = FALSE,
   knitr.kable.NA = "NA",
-  repos = structure(c(CRAN = "https://cran.rstudio.com/"))
+  repos = structure(c(CRAN = "https://cran.rstudio.com/")),
   htmltools.dir.version = FALSE, 
   conflicts.policy = FALSE,
   dplyr.summarise.inform = FALSE
