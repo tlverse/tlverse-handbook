@@ -35,14 +35,16 @@ knitr::opts_chunk$set(
 
 # global options
 options(
-  digits = 5,
+  digits = 4,
   # scipen = 999,
   dplyr.print_min = 5,
   dplyr.print_max = 5,
   crayon.enabled = FALSE,
-  bookdown.clean_book = TRUE,
   knitr.kable.NA = "NA",
   repos = structure(c(CRAN = "https://cran.rstudio.com/"))
+  htmltools.dir.version = FALSE, 
+  conflicts.policy = FALSE,
+  dplyr.summarise.inform = FALSE
 )
 
 # overwrite options by output type
