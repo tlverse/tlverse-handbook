@@ -163,7 +163,7 @@ if (knitr::is_latex_output()) {
 df_plot$id <- seq(1:nrow(df_plot))
 df_plot_melted <- melt(
   df_plot, id.vars = "id",
-  measure.vars = c("Observed", "SL_Pred", "GLM_Pred", "Mean_Pred")
+  measure.vars = c("Obs", "SL_Pred", "GLM_Pred", "Mean_Pred")
 )
 
 library(ggplot2)
@@ -262,6 +262,7 @@ identical(cv_preds_option1, cv_preds_byhand_ordered)
 
 
 ## ----predictions-new-task, eval = FALSE---------------------------------------
+## # we do not evaluate this code chunk, as `washb_data_new` does not exist
 ## prediction_task <- make_sl3_Task(
 ##   data = washb_data_new, # assuming we have some new data for predictions
 ##   covariates = c("tr", "fracode", "month", "aged", "sex", "momage", "momedu",
@@ -272,6 +273,65 @@ identical(cv_preds_option1, cv_preds_byhand_ordered)
 ##                  "asset_mobile")
 ## )
 ## sl_preds_new_task <- sl_fit$predict(task = prediction_task)
+
+
+## ----cf-predictions-static----------------------------------------------------
+### 1. Copy data
+tr_intervention_data <- data.table::copy(washb_data) 
+
+### 2. Define intervention in copied dataset
+tr_intervention <- rep("Nutrition + WSH", nrow(washb_data))
+# NOTE: When we intervene on a categorical variable (such as "tr"), we need to 
+#       define the intervention as a categorical variable (ie a factor).
+#       Also, even though not all levels of the factor will be represented in 
+#       the intervention, we still need this factor to reflect all of the 
+#       levels that are present in the observed data
+tr_levels <- levels(washb_data[["tr"]])
+tr_levels
+tr_intervention <- factor(tr_intervention, levels = tr_levels)
+tr_intervention_data[,"tr" := tr_intervention, ]
+
+### 3. Create a new sl3_Task
+# note that we do not need to specify the outcome in this new task since we are 
+# only using it to obtain predictions
+tr_intervention_task <- make_sl3_Task(
+  data = tr_intervention_data, 
+  covariates = c("tr", "fracode", "month", "aged", "sex", "momage", "momedu", 
+                 "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin", "elec", 
+                 "floor", "walls", "roof", "asset_wardrobe", "asset_table", 
+                 "asset_chair", "asset_khat", "asset_chouki", "asset_tv", 
+                 "asset_refrig", "asset_bike", "asset_moto", "asset_sewmach", 
+                 "asset_mobile")
+)
+### 4. Get predicted values under intervention of interest
+# SL predictions of what "whz" would have been had everyone received "tr" 
+# equal to "Nutrition + WSH"
+counterfactual_pred <- sl_fit$predict(tr_intervention_task)
+
+
+## ----cf-predictions-dynamic---------------------------------------------------
+dynamic_tr_intervention_data <- data.table::copy(washb_data) 
+
+dynamic_tr_intervention <- ifelse(
+  washb_data[["asset_refrig"]] == 1, "Nutrition + WSH", "WSH"
+)
+dynamic_tr_intervention <- factor(dynamic_tr_intervention, levels = tr_levels)
+dynamic_tr_intervention_data[,"tr" := dynamic_tr_intervention, ]
+
+dynamic_tr_intervention_task <- make_sl3_Task(
+  data = dynamic_tr_intervention_data, 
+  covariates = c("tr", "fracode", "month", "aged", "sex", "momage", "momedu", 
+                 "momheight", "hfiacat", "Nlt18", "Ncomp", "watmin", "elec", 
+                 "floor", "walls", "roof", "asset_wardrobe", "asset_table", 
+                 "asset_chair", "asset_khat", "asset_chouki", "asset_tv", 
+                 "asset_refrig", "asset_bike", "asset_moto", "asset_sewmach", 
+                 "asset_mobile")
+)
+### 4. Get predicted values under intervention of interest
+# SL predictions of what "whz" would have been had every subject received "tr" 
+# equal to "Nutrition + WSH" if they had a fridge and "WSH" if they didn't have 
+# a fridge
+counterfactual_pred <- sl_fit$predict(dynamic_tr_intervention_task)
 
 
 ## ----sl-coefs-simple----------------------------------------------------------
