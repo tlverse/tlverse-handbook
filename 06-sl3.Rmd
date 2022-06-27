@@ -360,11 +360,11 @@ This example was for demonstrative purposes only. See @rvp2022super for
 step-by-step guidelines for constructing a SL that is well-specified for the 
 prediction task at hand. 
 
-## Additional `sl3` Topics
+## Additional `sl3` Topics: {-}
 
-### Obtaining Predictions
+## Obtaining Predictions
 
-#### Super Learner and candidate learner predictions
+### Super learner and candidate learner predictions
 
 We will draw on the fitted SL object from above, `sl_fit`, to obtain the
 SL's predicted `whz` value for each subject.
@@ -440,7 +440,7 @@ ggplot(df_plot_melted, aes(id, value, color = variable)) +
   guides(color = guide_legend(override.aes = list(size = 1)))
 ```
 
-#### Cross-validated predictions
+### Cross-validated predictions
 
 We can also obtain the cross-validated (CV) predictions for the candidate 
 learners. We can do this is a few different ways. 
@@ -549,7 +549,7 @@ cv_preds_byhand_ordered <- cv_preds_byhand[order(row_index_in_data), ]
 identical(cv_preds_option1, cv_preds_byhand_ordered)
 ```
 
-#### Predictions with new data
+### Predictions with new data
 
 If we wanted to obtain predicted values for new data then we would need to 
 create a new `sl3_Task` from the new data. Also, the covariates in this new 
@@ -571,7 +571,7 @@ prediction_task <- make_sl3_Task(
 )
 sl_preds_new_task <- sl_fit$predict(task = prediction_task)
 ```
-#### Counterfactual predictions
+### Counterfactual predictions
 
 Counterfactual predictions are predicted values under an intervention of 
 interest. Recall from above that we can obtain predicted values for new data by 
@@ -653,9 +653,9 @@ dynamic_tr_intervention_task <- make_sl3_Task(
 counterfactual_pred <- sl_fit$predict(dynamic_tr_intervention_task)
 ```
 
-### Summarizing Super Learner Fits 
+## Summarizing Super Learner Fits 
 
-#### Super Learner coefficients / fitted meta-learner summary
+### Super Learner coefficients / fitted meta-learner summary
 
 We can see how the meta-learner created a function of the learners in a few 
 ways. In our illustrative example, we considered the default, NNLS meta-learner
@@ -678,7 +678,7 @@ Direct access to the meta-learner fit object is also handy for more
 complex meta-learners (e.g., non-parametric meta-learners) that are not defined 
 by a simple set of  main terms regression coefficients. 
 
-#### Cross-validated predictive performance
+### Cross-validated predictive performance
 
 We can obtain a table of the cross-validated (CV) predictive performance, i.e., 
 the CV risk, for each learner included in the SL. Below, we use the 
@@ -783,7 +783,7 @@ Column "se" in the CV risk table is the standard error across all losses for a l
 Column "fold_sd" in the CV risk table is the standard deviation of the V-fold-specific risks, i.e., fold_sd = sd(risk), where risk is a V length vector of the mean loss across the folds.
 -->
 
-#### Cross-validated Super Learner 
+### Cross-validated Super Learner 
 
 We can see from the CV risk table above that the SL is not listed. This is
 because we do not have a CV risk for the SL unless we cross-validate it or
@@ -858,7 +858,7 @@ if (knitr::is_latex_output()) {
     scroll_box(width = "100%", height = "300px")
 }
 ```
-#### Revere-cross-validated predictive performance of Super Learner
+### Revere-cross-validated predictive performance of Super Learner
 
 We can also use so-called "revere", to obtain a partial CV risk for the SL, 
 where the SL candidate learner fits are cross-validated but the meta-learner fit 
@@ -968,7 +968,7 @@ meta-learner the revere risk estimate of the SL (`r round(sl_revere_risk, 4)`)
 is very close to, and slightly lower than, the CV risk estimate for the SL 
 (`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),2], 4)`). 
 
-### Discrete Super Learner
+## Discrete Super Learner
 
 From the glossary (Table 1) entry for discrete SL (dSL) in @rvp2022super, 
 the dSL is "a SL that uses a winner-take-all meta-learner called
@@ -1030,7 +1030,7 @@ dSL_pred <- dSL_fit$predict(task)
 earth_pred <- dSL_fit$learner_fits$Lrnr_earth_2_3_backward_0_1_0_0$predict(task)
 identical(dSL_pred, earth_pred)
 ```
-#### Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner
+### Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner
 
 We recommend using CV to evaluate the predictive performance of the SL. We 
 showed how to do this with `cv_sl` above. We have also seen that when we 
@@ -1133,7 +1133,7 @@ computationally intensive, like the `dSL` defined above. That is, a parallel
 processing scheme should be defined before calling `dSL$train(task)` in order 
 to speed up the run time.
 
-### Parallel Processing 
+## Parallel Processing 
 
 It's straightforward to take advantage of `sl3`'s built-in parallel processing 
 support, which draws on the [`future` R 
@@ -1170,7 +1170,7 @@ runtime_sl_fit_parallel <- proc.time() - start_time
 runtime_sl_fit_parallel
 ```
 
-### Default Data Pre-processing
+## Default Data Pre-processing
 
 In `sl3` it is required that the analytic dataset (i.e., the dataset 
 consisting of observations on an outcome and covariates) does not contain any 
@@ -1207,7 +1207,7 @@ task <- make_sl3_Task(
 )
 ```
 
-#### Imputation and missingness indicators
+### Imputation and missingness indicators
 
 Notice the warning that appeared when we created the task above. (We muted this 
 warning when we created the task in the previous section). This warning states 
@@ -1274,7 +1274,7 @@ function that is approximated (e.g., with SL) and incorporated that in the
 estimation of the target parameter and the inference / uncertainty
 quantification.
 
-#### Character and categorical covariates
+### Character and categorical covariates
 
 First any character covariates are converted to factors. Then all factor
 covariates are one-hot encoded, i.e., the levels of a factor become a set of
@@ -1320,7 +1320,7 @@ were one-hot encoded. We can also see that the missingness indicators reviewed
 above are the last two columns in `task$X`: `delta_momage` and `delta_momage`.
 The imputed `momage` and `momheight` are also in the task's `X` object.
 
-### Learner Documentation
+## Learner Documentation
 
 Documentation for the learners and some of their tuning parameters can be found
 in the R session (e.g., to see `Lrnr_glmnet`'s parameters, one could type
@@ -1344,7 +1344,7 @@ example from above, this means that, while some information will be provided in
 XGBoost algorithm available in `sl3`  will come from referencing the `xgboost`
 R package and its `xgb.train` function.
 
-### Naming Learners
+## Naming Learners
 
 Recall that our `Stack` from the example above had long names. 
 
@@ -1375,7 +1375,7 @@ stack_pretty_names <- Stack$new(learners_pretty_names)
 stack_pretty_names
 ```
 
-### Defining Learners over Grid of Tuning Parameters
+## Defining Learners over Grid of Tuning Parameters
 
 Customized learners can be created over a grid of tuning parameters. For 
 highly data-adaptive learners that require careful tuning, it is oftentimes 
@@ -1395,7 +1395,7 @@ require the user to have specialized knowledge of an algorithm (although some
 understanding is still helpful); it uses the `caret` software to automatically 
 select an "optimal" set of tuning parameters over a grid of them.
 
-#### Do-it-yourself grid
+### Do-it-yourself grid
 
 Below, we show how we can create several variations of an XGBoost learner, 
 `Lrnr_xgboost`, by hand. This example is just for demonstrative purposes; users 
@@ -1429,7 +1429,7 @@ names(xgb_learners) <- c(
 )
 ```
 
-#### Automatic grid and selection with `caret`
+### Automatic grid and selection with `caret`
 
 We can use the `Lrnr_caret` to use the `caret` software. As described in the 
 `Lrnr_caret` documentation, `Lrnr_caret` "uses the `caret` package's `train`
@@ -1441,7 +1441,7 @@ learner "NNET_autotune".
 lrnr_nnet_autotune <- Lrnr_caret$new(method = "nnet", name = "NNET_autotune")
 ```
 
-### Learners with Interactions and `formula` Interface
+## Learners with Interactions and `formula` Interface
 
 As described in in @rvp2022super, if it’s known/possible that there are 
 interactions among covariates then we can include learners that pick up on that 
@@ -1466,7 +1466,7 @@ As we can see from above, the general behavior of `formula`in R applies in
 this syntax (e.g,. in RStudio, type "?formula" in the Console and information 
 will appear in the Help tab).
 
-### Covariate Screening
+## Covariate Screening
 
 One characteristic of a rich library of learners is that it is effective at 
 handling covariates of high dimension. When there are many covariates in the
@@ -1498,7 +1498,7 @@ we need to create a `Pipeline`. A `Pipeline` is a set of learners
 to be fit sequentially, where the fit from one learner is used to define the
 task for the next learner.
 
-#### Variable importance-based screeners
+### Variable importance-based screeners
 
 Variable importance-based screeners retain the top $j$ most important covariates 
 according to some importance metric. This screener is provided by 
@@ -1537,7 +1537,7 @@ learner in it is fit to the screener-selected, reduced set of ten covariates.
 RFscreen_top10_stack <- Pipeline$new(RFscreen_top10, stack)
 ```
 
-#### Coefficient threshold-based screeners
+### Coefficient threshold-based screeners
 
 `Lrnr_screener_coefs` provides screening of covariates based on the magnitude 
 of their estimated coefficients in a (possibly regularized) GLM. The 
@@ -1566,7 +1566,7 @@ learner in it is fit to the lasso screener-selected, reduced set of covariates.
 lasso_screen_stack <- Pipeline$new(lasso_screen, stack)
 ```
 
-#### Correlation-based screeners
+### Correlation-based screeners
 
 `Lrnr_screener_correlation` provides covariate screening procedures by 
 running a test of correlation (Pearson default), and then selecting the (1) top 
@@ -1592,7 +1592,7 @@ corP_screen <- Lrnr_screener_correlation$new(
 corP_screen_stack <- Pipeline$new(corP_screen, stack)
 ```
 
-#### Augmented screeners
+### Augmented screeners
 
 Augmented screeners are special in that they enforce certain covariates to 
 always be included. That is, if a screener removes a "mandatory" covariate then 
@@ -1614,7 +1614,7 @@ corRank_screen_augmented_glm <- Pipeline$new(corRank_screen_augmented, lrn_glm)
 `Lrnr_screener_augment` is useful when subject-matter experts feel strongly 
 that certain covariate sets must be included, even under screening procedures. 
 
-#### `Stack` with range of screeners
+### `Stack` with range of screeners
 
 Above, we mentioned that we'd like to consider a range of screeners to 
 diversify the library. Here we show how we can create a new `Stack` from other 
@@ -1633,9 +1633,9 @@ learners coupled with various screeners.
 <!--
 #### Defining Novel Performance Metrics with `ROCR`
 -->
-## Advanced `sl3` Functionality {#sl3-advanced}
+## Advanced `sl3` Functionality: {-}
 
-### Variable Importance Measures
+## Variable Importance Measures
 
 Variable importance can be interesting and informative. It can also be
 contradictory and confusing. Nevertheless, our collaborators tend to like it, 
@@ -1708,7 +1708,7 @@ the fitted SL's (`sl_fit`) most important variables for predicting
 weight-for-height z-score (`whz`) are child age (`aged`) and household assets 
 (`assets`) that reflect the socio-economic status of the study's subjects.
 
-### Conditional Density Estimation
+## Conditional Density Estimation
 
 In certain scenarios it may be useful to estimate the conditional density of a 
 dependent variable, given predictors/covariates that precede it. In the
@@ -1899,11 +1899,11 @@ haldensify_lrnr <- Lrnr_haldensify$new(
 
 <!--
 
-### Time series forecasting
+## Time series forecasting
 
-### Categorical outcome prediction
+## Categorical outcome prediction
 
-### Multivariate outcome prediction
+## Multivariate outcome prediction
 
 -->
 
