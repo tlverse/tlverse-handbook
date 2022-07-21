@@ -37,10 +37,10 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt install -y curl libcurl4-doc libcurl4-openssl-dev libmagick++-dev libpoppler-cpp-dev texlive-extra-utils ghostscript
-      
+
       - name: Install rmarkdown, bookdown and sysfonts
         run: Rscript -e 'install.packages(c("sysfonts","rmarkdown","bookdown"))'
-      
+
       - name: Cache R packages
         uses: actions/cache@v2
         with:
@@ -67,11 +67,11 @@ jobs:
           Rscript -e 'bookdown::clean_book(TRUE)'
           Rscript -e 'bookdown::render_book("index.Rmd", quiet = TRUE)'
 
-      #- name: Render book PDF
-        #run: |
-          #Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::pdf_book")'
+      - name: Render book PDF
+        run: |
+          Rscript -e 'bookdown::render_book("index.Rmd", "bookdown::pdf_book")'
 
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: _handbook
           path: _handbook/
