@@ -1,12 +1,12 @@
-# (PART) Preliminaries 
+# (PART) Part 1: Preliminaries {-}
 
-# About the `tlverse`
+# About the `tlverse` {#tlverse}
 
 Updated: `r Sys.Date()`
 
 ## What is the `tlverse`?
 
-The `tlverse` is a new framework for doing Targeted Learning in `R`, inspired by
+The `tlverse` is a new framework for Targeted Learning in `R`, inspired by
 the [`tidyverse` ecosystem](https://tidyverse.org) of `R` packages.
 
 By analogy to the [`tidyverse`](https://tidyverse.org/):
@@ -17,25 +17,29 @@ By analogy to the [`tidyverse`](https://tidyverse.org/):
 
 So, the [`tlverse`](https://tlverse.org) is
 
-* an opinionated collection of `R` packages for Targeted Learning
-* sharing an underlying philosophy, grammar, and set of data structures
+> An opinionated collection of `R` packages for Targeted Learning sharing an
+> underlying design philosophy, grammar, and core set of data structures. The
+> `tlverse` aims to provide tools both for building Targeted Learning-based
+> data analyses and for implementing novel, state-of-the-art Targeted Learning
+> methods.
 
 ## Anatomy of the `tlverse`
 
 All Targeted Learning methods are targeted maximum likelihood (or minimum
-loss-based) estimators (TMLEs). The construction of any Targeted Learning
+loss-based) estimators (i.e., TMLEs). The construction of any Targeted Learning
 estimator proceeds through a two-stage process:
 
 1. Flexibly learning particular components of the data-generating distribution
-   through machine learning (e.g., Super Learning), resulting in _initial
+   often through machine learning (e.g., Super Learning), resulting in _initial
    estimates_ of nuisance parameters.
-2. Use of a parametric model-based update via maximum likelihood estimation
-   (i.e., MLE), incorporating the initial estimates produced by the prior step.
+2. Use of a carefully constructed parametric model-based update, via maximum
+   likelihood estimation (i.e., MLE), incorporating the initial estimates
+   produced by the prior step to produce a TML estimator.
 
-The packages making up the core components of the `tlverse` software ecosystem,
-`sl3` and `tmle3`, address the above two goals, respectively. Together, the very
+The packages making up the core components of the `tlverse` software ecosystem
+-- `sl3` and `tmle3` -- address the above two goals, respectively. Together, the
 general functionality exposed by both allows one to build specific TMLEs
-tailored exactly to a particular estimation problem.
+tailored exactly to a particular statistical estimation problem.
 
 The software packages that make up the **core** of the `tlverse` are
 
@@ -63,8 +67,8 @@ are a few supporting packages that play important roles in the **background**:
   * _What?_ A generalized framework for flexible cross-validation.
   * _Why?_ Cross-validation is a key part of ensuring error estimates are honest
     and in preventing overfitting. It is an essential part of both the Super
-    Learner ensemble modeling algorithm and in the construction of Targeted
-    Learning estimators.
+    Learner ensemble modeling algorithm and in the construction of TML
+    estimators.
 
 * [`delayed`](https://github.com/tlverse/delayed): Parallelization Framework for
    Dependent Tasks
@@ -74,11 +78,11 @@ are a few supporting packages that play important roles in the **background**:
     computationally intensive algorithms at large scale.
 
 A key principle of the `tlverse` is extensibility. That is, the software
-ecosystem aims to support the development of new Targeted Learning estimators as
-they are reaching maturity. To achieve this degree of flexibility, we follow the
+ecosystem aims to support the development of novel Targeted Learning estimators
+as they reach maturity. To achieve this degree of flexibility, we follow the
 model of implementing new classes of estimators, for distinct causal inference
-problems in separate packages, all of which use the core machinery provided by
-the `sl3` and `tmle3`. There are currently three examples:
+problems in separate packages, all of which rely upon the core machinery
+provided by `sl3` and `tmle3`. There are currently three examples:
 
 * [`tmle3mopttx`](https://github.com/tlverse/tmle3mopttx): Optimal Treatments
   in the `tlverse`
@@ -88,8 +92,9 @@ the `sl3` and `tmle3`. There are currently three examples:
     appropriate.
 
 * [`tmle3shift`](https://github.com/tlverse/tmle3shift): Stochastic Shift
-  Interventions in the `tlverse`
-  * _What?_ Stochastic shift interventions for continuous-valued treatments.
+  Interventions based on Modified Treatment Policies in the `tlverse`
+  * _What?_ Stochastic shift interventions for evaluating changes in
+    continuous-valued treatments.
   * _Why?_ Not all treatment variables are binary or categorical. Estimating the
     total effects of intervening on continuous-valued treatments provides a way
     to probe how an effect changes with shifts in the treatment variable.
@@ -101,13 +106,14 @@ the `sl3` and `tmle3`. There are currently three examples:
   * _Why?_ Evaluating the total effect of a treatment does not provide
     information about the pathways through which it may operate. When mediating
     variables have been collected, one can instead evaluate direct and indirect
-effect parameters that speak to the _action mechanism_ of the treatment.
+    effect parameters that speak to the _action mechanism_ of the treatment.
 
 ## Primer on the `R6` Class System
 
-The `tlverse` is designed using basic OOP principles and the `R6` OOP framework.
-While we've tried to make it easy to use the `tlverse` packages without worrying
-much about OOP, it is helpful to have some intuition about how the `tlverse` is
+The `tlverse` is designed using basic object oriented programming (OOP)
+principles and the [`R6` OOP framework](https://adv-r.hadley.nz/r6.html). While
+we've tried to make it easy to use the `tlverse` packages without worrying much
+about OOP, it is helpful to have some intuition about how the `tlverse` is
 structured. Here, we briefly outline some key concepts from OOP. Readers
 familiar with OOP basics are invited to skip this section.
 
@@ -151,7 +157,7 @@ be modified by reference.
 
 # Software setup
 
-## Setting up `R` and RStudio 
+## Setting up `R` and RStudio
 
 **`R`** and **RStudio** are separate downloads and installations. `R` is the
 underlying statistical computing environment. RStudio is a graphical integrated
