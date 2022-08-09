@@ -1,10 +1,8 @@
-# (PART) Foundations {-}
+# (PART) Part 2: Foundations {-}
 
-# Roadmap for Learning from Data {#roadmap}
+# A Roadmap for Learning from Data {#roadmap}
 
 _Nima Hejazi_ and _Rachael Phillips_
-
-Updated: 2022-07-21
 
 :::: {.infobox .tlverse data-latex=""}
 :::{.center data-latex=""}

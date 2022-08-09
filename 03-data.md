@@ -2,9 +2,9 @@
 
 ## WASH Benefits Bangladesh Study {#wash}
 
-The example data come from a study of the effect of water quality, sanitation, 
-hand washing, and nutritional interventions on child development in rural 
-Bangladesh (WASH Benefits Bangladesh): a cluster randomized controlled trial
+The example data come from a study of the effect of water quality, sanitation,
+hand washing, and nutritional interventions on child development in rural
+Bangladesh (WASH Benefits Bangladesh), a cluster randomized controlled trial
 [@luby2018effect]. The study enrolled pregnant women in their first or second
 trimester from the rural villages of Gazipur, Kishoreganj, Mymensingh, and
 Tangail districts of central Bangladesh, with an average of eight women per
@@ -16,15 +16,15 @@ intervention or health promoter visit). The six intervention groups were:
 
 1. chlorinated drinking water;
 2. improved sanitation;
-3. hand-washing with soap;
-4. combined water, sanitation, and hand washing;
+3. handwashing with soap;
+4. combined water, sanitation, and handwashing;
 5. improved nutrition through counseling and provision of lipid-based nutrient
    supplements; and
 6. combined water, sanitation, handwashing, and nutrition.
 
 In the handbook, we concentrate on child growth (size for age) as the outcome of
-interest. For reference, this trial was registered with ClinicalTrials.gov as
-NCT01590095.
+interest. For reference, this trial was registered with ClinicalTrials.gov under
+registration number NCT01590095.
 
 
 ```r
@@ -37,19 +37,20 @@ dat <- read_csv(
   )
 )
 ```
-For the purposes of this handbook, we start by treating the data as independent
-and identically distributed (i.i.d.) random draws from a very large target
-population. We could, with available options, account for the clustering of the
-data (within sampled geographic units), but, for simplification, we avoid these
-details in the handbook, although modifications of our methodology for biased
-samples, repeated measures, and related complications, are available.
+For instructional purposes, we start by treating the data as independent and
+identically distributed (i.i.d.) random draws from a large target population. We
+could account for the clustering of the data (within sampled geographic units),
+but, we avoid these details in this handbook for the sake of clarity of
+illustration.  Modifications of TL methodology for biased samples, repeated
+measures, and related complications, are readily available.
 
 We have 28 variables measured, of which a single variable is set to
 be the outcome of interest. This outcome, $Y$, is the weight-for-height Z-score
 (`whz` in `dat`); the treatment of interest, $A$, is the randomized treatment
-group (`tr` in `dat`); and the adjustment set, $W$, consists simply of
-*everything else*. This results in our observed data structure being $n$ i.i.d.
-copies of $O_i = (W_i, A_i, Y_i)$, for $i = 1, \ldots, n$.
+group (`tr` in `dat`); and the adjustment set (potential baseline confounders),
+$W$, consists simply of *everything else*. This results in our observed data
+structure being $n$ i.i.d.  copies of $O_i = (W_i, A_i, Y_i)$, for $i = 1,
+\ldots, n$.
 
 Using the [`skimr` package](https://CRAN.R-project.org/package=skimr), we can
 quickly summarize the variables measured in the WASH Benefits data set:
@@ -108,8 +109,8 @@ Table: (\#tab:skim_washb_data)Data summary
 |asset_moto     |         0|          1.00|   0.07|  0.25|   0.00|   0.00|   0.0|   0.00|   1.00|▇▁▁▁▁ |
 |asset_sewmach  |         0|          1.00|   0.06|  0.25|   0.00|   0.00|   0.0|   0.00|   1.00|▇▁▁▁▁ |
 |asset_mobile   |         0|          1.00|   0.86|  0.35|   0.00|   1.00|   1.0|   1.00|   1.00|▁▁▁▁▇ |
-A convenient summary of the relevant variables is given just above, complete
-with a small visualization describing the marginal characteristics of each
-covariate. Note that the *asset* variables reflect socio-economic status of the
+A convenient summary of the relevant variables appears above, complete with a
+sparkline visualizations describing the marginal characteristics of each
+covariate. Note that the *asset* variables reflect socioeconomic status of the
 study participants. Notice also the uniform distribution of the treatment groups
-(with twice as many controls); this is, of course, by design.
+(with twice as many controls) -- this is, of course, by design.
