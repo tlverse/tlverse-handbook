@@ -97,13 +97,13 @@ as an introductory modern reference.
 
 ### Mark van der Laan {-}
 
-Mark van der Laan, PhD, is Professor of Biostatistics and Statistics at UC
-Berkeley and co-director of UC Berkeley's [Center for Targeted Machine Learning
-and Causal Inference](https://ctml.berkeley.edu/). His research interests
-include statistical methods in computational biology, survival analysis,
-censored data, adaptive designs, targeted maximum likelihood estimation, causal
-inference, data-adaptive loss-based learning, and multiple testing. His research
-group developed loss-based super learning in semiparametric models, based on
+Mark van der Laan is Professor of Biostatistics and of Statistics at UC Berkeley
+and co-director of UC Berkeley's [Center for Targeted Machine Learning and
+Causal Inference](https://ctml.berkeley.edu/). His research interests include
+statistical methods in computational biology, survival analysis, censored data,
+adaptive designs, targeted maximum likelihood estimation, causal inference,
+data-adaptive loss-based learning, and multiple testing. His research group
+developed loss-based super learning in semiparametric models, based on
 cross-validation, as a generic optimal tool for the estimation of
 infinite-dimensional parameters, such as nonparametric density estimation and
 prediction with both censored and uncensored data. Building on this work, his
@@ -124,19 +124,19 @@ of Alan Hubbard.
 
 ### Nima Hejazi {-}
 
-[Nima Hejazi](https://nimahejazi.org), PhD, is an Assistant Professor of
-Biostatistics at the [Harvard Chan School of Public
+[Nima Hejazi](https://nimahejazi.org) is Assistant Professor of Biostatistics at
+the [Harvard T.H. Chan School of Public
 Health](https://www.hsph.harvard.edu/biostatistics/). He obtained his PhD in
-Biostatistics at UC Berkeley working with Mark van der Laan and Alan Hubbard and
-afterwards held an NSF Mathematical Sciences Postdoctoral Research Fellowship.
-Nima's research interests blend causal inference, machine learning,
-non/semi-parametric inference, and computational statistics, with areas of
-recent emphasis including causal mediation analysis, biased sampling designs,
-and sieve estimation with machine learning. His methodological work is motivated
-by scientific collaborations in clinical trials (especially vaccine efficacy
-trials), infectious disease epidemiology, and computational biology. Nima is
-also passionate about statistical computing and open source software design for
-statistical data science.
+Biostatistics at UC Berkeley working with Mark van der Laan and Alan Hubbard,
+and afterwards held an NSF Mathematical Sciences Postdoctoral Research
+Fellowship. Nima's major research interests blend causal inference, machine
+learning, non/semi-parametric inference, and computational statistics; areas of
+recent emphasis have included nonparametric causal mediation analysis, efficient
+estimation under biased sampling designs, and sieve estimation with machine
+learning. His methodological work is motivated principally by scientific
+collaborations in clinical trials, infectious disease epidemiology, and
+computational biology. Nima is also passionate about statistical computing and
+open source software design for statistical data science.
 
 ### Ivana Malenica {-}
 
@@ -166,9 +166,9 @@ and reproducibility; and open-source software.
 
 ### Alan Hubbard {-}
 
-Alan Hubbard, PhD, is Professor of Biostatistics at UC Berkeley, current chair
-of the Division of Biostatistics of the UC Berkeley School of Public Health,
-head of the data analytics core of UC Berkeley's SuperFund research program, and
+Alan Hubbard is Professor of Biostatistics at UC Berkeley, current chair of the
+Division of Biostatistics of the UC Berkeley School of Public Health, head of
+the data analytics core of UC Berkeley's SuperFund research program, and
 co-director of UC Berkeley's [Center for Targeted Machine Learning and Causal
 Inference](https://ctml.berkeley.edu/). His current research interests include
 causal inference, variable importance analysis, statistical machine learning,
