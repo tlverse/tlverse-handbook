@@ -295,7 +295,8 @@ user (you'll need a GitHub user account). Follow these two steps:
 
   
   ```r
-  GITHUB_PAT <- yourPAT
+  GITHUB_PAT=yourPAT
+  
   ```
 
 8. Restart R. You can restart `R` via the drop-down menu on RStudio's "Session"
