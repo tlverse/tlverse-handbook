@@ -153,7 +153,7 @@ classes (and also most like OOP focused languages like C++ and Java), including
 having method definitions be part of class definitions, and allowing objects to
 be modified by reference.
 
-# Software setup
+# Software Setup {#setup}
 
 ## Setting up `R` and RStudio
 
