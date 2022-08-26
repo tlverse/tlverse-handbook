@@ -239,61 +239,69 @@ example, a standard $(1 - \alpha)$ CI takes the form
   \Psi(P_n) \pm Z_{1 - \frac{\alpha}{2}} \hat{\sigma_{IC}} / \sqrt{n} \ ,
 \end{equation*}
 where $Z_{1 - \frac{\alpha}{2}}$ is the $(1 - \frac{\alpha}{2})^\text{th}$
-quantile of the standard Normal distribution.  Often, we will be interested in
-constructing 95% confidence intervals (corresponding to mass $\alpha/2 = 0.025$
-in each tail of the limit distribution); thus, we will typically take $Z_{1 -
-\frac{\alpha}{2}} \approx 1.96$.
+quantile of the standard Normal distribution. Following convention, we will
+often be interested in constructing 95% confidence intervals (corresponding to
+probability mass $\alpha/2 = 0.025$ in each tail of the limit distribution);
+thus, we will take $Z_{1 - \frac{\alpha}{2}} \approx 1.96$ as the quantile.
 
 ## Summary of the Roadmap {#roadmap-summary}
 
-Data collected across $n$ i.i.d. units, $O_1, \ldots, O_n$, can be viewed as a
-collection of random variables, $O$, all arising from the same probability
-distribution $\P_0$. This collection of data may be expressed $O_1, \ldots, O_n
-\sim P_0$, where we leverage statistical knowledge available about the
-experiment that generated the data.  to support the statement that the true data
-distribution $P_0$ falls in a statistical model, $\M$, which is itself a
-collection of candidate probability distributions reflecting the data-generating
-experiment. Often these sets -- that is, the statistical model $\M$ -- must be
-very large, to appropriately reflect the fact that statistical knowledge is very
-limited. Hence, these _realistic_ statistical models are often termed _semi-_ or
-_non-parametric_, since they are too large to be indexed by a finite-dimensional
-set of parameters.  Necessarily, our statistical query must begin with, "What
-are we trying to learn from the data?", a question whose answer is captured by
-the statistical target parameter, $\Psi$, which maps the true data-generating
-distribution $P_0$ into the statistical estimand, $\Psi(P_0)$. At this point the
-statistical estimation problem is formally defined, allowing for the use of
-statistical theory to guide the construction of optimal estimators.
+Data collected across $n$ i.i.d. units, $O_1, \ldots, O_n$, may be viewed as a
+collection of random variables, $O$, with all copies of $O$ arising from the
+same underlying probability distribution $\P_0$. This is expressed by denoting
+the collection of data as being generated as $O_1, \ldots, O_n \sim P_0$. We
+leverage statistical knowledge available about the experiment generating the
+data to limit the statistical model, $\M$, in a realistic manner, so that the
+true data-generating distribution, $P_0$, is contained within $\M$, which is
+itself a collection of candidate probability distributions respecting the
+data-generating experiment. Often, these models -- that is, the statistical
+model $\M$ -- must be very large to appropriately reflect the fact that
+statistical knowledge is very limited. Hence, these _realistic_ statistical
+models are often termed _semi-_ or _non-parametric_, since they are too large to
+be indexed by a finite-dimensional set of parameters. Necessarily, our
+statistical query must begin with, "What are we trying to learn from the data?",
+a question whose answer is captured by the statistical target parameter, $\Psi$,
+which maps the true data-generating distribution $P_0$ into the statistical
+estimand, $\Psi(P_0)$. At this stage, the statistical estimation problem is
+formally defined, allowing for the use of statistical theory to guide the
+construction of optimal estimators.
 
 ## Causal Target Parameters {#causal}
 
 In many cases, we are interested in problems that ask questions regarding the
-_causal_ effect of an intervention on a future outcome of interest. These causal
-effects may be defined as summaries of the population of interest (e.g., the
-population mean of a particular outcome) under different conditions (e.g.,
-treated versus untreated). For example, a causal effect could be defined as the
-difference in the means of a disease outcome between _causal contrasts_ in which
-the population were to experience low pollution levels (for some pollutant) and
-the mean in the same population in the case that high pollution levels were
-experienced. There are different ways of operationalizing the theoretical
-experiments that generate the counterfactual data necessary for describing our
-causal contrasts of interest, including simply assuming that the counterfactual
-outcomes exist in theory for all treatment contrasts of interest
-[@neyman1938contribution; @rubin2005causal; @imbens2015causal] or through
-considering interventions on directed acyclic graphs (DAGs) or nonparametric
-structural equation models (NPSEMs) [@pearl1995causal; @pearl2009causality],
-both of which encode the known or hypothesized set of relationships between
-variables in the system under study.
+_causal effect_ of an intervention -- whether an assigned treatment (e.g., a
+prescribed drug) or a "naturally occurring" exposure (e.g., pollution from
+a nearby factory) -- on a future outcome of interest. These causal
+effects may be defined as summaries of the population of interest (such as the
+population mean of a particular outcome) under differing contrasts (comparing
+the treated to the untreated condition). For example, a causal effect could be
+defined as the mean difference (in the rate) of a disease outcome between two
+_causal contrasts_, counterfactual cases in which the study population were set
+to uniformly experience low pollution levels (for some pollutant) and in which
+the same population were set to uniformly experience high pollution levels.
+
+There are different ways of operationalizing the theoretical experiments that
+generate the counterfactual data necessary for describing such causal contrasts
+of interest, including simply assuming that the counterfactual outcomes exist in
+theory for all treatment contrasts of interest [@neyman1938contribution;
+@rubin2005causal; @imbens2015causal], which may be encoded in so-called "science
+tables", or through considering interventions on structural causal models (SCMs)
+[@pearl1995causal; @pearl2009causality], which may be represented by directed
+acyclic graphs (DAGs). Both frameworks allow for the known or  hypothesized set
+of relationships between variables in the system under study to be encoded and
+mathematically formalized.
 
 ### The Causal Model {-}
 
-We focus on the use of DAGs and NPSEMs for the description of causal parameters.
-Estimators of statistical parameters that correspond, under standard but
-untestable _identifiability_ assumptions, to these causal parameters are
-introduced below.  DAGs are a particularly useful tool for expressing what we
-know about the causal relations among variables in the system under study.
-Ignoring exogenous $U$ terms (explained below), we assume the following ordering
-of the variables in the observed data $O$. We demonstrate the construction of a
-DAG below using `DAGitty` [@textor2011dagitty]:
+Throughout, we will focus on the use of DAGs and SCMs for the description of
+causal parameters.  Estimators of statistical parameters that correspond, under
+standard but untestable _identifiability_ assumptions, to these causal
+parameters are introduced below. DAGs are a particularly useful tool for
+visually expressing what we know about the causal relations among variables in
+the system under study.  Ignoring exogenous $U$ terms (explained below), we
+assume the following ordering of the variables that compose the observed data
+$O$. We demonstrate the construction of a DAG below using `DAGitty`
+[@textor2011dagitty]:
 
 ```{r simple-DAG, out.width = "60%"}
 library(dagitty)
@@ -317,21 +325,22 @@ ggdag(tidy_dag) +
   theme_dag()
 ```
 
-While DAGs like the above provide a convenient means by which to visualize
-causal relations between variables, the same causal relations among variables
-can be equivalently represented by an NPSEM:
+While DAGs like the above provide a convenient means by which to express the
+causal relations between variables, these same causal relations can be
+equivalently represented by an SCM:
 \begin{align*}
   W &= f_W(U_W) \\
   A &= f_A(W, U_A) \\
   Y &= f_Y(W, A, U_Y),
 \end{align*}
-where the $f$'s are unspecified (non-parametric) functions that generate the
-corresponding random variable as a function of the variable's parents (i.e.,
-nodes with arrows into the variable) in the DAG and the unobserved, exogenous
-error terms (i.e., the $U$'s). An NPSEM may be thought of as a representation
-of the algorithm that produces the data, $O$, in the population of interest.
-Much of statistics and data science is devoted to discovering properties of this
-system of equations (e.g., estimation of the prediction function $f_Y$).
+where the $f$'s are unspecified deterministic functions that generate the
+corresponding random variables as a function of the variable's "parents" (i.e.,
+upstream nodes with arrows into the given random variable) in the DAG, and the
+unobserved, exogenous error terms (i.e., the $U$'s). An SCM may be thought of as
+a representation of the algorithm that produces the data, $O$, in the population
+of interest.  Much of statistics and data science is devoted to discovering
+properties of this system of equations (e.g., estimation of the functional form
+$f_Y$ governing the outcome variable $Y$).
 
 <!--
 where $U_W$, $U_A$, and $U_Y$ represent the unmeasured exogenous background
@@ -348,58 +357,70 @@ so may be used interchangeably.
 The first hypothetical experiment we will consider is assigning exposure to the
 entire population and observing the outcome, and then withholding exposure to
 the same population and observing the outcome. This corresponds to a comparison
-of the outcome distribution in the population under two interventions:
+of the outcome distribution in the population under two distinct interventions:
 
 1. $A$ is set to $1$ for all individuals, and
 2. $A$ is set to $0$ for all individuals.
 
-These interventions imply two new sets of nonparametric structural equations
-For the case $A = 1$, we have
+These interventions may be thought of as surgical operations that imply changes
+to the structural equations in the system under study. For the case $A = 1$, we
+have
 \begin{align*}
   W &= f_W(U_W) \\
   A &= 1 \\
-  Y(1) &= f_Y(W, 1, U_Y),
+  Y(1) &= f_Y(W, 1, U_Y) \ ,
 \end{align*}
 while, for the case $A=0$,
 \begin{align*}
   W &= f_W(U_W) \\
   A &= 0 \\
-  Y(0) &= f_Y(W, 0, U_Y).
+  Y(0) &= f_Y(W, 0, U_Y) \ .
 \end{align*}
 
-In these equations, $A$ is no longer a function of $W$ because of the
-intervention on the system that set $A$ deterministically to either of the
-values $1$ or $0$. The new symbols $Y(1)$ and $Y(0)$ indicate the outcome
-variable in the population of interest when it is generated by the respective
-NPSEMs above; these are often called _counterfactuals_. The difference between
-the means of the outcome under these two interventions defines a parameter that
-is often called the "average treatment effect" (ATE), denoted
+In these equations, $A$ is no longer a function of $W$ because the intervention
+on the system removed $f_W$ as a parent of $f_A$, setting $A$ deterministically
+to one of the values $1$ or $0$ consistent with the intervention performed.  The
+new symbols $Y(1)$ and $Y(0)$ indicate the values the outcome variable would
+take in the population of interest when it is generated by removing the
+contribution of $A$ to $f_Y$ and instead setting $A$ to the values $1$ and $0$,
+respectively. The variables $Y(1)$ and $Y(0)$ are often called counterfactuals
+(since they arise from interventions that run contrary to fact) and are, in
+other frameworks, called the _potential outcomes_ of $Y$
+[@neyman1938contribution; rubin2005causal; imbens2015causal].  The difference in
+the counterfactual means of the outcome under these two interventions defines a
+well known causal parameter that is most often called the "average treatment
+effect" (ATE) and is denoted
 
 \begin{equation}
   ATE = \E_X(Y(1) - Y(0)),
   (\#eq:ate)
 \end{equation}
-where $\E_X$ is the mean under the theoretical (unobserved) full data $X = (W,
-Y(1), Y(0))$.
+where $\E_X$ is the mean under the theoretical (unobservable) complete data $X
+= (W, Y(1), Y(0))$. Note that the complete data structure $X$ is, by its very
+definition, unobservable since one can never observe both of $Y(1)$ and $Y(0)$
+for the same observational unit.
 
-Note, we can define much more complicated interventions on NPSEM's, such as
-interventions based upon rules (themselves based upon covariates), stochastic
-rules, etc. and each results in a different targeted parameter and entails
-different identifiability assumptions discussed below.
+Note, we can define much more complicated interventions on SCMs, such as
+interventions based upon dynamic rules (which assign particular interventions
+based on the covariates $W$), stochastic rules (which can even account for the
+natural value of $A$, observed in the absence of the intervention), and much
+more.  Each results in a different target parameter and entails different
+identifiability assumptions discussed below.
 
 ### Identifiability {-}
 
-Because we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
+Since we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
 and $Y(1)$ (similarly, the counterfactual outcome when $A=1$), we cannot
-estimate the quantity in Equation \@ref(eq:ate) directly. Thus, the primary task
-of causal inference methods in our context is to _identify_ the assumptions
+estimate the quantity in Equation \@ref(eq:ate) directly. This is called the
+_Fundamental Problem of Causal Inference_ [@holland1986statistics]. Thus, one of
+the primary activities in causal inference is to _identify_ the assumptions
 necessary to express causal quantities of interest as functions of the
-data-generating distribution. We have to make assumptions under which this
-quantity may be estimated from the observed data $O \sim P_0$ under the
-data-generating distribution $P_0$. Fortunately, given the causal model
-specified in the NPSEM above, we can, with a handful of untestable assumptions,
-estimate the ATE from observational data. These assumptions may be summarized as
-follows.
+data-generating distribution of the observed data. To do this, we must make
+assumptions under which such quantities may be estimated from the observed data
+$O \sim P_0$ and its corresponding data-generating distribution $P_0$.
+Fortunately, given the causal model specified in the SCM above, we can, with a
+handful of untestable assumptions, estimate the ATE from observational data.
+These assumptions may be summarized as follows.
 
 ::: {#consist-ass .definition name="Consistency"}
 The outcome for unit $i$ is $Y_i(a)$ whenever $A_i = a$, which may be thought of
@@ -426,13 +447,14 @@ All observed units, across strata defined by $W$, must have a bounded
 \mid W) < 1$ for all $a$ and $W$).
 :::
 
-<!--
-NH: we should note that consistency is an implied property of the SCM framework
-(not so in PO framework) and that no interference is captured in the DAG we
-present (but must be explicitly stated in PO).
--->
+Technically speaking, only the latter two of these assumptions are necessary
+when working within the SCM framework, as the first two are implied properties
+of an SCM for i.i.d. data (if you're really curious, see this commentary of
+@pearl2010brief for an extended philosophical discussion). We introduce all four
+identification assumptions because they are most often considered together, and
+all four are necessary when working within the potential outcomes framework.
 
-Given these assumptions, the ATE may be re-written as a function of $P_0$,
+Given these assumptions, the ATE may be re-written as a function of $P_0$ --
 specifically
 
 \begin{align}
@@ -441,13 +463,15 @@ specifically
                       \E_0[Y \mid A = 0, W]\right).
   (\#eq:estimand)
 \end{align}
-In words, the ATE is the difference in the predicted outcome values for each
-subject, under the contrast of treatment conditions ($A = 0$ versus $A = 1$),
-in the population, averaged over all observations. Thus, a parameter of a
-theoretical "full" data distribution can be represented as an estimand of the
-observed data distribution. Significantly, there is nothing about the
-representation in Equation \@ref(eq:estimand) that requires parameteric
-assumptions; thus, the regressions on the right hand side may be estimated.
-With different parameters, there will be potentially different identifiability
-assumptions and the resulting estimands can be functions of different components
-of $P_0$. We discuss several more complex estimands in later sections.
+In words, the ATE is the mean difference in the predicted outcome values for
+each subject, under the contrast of treatment conditions ($A = 0$ versus $A =
+1$), in the population (when averaged over all observations). Thus, a parameter
+of a theoretical complete (or "full") data distribution can be represented as an
+estimand of the observed data distribution. Significantly, there is nothing
+about the representation in Equation \@ref(eq:estimand) that requires
+parameteric assumptions; thus, the regression functions on the right hand side
+may be estimated without restrictive assumptions about their underlying
+functional forms.  With different parameters, there will be potentially
+different identifiability assumptions and the resulting estimands can be
+functions of different components of $P_0$. We discuss several more complex
+estimands in subsequent sections.
