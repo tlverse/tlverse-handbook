@@ -3,7 +3,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "August 10, 2022"
+date: "August 26, 2022"
 documentclass: krantz
 lof: yes
 fontsize: '12pt, krantz2'
@@ -128,10 +128,10 @@ of Alan Hubbard.
 the [Harvard T.H. Chan School of Public
 Health](https://www.hsph.harvard.edu/biostatistics/). He obtained his PhD in
 Biostatistics at UC Berkeley working with Mark van der Laan and Alan Hubbard,
-and afterwards held an NSF Mathematical Sciences Postdoctoral Research
-Fellowship. Nima's major research interests blend causal inference, machine
-learning, non/semi-parametric inference, and computational statistics; areas of
-recent emphasis have included nonparametric causal mediation analysis, efficient
+and held an NSF Mathematical Sciences Postdoctoral Research Fellowship
+afterwards. Nima's research interests blend causal inference, machine learning,
+non/semi-parametric inference, and computational statistics; areas of recent
+emphasis have included nonparametric causal mediation analysis, efficient
 estimation under biased sampling designs, and sieve estimation with machine
 learning. His methodological work is motivated principally by scientific
 collaborations in clinical trials, infectious disease epidemiology, and

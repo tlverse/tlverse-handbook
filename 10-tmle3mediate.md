@@ -650,9 +650,9 @@ washb_NDE <- tmle3(
 washb_NDE
 A tmle3_Fit that took 1 step(s)
    type                  param init_est tmle_est      se   lower upper
-1:  NDE NDE[Y_{A=1} - Y_{A=0}]  0.01493  0.01493 0.08573 -0.1531 0.183
+1:  NDE NDE[Y_{A=1} - Y_{A=0}]   0.0149   0.0149 0.08577 -0.1532 0.183
    psi_transformed lower_transformed upper_transformed
-1:         0.01493           -0.1531             0.183
+1:          0.0149           -0.1532             0.183
 ```
 
 From this, we can draw the conclusion that the direct effect of the treatment
