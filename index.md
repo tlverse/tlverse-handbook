@@ -3,7 +3,7 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "August 26, 2022"
+date: "September 10, 2022"
 documentclass: krantz
 lof: yes
 fontsize: '12pt, krantz2'
