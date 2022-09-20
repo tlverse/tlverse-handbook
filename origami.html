@@ -156,7 +156,7 @@ kept entirely separate such that the learning algorithms never encounter these
 observations until the final model evaluation step. One might wonder, with
 training data readily available, why not use the training error to evaluate the
 proposed algorithm’s performance? Unfortunately, the training error is a poor
-estimate (being optimistic) of the true risk; it consistently decreases with
+estimate of the true risk; it consistently decreases with
 model complexity, resulting in a possible overfitting to the training data and,
 accordingly, low generalizability to similar datasets.</p>
 <p>Since data are often scarce, separating a dataset into training, validation and
@@ -198,7 +198,7 @@ partitions of the dataset, the average risk (over the partitions of the data)
 can be computed without allowing data to leak between training and validation
 subsets. A variety of different partitioning schemes exist, each tailored to the
 salient details of the problem of interest, including data size, prevalence of
-the outcome, and dependence structure (between units). The <code>origami</code> package
+the outcome, and dependence structure (between units or across time). The <code>origami</code> package
 provides a suite of tools that generalize the application of cross-validation to
 arbitrary data analytic procedures. In the following, we describe different
 types of cross-validation schemes readily available in <code>origami</code>, introduce the
@@ -231,7 +231,7 @@ candidates and assess the overall performance of the resulting estimator.</p></l
 </ol>
 <p>Step 1 of the <a href="roadmap.html#roadmap">Estimation Roadmap</a> allows us to unify a broad range of
 problems that are traditionally treated separately in the statistical
-literature, including both density estimation and the prediction of
+literature — including density estimation and the prediction of
 polychotomous and/or continuous outcomes. For example, when we are interested in
 estimating the full joint conditional density, we may use the negative
 log-likelihood loss to select an asymptotically optimal density estimation
@@ -248,12 +248,13 @@ loss-based learning for corresponding censored data structures.</p>
 <span class="header-section-number">5.4</span> Example: Cross-validation and Prediction<a class="anchor" aria-label="anchor" href="#example-cross-validation-and-prediction"><i class="fas fa-link"></i></a>
 </h2>
 <p>Having introduced the <a href="roadmap.html#roadmap">Estimation Roadmap</a>, we can more precisely
-define our objective (requiring more mathematical notation), using prediction as
-an example. Let the observed data be defined as <span class="math inline">\(O = (W, Y)\)</span>, where a unit
-specific data structure can be written as <span class="math inline">\(O_i = (W_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. For each of the <span class="math inline">\(n\)</span> sampled units, we denote <span class="math inline">\(Y_i\)</span> as the outcome of
+define our objective using prediction as an example, but now requiring more mathematical notation.
+Let the observed data be defined as <span class="math inline">\(O = (W, Y)\)</span>, where a unit
+specific data structure can be written as <span class="math inline">\(O_i = (W_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.
+For each of the <span class="math inline">\(n\)</span> sampled units, we denote <span class="math inline">\(Y_i\)</span> as the outcome of
 interest (polychotomous or continuous), and <span class="math inline">\(W_i\)</span> as a <span class="math inline">\(p\)</span>-dimensional set of
-covariates. Let <span class="math inline">\(\psi_0(W)\)</span> denote the target parameter of interest (what we
-wish to estimate); for this example, we are interested in estimating the
+covariates. Let <span class="math inline">\(\psi_0(W)\)</span> denote the target parameter of interest, which is the quantity we
+wish to estimate; for this example, we are interested in estimating the
 conditional expectation of the outcome given the covariates, <span class="math inline">\(\psi_0(W) = \E(Y \mid W)\)</span>. Following the <a href="roadmap.html#roadmap">Estimation Roadmap</a>, we choose the
 appropriate loss function, <span class="math inline">\(L\)</span>, such that <span class="math inline">\(\psi_0(W) = \text{argmin}_{\psi} \E_0[L(O, \psi(W))]\)</span>. But, how do we know how well each of the candidate
 estimators of <span class="math inline">\(\psi\)</span> is doing? In order to pick the optimal estimator among the
@@ -263,7 +264,7 @@ validation set. Observations in the training set are used to fit (or train) the
 estimator, while those in validation set are used to assess the risk of (or
 validate) it.</p>
 <p>Next, we introduce notation flexible enough to represent any cross-validation
-scheme. Define a <strong>split vector</strong>, <span class="math inline">\(B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n\)</span> and Note that such a split vector is independent of the empirical
+scheme. In particular, we define a <strong>split vector</strong>, <span class="math inline">\(B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n\)</span>; note that such a split vector is independent of the empirical
 distribution <span class="math inline">\(P_n\)</span>. A realization of <span class="math inline">\(B_n\)</span> defines a random split of the data
 into training and validation subsets such that if</p>
 <p><span class="math display">\[B_n(i) = 0, \ \ \text{i sample is in the training set}\]</span>
@@ -290,7 +291,7 @@ maybe it gets annoying for time-series examples. just a thought...
 <span class="header-section-number">5.5</span> Cross-validation schemes in <code>origami</code><a class="anchor" aria-label="anchor" href="#cross-validation-schemes-in-origami"><i class="fas fa-link"></i></a>
 </h2>
 <p>Recall that the particular distribution of the split vector <span class="math inline">\(B_n\)</span> defines the
-choice of cross-validation scheme. We next describe the different
+choice of cross-validation scheme. In the following, we describe different
 cross-validation schemes available in the <code>origami</code> package, and we go on to
 demonstrate their use in practical data analysis examples.</p>
 <div id="wash-benefits-study-example" class="section level3 unnumbered">
@@ -1001,7 +1002,7 @@ variability of the random split as well – this is not desirable. For
 classification problems (with a binary or categorical outcome variable), there
 is an additional disadvantage: It is possible for the training and validation
 sets to end up with uneven distributions of the two (or more) outcome classes,
-leading to better training and poor validation, or vice-versa, though this may
+leading to better training and poor validation, or vice-versa — though this may
 be corrected by incorporating stratification into the cross-validation process.
 Finally, note that we are not using all of the data in training or in evaluating
 the performance of the proposed algorithm, which could itself introduce bias.</p>
@@ -1020,7 +1021,7 @@ sets; however, instead of partitioning the dataset into sets of similar size, a
 single observation is used as the validation set. In doing so, the vast majority
 of the sampled units are employed for fitting (or training) the candidate
 learning algorithm. Since only a single sampled unit (for example <span class="math inline">\(O_1 = (W_1, Y_1)\)</span>) is left out of the fitting process, leave-one-out cross-validation can
-result in a (possibly) less biased estimate of the risk. Typically, the
+result in a less biased estimate of the risk. Typically, the
 leave-one-out approach will not overestimate the risk as much as the holdout
 method does. On the other hand, since the estimate of risk is based on a single
 sampled unit, it is usually a highly variable estimate.</p>
@@ -1031,7 +1032,7 @@ cross-validation scheme may use <span class="math inline">\(O_2 = (W_2, Y_2)\)</
 before, <span class="math inline">\(O_1 = (W_1, Y_1)\)</span> played that role) while the remaining <span class="math inline">\(n-1\)</span> sampled
 units are included in the training set. Repeating this approach <span class="math inline">\(n\)</span> times
 results in <span class="math inline">\(n\)</span> risk estimates, for example, <span class="math inline">\(MSE_1, MSE_2, \ldots, MSE_n\)</span> (note
-that these are the mean squared error (MSE) estimates when unit <span class="math inline">\(i\)</span> is
+that these are the mean squared error (MSE) estimates when unit <span class="math inline">\(i\)</span> is the
 validation set). The estimate of the true risk is then the average over the <span class="math inline">\(n\)</span>
 leave-one-out risk estimates. While the leave-one-out cross-validation scheme
 results in a less biased (albeit, more variable) estimate of risk than the
