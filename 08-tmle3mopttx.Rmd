@@ -533,7 +533,7 @@ g_learner <- Lrnr_sl$new(
 
 ## Define the B learner:
 b_learner <- Lrnr_sl$new(
-  learners = list(lrn_lasso,lrn_mean, lrn_glm),
+  learners = list(lrn_lasso, lrn_mean, lrn_glm),
   metalearner = Lrnr_nnls$new()
 )
 ```
@@ -889,9 +889,9 @@ to missingness in $Y$. Let's start by add some missingness to our outcome, first
 ```{r data_nodes-add-missigness-mopttx}
 data_missing <- data_cat_realistic
 
-#Add some random missingless:
+# Add some random missingless:
 rr <- sample(nrow(data_missing), 100, replace = FALSE)
-data_missing[rr,"Y"]<-NA
+data_missing[rr, "Y"] <- NA
 
 summary(data_missing$Y)
 ```
@@ -906,7 +906,7 @@ delta_learner <- Lrnr_sl$new(
 )
 
 # specify outcome and treatment regressions and create learner list
-learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner, delta_Y=delta_learner)
+learner_list <- list(Y = Q_learner, A = g_learner, B = b_learner, delta_Y = delta_learner)
 ```
 
 The `learner_list` object above specifies the role that each of the ensemble
@@ -986,7 +986,7 @@ the data-generating distribution [described previously](#oit-eval):
 
 ```{r data_vim-nodes-mopttx}
 # bin baseline covariates to 3 categories:
-data$W1<-ifelse(data$W1<quantile(data$W1)[2],1,ifelse(data$W1<quantile(data$W1)[3],2,3))
+data$W1 <- ifelse(data$W1 < quantile(data$W1)[2], 1, ifelse(data$W1 < quantile(data$W1)[3], 2, 3))
 
 node_list <- list(
   W = c("W3", "W4", "W2"),
@@ -1036,7 +1036,7 @@ effect).
 ```{r mopttx_spec_init_vim}
 # initialize a tmle specification
 tmle_spec_vim <- tmle3_mopttx_vim(
-  V=c("W2"),
+  V = c("W2"),
   type = "blip2",
   learners = learner_list,
   maximize = FALSE,

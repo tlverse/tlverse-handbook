@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 6 Super (Machine) Learning | Targeted Learning in R</title>
+<meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.2"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/header-attrs-2.8/header-attrs.js"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.2.5.9001/transition.js"></script><script src="libs/bs3compat-0.2.5.9001/tabs.js"></script><script src="libs/bs3compat-0.2.5.9001/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script>
+</head>
+<body>
+<span class="math inline">
+    \(\DeclareMathOperator{\expit}{expit}\)
+    \(\DeclareMathOperator{\logit}{logit}\)
+    \(\DeclareMathOperator*{\argmin}{\arg\!\min}\)
+    \(\newcommand{\indep}{\perp\!\!\!\perp}\)
+    \(\newcommand{\coloneqq}{\mathrel{=}}\)
+    \(\newcommand{\R}{\mathbb{R}}\)
+    \(\newcommand{\E}{\mathbb{E}}\)
+    \(\newcommand{\M}{\mathcal{M}}\)
+    \(\renewcommand{\P}{\mathbb{P}}\)
+    \(\newcommand{\I}{\mathbb{I}}\)
+    \(\newcommand{\1}{\mathbbm{1}}\)
+    </span>
+    <script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script><!-- CSS --><div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h1>
+        <a href="index.html" title="Causal Data Science with the tlverse Software Ecosystem">Targeted Learning in R</a>:
+        <small class="text-muted">Causal Data Science with the tlverse Software Ecosystem</small>
+      </h1>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled"><li><a class="" href="index.html"><span class="header-section-number">Chapter 6</span> Super (Machine) Learning</a></li></ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/tlverse/tlverse-handbook">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="sl3" class="section level1" number="6">
+<h1>
+<span class="header-section-number">6</span> Super (Machine) Learning<a class="anchor" aria-label="anchor" href="#sl3"><i class="fas fa-link"></i></a>
+</h1>
+<div id="introduction-2" class="section level2" number="6.1">
+<h2>
+<span class="header-section-number">6.1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction-2"><i class="fas fa-link"></i></a>
+</h2>
+<div id="roadmap-review-1" class="section level3" number="6.1.1">
+<h3>
+<span class="header-section-number">6.1.1</span> Roadmap Review<a class="anchor" aria-label="anchor" href="#roadmap-review-1"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="we-still-want-to-fit-the-data-to-estimate-q" class="section level3" number="6.1.2">
+<h3>
+<span class="header-section-number">6.1.2</span> We still want to fit the data to estimate Q<a class="anchor" aria-label="anchor" href="#we-still-want-to-fit-the-data-to-estimate-q"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+<div id="sl3-makes-that-process-easier" class="section level3" number="6.1.3">
+<h3>
+<span class="header-section-number">6.1.3</span> sl3 makes that process easier<a class="anchor" aria-label="anchor" href="#sl3-makes-that-process-easier"><i class="fas fa-link"></i></a>
+</h3>
+</div>
+</div>
+<div id="learning-objectives-2" class="section level2 unnumbered">
+<h2>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>By the end of this chapter you will be able to:</p>
+<ol style="list-style-type: decimal">
+<li><p>Select an objective function that (i) aligns with the intention of the
+analysis and (ii) is optimized by the target parameter.</p></li>
+<li>
+<p>Assemble a diverse library of learners to be considered in the Super Learner
+ensemble. In particular, you should be able to:</p>
+<ol style="list-style-type: lower-alpha">
+<li>Customize a learner by modifying it’s tuning parameters.</li>
+<li>Create several different versions of the same learner at once by
+specifying a grid of tuning parameters.</li>
+<li>Curate covariate screening pipelines in order to pass a screener’s
+output, a subset of covariates, as input for another learner that will
+use the subset of covariates selected by the screener to model the data.</li>
+</ol>
+</li>
+<li><p>Specify the learner for ensembling (the metalearner) such that it corresponds
+to your objective function.</p></li>
+<li><p>Fit the Super Learner ensemble with nested cross-validation to obtain an
+estimate of the performance of the ensemble itself on out-of-sample data.</p></li>
+<li><p>Obtain <code>sl3</code> variable importance metrics.</p></li>
+<li><p>Interpret the fit for discrete and continuous Super Learners’ from the
+cross-validated risk table and the coefficients.</p></li>
+<li><p>Justify the base library of machine learning algorithms and the ensembling
+learner in terms of the prediction problem, statistical model <span class="math inline">\(\M\)</span>, data
+sparsity, and the dimensionality of the covariates.</p></li>
+</ol>
+</div>
+<div id="setup-1" class="section level2" number="6.2">
+<h2>
+<span class="header-section-number">6.2</span> Setup<a class="anchor" aria-label="anchor" href="#setup-1"><i class="fas fa-link"></i></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tlverse.org/sl3">sl3</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tlverse/tlverse">tlverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></code></pre></div>
+</div>
+<div id="schematic-example-2" class="section level2" number="6.3">
+<h2>
+<span class="header-section-number">6.3</span> Schematic Example<a class="anchor" aria-label="anchor" href="#schematic-example-2"><i class="fas fa-link"></i></a>
+</h2>
+<p>We can define a <code>sl3</code> task as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">schematic</span>, package<span class="op">=</span><span class="st">"tlverse"</span><span class="op">)</span>
+<span class="va">task</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/sl3_Task.html">make_sl3_Task</a></span><span class="op">(</span><span class="va">schematic</span>, 
+                      covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"W"</span><span class="op">)</span>,
+                      outcome<span class="op">=</span><span class="st">"Y"</span><span class="op">)</span></code></pre></div>
+<p>This is a way of organizing data and metadata together. In essence, it’s telling
+the <code>tlverse</code> about the <em>Data</em> step of the roadmap.</p>
+<p>Next, we can make some guesses about the <em>Model</em> step of the roadmap. This is
+similar to what we did in the [#origami] chapter:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R">
+<span class="co"># this defaults to a linear fit, so ~ A + W in this case</span>
+<span class="va">gl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glm</span><span class="op">)</span>
+<span class="va">gl_interaction</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glm</span>, 
+                               formula <span class="op">=</span> <span class="st">"~ A*W"</span><span class="op">)</span>
+<span class="va">gl_poly2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glm</span>, 
+                         formula <span class="op">=</span> <span class="st">"~ A*(W + I(W^2))"</span><span class="op">)</span>
+<span class="va">gl_poly4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_glm</span>, 
+                         formula <span class="op">=</span> <span class="st">"~ A*(W + I(W^2) + I(W^3) + I (W^4))"</span><span class="op">)</span></code></pre></div>
+<p>We can train one of these on our task and generate predictions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="sl3.html#cb4-1" aria-hidden="true" tabindex="-1"></a>gl_fit <span class="ot">&lt;-</span> gl<span class="sc">$</span><span class="fu">train</span>(task)</span>
+<span id="cb4-2"><a href="sl3.html#cb4-2" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> gl_fit<span class="sc">$</span><span class="fu">predict</span>(task)</span>
+<span id="cb4-3"><a href="sl3.html#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(preds)</span>
+<span id="cb4-4"><a href="sl3.html#cb4-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>]  <span class="fl">1.74048</span> <span class="sc">-</span><span class="fl">0.33978</span> <span class="sc">-</span><span class="fl">0.52219</span>  <span class="fl">0.20743</span> <span class="sc">-</span><span class="fl">0.52219</span>  <span class="fl">1.01086</span></span></code></pre></div>
+<p>We can also `<code>ensemble'' these together using a special learner called</code>Lrnr_sl`.
+We’ll explain more in a minute what this means.</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">learners</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>linear <span class="op">=</span> <span class="va">gl</span>, 
+                 interaction <span class="op">=</span> <span class="va">gl_interaction</span>, 
+                 poly2 <span class="op">=</span> <span class="va">gl_poly2</span>,
+                 poly4 <span class="op">=</span> <span class="va">gl_poly4</span><span class="op">)</span>
+<span class="va">sl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/Lrnr_base.html">make_learner</a></span><span class="op">(</span><span class="va">Lrnr_sl</span>, <span class="va">learners</span><span class="op">)</span>
+<span class="va">sl_fit</span> <span class="op">&lt;-</span> <span class="va">sl</span><span class="op">$</span><span class="fu">train</span><span class="op">(</span><span class="va">task</span><span class="op">)</span></code></pre></div>
+<p><code>Lrnr_sl</code> applies cross-validation to all the learners, so we can get
+CV risk estimates, similar to those we generated by hand with origami.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="sl3.html#cb6-1" aria-hidden="true" tabindex="-1"></a>sl_fit<span class="sc">$</span><span class="fu">cv_risk</span>(loss_squared_error)</span>
+<span id="cb6-2"><a href="sl3.html#cb6-2" aria-hidden="true" tabindex="-1"></a>        learner coefficients    risk       se  fold_sd fold_min_risk</span>
+<span id="cb6-3"><a href="sl3.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>       linear    <span class="fl">0.0069332</span> <span class="fl">2.06255</span> <span class="fl">0.250298</span> <span class="fl">0.831859</span>      <span class="fl">0.729272</span></span>
+<span id="cb6-4"><a href="sl3.html#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>  interaction    <span class="fl">0.0503607</span> <span class="fl">0.28348</span> <span class="fl">0.037538</span> <span class="fl">0.090305</span>      <span class="fl">0.120734</span></span>
+<span id="cb6-5"><a href="sl3.html#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span>        poly2    <span class="fl">0.9427061</span> <span class="fl">0.18797</span> <span class="fl">0.036528</span> <span class="fl">0.088623</span>      <span class="fl">0.060315</span></span>
+<span id="cb6-6"><a href="sl3.html#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span>        poly4    <span class="fl">0.0000000</span> <span class="fl">0.20638</span> <span class="fl">0.039118</span> <span class="fl">0.092897</span>      <span class="fl">0.078726</span></span>
+<span id="cb6-7"><a href="sl3.html#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span><span class="sc">:</span> SuperLearner           <span class="cn">NA</span> <span class="fl">0.18753</span> <span class="fl">0.035458</span> <span class="fl">0.083596</span>      <span class="fl">0.061988</span></span>
+<span id="cb6-8"><a href="sl3.html#cb6-8" aria-hidden="true" tabindex="-1"></a>   fold_max_risk</span>
+<span id="cb6-9"><a href="sl3.html#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>       <span class="fl">3.33138</span></span>
+<span id="cb6-10"><a href="sl3.html#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span>       <span class="fl">0.41529</span></span>
+<span id="cb6-11"><a href="sl3.html#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="sc">:</span>       <span class="fl">0.32614</span></span>
+<span id="cb6-12"><a href="sl3.html#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span>       <span class="fl">0.32564</span></span>
+<span id="cb6-13"><a href="sl3.html#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="dv">5</span><span class="sc">:</span>       <span class="fl">0.31375</span></span></code></pre></div>
+<!-- TODO would be helpful if we had a convenience function here -->
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">schematic_grid</span>, package<span class="op">=</span><span class="st">"tlverse"</span><span class="op">)</span>
+<span class="va">grid_task</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tlverse.org/sl3/reference/sl3_Task.html">make_sl3_Task</a></span><span class="op">(</span><span class="va">schematic_grid</span>, 
+                           covariates<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"A"</span>,<span class="st">"W"</span><span class="op">)</span>,
+                           outcome<span class="op">=</span><span class="st">"Y"</span><span class="op">)</span>
+
+<span class="va">schematic_grid</span><span class="op">$</span><span class="va">sl</span> <span class="op">&lt;-</span> <span class="va">sl_fit</span><span class="op">$</span><span class="va">fit_object</span><span class="op">$</span><span class="va">full_fit</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">grid_task</span><span class="op">)</span>
+<span class="va">library_grid_preds</span> <span class="op">&lt;-</span> <span class="va">sl_fit</span><span class="op">$</span><span class="va">fit_object</span><span class="op">$</span><span class="va">full_fit</span><span class="op">$</span><span class="va">fit_object</span><span class="op">$</span><span class="va">learner_fits</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">grid_task</span><span class="op">)</span>
+<span class="va">sl_grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">schematic_grid</span>,<span class="va">library_grid_preds</span><span class="op">)</span>
+<span class="va">long</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://Rdatatable.gitlab.io/data.table/reference/melt.data.table.html">melt</a></span><span class="op">(</span><span class="va">sl_grid</span>, id<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"W"</span>,<span class="st">"A"</span><span class="op">)</span>,
+             measure<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sl"</span>,<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">learners</span><span class="op">)</span><span class="op">)</span>,
+             variable.name <span class="op">=</span> <span class="st">"type"</span>,
+             value.name <span class="op">=</span> <span class="st">"Y"</span><span class="op">)</span>
+
+<span class="co"># TODO: why doesn't this control facet ordering?</span>
+<span class="va">long</span><span class="op">[</span>,<span class="va">type</span><span class="op">:=</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">type</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">learners</span><span class="op">)</span>,<span class="st">"sl"</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>
+<span class="va">schematic</span><span class="op">[</span>,<span class="va">type</span><span class="op">:=</span><span class="cn">NULL</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">schematic_meta</span>, package<span class="op">=</span><span class="st">"tlverse"</span><span class="op">)</span>
+<span class="fu">tlverse</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tlverse/man/schematic.html">plot_schematic</a></span><span class="op">(</span><span class="va">schematic</span>, <span class="va">long</span>, type<span class="op">=</span><span class="st">"facet"</span><span class="op">)</span></code></pre></div>
+<div class="inline-figure"><img src="06-sl3_files/figure-html/sl3_schematic_plot-1.png" width="80%" style="display: block; margin: auto;"></div>
+</div>
+<div id="conceptual-1" class="section level2" number="6.4">
+<h2>
+<span class="header-section-number">6.4</span> Conceptual<a class="anchor" aria-label="anchor" href="#conceptual-1"><i class="fas fa-link"></i></a>
+</h2>
+</div>
+<div id="washb-example-1" class="section level2" number="6.5">
+<h2>
+<span class="header-section-number">6.5</span> washb example<a class="anchor" aria-label="anchor" href="#washb-example-1"><i class="fas fa-link"></i></a>
+</h2>
+</div>
+<div id="advanced-usage-1" class="section level2" number="6.6">
+<h2>
+<span class="header-section-number">6.6</span> advanced usage<a class="anchor" aria-label="anchor" href="#advanced-usage-1"><i class="fas fa-link"></i></a>
+</h2>
+
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="empty"></div>
+<div class="empty"></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <div id="book-on-this-page"></div>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+          
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on September 22, 2021.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+</html>
