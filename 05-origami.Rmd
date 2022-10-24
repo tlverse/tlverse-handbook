@@ -49,41 +49,22 @@ Why is this important for the reader to understand?
 
 ## Introduction
 
-In this chapter, we elaborate on the estimation step outlined in the chapter on
-the [_Roadmap for Targeted Learning_](#roadmap). In order to generate an 
+Following the [_Roadmap for Targeted Learning_](#roadmap), we start to 
+elaborate on the estimation step in the current chapter. In order to generate an 
 estimate of the target parameter, we need to decide how to evaluate the quality 
-of our estimation procedure's performance.
-The performance, or error, of any algorithm/estimator corresponds to its 
-generalizability to independent datasets arising from the same data-generating 
-process. The assessment of the performance of an algorithm is extremely 
-important --- it provides a quantitative assessment of how well the 
-algorithm performs, and it guides the choice of the selecting among a set 
-(or "library") of algorithms. In order to assess the performance of
-an algorithm, or a library of them, we introduce the concept of a 
+of our estimation procedure's performance. The performance, or error, of 
+any algorithm (estimator) corresponds to its generalizability to independent 
+datasets arising from the same data-generating process. Assessment of 
+the performance of an algorithm is extremely important --- it provides a 
+quantitative measure of how well the algorithm performs, and it guides the 
+choice of selecting among a set (or "library") of algorithms. In order to 
+assess the performance of an algorithm, or a library of them, we introduce the concept of a 
 **loss function**, which defines the **risk** or the **expected prediction error**.  
-Our goal, as further detailed in the next chapter, will be to estimate the 
-performance of a library of algorithms in order to choose the best-performing 
-one. In the following, we propose a method to do so using the observed data and
-**cross-validation** procedures implemented in the `origami` package
-[@coyle2018origami; @coyle-cran-origami].
-<!--
-RP:
-The text before read:
-
-Our goal, as further detailed in the next chapter, will be to estimate the true
-risk of the proposed statistical learning method. Our goal(s) consist of:
-1. Estimating the performance of different learning algorithms in order to
-   choose the best one for the problem at hand.
-2. Having chosen a winning algorithm, estimate the true risk of the proposed
-   statistical learning method.
-   
-In "true risk of the proposed statistical learning method", what is meant by 
-"proposed statistical learning method"? 
-In doing step 1, we are doing step 2. The algorithms' performance estimates are 
-estimates of the true risk, ie when we estimate the performance of different 
-learning algorithms we are estimating the true risk. 
--->
-
+Our goal is to estimate the true performance (risk) of our estimator. 
+In the next chapter, we elaborate on how to estimate the performance of a library 
+of algorithms in order to choose the best-performing one. In the following, we propose a
+method to do so using the observed data and **cross-validation** procedures implemented 
+in the `origami` package [@coyle2018origami; @coyle-cran-origami].
 
 ## Background
 
@@ -105,22 +86,12 @@ proposed algorithm's performance? Unfortunately, the training error is a biased
 estimate of a fitted algorithm's generalizability, since it uses the same data 
 for fitting and evaluation.
 
-<!--
-RP:
-if we want to introduce "true risk" then it needs to be defined. I am not 
-sure if this explanation requires the notion of "true risk" in order to 
-understand that the training error is a poor evaluation of a fitted 
-algorithm's generalizability 
-also, we say "model complexity", but don't explain what that is. I don't think 
-the reader will know what this means / it will mean something different to 
-different readers if we don't define what we mean by this.
--->
 Since data are often scarce, separating a dataset into training, validation and
 test sets can prove too limiting, on account of decreasing the available data
 for use in training by too much. In the absence of a large dataset and a
-designated test set, we must resort to methods that estimate the true risk by
-efficient sample re-use. Re-sampling methods, like the bootstrap, involve
-repeatedly sampling from the training set and fitting the
+designated test set, we must resort to methods that estimate the algorithm's 
+true performance by efficient sample re-use. Re-sampling methods, like the 
+bootstrap, involve repeatedly sampling from the training set and fitting the
 algorithms to these samples. While often computationally
 intensive, re-sampling methods are particularly useful for evaluating an 
 algorithm and selecting among a set of them. In addition, they provide 
@@ -144,52 +115,23 @@ evaluating how any algorithm extends from a sample of data to the target
 population from which it arose. Cross-validation has seen widespread
 application in all facets of modern statistics, and perhaps most notably in
 statistical machine learning. The cross-validation procedure has been proven to 
-be optimal for algorithm selection in large samples, i.e. asymptotically. In particular,
-cross-validation directly estimates the true risk when the estimate is applied
-to an independent sample from the joint distribution of the predictors and
-outcome. 
-<!--
-RP:
-the above sentence requires clarification, cross-validation doesn't directly 
-estimate anything
--->
+be optimal for algorithm selection in large samples, i.e. asymptotically. 
+In particular,cross-validated algorithm estimates the true risk when the 
+estimate is applied to an independent sample from the joint distribution of 
+the predictors and outcome. 
+
 When used for model selection, cross-validation has powerful optimality
 properties. The asymptotic optimality results state that the cross-validated
 selector performs (in terms of risk) asymptotically as well as an optimal oracle
-selector, a hypothetical procedure with free access to the true, unknown
+selector --- a hypothetical procedure with free access to the true, unknown
 data-generating distribution. For further details on the theoretical results, we
 suggest consulting @vdl2003unified, @vdl2004asymptotic, @dudoit2005asymptotics
 and @vaart2006oracle.
 
-Cross-validation works by partitioning a sample into complementary subsets: a
-training (sub)set, to which a particular learning algorithm is applied, and a
-complementary validation (sub)set, used to evaluate the given algorithm's
-learning performance. 
-<!--
-RP:
-we introduced training and validation above, so maybe we don't need to redefine 
-here. Also, if we have a test set or use re-sampling like bootstrap then the 
-training and validation are not complementary. I think only in V fold (with no 
-test set) are they complementary?
--->
-By repeating this general procedure across multiple
-partitions of the dataset, the average risk (over the partitions of the data)
-can be computed without allowing data to leak between training and validation
-subsets. A variety of different partitioning schemes exist, each tailored to the
-salient details of the problem of interest, including data size, prevalence of
-the outcome, and dependence structure (between units or across time). 
-<!--
-RP:
-this paragraph (not including what is below) is difficult to understand unless 
-you have already have a solid understanding of CV. I say we try to omit it or 
-clarify. We delve into this in the later sections so I think saving this 
-explanation for later is OK
--->
-The `origami` package
-provides a suite of tools for cross-validation. In the following, we describe different
-types of cross-validation schemes readily available in `origami`, introduce the
-general structure of the `origami` package, and demonstrate the use of these
-procedures in applied settings.
+The `origami` package provides a suite of tools for cross-validation. In the 
+following, we describe different types of cross-validation schemes readily available 
+in `origami`, introduce the general structure of the `origami` package, and demonstrate 
+the use of these procedures in various applied settings.
 ---
 
 ## Estimation Roadmap: How does it all fit together?
@@ -201,29 +143,21 @@ particular, the unified loss-based estimation framework [@vdl2003unified;
 which relies on cross-validation for estimator construction,
 selection, and performance assessment, consists of three main steps:
 
-1. **Loss function**:
+1. **Loss function**: 
 Define the target parameter as the minimizer of the expected loss (risk) for a
-complete data loss function chosen to represent the desired performance measure.
-Map the complete data loss function into an observed data loss function, having
-the same expected value and leading to an efficient estimator of risk.
-<!--
-RP:
-what is meant by "complete data loss function"? Do we need this 
-"leading to an efficient estimator of risk"? We haven't defined what an efficient 
-estimator of the risk is, so maybe we can avoid introducing that? 
--->
+full data loss function chosen to represent the desired performance measure. By 
+full data, we refer to the complete data including missingness process, for example.
+Map the full data loss function into an observed data loss function, having
+the same expected value and leading to an estimator of risk.
+
 2. **Algorithms**:
 Construct a finite collection of candidate estimators of the parameter of
 interest.
 
 3. **Cross-validation scheme**:
-Apply appropriate cross-validation to select an optimal estimator among the
-candidates and assess the overall performance of the resulting estimator.
-<!--
-RP:
-CV doesn't select the optimal estimator, the selection is determined by the 
-loss function.
--->
+Apply appropriate cross-validation, and use the cross-validated risk in 
+order to select the best performing estimator among the candidates. Assess 
+the overall performance of the resulting estimator.
 
 ## Example: Cross-validation and Prediction
 
@@ -232,33 +166,31 @@ define our objective using prediction as an example.
 Let the observed data be defined as $O = (W, Y)$, where a unit
 specific data structure can be written as $O_i = (W_i, Y_i)$, for $i = 1, \ldots, n$.
 We denote $Y_i$ as the outcome/dependent variable of interest, and $W_i$ as a 
-$p$-dimensional set of covariate/predictor variables. As is standard, we assume 
+$p$-dimensional set of covariate (predictor) variables. We assume 
 the $n$ units are independent, or conditionally independent, and identically 
 distributed. Let $\psi_0(W)$ denote the target parameter of interest, the 
-quantity we wish to estimate. For this example, we are interested in estimating the
+quantity we wish to estimate (estimand). For this example, we are interested in estimating the
 conditional expectation of the outcome given the covariates, $\psi_0(W) = \E(Y
 \mid W)$. Following the [Estimation Roadmap](#roadmap), we choose the
 appropriate loss function, $L$, such that $\psi_0(W) = \text{argmin}_{\psi}
-\E_0[L(O, \psi(W))]$. But, how do we know how well each of the candidate
+\E_0[L(O, \psi(W))]$. Note that $\psi_0(W)$, the true target parameter, is a 
+minimizer of the risk (expected value of the chosen loss function). 
+The appropriate loss function for conditional expectation with continuous outcome 
+could be a mean squared error, for example. Then we can define $L$ as
+$L(O, \psi(W)) = (Y_i -\psi(W_i)^2$. Note that there can be many different algorithms which 
+estimate the estimand (many different $\psi$s). How do we know how well each of the candidate
 estimators of $\psi_0(W)$ are doing? To pick the best-performing
 candidate estimator and assess its overall performance, we
-use cross-validation --- dividing the available data into the training sets and
-validation sets.  Observations in the training set are used to fit (or train) the
-estimator, while those in validation set are used to assess the risk of (or
-validate) it.
-<!--
-RP:
-don't think we need to redefine what training and validation sets are 
--->
+use cross-validation. Observations in the training set are used to fit 
+(or train) the estimator, while those in validation set are used to assess 
+the risk of (or validate) it.
+
 Next, we introduce notation flexible enough to represent any cross-validation
 scheme. In particular, we define a **split vector**, $B_n = (B_n(i): i = 1, \ldots, n) \in
-\{0,1\}^n$; note that such a split vector is independent of the empirical
-distribution $P_n$. A realization of $B_n$ defines a random split of the data
-into training and validation subsets such that if
-<!--
-RP:
-why is it necessary to note that the split vector is independent of P_n?
--->
+\{0,1\}^n$. 
+#Note that such a split vector is independent of the empirical distribution $P_n$, as in $B_n$ is not a function of $P_n$, but $P_0$. 
+A realization of $B_n$ defines a random split of the data into training and validation 
+subsets such that if
 $$B_n(i) = 0, \ \ \text{i sample is in the training set}$$
 $$B_n(i) = 1, \ \ \text{i sample is in the validation set.}$$
 We can further define $P_{n, B_n}^0$ and $P_{n, B_n}^1$ as the empirical
@@ -282,9 +214,11 @@ maybe it gets annoying for time-series examples. just a thought...
 
 ## Cross-validation schemes in `origami`
 
-In the following, we describe different
-cross-validation schemes available in the `origami` package, and we go on to
-demonstrate their use in practical data analysis examples.
+A variety of different partitioning schemes exist, each tailored to the
+salient details of the problem of interest, including data size, prevalence of
+the outcome, and dependence structure (between units or across time). 
+In the following, we describe different cross-validation schemes available in the
+`origami` package, and we go on to demonstrate their use in practical data analysis examples.
 
 ### WASH Benefits Study Example {-}
 
