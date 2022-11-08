@@ -13,6 +13,15 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 
 ### Learning Objectives {-}
 
+<!--
+IM:
+Since we introduced the concept of loss & risk in the previous chapter, 
+it should be ok use it instead of "performance metric". I might be a 
+bit confusing to change notation many times. 
+Define base learner
+Shouldn't objective 4 be before talking about screeners ect?
+-->
+
 By the end of this chapter you will be able to:
 
 1. Select a performance metric that is optimized by the true prediction
@@ -43,31 +52,37 @@ learn a function that takes as input data on covariates/predictors and outputs a
 predicted value. Occasionally, the scientific question of interest lends itself
 to causal effect estimation. Even in these scenarios, where prediction is not in
 the forefront, prediction tasks are embedded in the procedure. For instance, in
-targeted minimum loss-based estimation (TMLE), predictive modeling is necessary
-for estimating outcome regressions and propensity scores.
+targeted minimum loss-based estimation (TMLE) for the average treatment effect, 
+predictive modeling is necessary for estimating outcome regressions and propensity scores.
 
 There are various strategies that can be employed to model relationships from
 data, which we refer to interchangeably as "estimators", "algorithms", and
-"learners". For some data algorithms that can pick up on complex relationships
-in the data are necessary to adequately model it, and for other data parametric
+"learners". For some data, algorithms that can pick up on complex relationships
+among variables are necessary to adequately model it. For other data, parametric
 regression learners might fit the data reasonably well. It is generally
 impossible to know in advance which approach will be the best for a given data
 set and prediction problem.
 
 The Super Learner (SL) solves the issue of selecting an algorithm, as it can
-consider many of them, from the simplest parametric regressions to the most
+consider many of them - from the simplest parametric regressions to the most
 complex machine learning algorithms (e.g., neural nets, support vector machines,
-etc). Additionally, it is proven to perform as well as possible in large
-samples, given the learners specified [@vdl2007super]. The SL represents an
-entirely pre-specified, flexible, and theoretically grounded approach for
+etc). Additionally, it is proven to perform as well as possible 
+(as good as the unknown oracle) in large samples, given the learners specified [@vdl2003unified; @vdl2004asymptotic; @dudoit2005asymptotics; @vaart2006oracle]. The SL represents an entirely pre-specified, flexible, and theoretically grounded approach for
 predictive modeling. It has been shown to be adaptive and robust in a variety of
-applications, and in even in very small samples. Detailed descriptions outlining
+applications, even in very small samples. Detailed descriptions outlining
 the SL procedure are widely available [@polley2010super; @naimi2018stacked].
 Practical considerations for specifying the SL, including how to specify a rich
 and diverse library of learners, choose a performance metric for the SL, and
 specify a cross-validation (CV) scheme, are described in a pre-print article
 [@rvp2022super]. Here, we focus on introducing `sl3`, the standard `tlverse`
 software package for SL.
+
+<!--
+IM:
+"It has been shown to be adaptive and robust in a variety of
+applications, even in very small samples." 
+Do we have something to cite for this sentence? 
+-->
 
 <!--
 Add more about sl3: how it's different from SuperLearner, supported features,
@@ -90,7 +105,7 @@ Fitting any SL with `sl3` consists of the following three steps:
 #### Running example with WASH Benefits dataset {-}
 
 We will use the WASH Benefits Bangladesh study as an example to guide this 
-overview of `sl3`. In this study, say we are interested in predicting the child development outcome, weight-for-height z-score, from covariates/predictors, 
+overview of `sl3`. In this study, we are interested in predicting the child development outcome, weight-for-height z-score, from covariates/predictors, 
 including socio-economic status variables, gestational age, and maternal 
 features. More information on this dataset is described in the ["Meet 
 the Data"](https://tlverse.org/tlverse-handbook/data.html#wash) chapter of the 
@@ -140,6 +155,12 @@ if (knitr::is_latex_output()) {
 ```
 
 ##### Install `sl3` software (as needed) {-}
+
+<!--
+IM:
+Don't we already specify how to download packages in the intro?
+I don't think this belongs here.
+-->
 
 To install any package, we recommend first clearing the R workspace and then 
 restarting the R session. In RStudio, this can be achieved by clicking the 
@@ -198,21 +219,22 @@ The `sl3_Task` keeps track of the roles the variables play in the prediction
 problem. Additional information relevant to the prediction task (such as 
 observational-level weights, offset, id, CV folds) can also be specified in 
 `make_sl3_Task`. The default CV fold structure in `sl3` is V-fold CV (VFCV) 
-with V=10 folds; if `id` is specified in the task then a clustered V=10 VFCV 
-scheme is considered, and if the outcome type is binary or categorical then 
+with V=10 folds. If `id` is specified in the task, a clustered V=10 VFCV 
+scheme is considered; if the outcome type is binary or categorical, then 
 a stratified V=10 VFCV scheme is considered. Different CV schemes can be 
 specified by inputting an `origami` folds object, as generated by the 
-`make_folds` function in the `origami` R package. Refer to the documentation 
-on `origami`'s `make_folds` function for more information (e.g., in RStudio, by 
+`make_folds` function in the `origami` R package. For more information, 
+refer to the previous Chapter on cross-validation, or consult documentation 
+on `origami`'s `make_folds` function (e.g., in RStudio, by 
 loading the `origami` R package and then inputting "?make_folds" in the 
 Console). For more details on `sl3_Task`, refer to its documentation (e.g., by 
 inputting "?sl3_Task" in R). 
 
 *Tip:* If you type `task$` and then press the tab key (press tab twice if not in 
-RStudio), you can view all of the active and public fields, and methods that 
+RStudio), you can view all of the active and public fields, as well as methods that 
 can be accessed from the `task$` object. This `$` is like the key to access
 many internals of an object. In the next section, will see how we can use `$`
-to dig into SL fit objects as well, to obtain predictions from an SL fit or 
+to dig into SL fit objects as well - to obtain predictions from an SL fit or 
 candidate learners, examine an SL fit or its candidates, and summarize an SL 
 fit.
 
@@ -221,11 +243,10 @@ fit.
 In order to create `Lrnr_sl` we need to specify, at the minimum, a set of 
 learners for the SL to consider as candidates. This set of algorithms is 
 also commonly referred to as the "library". We might also specify the 
-meta-learner, which is the algorithm that ensembles the learners, but this is 
-optional since there are already defaults set up in `sl3`. See "Practical 
+meta-learner, which is the algorithm that ensembles the learners (note that this part is 
+optional since there are already defaults set up in `sl3`). See "Practical 
 considerations for specifying a super learner" for step-by-step guidelines for 
-tailoring the SL specification, including the library and meta-learner(s), to 
-perform well for the prediction task at hand [@rvp2022super].
+tailoring the SL specification (including the library and meta-learner(s)) that optimizes the prediction task at hand [@rvp2022super].
 
 Learners have properties that indicate what features they support. We may use
 the `sl3_list_properties()` function to get a list of all properties supported 
@@ -272,9 +293,8 @@ parameters (specifically, `max_degree`and `num_knots`) can be modified at the
 same time. 
 
 Let's also instantiate some more learners that do not enforce relationships to 
-be linear or monotonic, and to further diversify the set of candidates to 
-include nonparametric learners, since up to this point all of the learners we've 
-instantiated have been parametric. 
+be linear or monotonic, which further diversifies the set of candidates to 
+include nonparametric learners. 
 
 ```{r more-learners-np}
 # spline regressions:
@@ -322,7 +342,8 @@ we show a few different ways for the user to name learners as they wish.
 Now that we have instantiated a set of learners and stacked them together, we 
 are ready to instantiate the SL. We will use the default meta-learner, which is 
 non-negative least squares (NNLS) regression (`Lrnr_nnls`) for continuous 
-outcomes, and we will still go ahead and specify it for illustrative purposes.
+outcomes. For illustrative purposes, we will still go ahead and specify it 
+in the following.
 
 ```{r make-sl}
 sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
@@ -360,6 +381,15 @@ This example was for demonstrative purposes only. See @rvp2022super for
 step-by-step guidelines for constructing a SL that is well-specified for the 
 prediction task at hand. 
 
+<!--
+IM: 
+I think it's a good idea to include some *general wisdom* here as well, instead of 
+just refer to the paper. I think a typical reader would not want to seek more material
+if they open a handbook to guide them in this process. 
+
+I remember from class a lot of students would ask about this after reading the chapter.
+-->
+
 ## Additional `sl3` Topics: {-}
 
 ## Obtaining Predictions
@@ -388,6 +418,13 @@ analytic dataset, i.e., all of the data supplied as `data` to `make_sl3_Task`.
 Figure 2 in @rvp2022super provides a visual overview of the SL fitting 
 procedure. 
 
+<!--
+IM: 
+I really don't think we should refer to a paper for all parts. 
+I think this chapter should contain a self-containing overview of what Super Learning is with illustration and code examples, so if someone interested in Super Learning (but has no idea what it is) can learn what it is + how to run it with sl3 without the heavy notation, proofs, etc. 
+I personally would not go search for Figure 2 in another paper in order to understand how SL fitting works. 
+-->
+
 ```{r glm-predictions-fullfit}
 # we can also access the candidate learner full fits directly and obtain
 # the same "full fit" candidate predictions from there 
@@ -408,9 +445,11 @@ df_plot <- data.table(
 )
 df_plot <- df_plot[order(df_plot$Obs), ] 
 ```
+
 ```{r predvobs-head, eval = FALSE}
 head(df_plot)
 ```
+
 ```{r predvobs-head-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   head(df_plot) %>%
@@ -422,6 +461,7 @@ if (knitr::is_latex_output()) {
     scroll_box(width = "100%", height = "300px")
 }
 ```
+
 ```{r predobs-plot, fig.asp = .55, fig.cap = "Observed and predicted values for weight-for-height z-score (whz)"}
 # melt the table so we can plot observed and predicted values
 df_plot$id <- seq(1:nrow(df_plot))
@@ -442,8 +482,14 @@ ggplot(df_plot_melted, aes(id, value, color = variable)) +
 
 ### Cross-validated predictions
 
+<!--
+IM: 
+I'm glad you explain this in the chapter, this is quite a common question from collaborators. 
+-->
+
 We can also obtain the cross-validated (CV) predictions for the candidate 
 learners. We can do this is a few different ways. 
+
 ```{r cv-predictions}
 # one way to obtain the CV predictions for the candidate learners
 cv_preds_option1 <- sl_fit$fit_object$cv_fit$predict_fold(
@@ -459,6 +505,7 @@ identical(cv_preds_option1, cv_preds_option2)
 ```{r cv-predictions-head, eval = FALSE}
 head(cv_preds_option1)
 ```
+
 ```{r cv-predictions-head-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   head(cv_preds_option1) %>%
@@ -491,8 +538,8 @@ glm_full_fit_preds <- full_fit_preds$Lrnr_glm_TRUE
 identical(glm_preds, glm_full_fit_preds)
 ```
 
-We can also supply a specific an integer between 1 and the number of CV folds 
-to the `fold_number` argument in `predict_fold`, and an example of this 
+We can also supply a specific integer between 1 and the number of CV folds 
+to the `fold_number` argument in `predict_fold`; example of this 
 functionality is shown in the next part.  
 
 ##### Cross-validated predictions by hand {-}
@@ -628,6 +675,7 @@ we might consider an intervention that sets the treatment to the desired
 (nutrition, water, sanitation, and handwashing) regime if the subject has
 a refridgerator, and a nutrition-omitted (water, sanitation, and handwashing)
 regime otherwise.
+
 ```{r cf-predictions-dynamic}
 dynamic_tr_intervention_data <- data.table::copy(washb_data) 
 
@@ -676,7 +724,7 @@ round(metalrnr_fit$coefficients, 3)
 
 Direct access to the meta-learner fit object is also handy for more 
 complex meta-learners (e.g., non-parametric meta-learners) that are not defined 
-by a simple set of  main terms regression coefficients. 
+by a simple set of main terms regression coefficients. 
 
 ### Cross-validated predictive performance
 
@@ -1055,6 +1103,7 @@ Recall the SL object, `sl`, defined in section 2:
 # in the section 2 we defined Lrnr_sl as
 # sl <- Lrnr_sl$new(learners = stack, metalearner = Lrnr_nnls$new())
 ````
+
 `sl` is an eSL since it used NNLS as the meta-learner. We rename `sl` to 
 `eSL_metaNNLS` below to clarify that this is an eSL that uses NNLS as its 
 meta-learner. Note that the candidate learners in this eSL are those passed 
