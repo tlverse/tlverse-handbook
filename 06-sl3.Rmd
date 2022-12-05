@@ -383,7 +383,9 @@ prediction task at hand.
 
 <!--
 IM: 
-I think it's a good idea to include some *general wisdom* here as well, instead of 
+I like the overview at this point.
+
+I also think it's a good idea to include some *general wisdom* here as well, instead of 
 just refer to the paper. I think a typical reader would not want to seek more material
 if they open a handbook to guide them in this process. 
 
@@ -488,7 +490,7 @@ I'm glad you explain this in the chapter, this is quite a common question from c
 -->
 
 We can also obtain the cross-validated (CV) predictions for the candidate 
-learners. We can do this is a few different ways. 
+learners. We can do this in a few different ways. 
 
 ```{r cv-predictions}
 # one way to obtain the CV predictions for the candidate learners
@@ -547,6 +549,11 @@ We can get the CV predictions "by hand", by tapping into each of the folds, and
 then using the fitted candidate learners (which were trained to the training 
 set for each fold) to predict validation set outcomes (which were not seen in 
 training).
+
+<!--
+IM: 
+Is this part really necessary?
+-->
 
 ```{r cv-predictions-long}
 ##### CV predictions "by hand" #####
@@ -737,12 +744,19 @@ conditional mean, which is what we're learning the prediction function for in
 the WASH Benefits example. For more information on selecting an appropriate 
 performance metric, see @rvp2022super.
 
+<!--
+IM: 
+Some general wisdom would be good here too...
+-->
+
 ```{r sl-summary}
 cv_risk_table <- sl_fit$cv_risk(eval_fun = loss_squared_error)
 ```
+
 ```{r cv-risk-summary, eval = FALSE}
 cv_risk_table[,c(1:3)]
 ```
+
 ```{r cv-risk-summary-handbook, echo = FALSE}
 if (knitr::is_latex_output()) {
   cv_risk_table[,c(1:3)] %>%
@@ -824,6 +838,11 @@ ggplot(cv_risk_table,
   ylab("V-fold CV Risk Estimate") +
   xlab("Learner")
 ```
+-->
+
+<!--
+IM: 
+Would be good to include, or at least print out results of the by-hand procedure
 -->
 
 <!--
@@ -1078,6 +1097,12 @@ dSL_pred <- dSL_fit$predict(task)
 earth_pred <- dSL_fit$learner_fits$Lrnr_earth_2_3_backward_0_1_0_0$predict(task)
 identical(dSL_pred, earth_pred)
 ```
+
+<!--
+IM: 
+Seems like an overkill 
+-->
+
 ### Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner
 
 We recommend using CV to evaluate the predictive performance of the SL. We 
@@ -1219,6 +1244,11 @@ runtime_sl_fit_parallel <- proc.time() - start_time
 runtime_sl_fit_parallel
 ```
 
+<!--
+IM: 
+Comment on the times compared to previous?
+-->
+
 ## Default Data Pre-processing
 
 In `sl3` it is required that the analytic dataset (i.e., the dataset 
@@ -1255,6 +1285,11 @@ task <- make_sl3_Task(
                  "asset_mobile")
 )
 ```
+
+<!--
+IM: 
+Great to have this section 
+-->
 
 ### Imputation and missingness indicators
 
@@ -1436,6 +1471,11 @@ their models. See @rvp2022super for information on the effective sample size,
 and step-by-step guidelines for tailoring the SL specification to perform well 
 for the prediction task at hand. 
 
+<!--
+IM: 
+...
+-->
+
 We show two ways to customize learners over a grid of tuning parameters. The 
 first, "do-it-yourself" approach requires that the user or a collaborator has 
 knowledge of the algorithm and their tuning parameters, so they can adequately
@@ -1498,6 +1538,11 @@ explicitly (e.g., by including in the library a parametric regression learner
 with interactions specified in a formula) or implicitly (e.g., by including in 
 the library tree-based algorithms that learn interactions empirically). 
 
+<!--
+IM: 
+...
+-->
+
 One way to define interaction terms among covariates in `sl3` is with a 
 `formula`. The argument exists in `Lrnr_base`, which is inherited by every 
 learner in `sl3`; even though `formula` does not explicitly appear as a
@@ -1525,6 +1570,11 @@ data relative to the effective sample size (see Figure 1 Flowchart in
 covariates. A screener is intended to be coupled with a candidate learner, to 
 define a new candidate learner that considers the reduced set of 
 screener-returned covariates as its covariates. 
+
+<!--
+IM: 
+...
+-->
 
 As stated in @rvp2022super, "covariate screening is essential when the 
 dimensionality of the data is very large, and it can be practically useful in 
