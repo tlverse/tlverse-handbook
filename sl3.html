@@ -6,16 +6,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Chapter 6 Super Learning | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
-<meta name="description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives By the end of this chapter you will be able to:...">
+<meta name="description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives  By the end of this chapter you will be able to:...">
 <meta name="generator" content="bookdown 0.26.3 with bs4_book()">
 <meta property="og:title" content="Chapter 6 Super Learning | Targeted Learning in R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://tlverse.org/tlverse-handbook/sl3.html">
-<meta property="og:description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives By the end of this chapter you will be able to:...">
+<meta property="og:description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives  By the end of this chapter you will be able to:...">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Chapter 6 Super Learning | Targeted Learning in R">
 <meta name="twitter:site" content="@tlverse">
-<meta name="twitter:description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives By the end of this chapter you will be able to:...">
+<meta name="twitter:description" content="Rachael Phillips Based on the sl3 R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin. Learning Objectives  By the end of this chapter you will be able to:...">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
 <script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><script src="libs/bs3compat-0.3.1/transition.js"></script><script src="libs/bs3compat-0.3.1/tabs.js"></script><script src="libs/bs3compat-0.3.1/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
@@ -92,10 +92,19 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin</em>.</p
 <div id="learning-objectives-1" class="section level3 unnumbered">
 <h3>Learning Objectives<a class="anchor" aria-label="anchor" href="#learning-objectives-1"><i class="fas fa-link"></i></a>
 </h3>
+<!--
+IM:
+Since we introduced the concept of loss & risk in the previous chapter, 
+it should be ok use it instead of "performance metric". I might be a 
+bit confusing to change notation many times. 
+Define base learner
+Shouldn't objective 4 be before talking about screeners ect?
+-->
 <p>By the end of this chapter you will be able to:</p>
 <ol style="list-style-type: decimal">
 <li><p>Select a performance metric that is optimized by the true prediction
-function and aligns with the intended use of the analysis in the real world.</p></li>
+function, or define the true prediction prediction of interest as the
+optimizer of the performance metric.</p></li>
 <li>
 <p>Assemble a diverse set (“library”) of learners to be considered in the super
 learner. In particular, you should be able to:</p>
@@ -125,29 +134,34 @@ learn a function that takes as input data on covariates/predictors and outputs a
 predicted value. Occasionally, the scientific question of interest lends itself
 to causal effect estimation. Even in these scenarios, where prediction is not in
 the forefront, prediction tasks are embedded in the procedure. For instance, in
-targeted minimum loss-based estimation (TMLE), predictive modeling is necessary
-for estimating outcome regressions and propensity scores.</p>
+targeted minimum loss-based estimation (TMLE) for the average treatment effect,
+predictive modeling is necessary for estimating outcome regressions and propensity scores.</p>
 <p>There are various strategies that can be employed to model relationships from
 data, which we refer to interchangeably as “estimators”, “algorithms”, and
-“learners”. For some data algorithms that can pick up on complex relationships
-in the data are necessary to adequately model it, and for other data parametric
+“learners”. For some data, algorithms that can pick up on complex relationships
+among variables are necessary to adequately model it. For other data, parametric
 regression learners might fit the data reasonably well. It is generally
 impossible to know in advance which approach will be the best for a given data
 set and prediction problem.</p>
 <p>The Super Learner (SL) solves the issue of selecting an algorithm, as it can
-consider many of them, from the simplest parametric regressions to the most
+consider many of them - from the simplest parametric regressions to the most
 complex machine learning algorithms (e.g., neural nets, support vector machines,
-etc). Additionally, it is proven to perform as well as possible in large
-samples, given the learners specified <span class="citation">(van der Laan, Polley, and Hubbard <a href="references.html#ref-vdl2007super" role="doc-biblioref">2007</a>)</span>. The SL represents an
-entirely pre-specified, data-adaptive, and theoretically grounded approach for
+etc). Additionally, it is proven to perform as well as possible
+(as good as the unknown oracle) in large samples, given the learners specified <span class="citation">(van der Laan and Dudoit <a href="references.html#ref-vdl2003unified" role="doc-biblioref">2003</a>; van der Laan, Dudoit, and Keles <a href="references.html#ref-vdl2004asymptotic" role="doc-biblioref">2004</a>; Dudoit and van der Laan <a href="references.html#ref-dudoit2005asymptotics" role="doc-biblioref">2005</a>; van der Vaart, Dudoit, and van der Laan <a href="references.html#ref-vaart2006oracle" role="doc-biblioref">2006</a>)</span>. The SL represents an entirely pre-specified, flexible, and theoretically grounded approach for
 predictive modeling. It has been shown to be adaptive and robust in a variety of
-applications, and in even in very small samples. Detailed descriptions outlining
+applications, even in very small samples. Detailed descriptions outlining
 the SL procedure are widely available <span class="citation">(Polley and van der Laan <a href="references.html#ref-polley2010super" role="doc-biblioref">2010</a>; Naimi and Balzer <a href="references.html#ref-naimi2018stacked" role="doc-biblioref">2018</a>)</span>.
 Practical considerations for specifying the SL, including how to specify a rich
 and diverse library of learners, choose a performance metric for the SL, and
 specify a cross-validation (CV) scheme, are described in a pre-print article
 <span class="citation">(Phillips et al. <a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span>. Here, we focus on introducing <code>sl3</code>, the standard <code>tlverse</code>
 software package for SL.</p>
+<!--
+IM:
+"It has been shown to be adaptive and robust in a variety of
+applications, even in very small samples." 
+Do we have something to cite for this sentence? 
+-->
 <!--
 Add more about sl3: how it's different from SuperLearner, supported features,
 GitHub, filing issues, support, documentation, etc.
@@ -174,7 +188,7 @@ presented.</p>
 <h4>Running example with WASH Benefits dataset<a class="anchor" aria-label="anchor" href="#running-example-with-wash-benefits-dataset"><i class="fas fa-link"></i></a>
 </h4>
 <p>We will use the WASH Benefits Bangladesh study as an example to guide this
-overview of <code>sl3</code>. In this study, say we are interested in predicting the child development outcome, weight-for-height z-score, from covariates/predictors,
+overview of <code>sl3</code>. In this study, we are interested in predicting the child development outcome, weight-for-height z-score, from covariates/predictors,
 including socio-economic status variables, gestational age, and maternal
 features. More information on this dataset is described in the <a href="https://tlverse.org/tlverse-handbook/data.html#wash">“Meet
 the Data”</a> chapter of the
@@ -813,6 +827,11 @@ Severely Food Insecure
 <div id="install-sl3-software-as-needed" class="section level5 unnumbered">
 <h5>Install <code>sl3</code> software (as needed)<a class="anchor" aria-label="anchor" href="#install-sl3-software-as-needed"><i class="fas fa-link"></i></a>
 </h5>
+<!--
+IM:
+Don't we already specify how to download packages in the intro?
+I don't think this belongs here.
+-->
 <p>To install any package, we recommend first clearing the R workspace and then
 restarting the R session. In RStudio, this can be achieved by clicking the
 tab “Session” then “Clear Workspace”, and then clicking “Session” again then
@@ -889,20 +908,21 @@ weight-for-height Z-score <code>whz</code>.</p>
 problem. Additional information relevant to the prediction task (such as
 observational-level weights, offset, id, CV folds) can also be specified in
 <code>make_sl3_Task</code>. The default CV fold structure in <code>sl3</code> is V-fold CV (VFCV)
-with V=10 folds; if <code>id</code> is specified in the task then a clustered V=10 VFCV
-scheme is considered, and if the outcome type is binary or categorical then
+with V=10 folds. If <code>id</code> is specified in the task, a clustered V=10 VFCV
+scheme is considered; if the outcome type is binary or categorical, then
 a stratified V=10 VFCV scheme is considered. Different CV schemes can be
 specified by inputting an <code>origami</code> folds object, as generated by the
-<code>make_folds</code> function in the <code>origami</code> R package. Refer to the documentation
-on <code>origami</code>’s <code>make_folds</code> function for more information (e.g., in RStudio, by
+<code>make_folds</code> function in the <code>origami</code> R package. For more information,
+refer to the previous Chapter on cross-validation, or consult documentation
+on <code>origami</code>’s <code>make_folds</code> function (e.g., in RStudio, by
 loading the <code>origami</code> R package and then inputting “?make_folds” in the
 Console). For more details on <code>sl3_Task</code>, refer to its documentation (e.g., by
 inputting “?sl3_Task” in R).</p>
 <p><em>Tip:</em> If you type <code>task$</code> and then press the tab key (press tab twice if not in
-RStudio), you can view all of the active and public fields, and methods that
+RStudio), you can view all of the active and public fields, as well as methods that
 can be accessed from the <code>task$</code> object. This <code>$</code> is like the key to access
 many internals of an object. In the next section, will see how we can use <code>$</code>
-to dig into SL fit objects as well, to obtain predictions from an SL fit or
+to dig into SL fit objects as well - to obtain predictions from an SL fit or
 candidate learners, examine an SL fit or its candidates, and summarize an SL
 fit.</p>
 </div>
@@ -912,11 +932,10 @@ fit.</p>
 <p>In order to create <code>Lrnr_sl</code> we need to specify, at the minimum, a set of
 learners for the SL to consider as candidates. This set of algorithms is
 also commonly referred to as the “library”. We might also specify the
-meta-learner, which is the algorithm that ensembles the learners, but this is
-optional since there are already defaults set up in <code>sl3</code>. See “Practical
+meta-learner, which is the algorithm that ensembles the learners (note that this part is
+optional since there are already defaults set up in <code>sl3</code>). See “Practical
 considerations for specifying a super learner” for step-by-step guidelines for
-tailoring the SL specification, including the library and meta-learner(s), to
-perform well for the prediction task at hand <span class="citation">(Phillips et al. <a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span>.</p>
+tailoring the SL specification (including the library and meta-learner(s)) that optimizes the prediction task at hand <span class="citation">(Phillips et al. <a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span>.</p>
 <p>Learners have properties that indicate what features they support. We may use
 the <code><a href="https://tlverse.org/sl3/reference/list_learners.html">sl3_list_properties()</a></code> function to get a list of all properties supported
 by at least one learner:</p>
@@ -974,9 +993,8 @@ parameter. When we instantiate <code>Lrnr_hal9001</code> below we show how multi
 parameters (specifically, <code>max_degree</code>and <code>num_knots</code>) can be modified at the
 same time.</p>
 <p>Let’s also instantiate some more learners that do not enforce relationships to
-be linear or monotonic, and to further diversify the set of candidates to
-include nonparametric learners, since up to this point all of the learners we’ve
-instantiated have been parametric.</p>
+be linear or monotonic, which further diversifies the set of candidates to
+include nonparametric learners.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># spline regressions:</span>
 <span class="va">lrn_polspline</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_polspline.html">Lrnr_polspline</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span>
@@ -1025,7 +1043,8 @@ we show a few different ways for the user to name learners as they wish.</p>
 <p>Now that we have instantiated a set of learners and stacked them together, we
 are ready to instantiate the SL. We will use the default meta-learner, which is
 non-negative least squares (NNLS) regression (<code>Lrnr_nnls</code>) for continuous
-outcomes, and we will still go ahead and specify it for illustrative purposes.</p>
+outcomes. For illustrative purposes, we will still go ahead and specify it
+in the following.</p>
 <div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sl</span> <span class="op">&lt;-</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_sl.html">Lrnr_sl</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>learners <span class="op">=</span> <span class="va">stack</span>, metalearner <span class="op">=</span> <span class="va"><a href="https://tlverse.org/sl3/reference/Lrnr_nnls.html">Lrnr_nnls</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
@@ -1043,8 +1062,8 @@ so the results are reproducible, and we will also time it.</p>
 <span id="cb40-6"><a href="sl3.html#cb40-6"></a>runtime_sl_fit &lt;-<span class="st"> </span><span class="kw">proc.time</span>() <span class="op">-</span><span class="st"> </span>start_time <span class="co"># end time - start time = run time</span></span>
 <span id="cb40-7"><a href="sl3.html#cb40-7"></a>runtime_sl_fit</span>
 <span id="cb40-8"><a href="sl3.html#cb40-8"></a>   user  system elapsed </span>
-<span id="cb40-9"><a href="sl3.html#cb40-9"></a><span class="fl">269.934</span>   <span class="fl">1.414</span> <span class="fl">271.062</span> </span></code></pre></div>
-<p>It took 271.1 seconds
+<span id="cb40-9"><a href="sl3.html#cb40-9"></a><span class="fl">271.484</span>   <span class="fl">6.187</span> <span class="fl">268.214</span> </span></code></pre></div>
+<p>It took 268.2 seconds
 (4.5 minutes) to fit the SL.</p>
 <div id="summary" class="section level4 unnumbered">
 <h4>Summary<a class="anchor" aria-label="anchor" href="#summary"><i class="fas fa-link"></i></a>
@@ -1059,6 +1078,16 @@ illustrated. This consists of the following three steps:</p>
 <p>This example was for demonstrative purposes only. See <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span> for
 step-by-step guidelines for constructing a SL that is well-specified for the
 prediction task at hand.</p>
+<!--
+IM: 
+I like the overview at this point.
+
+I also think it's a good idea to include some *general wisdom* here as well, instead of 
+just refer to the paper. I think a typical reader would not want to seek more material
+if they open a handbook to guide them in this process. 
+
+I remember from class a lot of students would ask about this after reading the chapter.
+-->
 </div>
 </div>
 </div>
@@ -1089,6 +1118,12 @@ of the candidate learners, in which the candidates are fit to the entire
 analytic dataset, i.e., all of the data supplied as <code>data</code> to <code>make_sl3_Task</code>.
 Figure 2 in <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span> provides a visual overview of the SL fitting
 procedure.</p>
+<!--
+IM: 
+I really don't think we should refer to a paper for all parts. 
+I think this chapter should contain a self-containing overview of what Super Learning is with illustration and code examples, so if someone interested in Super Learning (but has no idea what it is) can learn what it is + how to run it with sl3 without the heavy notation, proofs, etc. 
+I personally would not go search for Figure 2 in another paper in order to understand how SL fitting works. 
+-->
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="sl3.html#cb43-1"></a><span class="co"># we can also access the candidate learner full fits directly and obtain</span></span>
 <span id="cb43-2"><a href="sl3.html#cb43-2"></a><span class="co"># the same "full fit" candidate predictions from there </span></span>
 <span id="cb43-3"><a href="sl3.html#cb43-3"></a><span class="co"># (we split this into two lines to avoid overflow)</span></span>
@@ -1240,8 +1275,12 @@ FIGURE 6.1: Observed and predicted values for weight-for-height z-score (whz)
 <h3>
 <span class="header-section-number">6.3.2</span> Cross-validated predictions<a class="anchor" aria-label="anchor" href="#cross-validated-predictions"><i class="fas fa-link"></i></a>
 </h3>
+<!--
+IM: 
+I'm glad you explain this in the chapter, this is quite a common question from collaborators. 
+-->
 <p>We can also obtain the cross-validated (CV) predictions for the candidate
-learners. We can do this is a few different ways.</p>
+learners. We can do this in a few different ways.</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="sl3.html#cb47-1"></a><span class="co"># one way to obtain the CV predictions for the candidate learners</span></span>
 <span id="cb47-2"><a href="sl3.html#cb47-2"></a>cv_preds_option1 &lt;-<span class="st"> </span>sl_fit<span class="op">$</span>fit_object<span class="op">$</span>cv_fit<span class="op">$</span><span class="kw">predict_fold</span>(</span>
 <span id="cb47-3"><a href="sl3.html#cb47-3"></a>  <span class="dt">task =</span> task, <span class="dt">fold_number =</span> <span class="st">"validation"</span></span>
@@ -1525,8 +1564,8 @@ above can also be obtained by setting <code>fold_number = "full"</code>.</p>
 <span id="cb49-6"><a href="sl3.html#cb49-6"></a><span class="co"># check that they are identical</span></span>
 <span id="cb49-7"><a href="sl3.html#cb49-7"></a><span class="kw">identical</span>(glm_preds, glm_full_fit_preds)</span>
 <span id="cb49-8"><a href="sl3.html#cb49-8"></a>[<span class="dv">1</span>] <span class="ot">TRUE</span></span></code></pre></div>
-<p>We can also supply a specific an integer between 1 and the number of CV folds
-to the <code>fold_number</code> argument in <code>predict_fold</code>, and an example of this
+<p>We can also supply a specific integer between 1 and the number of CV folds
+to the <code>fold_number</code> argument in <code>predict_fold</code>; example of this
 functionality is shown in the next part.</p>
 </div>
 <div id="cross-validated-predictions-by-hand" class="section level5 unnumbered">
@@ -1536,6 +1575,10 @@ functionality is shown in the next part.</p>
 then using the fitted candidate learners (which were trained to the training
 set for each fold) to predict validation set outcomes (which were not seen in
 training).</p>
+<!--
+IM: 
+Is this part really necessary?
+-->
 <div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="sl3.html#cb50-1"></a><span class="co">##### CV predictions "by hand" #####</span></span>
 <span id="cb50-2"><a href="sl3.html#cb50-2"></a><span class="co"># for each fold, i, we obtain validation set predictions:</span></span>
 <span id="cb50-3"><a href="sl3.html#cb50-3"></a>cv_preds_list &lt;-<span class="st"> </span><span class="kw">lapply</span>(<span class="kw">seq_along</span>(task<span class="op">$</span>folds), <span class="cf">function</span>(i){</span>
@@ -1745,6 +1788,10 @@ reason why we use the MSE is because it is a valid metric for estimating the
 conditional mean, which is what we’re learning the prediction function for in
 the WASH Benefits example. For more information on selecting an appropriate
 performance metric, see <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span>.</p>
+<!--
+IM: 
+Some general wisdom would be good here too...
+-->
 <div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">cv_risk_table</span> <span class="op">&lt;-</span> <span class="va">sl_fit</span><span class="op">$</span><span class="fu">cv_risk</span><span class="op">(</span>eval_fun <span class="op">=</span> <span class="va">loss_squared_error</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
@@ -1957,6 +2004,10 @@ ggplot(cv_risk_table,
   ylab("V-fold CV Risk Estimate") +
   xlab("Learner")
 ```
+-->
+<!--
+IM: 
+Would be good to include, or at least print out results of the by-hand procedure
 -->
 <!--
 Column "se" in the CV risk table is the standard error across all losses for a learner, i.e., se = sd(loss)/sqrt(n), where loss is an n length vector of validation set predictions across all folds, and n is the number of validation set observations across all folds.
@@ -2805,10 +2856,10 @@ SL.</p>
 fit to the <em>entire</em> matrix of CV predictions from <em>every</em> fold (i.e., the
 meta-level dataset; see Figure 2 in <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span> for more detail). This is why
 revere-based risks are not a true CV risk. If the meta-learner is not a simple
-regression function, and instead a more data-adaptive learner (e.g., random
+regression function, and instead a more flexible learner (e.g., random
 forest) is used as the meta-learner, then the revere-CV risk estimate of the
 resulting SL will be a worse approximation of the CV risk estimate. This is
-because more data-adaptive learners are more likely to overfit. When simple
+because more flexible learners are more likely to overfit. When simple
 parametric regressions are used as a meta-learner, like what we considered in
 our SL (NNLS with <code>Lrnr_nnls</code>), and like all of the default meta-learners in
 <code>sl3</code>, then the revere-CV risk is a quick way to examine an approximation of
@@ -3010,6 +3061,10 @@ to <code>Lrnr_earth</code>’s below.</p>
 <span id="cb71-2"><a href="sl3.html#cb71-2"></a>earth_pred &lt;-<span class="st"> </span>dSL_fit<span class="op">$</span>learner_fits<span class="op">$</span>Lrnr_earth_<span class="dv">2</span>_<span class="dv">3</span>_backward_<span class="dv">0</span>_<span class="dv">1</span>_<span class="dv">0</span>_<span class="dv">0</span><span class="op">$</span><span class="kw">predict</span>(task)</span>
 <span id="cb71-3"><a href="sl3.html#cb71-3"></a><span class="kw">identical</span>(dSL_pred, earth_pred)</span>
 <span id="cb71-4"><a href="sl3.html#cb71-4"></a>[<span class="dv">1</span>] <span class="ot">TRUE</span></span></code></pre></div>
+<!--
+IM: 
+Seems like an overkill 
+-->
 <div id="including-ensemble-super-learners-as-candidates-in-discrete-super-learner" class="section level3">
 <h3>
 <span class="header-section-number">6.5.1</span> Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner<a class="anchor" aria-label="anchor" href="#including-ensemble-super-learners-as-candidates-in-discrete-super-learner"><i class="fas fa-link"></i></a>
@@ -3142,7 +3197,11 @@ below.</p>
 <span id="cb77-15"><a href="sl3.html#cb77-15"></a>runtime_sl_fit_parallel &lt;-<span class="st"> </span><span class="kw">proc.time</span>() <span class="op">-</span><span class="st"> </span>start_time</span>
 <span id="cb77-16"><a href="sl3.html#cb77-16"></a>runtime_sl_fit_parallel</span>
 <span id="cb77-17"><a href="sl3.html#cb77-17"></a>   user  system elapsed </span>
-<span id="cb77-18"><a href="sl3.html#cb77-18"></a><span class="fl">266.226</span>   <span class="fl">1.663</span> <span class="fl">267.329</span> </span></code></pre></div>
+<span id="cb77-18"><a href="sl3.html#cb77-18"></a><span class="fl">264.345</span>   <span class="fl">6.276</span> <span class="fl">261.380</span> </span></code></pre></div>
+<!--
+IM: 
+Comment on the times compared to previous?
+-->
 </div>
 <div id="default-data-pre-processing" class="section level2">
 <h2>
@@ -3181,6 +3240,10 @@ task in order to examine the pre-processing of <code>washb_data</code>.</p>
 <span id="cb78-13"><a href="sl3.html#cb78-13"></a>Imputing missing values and adding missingness indicators <span class="cf">for</span> the following</span>
 <span id="cb78-14"><a href="sl3.html#cb78-14"></a>covariates with missing values<span class="op">:</span><span class="st"> </span>momage, momheight. See documentation of the</span>
 <span id="cb78-15"><a href="sl3.html#cb78-15"></a>process_data <span class="cf">function</span> <span class="cf">for</span> details.</span></code></pre></div>
+<!--
+IM: 
+Great to have this section 
+-->
 <div id="imputation-and-missingness-indicators" class="section level3">
 <h3>
 <span class="header-section-number">6.7.1</span> Imputation and missingness indicators<a class="anchor" aria-label="anchor" href="#imputation-and-missingness-indicators"><i class="fas fa-link"></i></a>
@@ -4546,14 +4609,18 @@ we named the GLM learner “GLM”.</p>
 <span class="header-section-number">6.10</span> Defining Learners over Grid of Tuning Parameters<a class="anchor" aria-label="anchor" href="#defining-learners-over-grid-of-tuning-parameters"><i class="fas fa-link"></i></a>
 </h2>
 <p>Customized learners can be created over a grid of tuning parameters. For
-highly data-adaptive learners that require careful tuning, it is oftentimes
+highly flexible learners that require careful tuning, it is oftentimes
 very helpful to consider different tuning parameter specifications. However,
 this is time consuming, so computational feasibility should be considered.
-Also, when the effective sample size is small, highly data-adaptive learners
+Also, when the effective sample size is small, highly flexible learners
 will likely not perform well since they typically require a lot of data to fit
 their models. See <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span> for information on the effective sample size,
 and step-by-step guidelines for tailoring the SL specification to perform well
 for the prediction task at hand.</p>
+<!--
+IM: 
+...
+-->
 <p>We show two ways to customize learners over a grid of tuning parameters. The
 first, “do-it-yourself” approach requires that the user or a collaborator has
 knowledge of the algorithm and their tuning parameters, so they can adequately
@@ -4639,6 +4706,10 @@ interactions among covariates then we can include learners that pick up on that
 explicitly (e.g., by including in the library a parametric regression learner
 with interactions specified in a formula) or implicitly (e.g., by including in
 the library tree-based algorithms that learn interactions empirically).</p>
+<!--
+IM: 
+...
+-->
 <p>One way to define interaction terms among covariates in <code>sl3</code> is with a
 <code>formula</code>. The argument exists in <code>Lrnr_base</code>, which is inherited by every
 learner in <code>sl3</code>; even though <code>formula</code> does not explicitly appear as a
@@ -4665,6 +4736,10 @@ data relative to the effective sample size (see Figure 1 Flowchart in
 covariates. A screener is intended to be coupled with a candidate learner, to
 define a new candidate learner that considers the reduced set of
 screener-returned covariates as its covariates.</p>
+<!--
+IM: 
+...
+-->
 <p>As stated in <span class="citation">Phillips et al. (<a href="references.html#ref-rvp2022super" role="doc-biblioref">2022</a>)</span>, “covariate screening is essential when the
 dimensionality of the data is very large, and it can be practically useful in
 any SL or machine learning application. Screening of covariates that considers
@@ -5158,18 +5233,14 @@ demonstrate below.</p>
 
 ## Time series forecasting
 
-## Categorical outcome prediction
-
-## Multivariate outcome prediction
-
 -->
 </div>
 </div>
 <div id="exercises-1" class="section level2 unnumbered">
 <h2>Exercises:<a class="anchor" aria-label="anchor" href="#exercises-1"><i class="fas fa-link"></i></a>
 </h2>
-<div id="predicting-myocardial-infarction" class="section level3 unnumbered">
-<h3>Predicting Myocardial Infarction<a class="anchor" aria-label="anchor" href="#predicting-myocardial-infarction"><i class="fas fa-link"></i></a>
+<div id="binary-outcome-prediction" class="section level3 unnumbered">
+<h3>Binary outcome prediction<a class="anchor" aria-label="anchor" href="#binary-outcome-prediction"><i class="fas fa-link"></i></a>
 </h3>
 <p>Follow the steps below to predict the probability for myocardial infarction
 (<code>mi</code>) using the available covariate data. We thank Dr. David Benkeser,
@@ -5806,6 +5877,11 @@ learners. Incorporate at least one screener-learner coupling.</li>
 <li>Print the SL fit results by adding <code>$cv_risk(loss_squared_error)</code> to your
 fit object.</li>
 </ol>
+<!--
+## Categorical outcome prediction {-}
+--><!--
+## Multivariate outcome prediction {-}
+-->
 </div>
 </div>
 <div id="concluding-remarks" class="section level2">
@@ -6033,7 +6109,7 @@ Infarction with
 </ul>
 </li>
 <li>
-<a class="nav-link" href="#exercises-1">Exercises:</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#predicting-myocardial-infarction">Predicting Myocardial Infarction</a></li></ul>
+<a class="nav-link" href="#exercises-1">Exercises:</a><ul class="nav navbar-nav"><li><a class="nav-link" href="#binary-outcome-prediction">Binary outcome prediction</a></li></ul>
 </li>
 <li><a class="nav-link" href="#concluding-remarks"><span class="header-section-number">6.15</span> Concluding Remarks</a></li>
 <li>
@@ -6056,7 +6132,7 @@ Infarction with
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on September 26, 2022.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on March 01, 2023.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
