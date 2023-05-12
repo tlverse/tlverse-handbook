@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       #- name: Setup upterm session
         #uses: lhotari/action-upterm@v1
@@ -29,10 +29,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
 
       - name: Install pandoc
-        uses: r-lib/actions/setup-pandoc@v1
+        uses: r-lib/actions/setup-pandoc@v2
 
       - name: Install tinyTeX
-        uses: r-lib/actions/setup-tinytex@v1
+        uses: r-lib/actions/setup-tinytex@v2
 
       - name: Install system dependencies
         run: |
@@ -42,7 +42,7 @@ jobs:
         run: Rscript -e 'install.packages(c("sysfonts","rmarkdown","bookdown"))'
 
       - name: Cache R packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ runner.os }}-renv-${{ hashFiles('**/renv.lock') }}
@@ -56,7 +56,7 @@ jobs:
           renv::restore()
 
       - name: Cache bookdown results
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: _bookdown_files
           key: bookdown-2-${{ hashFiles('**/*Rmd') }}
@@ -85,10 +85,10 @@ jobs:
     needs: bookdown
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Download Artifact
-        uses: actions/download-artifact@v1.0.0
+        uses: actions/download-artifact@v3
         with:
           # Artifact name
           name: _handbook                      # optional
