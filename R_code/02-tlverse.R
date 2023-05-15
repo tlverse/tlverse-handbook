@@ -4,5 +4,6 @@
 
 
 ## ----renviron-example, results="asis", eval=FALSE-----------------------------
-## GITHUB_PAT <- yourPAT
+## GITHUB_PAT=yourPAT
+## 
 

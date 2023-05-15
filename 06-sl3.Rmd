@@ -122,7 +122,6 @@ First, we need to load the data and relevant packages into the R session.
 
 ```{r setup-handbook-utils-noecho, echo = FALSE}
 library(knitr)
-library(kableExtra)
 library(data.table)
 ```
 
@@ -152,7 +151,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(washb_data) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -462,7 +461,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(df_plot) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -518,7 +517,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(cv_preds_option1) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -767,7 +766,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_risk_table[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -903,7 +902,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_sl_fit$cv_risk[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -924,20 +923,20 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   round(cv_sl_fit$coef, 3) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
 ### Revere-cross-validated predictive performance of Super Learner
 
-We can also use so-called "revere", to obtain a partial CV risk for the SL, 
-where the SL candidate learner fits are cross-validated but the meta-learner fit 
-is not. It takes essentially no extra time to calculate a revere-CV 
-performance/risk estimate of the SL, since we already have the CV fits of the 
-candidates. This isn't to say that revere-CV SL performance can replace that 
-obtained from actual CV SL. Revere can be used to very quickly examine an 
-approximate lower bound on the SL's CV risk *when the meta-learner is a simple model*,
-like NNLS. We can output the revere-based CV risk estimate by setting 
+We can also use so-called "revere", to obtain a partial CV risk for the SL,
+where the SL candidate learner fits are cross-validated but the meta-learner fit
+is not. It takes essentially no extra time to calculate a revere-CV
+performance/risk estimate of the SL, since we already have the CV fits of the
+candidates. This isn't to say that revere-CV SL performance can replace that
+obtained from actual CV SL. Revere can be used to very quickly examine an
+approximate lower bound on the SL's CV risk *when the meta-learner is a simple
+model*, like NNLS. We can output the revere-based CV risk estimate by setting
 `get_sl_revere_risk = TRUE` in `cv_risk`.
 
 ```{r sl-revere-risk}
@@ -957,15 +956,16 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_risk_w_sl_revere[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
-##### Revere-cross-validated predictive performance of Super Learner by hand {-} 
-We show how to calculate the revere-CV predictive performance/risk of 
-the SL by hand below, as this might be helpful for understanding revere and 
-how it can be used to obtain a partial CV performance/risk estimate for the 
-SL. 
+
+##### Revere-cross-validated predictive performance of Super Learner by hand {-}
+
+We show how to calculate the revere-CV predictive performance/risk of the SL by
+hand below, as this might be helpful for understanding revere and how it can be
+used to obtain a partial CV performance/risk estimate for the SL.
 
 ```{r sl-revere-risk-byhand}
 ##### revere-based risk "by hand" #####
@@ -973,17 +973,17 @@ SL.
 sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
   # get validation dataset for fold i:
   v_data <- task$data[task$folds[[i]]$validation_set, ]
-  
+
   # get observed outcomes in fold i's validation dataset:
   v_outcomes <- v_data[["whz"]]
-  
-  # make task (for prediction) using fold i's validation dataset as data, 
+
+  # make task (for prediction) using fold i's validation dataset as data,
   # and keeping all else the same:
   v_task <- make_sl3_Task(
     covariates = task$nodes$covariates, data = v_data
   )
-  
-  # get predicted outcomes for fold i's validation dataset, using candidates 
+
+  # get predicted outcomes for fold i's validation dataset, using candidates
   # trained to fold i's training dataset
   v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(v_task)
 
@@ -992,19 +992,19 @@ sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
     covariates = sl_fit$fit_object$cv_meta_task$nodes$covariates,
     data = v_preds
   )
-  
+
   # get predicted outcomes for fold i's metalevel dataset, using the fitted
-  # metalearner, cv_meta_fit 
+  # metalearner, cv_meta_fit
   sl_revere_v_preds <- sl_fit$fit_object$cv_meta_fit$predict(task=v_meta_task)
   # note: cv_meta_fit was trained on the metalevel dataset, which contains the
-  # candidates' cv predictions and validation dataset outcomes across ALL folds, 
+  # candidates' cv predictions and validation dataset outcomes across ALL folds,
   # so cv_meta_fit has already seen fold i's validation dataset outcomes.
-  
+
   # calculate predictive performance for fold i for the SL
   eval_function <- loss_squared_error # valid for estimation of conditional mean
-  # note: by evaluating the predictive performance of the SL using outcomes 
-  # that were already seen by the metalearner, this is not a cross-validated 
-  # measure of predictive performance for the SL. 
+  # note: by evaluating the predictive performance of the SL using outcomes
+  # that were already seen by the metalearner, this is not a cross-validated
+  # measure of predictive performance for the SL.
   sl_revere_v_loss <- eval_function(
     pred = sl_revere_v_preds, observed = v_outcomes
   )
@@ -1084,7 +1084,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   dSL_cv_risk_table[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -1396,7 +1396,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(task$X) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -1795,7 +1795,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   washb_varimp %>%
     kable(digits = 4) %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```
@@ -2037,7 +2037,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(chspred) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 ```

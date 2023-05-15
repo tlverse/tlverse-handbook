@@ -2,7 +2,6 @@
 library(data.table)
 library(origami)
 library(knitr)
-library(kableExtra)
 
 # load data set and take a peek
 washb_data <- fread(
@@ -23,13 +22,14 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(washb_data) %>%
     kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
 
 ## ----resubstitution-----------------------------------------------------------
-folds_resubstitution(nrow(washb_data))
+folds <- folds_resubstitution(nrow(washb_data))
+folds
 
 
 ## ----loo----------------------------------------------------------------------
@@ -78,7 +78,7 @@ knitr::include_graphics(path = "img/png/rolling_origin.png")
 
 ## ----rolling_origin-----------------------------------------------------------
 folds <- folds_rolling_origin(
-  t,
+  n = t,
   first_window = 50, validation_size = 10, gap = 5, batch = 20
 )
 folds[[1]]
@@ -91,7 +91,7 @@ knitr::include_graphics(path = "img/png/rolling_window.png")
 
 ## ----rolling_window-----------------------------------------------------------
 folds <- folds_rolling_window(
-  t,
+  n = t,
   window_size = 50, validation_size = 10, gap = 5, batch = 20
 )
 folds[[1]]
@@ -120,11 +120,12 @@ washb_data <- fread(
   stringsAsFactors = TRUE
 )
 
-# Remove missing data, then pick just the first 500 rows
+# remove missing data with drop_na(), then pick just the first 500 rows
 washb_data <- washb_data %>%
   drop_na() %>%
   slice(1:500)
 
+# specify the outcome and covariates as character vectors
 outcome <- "whz"
 covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
 
@@ -136,13 +137,12 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(washb_data) %>%
     kable() %>%
-    kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
 
 ## ----covariates---------------------------------------------------------------
-outcome
 covars
 
 
@@ -151,7 +151,7 @@ lm_mod <- lm(whz ~ ., data = washb_data)
 summary(lm_mod)
 
 
-## ----get_naive_error----------------------------------------------------------
+## ----get_naive_mse------------------------------------------------------------
 (err <- mean(resid(lm_mod)^2))
 
 
@@ -227,7 +227,7 @@ cv_rf <- function(fold, data, reg_form) {
 # now, let's cross-validate...
 folds <- make_folds(washb_data)
 cvrf_results <- cross_validate(
-  cv_fun = cv_rf, folds = folds, 
+  cv_fun = cv_rf, folds = folds,
   data = washb_data, reg_form = "whz ~ .",
   use_future = FALSE
 )
