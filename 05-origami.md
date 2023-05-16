@@ -237,7 +237,7 @@ number.
 library(data.table)
 library(origami)
 library(knitr)
-library(kableExtra)
+library(dplyr)
 
 # load data set and take a peek
 washb_data <- fread(

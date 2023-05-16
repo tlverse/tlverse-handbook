@@ -650,18 +650,18 @@ washb_NDE <- tmle3(
 washb_NDE
 A tmle3_Fit that took 1 step(s)
    type                  param init_est tmle_est      se   lower  upper
-1:  NDE NDE[Y_{A=1} - Y_{A=0}]  0.01434  0.01434 0.08564 -0.1535 0.1822
+1:  NDE NDE[Y_{A=1} - Y_{A=0}]  0.01524  0.01524 0.08572 -0.1528 0.1833
    psi_transformed lower_transformed upper_transformed
-1:         0.01434           -0.1535            0.1822
+1:         0.01524           -0.1528            0.1833
 ```
 
 From this, we can draw the conclusion that the direct effect of the treatment
 (through all paths not involving the mediators (sex, month, aged)) is
-0.0143. Note that, together, the estimates of
+0.0152. Note that, together, the estimates of
 the natural direct and indirect effects approximately recover the _average
 treatment effect_, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.0177.
+0.0186.
 
 ### Targeted Estimation of the Population Intervention Direct Effect
 
