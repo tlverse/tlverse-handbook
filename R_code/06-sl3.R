@@ -1,6 +1,5 @@
 ## ----setup-handbook-utils-noecho, echo = FALSE--------------------------------
 library(knitr)
-library(kableExtra)
 library(data.table)
 
 
@@ -25,7 +24,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(washb_data) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -144,8 +143,10 @@ df_plot <- data.table(
 )
 df_plot <- df_plot[order(df_plot$Obs), ] 
 
+
 ## ----predvobs-head, eval = FALSE----------------------------------------------
 ## head(df_plot)
+
 
 ## ----predvobs-head-handbook, echo = FALSE-------------------------------------
 if (knitr::is_latex_output()) {
@@ -154,9 +155,10 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(df_plot) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
+
 
 ## ----predobs-plot, fig.asp = .55, fig.cap = "Observed and predicted values for weight-for-height z-score (whz)"----
 # melt the table so we can plot observed and predicted values
@@ -191,6 +193,7 @@ identical(cv_preds_option1, cv_preds_option2)
 ## ----cv-predictions-head, eval = FALSE----------------------------------------
 ## head(cv_preds_option1)
 
+
 ## ----cv-predictions-head-handbook, echo = FALSE-------------------------------
 if (knitr::is_latex_output()) {
   head(cv_preds_option1) %>%
@@ -198,7 +201,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(cv_preds_option1) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -346,8 +349,10 @@ round(metalrnr_fit$coefficients, 3)
 ## ----sl-summary---------------------------------------------------------------
 cv_risk_table <- sl_fit$cv_risk(eval_fun = loss_squared_error)
 
+
 ## ----cv-risk-summary, eval = FALSE--------------------------------------------
 ## cv_risk_table[,c(1:3)]
+
 
 ## ----cv-risk-summary-handbook, echo = FALSE-----------------------------------
 if (knitr::is_latex_output()) {
@@ -356,7 +361,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_risk_table[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -453,7 +458,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_sl_fit$cv_risk[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -468,7 +473,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   round(cv_sl_fit$coef, 3) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -490,7 +495,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   cv_risk_w_sl_revere[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -501,17 +506,17 @@ if (knitr::is_latex_output()) {
 sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
   # get validation dataset for fold i:
   v_data <- task$data[task$folds[[i]]$validation_set, ]
-  
+
   # get observed outcomes in fold i's validation dataset:
   v_outcomes <- v_data[["whz"]]
-  
-  # make task (for prediction) using fold i's validation dataset as data, 
+
+  # make task (for prediction) using fold i's validation dataset as data,
   # and keeping all else the same:
   v_task <- make_sl3_Task(
     covariates = task$nodes$covariates, data = v_data
   )
-  
-  # get predicted outcomes for fold i's validation dataset, using candidates 
+
+  # get predicted outcomes for fold i's validation dataset, using candidates
   # trained to fold i's training dataset
   v_preds <- sl_fit$fit_object$cv_fit$fit_object$fold_fits[[i]]$predict(v_task)
 
@@ -520,19 +525,19 @@ sl_revere_risk_list <- lapply(seq_along(task$folds), function(i){
     covariates = sl_fit$fit_object$cv_meta_task$nodes$covariates,
     data = v_preds
   )
-  
+
   # get predicted outcomes for fold i's metalevel dataset, using the fitted
-  # metalearner, cv_meta_fit 
+  # metalearner, cv_meta_fit
   sl_revere_v_preds <- sl_fit$fit_object$cv_meta_fit$predict(task=v_meta_task)
   # note: cv_meta_fit was trained on the metalevel dataset, which contains the
-  # candidates' cv predictions and validation dataset outcomes across ALL folds, 
+  # candidates' cv predictions and validation dataset outcomes across ALL folds,
   # so cv_meta_fit has already seen fold i's validation dataset outcomes.
-  
+
   # calculate predictive performance for fold i for the SL
   eval_function <- loss_squared_error # valid for estimation of conditional mean
-  # note: by evaluating the predictive performance of the SL using outcomes 
-  # that were already seen by the metalearner, this is not a cross-validated 
-  # measure of predictive performance for the SL. 
+  # note: by evaluating the predictive performance of the SL using outcomes
+  # that were already seen by the metalearner, this is not a cross-validated
+  # measure of predictive performance for the SL.
   sl_revere_v_loss <- eval_function(
     pred = sl_revere_v_preds, observed = v_outcomes
   )
@@ -575,7 +580,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   dSL_cv_risk_table[,c(1:3)] %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -689,7 +694,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(task$X) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -819,7 +824,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   washb_varimp %>%
     kable(digits = 4) %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
@@ -876,7 +881,7 @@ if (knitr::is_latex_output()) {
 } else if (knitr::is_html_output()) {
   head(chspred) %>%
     kable() %>%
-    kableExtra:::kable_styling(fixed_thead = TRUE) %>%
+    kableExtra::kable_styling(fixed_thead = TRUE) %>%
     scroll_box(width = "100%", height = "300px")
 }
 
