@@ -27,7 +27,7 @@ the choice of statistical model, selecting a statistical target parameter that
 represents an answer to the scientific question of interest, and developing
 efficient estimators of the statistical estimand.
 
-## The Roadmap {#roadmap}
+## The Roadmap {#roadmap-steps}
 
 The roadmap is a six-stage process:
 
@@ -35,11 +35,10 @@ The roadmap is a six-stage process:
    P_0$
 2. Specify the statistical model $\M$ realistically, such that $P_0 \in \M$
 3. Translate the scientific question of interest into a statistical target
-   parameter $\Psi$ and establish the target population 
+   parameter $\Psi$ and establish the target population
 4. Choose an estimator $\hat{\Psi}$ for $\Psi$ under realistic $\M$
 5. Construct a measure of uncertainty for the estimate $\hat{\Psi}(P_n)$
-6. Make substantive conclusion 
-
+6. Make substantive conclusion
 
 ### (1) Data: A random variable with a probability distribution, $O \sim P_0$ {-}
 
@@ -502,35 +501,37 @@ well known causal parameter that is most often called the "average treatment
 effect" (ATE) and is denoted
 
 \begin{equation}
-  ATE = \E_X(Y(1) - Y(0)),
+  ATE = \E_X[Y(1) - Y(0)],
   (\#eq:ate)
 \end{equation}
-where $\E_X$ is the mean under the theoretical (unobservable) full data 
-$X = (W, Y(1), Y(0))$. Note that the full data structure $X$ is, by its very
-definition, unobservable since one can never observe both of $Y(1)$ and $Y(0)$
-for the same observational unit.
+where $\E_X(\cdot)$ is the expectation taken over the theoretical (unobservable)
+full data (i.e., $X = (W, Y(1), Y(0))$) distribution $P_X$. Note that the full
+data structure $X$ is, by its very definition, unobservable since one can never
+observe both of $Y(1)$ and $Y(0)$ for the same observational unit.
 
-We can define much more complicated interventions on SCMs, such as
-interventions based upon dynamic rules (which assign particular interventions
-based on a function of the covariates $W$), stochastic rules (which can even 
-account for the natural value of $A$ observed in the absence of the 
-intervention), and much more. Each results in a different target causal 
-parameter and entails different identifiability assumptions discussed below.
+We can define much more complicated interventions on SCMs, such as interventions
+based upon dynamic rules (which assign particular interventions based on a
+function of the covariates $W$), stochastic rules (which can even account for
+the natural value of $A$ observed in the absence of the intervention), and much
+more. Each results in a different target causal parameter and entails different
+identifiability assumptions discussed below.
 
 ### Identifiability {-}
 
-Since we can never observe both $Y(0)$ (the counterfactual outcome when $A=0$)
-and $Y(1)$ (similarly, the counterfactual outcome when $A=1$), we cannot
-estimate the quantity in Equation \@ref(eq:ate) directly. This is called the
-_Fundamental Problem of Causal Inference_ [@holland1986statistics]. Thus, one of
-the primary activities in causal inference is to _identify_ the assumptions
-necessary to express causal quantities of interest as functions of the
-data-generating distribution of the observed data. To do this, we must make
-assumptions under which such quantities may be estimated from the observed data
-$O \sim P_0$ and its corresponding data-generating distribution $P_0$.
-Fortunately, given the causal model specified in the SCM above, we can, with a
-handful of untestable assumptions, estimate the ATE from observational data.
-These assumptions may be summarized as follows.
+Since we can never simultaneously observe $Y(0)$, the counterfactual outcome
+when $A=0$, and $Y(1)$, the counterfactual outcome when $A=1$, we cannot
+estimate their difference $Y(1) - Y(0)$ (the individual treatment effect), which
+appears in Equation \@ref(eq:ate) (inside the expectation $\E_X(\cdot)$ that
+defines ATE). This is called the _Fundamental Problem of Causal Inference_
+[@holland1986statistics]. Thus, one of the primary activities in causal
+inference is to _identify_ the assumptions necessary to express causal
+quantities of interest as functions of the data-generating distribution of the
+observed data. To do this, we must make assumptions under which such quantities
+may be estimated from the observed data $O \sim P_0$ and its corresponding
+data-generating distribution $P_0$. Fortunately, given the causal model
+specified in the SCM above, we can, with a handful of untestable assumptions,
+estimate the ATE from observational data. These assumptions may be summarized as
+follows.
 
 ::: {#consist-ass .definition name="Consistency"}
 The outcome for unit $i$ is $Y_i(a)$ whenever $A_i = a$, which may be thought of
@@ -551,27 +552,27 @@ experiments, ensuring that the effect of $A$ on $Y$ can be disentangled from
 that of $W$ on $Y$, even though $W$ affects both.
 :::
 
-::: {#posit-ass .definition name="Positivity (or Overlap)"}
+::: {#posit-ass .definition name="Positivity/Overlap"}
 All observed units, across strata defined by $W$, must have a bounded
-(non-deterministic) probability of receiving treatment -- that is,
-$\epsilon < \P(A = a \mid W) < 1 - \epsilon$ for all $a$ and $W$ and for some
-$\epsilon > 0$) \ .
+probability of receiving treatment -- that is, $\epsilon < \P(A = a \mid W) < 1
+- \epsilon$ for all $a$ and $W$ and for some $\epsilon > 0$) \ .
 :::
 
 Technically speaking, only the latter two of these assumptions are necessary
 when working within the SCM framework, as the first two are implied properties
 of an SCM for i.i.d. data (if you're really curious, see this commentary of
-@pearl2010brief for an extended philosophical discussion). We introduce all four
+@pearl2010brief for an extended discussion). We introduce all four
 identification assumptions because they are most often considered together, and
-all four are necessary when working within the potential outcomes framework.
+all four are necessary when working within the potential outcomes framework
+[@rubin2005causal; @imbens2015causal].
 
-Given these assumptions, the ATE may be re-written as a function of $P_0$ --
-specifically
+Under these assumptions, the ATE may be re-written as a function of $P_0$, the
+distribution of the observed data:
 
 \begin{align}
-  \psi_{\text{ATE}} &= \E_0(Y(1) - Y(0)) \\ \nonumber
-                    &= \E_0 \left(\E_0[Y \mid A = 1, W] -
-                       \E_0[Y \mid A = 0, W]\right) \ .
+  \psi_{\text{ATE}} &= \E_0[Y(1) - Y(0)] \\ \nonumber
+                    &= \E_0 [\E_0[Y \mid A = 1, W] -
+                       \E_0[Y \mid A = 0, W]] \ .
   (\#eq:estimand)
 \end{align}
 In words, the ATE is the mean difference in the predicted outcome values for
