@@ -326,7 +326,7 @@ readily admits the conclusion that
 $\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
 
 Under the additional condition that the remainder term $R(\hat{P}^{\star},
-P_0)$ decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that $$\psi_n
+P_0)$ decays as $o_P \left( \frac{1}{\sqrt{n}} \right)$, we have that $$\psi_n
 - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}} \right),$$
 which, by a central limit theorem, establishes a Gaussian limiting distribution
 for the estimator:
@@ -347,16 +347,20 @@ may be obtained using the bootstrap or computed directly via the following
 $$\sigma_n^2 = \frac{1}{n} \sum_{i = 1}^{n} D^2(\bar{Q}_n^{\star}, g_n)(O_i)$$
 -->
 
-
+<!--
 
 ## Interpreting the Causal Effect of a Stochastic Intervention
 
-<div class="figure" style="text-align: center">
-<img src="img/gif/shift_animation.gif" alt="How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention" width="100%" />
-<p class="caption">(\#fig:unnamed-chunk-1)How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention</p>
-</div>
+\begin{figure}
 
+{\centering \includegraphics[width=1\linewidth]{img/gif/shift_animation} 
 
+}
+
+\caption{How a counterfactual outcome changes as the natural treatment distribution is shifted by a simple stochastic intervention}(\#fig:unnamed-chunk-1)
+\end{figure}
+
+-->
 
 ## Evaluating the Causal Effect of a Stochastic Intervention
 
@@ -532,7 +536,7 @@ object internally (see the `tmle3` documentation for details).
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 548.8338	 Pars:  0.94736 0.05264
+Iter: 1 fn: 548.8338	 Pars:  0.94735 0.05265
 Iter: 2 fn: 548.8338	 Pars:  0.94736 0.05264
 solnp--> Completed in 2 iterations
 tmle_fit
@@ -645,8 +649,8 @@ delta) in a single function call:
 ```r
 tmle_fit <- tmle3(tmle_spec, data, node_list, learner_list)
 
-Iter: 1 fn: 547.4323	 Pars:  0.9998973 0.0001027
-Iter: 2 fn: 547.4323	 Pars:  0.99997059 0.00002941
+Iter: 1 fn: 547.4323	 Pars:  0.99992954 0.00007046
+Iter: 2 fn: 547.4323	 Pars:  0.99996416 0.00003584
 solnp--> Completed in 2 iterations
 tmle_fit
 A tmle3_Fit that took 1 step(s)

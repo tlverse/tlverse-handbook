@@ -7,7 +7,7 @@
 <title>Chapter 10 Causal Mediation Analysis | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <meta name="description" content="Nima Hejazi Featuring the tmle3mediate R package.  Learning Objectives Examine how the presence of post-treatment mediating variables can complicate a causal analysis, and how direct and indirect...">
-<meta name="generator" content="bookdown 0.26.3 with bs4_book()">
+<meta name="generator" content="bookdown 0.34.2 with bs4_book()">
 <meta property="og:title" content="Chapter 10 Causal Mediation Analysis | Targeted Learning in R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://tlverse.org/tlverse-handbook/causal-mediation-analysis.html">
@@ -151,10 +151,10 @@ mechanistic relationships to be teased apart. These causal effects are of such
 wide interest that their definition and identification has been the object of
 study in statistics for nearly a century – indeed, the earliest examples of
 modern causal mediation analysis can be traced back to work on path analysis
-<span class="citation">(<a href="references.html#ref-wright1934method" role="doc-biblioref">Wright 1934</a>)</span>. In recent decades, renewed interest has resulted in the
+<span class="citation">(<a href="references.html#ref-wright1934method" role="doc-biblioref">Wright, 1934</a>)</span>. In recent decades, renewed interest has resulted in the
 formulation of novel direct and indirect effects within both the potential
 outcomes and nonparametric structural equation modeling frameworks
-<span class="citation">(<a href="references.html#ref-robins1986new" role="doc-biblioref">J. M. Robins 1986</a>; <a href="references.html#ref-pearl1995causal" role="doc-biblioref">Pearl 1995</a>, <a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>; <a href="references.html#ref-spirtes2000causation" role="doc-biblioref">Spirtes et al. 2000</a>; <a href="references.html#ref-dawid2000causal" role="doc-biblioref">Dawid 2000</a>)</span>. Generally, the indirect effect (IE) is the portion of the
+<span class="citation">(<a href="references.html#ref-dawid2000causal" role="doc-biblioref">Dawid, 2000</a>; <a href="references.html#ref-pearl1995causal" role="doc-biblioref">Pearl, 1995</a>, <a href="references.html#ref-pearl2009causality" role="doc-biblioref">2009</a>; <a href="references.html#ref-robins1986new" role="doc-biblioref">JM Robins, 1986</a>; <a href="references.html#ref-spirtes2000causation" role="doc-biblioref">Spirtes <em>et al.</em>, 2000</a>)</span>. Generally, the indirect effect (IE) is the portion of the
 total effect found to work <em>through</em> mediating variables, while the direct
 effect (DE) encompasses <em>all other components</em> of the total effect, including
 both the effect of the treatment directly on the outcome <em>and</em> its effect
@@ -164,16 +164,16 @@ understanding of both <em>why</em> and <em>how</em> treatments may be efficaciou
 <p>Modern approaches to causal inference have allowed for significant advances over
 the methodology of traditional path analysis, overcoming significant
 restrictions imposed by the use of parametric modeling approaches
-<span class="citation">(<a href="references.html#ref-vanderweele2015explanation" role="doc-biblioref">T. VanderWeele 2015</a>)</span>. Using distinct frameworks,
-<span class="citation">J. M. Robins and Greenland (<a href="references.html#ref-robins1992identifiability" role="doc-biblioref">1992</a>)</span> and <span class="citation">Pearl (<a href="references.html#ref-pearl2001direct" role="doc-biblioref">2001</a>)</span> provided equivalent
+<span class="citation">(<a href="references.html#ref-vanderweele2015explanation" role="doc-biblioref">VanderWeele, 2015</a>)</span>. Using distinct frameworks,
+<span class="citation">Robins and Greenland (<a href="references.html#ref-robins1992identifiability" role="doc-biblioref">1992</a>)</span> and <span class="citation">Pearl (<a href="references.html#ref-pearl2001direct" role="doc-biblioref">2001</a>)</span> provided equivalent
 nonparametric decompositions of the average treatment effect into the <em>natural</em>
-direct and indirect effects. <span class="citation">T. VanderWeele (<a href="references.html#ref-vanderweele2015explanation" role="doc-biblioref">2015</a>)</span> provides a
+direct and indirect effects. <span class="citation">VanderWeele (<a href="references.html#ref-vanderweele2015explanation" role="doc-biblioref">2015</a>)</span> provides a
 comprehensive overview of classical causal mediation analysis. We provide an
 alternative perspective, focusing instead on the construction of efficient
 estimators of these quantities, which have appeared only recently
-<span class="citation">(<a href="references.html#ref-tchetgen2012semiparametric" role="doc-biblioref">Tchetgen Tchetgen and Shpitser 2012</a>; <a href="references.html#ref-zheng2012targeted" role="doc-biblioref">Zheng and van der Laan 2012</a>)</span>, as well as on more flexible
+<span class="citation">(<a href="references.html#ref-tchetgen2012semiparametric" role="doc-biblioref">Tchetgen Tchetgen and Shpitser, 2012</a>; <a href="references.html#ref-zheng2012targeted" role="doc-biblioref">Zheng and van der Laan, 2012</a>)</span>, as well as on more flexible
 direct and indirect definitions based upon stochastic interventions
-<span class="citation">(<a href="references.html#ref-diaz2020causal" role="doc-biblioref">Dı́az and Hejazi 2020</a>)</span>.</p>
+<span class="citation">(<a href="references.html#ref-diaz2020causal" role="doc-biblioref">Dı́az and Hejazi, 2020</a>)</span>.</p>
 </div>
 <div id="data-structure-and-notation-2" class="section level2" number="10.2">
 <h2>
@@ -188,7 +188,7 @@ multivariate) set of mediators. Avoiding assumptions unsupported by background
 scientific knowledge, we assume only that <span class="math inline">\(O \sim P_0 \in \M\)</span>, where <span class="math inline">\(\M\)</span> is the
 nonparametric statistical model that places no assumptions on the form of the
 data-generating distribution <span class="math inline">\(P_0\)</span>.</p>
-<p>As in preceding chapters, a structural causal model (SCM) <span class="citation">(<a href="references.html#ref-pearl2009causality" role="doc-biblioref">Pearl 2009</a>)</span>
+<p>As in preceding chapters, a structural causal model (SCM) <span class="citation">(<a href="references.html#ref-pearl2009causality" role="doc-biblioref">Pearl, 2009</a>)</span>
 helps to formalize the definition of our counterfactual variables:
 <span class="math display" id="eq:npsem-mediate">\[\begin{align}
   W &amp;= f_W(U_W) \\ \nonumber
@@ -228,7 +228,7 @@ consistency of notation, we will define <span class="math inline">\(\overline{Q}
 <p>We have explicitly excluded potential confounders of the mediator-outcome
 relationship affected by exposure (i.e., variables affected by <span class="math inline">\(A\)</span> and affecting
 both <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span>). Mediation analysis in the presence of such variables is
-challenging <span class="citation">(<a href="references.html#ref-avin2005identifiability" role="doc-biblioref">Avin, Shpitser, and Pearl 2005</a>)</span>; thus, most efforts to develop
+challenging <span class="citation">(<a href="references.html#ref-avin2005identifiability" role="doc-biblioref">Avin <em>et al.</em>, 2005</a>)</span>; thus, most efforts to develop
 definitions of causal direct and indirect effects explicitly assume the absence
 of such confounders. Without further assumptions, common mediation parameters
 (the natural direct and indirect effects) cannot be identified in the presence
@@ -237,11 +237,11 @@ assumption that may be useful when justified by available scientific knowledge
 about the system under study. The interested reader may wish to consult recent
 advances in the vast and quickly growing literature on causal mediation
 analysis, including <em>interventional</em> direct and indirect effects
-<span class="citation">(<a href="references.html#ref-didelez2006direct" role="doc-biblioref">Didelez, Dawid, and Geneletti 2006</a>; <a href="references.html#ref-vanderweele2014effect" role="doc-biblioref">T. J. VanderWeele, Vansteelandt, and Robins 2014</a>; <a href="references.html#ref-lok2016defining" role="doc-biblioref">Lok 2016</a>; <a href="references.html#ref-vansteelandt2017interventional" role="doc-biblioref">Vansteelandt and Daniel 2017</a>; <a href="references.html#ref-rudolph2017robust" role="doc-biblioref">Rudolph et al. 2017</a>; <a href="references.html#ref-nguyen2019clarifying" role="doc-biblioref">Nguyen, Schmid, and Stuart 2019</a>)</span>,
+<span class="citation">(<a href="references.html#ref-didelez2006direct" role="doc-biblioref">Didelez <em>et al.</em>, 2006</a>; <a href="references.html#ref-lok2016defining" role="doc-biblioref">Lok, 2016</a>; <a href="references.html#ref-nguyen2019clarifying" role="doc-biblioref">Nguyen <em>et al.</em>, 2019</a>; <a href="references.html#ref-rudolph2017robust" role="doc-biblioref">Rudolph <em>et al.</em>, 2017</a>; <a href="references.html#ref-vanderweele2014effect" role="doc-biblioref">VanderWeele <em>et al.</em>, 2014</a>; <a href="references.html#ref-vansteelandt2017interventional" role="doc-biblioref">Vansteelandt and Daniel, 2017</a>)</span>,
 whose identification is robust to this complex form of post-treatment
-confounding. Within this thread of the literature, <span class="citation">Dı́az et al. (<a href="references.html#ref-diaz2020nonparametric" role="doc-biblioref">2020</a>)</span> and
+confounding. Within this thread of the literature, <span class="citation">Dı́az <em>et al.</em> (<a href="references.html#ref-diaz2020nonparametric" role="doc-biblioref">2020</a>)</span> and
 <span class="citation">Benkeser and Ran (<a href="references.html#ref-benkeser2020nonparametric" role="doc-biblioref">2021</a>)</span> provide considerations of nonparametric effect
-decompositions and efficiency theory, while <span class="citation">Hejazi et al. (<a href="references.html#ref-hejazi2021nonparametric" role="doc-biblioref">2022</a>)</span> formulate a
+decompositions and efficiency theory, while <span class="citation">Hejazi, Rudolph, <em>et al.</em> (<a href="references.html#ref-hejazi2021nonparametric" role="doc-biblioref">2022</a>)</span> formulate a
 novel class of effects utilizing stochastic interventions.</p>
 <!--
 Mark notes,
@@ -278,7 +278,7 @@ the natural direct effect (NDE) measures the effect of the treatment on the
 outcome <em>through all other pathways</em>. Identification of the natural direct and
 indirect effects requires the following non-testable causal assumptions. Note
 that the standard assumptions of consistency and no interference (i.e., SUTVA
-<span class="citation">(<a href="references.html#ref-rubin1978bayesian" role="doc-biblioref">Rubin 1978</a>, <a href="references.html#ref-rubin1980randomization" role="doc-biblioref">1980</a>)</span>) hold owing to the fact that (1)
+<span class="citation">(<a href="references.html#ref-rubin1978bayesian" role="doc-biblioref">Rubin, 1978</a>, <a href="references.html#ref-rubin1980randomization" role="doc-biblioref">1980</a>)</span>) hold owing to the fact that (1)
 the SCM we consider is restricted so as to give rise only to independent and
 identically distributed (iid) units; and (2) consistency is an implied property
 of the SCM, as counterfactuals are derived quantities (as opposed to primitive
@@ -328,18 +328,18 @@ simpler settings, the cross-world independence requirement is unique to
 identification of the natural direct and indirect effects. This assumption
 resolves a challenging complication to the identification of these path-specific
 effects, which has been termed the “recanting witness” by
-<span class="citation">Avin, Shpitser, and Pearl (<a href="references.html#ref-avin2005identifiability" role="doc-biblioref">2005</a>)</span>, who introduce a graphical resolution equivalent to
+<span class="citation">Avin <em>et al.</em> (<a href="references.html#ref-avin2005identifiability" role="doc-biblioref">2005</a>)</span>, who introduce a graphical resolution equivalent to
 this assumption. This independence of counterfactuals indexed by distinct
 interventions is, in fact, a serious limitation to the scientific relevance of
 these effect definitions, as it results in the NDE and NIE being unidentifiable
-in randomized trials <span class="citation">(<a href="references.html#ref-robins2010alternative" role="doc-biblioref">J. M. Robins and Richardson 2010</a>)</span>, implying that corresponding
-scientific claims cannot be falsified through experimentation <span class="citation">(<a href="references.html#ref-popper1934logic" role="doc-biblioref">Popper 1934</a>; <a href="references.html#ref-dawid2000causal" role="doc-biblioref">Dawid 2000</a>)</span> and, consequently, directly contradicting a foundational
+in randomized trials <span class="citation">(<a href="references.html#ref-robins2010alternative" role="doc-biblioref">Robins and Richardson, 2010</a>)</span>, implying that corresponding
+scientific claims cannot be falsified through experimentation <span class="citation">(<a href="references.html#ref-dawid2000causal" role="doc-biblioref">Dawid, 2000</a>; <a href="references.html#ref-popper1934logic" role="doc-biblioref">Popper, 1934</a>)</span> and, consequently, directly contradicting a foundational
 pillar of the scientific method.</p>
 <p>While many attempts have been made to weaken this last assumption
-<span class="citation">(<a href="references.html#ref-petersen2006estimation" role="doc-biblioref">Petersen, Sinisi, and van der Laan 2006</a>; <a href="references.html#ref-imai2010identification" role="doc-biblioref">Imai, Keele, and Yamamoto 2010</a>; <a href="references.html#ref-vansteelandt2012imputation" role="doc-biblioref">Vansteelandt, Bekaert, and Lange 2012</a>; <a href="references.html#ref-vansteelandt2012natural" role="doc-biblioref">Vansteelandt and VanderWeele 2012</a>)</span>, these results either impose stringent modeling
+<span class="citation">(<a href="references.html#ref-imai2010identification" role="doc-biblioref">Imai <em>et al.</em>, 2010</a>; <a href="references.html#ref-petersen2006estimation" role="doc-biblioref">Petersen <em>et al.</em>, 2006</a>; <a href="references.html#ref-vansteelandt2012imputation" role="doc-biblioref">Vansteelandt <em>et al.</em>, 2012</a>; <a href="references.html#ref-vansteelandt2012natural" role="doc-biblioref">Vansteelandt and VanderWeele, 2012</a>)</span>, these results either impose stringent modeling
 assumptions, propose alternative interpretations of the natural effects, or
 provide a limited degree of additional flexibility by developing conditions that
-may more easily be satisfied. For example, <span class="citation">Petersen, Sinisi, and van der Laan (<a href="references.html#ref-petersen2006estimation" role="doc-biblioref">2006</a>)</span> weaken this
+may more easily be satisfied. For example, <span class="citation">Petersen <em>et al.</em> (<a href="references.html#ref-petersen2006estimation" role="doc-biblioref">2006</a>)</span> weaken this
 assumption by requiring it only for conditional means (rather than distinct
 counterfactuals) and adopt a view of the natural direct effect as a weighted
 average of another type of direct effect, the controlled direct effect. The
@@ -400,7 +400,7 @@ conditional densities of the mediator under the control (<span class="math inlin
 (<span class="math inline">\(A = 1\)</span>) conditions (n.b., recall the mediator positivity condition above).</p>
 <p>This subtle appearance of a ratio of conditional densities is concerning –
 tools to estimate such quantities are sparse in the statistics literature
-<span class="citation">(<a href="references.html#ref-diaz2011super" role="doc-biblioref">Dı́az and van der Laan 2011</a>; <a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">Hejazi, Benkeser, and van der Laan 2022</a>)</span>, unfortunately, and the problem is still
+<span class="citation">(<a href="references.html#ref-diaz2011super" role="doc-biblioref">Dı́az and van der Laan, 2011</a>; <a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">Hejazi, Benkeser, <em>et al.</em>, 2022</a>)</span>, unfortunately, and the problem is still
 more complicated (and computationally taxing) when <span class="math inline">\(Z\)</span> is high-dimensional. As
 only the ratio of these conditional densities is required, a convenient
 re-parametrization may be achieved, that is,
@@ -411,7 +411,7 @@ re-parametrization may be achieved, that is,
 Going forward, we will denote this re-parameterized conditional probability
 functional <span class="math inline">\(e(A \mid Z, W) := p(A \mid Z, W)\)</span>. The same re-parameterization
 technique has been used by <span class="citation">Zheng and van der Laan (<a href="references.html#ref-zheng2012targeted" role="doc-biblioref">2012</a>)</span>, <span class="citation">Tchetgen Tchetgen (<a href="references.html#ref-tchetgen2013inverse" role="doc-biblioref">2013</a>)</span>,
-<span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>, <span class="citation">Dı́az et al. (<a href="references.html#ref-diaz2020nonparametric" role="doc-biblioref">2020</a>)</span>, and <span class="citation">Hejazi et al. (<a href="references.html#ref-hejazi2021nonparametric" role="doc-biblioref">2022</a>)</span> in similar
+<span class="citation">Dı́az and Hejazi (<a href="references.html#ref-diaz2020causal" role="doc-biblioref">2020</a>)</span>, <span class="citation">Dı́az <em>et al.</em> (<a href="references.html#ref-diaz2020nonparametric" role="doc-biblioref">2020</a>)</span>, and <span class="citation">Hejazi, Rudolph, <em>et al.</em> (<a href="references.html#ref-hejazi2021nonparametric" role="doc-biblioref">2022</a>)</span> in similar
 contexts. This reformulation is particularly useful for the fact that it reduces
 the estimation problem to one requiring only the estimation of conditional
 means, opening the door to the use of a <a href="sl3.html#sl3">wide range of machine learning
@@ -459,7 +459,7 @@ these effect definitions are based on <em>static interventions</em> (i.e., setti
 such cases, one may turn instead to the population intervention direct effect
 (PIDE) and the population intervention indirect effect (PIIE), which are based
 on decomposing the effect of the population intervention effect (PIE) of
-flexible stochastic interventions <span class="citation">(<a href="references.html#ref-diaz2020causal" role="doc-biblioref">Dı́az and Hejazi 2020</a>)</span>.</p>
+flexible stochastic interventions <span class="citation">(<a href="references.html#ref-diaz2020causal" role="doc-biblioref">Dı́az and Hejazi, 2020</a>)</span>.</p>
 <p>We previously discussed stochastic interventions when considering <a href="shift.html#shift">how to
 intervene on continuous-valued treatments</a>; however, these intervention
 schemes may be applied to all manner of treatment variables.
@@ -490,7 +490,7 @@ randomized experiment in which exposure and mediators are randomized. Thus, the
 direct effect for a population intervention corresponds to contrasts between
 treatment regimes of a randomized experiment via interventions on <span class="math inline">\(A\)</span> and <span class="math inline">\(Z\)</span>,
 unlike the natural direct effect for the average treatment effect
-<span class="citation">(<a href="references.html#ref-robins2010alternative" role="doc-biblioref">J. M. Robins and Richardson 2010</a>)</span>.”</p>
+<span class="citation">(<a href="references.html#ref-robins2010alternative" role="doc-biblioref">Robins and Richardson, 2010</a>)</span>.”</p>
 </div>
 <!-- TODO: explain this-->
 <div class="definition">
@@ -719,16 +719,16 @@ nuisance parameters:</p>
 <span id="cb180-9"><a href="causal-mediation-analysis.html#cb180-9" aria-hidden="true" tabindex="-1"></a>washb_NDE</span>
 <span id="cb180-10"><a href="causal-mediation-analysis.html#cb180-10" aria-hidden="true" tabindex="-1"></a>A tmle3_Fit that took <span class="dv">1</span> <span class="fu">step</span>(s)</span>
 <span id="cb180-11"><a href="causal-mediation-analysis.html#cb180-11" aria-hidden="true" tabindex="-1"></a>   type                  param init_est tmle_est      se   lower  upper</span>
-<span id="cb180-12"><a href="causal-mediation-analysis.html#cb180-12" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>  NDE NDE[Y_{A<span class="ot">=</span><span class="dv">1</span>} <span class="sc">-</span> Y_{A<span class="ot">=</span><span class="dv">0</span>}]  <span class="fl">0.01524</span>  <span class="fl">0.01524</span> <span class="fl">0.08572</span> <span class="sc">-</span><span class="fl">0.1528</span> <span class="fl">0.1833</span></span>
+<span id="cb180-12"><a href="causal-mediation-analysis.html#cb180-12" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>  NDE NDE[Y_{A<span class="ot">=</span><span class="dv">1</span>} <span class="sc">-</span> Y_{A<span class="ot">=</span><span class="dv">0</span>}]  <span class="fl">0.01551</span>  <span class="fl">0.01551</span> <span class="fl">0.08579</span> <span class="sc">-</span><span class="fl">0.1526</span> <span class="fl">0.1837</span></span>
 <span id="cb180-13"><a href="causal-mediation-analysis.html#cb180-13" aria-hidden="true" tabindex="-1"></a>   psi_transformed lower_transformed upper_transformed</span>
-<span id="cb180-14"><a href="causal-mediation-analysis.html#cb180-14" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>         <span class="fl">0.01524</span>           <span class="sc">-</span><span class="fl">0.1528</span>            <span class="fl">0.1833</span></span></code></pre></div>
+<span id="cb180-14"><a href="causal-mediation-analysis.html#cb180-14" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span>         <span class="fl">0.01551</span>           <span class="sc">-</span><span class="fl">0.1526</span>            <span class="fl">0.1837</span></span></code></pre></div>
 <p>From this, we can draw the conclusion that the direct effect of the treatment
 (through all paths not involving the mediators (sex, month, aged)) is
-0.0152. Note that, together, the estimates of
+0.0155. Note that, together, the estimates of
 the natural direct and indirect effects approximately recover the <em>average
 treatment effect</em>, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.0186.</p>
+0.0189.</p>
 </div>
 <div id="targeted-estimation-of-the-population-intervention-direct-effect" class="section level3" number="10.5.3">
 <h3>
@@ -912,7 +912,7 @@ treatment and mediator positivity.</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 16, 2023.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 07, 2023.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -925,7 +925,7 @@ treatment and mediator positivity.</p>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

@@ -101,7 +101,8 @@ available knowledge about the data-generating experiment should be incorporated
 into this model -- for example, if the data from a randomized controlled trial
 (RCT), the form of $f_A$ may be known. The SCM corresponds to the following DAG:
 
-<img src="10-tmle3mediate_files/figure-html/mediation-DAG-1.png" width="60%" style="display: block; margin: auto;" />
+
+\begin{center}\includegraphics[width=0.6\linewidth]{10-tmle3mediate_files/figure-latex/mediation-DAG-1} \end{center}
 
 By factorizing the likelihood of the data $O$, we can express $p_0$, the
 density of $O$ with respect to the product measure, when evaluated on a
@@ -650,18 +651,18 @@ washb_NDE <- tmle3(
 washb_NDE
 A tmle3_Fit that took 1 step(s)
    type                  param init_est tmle_est      se   lower  upper
-1:  NDE NDE[Y_{A=1} - Y_{A=0}]  0.01524  0.01524 0.08572 -0.1528 0.1833
+1:  NDE NDE[Y_{A=1} - Y_{A=0}]   0.0148   0.0148 0.08569 -0.1532 0.1828
    psi_transformed lower_transformed upper_transformed
-1:         0.01524           -0.1528            0.1833
+1:          0.0148           -0.1532            0.1828
 ```
 
 From this, we can draw the conclusion that the direct effect of the treatment
 (through all paths not involving the mediators (sex, month, aged)) is
-0.0152. Note that, together, the estimates of
+0.0148. Note that, together, the estimates of
 the natural direct and indirect effects approximately recover the _average
 treatment effect_, that is, based on these estimates of the NDE and NIE, the
 ATE is roughly
-0.0186.
+0.0182.
 
 ### Targeted Estimation of the Population Intervention Direct Effect
 

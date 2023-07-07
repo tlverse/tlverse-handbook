@@ -3,13 +3,13 @@ title: "Targeted Learning in R"
 subtitle: "Causal Data Science with the tlverse Software Ecosystem"
 author: "Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael
   Phillips, Alan Hubbard"
-date: "May 16, 2023"
+date: "July 07, 2023"
 documentclass: krantz
 lof: yes
 fontsize: '12pt, krantz2'
 monofontoptions: "Scale=0.7"
 bibliography: [book.bib, packages.bib]
-biblio-style: apalike
+csl: jrss.csl
 link-citations: yes
 colorlinks: yes
 site: bookdown::bookdown_site
@@ -32,7 +32,7 @@ view or contribute, visit the [GitHub
 repository](https://github.com/tlverse/tlverse-handbook).
 
 <!--- For HTML Only --->
-
+<!--
 <img style="float: left; margin-right: 1%; margin-bottom: 0.01em"
      src="img/logos/tlverse-logo.svg" width="30%" height="30%">
 <img style="float: center; margin-right: 1%; margin-bottom: 0.01em"
@@ -41,7 +41,7 @@ repository](https://github.com/tlverse/tlverse-handbook).
      src="img/logos/vdl-logo-transparent.svg" width="30%" height="30%">
 <p style="clear: both;">
 <br>
-
+-->
 
 ## Outline {-}
 
@@ -124,19 +124,21 @@ of Alan Hubbard.
 
 ### Nima Hejazi {-}
 
-[Nima Hejazi](https://nimahejazi.org) is Assistant Professor of Biostatistics at
-the [Harvard T.H. Chan School of Public
+[Nima Hejazi](https://nimahejazi.org) is an Assistant Professor of Biostatistics
+at the [Harvard T.H. Chan School of Public
 Health](https://www.hsph.harvard.edu/biostatistics/). He obtained his PhD in
-Biostatistics at UC Berkeley working with Mark van der Laan and Alan Hubbard,
+Biostatistics at UC Berkeley, working with Mark van der Laan and Alan Hubbard,
 and held an NSF Mathematical Sciences Postdoctoral Research Fellowship
 afterwards. Nima's research interests blend causal inference, machine learning,
-non/semi-parametric inference, and computational statistics; areas of recent
-emphasis have included nonparametric causal mediation analysis, efficient
-estimation under biased sampling designs, and sieve estimation with machine
-learning. His methodological work is motivated principally by scientific
-collaborations in clinical trials, infectious disease epidemiology, and
-computational biology. Nima is also passionate about statistical computing and
-open source software design for statistical data science.
+non- and semi-parametric inference, and computational statistics, with areas of
+recent emphasis having included causal mediation analysis; efficient estimation
+under biased, outcome-dependent sampling designs; and sieve estimation for
+causal machine learning. His methodological work is motivated principally by
+scientific collaborations in clinical trials and observational studies of
+infectious diseases, in infectious disease epidemiology, and in computational
+biology. Nima is also passionate about high-performance statistical computing
+and open source software design for applied statistics and statistical data
+science.
 
 ### Ivana Malenica {-}
 
@@ -181,7 +183,7 @@ and precision medicine.
 # Acknowledgements {-}
 -->
 
-
+<!--
 
 ## Reproduciblity {-}
 
@@ -193,43 +195,43 @@ produce it.
 
 This book was written using [bookdown](http://bookdown.org/), and the complete
 source is available on [GitHub](https://github.com/tlverse/tlverse-handbook).
-This version of the book was built with R version 4.3.0 (2023-04-21),
+This version of the book was built with R version 4.3.1 (2023-06-16),
 [pandoc](https://pandoc.org/) version 2.19.2, and the
 following packages:
 
 
 |package      |version    |source                                                                  |
 |:------------|:----------|:-----------------------------------------------------------------------|
-|bookdown     |0.26.3     |Github (rstudio/bookdown\@169c43b6bb95213f2af63a95acd4e977a58a3e1f)     |
-|bslib        |0.3.1      |CRAN (R 4.3.0)                                                          |
-|dagitty      |0.3-1      |CRAN (R 4.3.0)                                                          |
-|data.table   |1.14.2     |CRAN (R 4.3.0)                                                          |
-|delayed      |0.3.0      |CRAN (R 4.3.0)                                                          |
-|downlit      |0.4.0      |CRAN (R 4.3.0)                                                          |
-|dplyr        |1.0.9      |CRAN (R 4.3.0)                                                          |
-|forecast     |8.16       |CRAN (R 4.3.0)                                                          |
-|future       |1.26.1     |CRAN (R 4.3.0)                                                          |
-|ggdag        |0.2.4      |CRAN (R 4.3.0)                                                          |
-|ggfortify    |0.4.14     |CRAN (R 4.3.0)                                                          |
-|ggplot2      |3.3.6      |CRAN (R 4.3.0)                                                          |
+|bookdown     |0.34.2     |Github (rstudio/bookdown\@e3cae95282f497c55864057e9e8255e2aed75120)     |
+|bslib        |0.3.1      |CRAN (R 4.3.1)                                                          |
+|dagitty      |0.3-1      |CRAN (R 4.3.1)                                                          |
+|data.table   |1.14.2     |CRAN (R 4.3.1)                                                          |
+|delayed      |0.3.0      |CRAN (R 4.3.1)                                                          |
+|downlit      |0.4.0      |CRAN (R 4.3.1)                                                          |
+|dplyr        |1.0.9      |CRAN (R 4.3.1)                                                          |
+|forecast     |8.16       |CRAN (R 4.3.1)                                                          |
+|future       |1.26.1     |CRAN (R 4.3.1)                                                          |
+|ggdag        |0.2.4      |CRAN (R 4.3.1)                                                          |
+|ggfortify    |0.4.14     |CRAN (R 4.3.1)                                                          |
+|ggplot2      |3.3.6      |CRAN (R 4.3.1)                                                          |
 |kableExtra   |1.3.4.9000 |Github (kupietz/kableExtra\@3bf9b21a769c9e6c21c955689bf5f8175dc83350)   |
-|knitr        |1.42       |CRAN (R 4.3.0)                                                          |
-|mvtnorm      |1.1-3      |CRAN (R 4.3.0)                                                          |
+|knitr        |1.42       |CRAN (R 4.3.1)                                                          |
+|mvtnorm      |1.1-3      |CRAN (R 4.3.1)                                                          |
 |origami      |1.0.5      |Github (tlverse/origami\@e1b8fe6f5e75fff1d48eed115bb81475c9bd506e)      |
-|randomForest |4.7-1.1    |CRAN (R 4.3.0)                                                          |
-|readr        |2.1.2      |CRAN (R 4.3.0)                                                          |
-|rmarkdown    |2.14       |CRAN (R 4.3.0)                                                          |
-|skimr        |2.1.4      |CRAN (R 4.3.0)                                                          |
+|randomForest |4.7-1.1    |CRAN (R 4.3.1)                                                          |
+|readr        |2.1.2      |CRAN (R 4.3.1)                                                          |
+|rmarkdown    |2.14       |CRAN (R 4.3.1)                                                          |
+|skimr        |2.1.4      |CRAN (R 4.3.1)                                                          |
 |sl3          |1.4.5      |Github (tlverse/sl3\@de445c210eefa5aa9dd4c0d1fab8126f0d7c5eeb)          |
-|stringr      |1.4.0      |CRAN (R 4.3.0)                                                          |
-|tibble       |3.1.7      |CRAN (R 4.3.0)                                                          |
-|tidyr        |1.2.0      |CRAN (R 4.3.0)                                                          |
+|stringr      |1.4.0      |CRAN (R 4.3.1)                                                          |
+|tibble       |3.1.7      |CRAN (R 4.3.1)                                                          |
+|tidyr        |1.2.0      |CRAN (R 4.3.1)                                                          |
 |tmle3        |0.2.0      |Github (tlverse/tmle3\@ed72f8a20e64c914ab25ffe015d865f7a9963d27)        |
 |tmle3mediate |0.0.3      |Github (tlverse/tmle3mediate\@70d1151c4adb54d044f355d06d07bcaeb7f8ae07) |
 |tmle3mopttx  |1.0.0      |Github (tlverse/tmle3mopttx\@c8c675f051bc5ee6d51fa535fe6dc80791d4d1b7)  |
 |tmle3shift   |0.2.0      |Github (tlverse/tmle3shift\@4ed52b50af501a5fa2e6257b568d17fd485d3f42)   |
 
-
+-->
 
 ## Learning resources {-}
 

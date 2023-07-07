@@ -5,9 +5,10 @@ _Ivana Malenica_
 Based on the [`origami` `R` package](https://github.com/tlverse/origami)
 by _Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips_.
 
+\begin{VT1}
+\VH{Learning Objectives}
 
 
-## Learning Objectives{-}
 
 By the end of this chapter you will be able to:
 
@@ -29,47 +30,48 @@ By the end of this chapter you will be able to:
 7. Setup the proper cross-validation structure for the use by the Super Learner
    using the the `origami` `R` package.
 
-
+\end{VT1}
 
 <!--
-RP: 
+RP:
 suggestion to modify some LOs (I am also open to not having LOs).
-LOs should be expressed in terms of the reader and use action verbs. 
+LOs should be expressed in terms of the reader and use action verbs.
 Some ideas for action verbs related to "understanding" are here, within
 "Action Verbs Aligned with Blooms Taxonomy" section:
 https://academiceffectiveness.gatech.edu/assessment-toolkit/developing-student-learning-outcome-statements
 Here's another helpful article:
 https://www.thoughtco.com/common-mistakes-when-writing-learning-objectives-7786
 
-As an example, for LO 2, it can be rephrased by thinking about the answers to 
-these questions and targeting the LO towards them. 
-What specifically does a reader need to understand about a loss, risk, CV? 
-Why is this important for the reader to understand?
+As an example, for LO 2, it can be rephrased by thinking about the answers to
+these questions and targeting the LO towards them. What specifically does a
+reader need to understand about a loss, risk, CV? Why is this important for the
+reader to understand?
 -->
 
 ## Introduction
 
-Following the [_Roadmap for Targeted Learning_](#roadmap), we start to 
-elaborate on the estimation step in the current chapter. In order to generate an 
-estimate of the target parameter, we need to decide how to evaluate the quality 
-of our estimation procedure's performance. The performance, or error, of 
-any algorithm (estimator) corresponds to its generalizability to independent 
-datasets arising from the same data-generating process. Assessment of 
-the performance of an algorithm is extremely important --- it provides a 
-quantitative measure of how well the algorithm performs, and it guides the 
-choice of selecting among a set (or "library") of algorithms. In order to 
-assess the performance of an algorithm, or a library of them, we introduce the concept of a 
-**loss function**, which defines the **risk** or the **expected prediction error**.  
-Our goal is to estimate the true performance (risk) of our estimator. 
-In the next chapter, we elaborate on how to estimate the performance of a library 
-of algorithms in order to choose the best-performing one. In the following, we propose a
-method to do so using the observed data and **cross-validation** procedures implemented 
-in the `origami` package [@coyle2018origami; @coyle-cran-origami].
+Following the [_Roadmap for Targeted Learning_](#roadmap), we start to elaborate
+on the estimation step in the current chapter. In order to generate an estimate
+of the target parameter, we need to decide how to evaluate the quality of our
+estimation procedure's performance. The performance, or error, of any algorithm
+(estimator) corresponds to its generalizability to independent datasets arising
+from the same data-generating process. Assessment of the performance of an
+algorithm is extremely important --- it provides a quantitative measure of how
+well the algorithm performs, and it guides the choice of selecting among a set
+(or "library") of algorithms. In order to assess the performance of an
+algorithm, or a library of them, we introduce the concept of a **loss
+function**, which defines the **risk** or the **expected prediction error**.
+Our goal is to estimate the true performance (risk) of our estimator. In the
+next chapter, we elaborate on how to estimate the performance of a library of
+algorithms in order to choose the best-performing one. In the following, we
+propose a method to do so using the observed data and **cross-validation**
+procedures implemented in the `origami` package [@coyle2018origami;
+@coyle-cran-origami].
 
 ## Background
 
-Ideally, in a data-rich scenario (i.e., one with unlimited observations), we would
-split our dataset into three parts:
+Ideally, in a data-rich scenario (i.e., one with unlimited observations), we
+would split our dataset into three parts:
 
 1. the training set,
 2. the validation set, and
@@ -77,35 +79,35 @@ split our dataset into three parts:
 
 The training set is used to fit algorithm(s) of interest; we evaluate the
 performance of the fit(s) on a validation set, which can be used to estimate
-prediction error (e.g., for algorithm tuning or selection). The final error of the
-selected algorithm is obtained by using the test (or holdout) set, which is
+prediction error (e.g., for algorithm tuning or selection). The final error of
+the selected algorithm is obtained by using the test (or holdout) set, which is
 kept entirely separate such that the algorithms never encounter these
 observations until the final model evaluation step. One might wonder, with
 training data readily available, why not use the training error to evaluate the
 proposed algorithm's performance? Unfortunately, the training error is a biased
-estimate of a fitted algorithm's generalizability, since it uses the same data 
+estimate of a fitted algorithm's generalizability, since it uses the same data
 for fitting and evaluation.
 
 Since data are often scarce, separating a dataset into training, validation and
 test sets can prove too limiting, on account of decreasing the available data
 for use in training by too much. In the absence of a large dataset and a
-designated test set, we must resort to methods that estimate the algorithm's 
-true performance by efficient sample re-use. Re-sampling methods, like the 
+designated test set, we must resort to methods that estimate the algorithm's
+true performance by efficient sample re-use. Re-sampling methods, like the
 bootstrap, involve repeatedly sampling from the training set and fitting the
-algorithms to these samples. While often computationally
-intensive, re-sampling methods are particularly useful for evaluating an 
-algorithm and selecting among a set of them. In addition, they provide 
-more insight on the variability and robustness of a fitted algorithm, relative
-to fitting an algorithm only once to all of the training data.
+algorithms to these samples. While often computationally intensive, re-sampling
+methods are particularly useful for evaluating an algorithm and selecting among
+a set of them. In addition, they provide more insight on the variability and
+robustness of a fitted algorithm, relative to fitting an algorithm only once to
+all of the training data.
 
 <!--
 RP:
-What is meant by "scarce", "by too much", "large dataset" here? We also might 
-want to use CV even when we have thousands of observations, so our assessment of
-the algorithm isn't hinging on a single split. Is the data's size the motivating 
-reason for re-sampling? 
-Ah-ha! I knew you had it somewhere! I think the (some of) message that you're 
-getting across in the paragraph around L380 should be included here. 
+What is meant by "scarce", "by too much", "large dataset" here? We also might
+want to use CV even when we have thousands of observations, so our assessment
+of the algorithm isn't hinging on a single split. Is the data's size the
+motivating reason for re-sampling? Ah-ha! I knew you had it somewhere! I think
+the (some of) message that you're getting across in the paragraph around L380
+should be included here.
 -->
 
 ### Introducing: cross-validation
@@ -128,11 +130,11 @@ data-generating distribution. For further details on the theoretical results, we
 suggest consulting @vdl2003unified, @vdl2004asymptotic, @dudoit2005asymptotics
 and @vaart2006oracle.
 
-The `origami` package provides a suite of tools for cross-validation. In the 
-following, we describe different types of cross-validation schemes readily available 
-in `origami`, introduce the general structure of the `origami` package, and demonstrate 
-the use of these procedures in various applied settings.
----
+The `origami` package provides a suite of tools for cross-validation. In the
+following, we describe different types of cross-validation schemes readily
+available in `origami`, introduce the general structure of the `origami`
+package, and demonstrate the use of these procedures in various applied
+settings.
 
 ## Estimation Roadmap: How does it all fit together?
 
@@ -143,12 +145,12 @@ particular, the unified loss-based estimation framework [@vdl2003unified;
 which relies on cross-validation for estimator construction,
 selection, and performance assessment, consists of three main steps:
 
-1. **Loss function**: 
+1. **Loss function**:
 Define the target parameter as the minimizer of the expected loss (risk) for a
-full data loss function chosen to represent the desired performance measure. By 
-full data, we refer to the complete data including missingness process, for example.
-Map the full data loss function into an observed data loss function, having
-the same expected value and leading to an estimator of risk.
+full data loss function chosen to represent the desired performance measure. By
+full data, we refer to the complete data including missingness process, for
+example. Map the full data loss function into an observed data loss function,
+having the same expected value and leading to an estimator of risk.
 
 2. **Algorithms**:
 Construct a finite collection of candidate estimators of the parameter of
@@ -162,35 +164,37 @@ the overall performance of the resulting estimator.
 ## Example: Cross-validation and Prediction
 
 Having introduced the [Estimation Roadmap](#roadmap), we can more precisely
-define our objective using prediction as an example.
-Let the observed data be defined as $O = (W, Y)$, where a unit
-specific data structure can be written as $O_i = (W_i, Y_i)$, for $i = 1, \ldots, n$.
-We denote $Y_i$ as the outcome/dependent variable of interest, and $W_i$ as a 
-$p$-dimensional set of covariate (predictor) variables. We assume 
-the $n$ units are independent, or conditionally independent, and identically 
-distributed. Let $\psi_0(W)$ denote the target parameter of interest, the 
-quantity we wish to estimate (estimand). For this example, we are interested in estimating the
-conditional expectation of the outcome given the covariates, $\psi_0(W) = \E(Y
-\mid W)$. Following the [Estimation Roadmap](#roadmap), we choose the
-appropriate loss function, $L$, such that $\psi_0(W) = \text{argmin}_{\psi}
-\E_0[L(O, \psi(W))]$. Note that $\psi_0(W)$, the true target parameter, is a 
-minimizer of the risk (expected value of the chosen loss function). 
-The appropriate loss function for conditional expectation with continuous outcome 
-could be a mean squared error, for example. Then we can define $L$ as
-$L(O, \psi(W)) = (Y_i -\psi(W_i)^2$. Note that there can be many different algorithms which 
-estimate the estimand (many different $\psi$s). How do we know how well each of the candidate
-estimators of $\psi_0(W)$ are doing? To pick the best-performing
-candidate estimator and assess its overall performance, we
-use cross-validation. Observations in the training set are used to fit 
-(or train) the estimator, while those in validation set are used to assess 
-the risk of (or validate) it.
+define our objective using prediction as an example. Let the observed data be
+defined as $O = (W, Y)$, where a unit specific data structure can be written as
+$O_i = (W_i, Y_i)$, for $i = 1, \ldots, n$. We denote $Y_i$ as the
+outcome/dependent variable of interest, and $W_i$ as a $p$-dimensional set of
+covariate (predictor) variables. We assume the $n$ units are independent, or
+conditionally independent, and identically distributed. Let $\psi_0(W)$ denote
+the target parameter of interest, the quantity we wish to estimate (estimand).
+For this example, we are interested in estimating the conditional expectation of
+the outcome given the covariates, $\psi_0(W) = \E(Y \mid W)$. Following the
+[Estimation Roadmap](#roadmap), we choose the appropriate loss function, $L$,
+such that $\psi_0(W) = \text{argmin}_{\psi} \E_0[L(O, \psi(W))]$. Note that
+$\psi_0(W)$, the true target parameter, is a minimizer of the risk (expected
+value of the chosen loss function). The appropriate loss function for
+conditional expectation with continuous outcome could be a mean squared error,
+for example. Then we can define $L$ as $L(O, \psi(W)) = (Y_i -\psi(W_i)^2$. Note
+that there can be many different algorithms which estimate the estimand (many
+different $\psi$s). How do we know how well each of the candidate estimators of
+$\psi_0(W)$ are doing? To pick the best-performing candidate estimator and
+assess its overall performance, we use cross-validation. Observations in the
+training set are used to fit (or train) the estimator, while those in validation
+set are used to assess the risk of (or validate) it.
 
 Next, we introduce notation flexible enough to represent any cross-validation
-scheme. In particular, we define a **split vector**, $B_n = (B_n(i): i = 1, \ldots, n) \in
-\{0,1\}^n$. 
-#Note that such a split vector is independent of the empirical distribution $P_n$, as in $B_n$ is not a function of $P_n$, but $P_0$. 
-A realization of $B_n$ defines a random split of the data into training and validation 
-subsets such that if
+scheme. In particular, we define a **split vector**, $B_n = (B_n(i): i = 1,
+\ldots, n) \in \{0,1\}^n$.
+<!--
+Note that such a split vector is independent of the empirical distribution
+$P_n$, as in $B_n$ is not a function of $P_n$, but $P_0$.
+-->
+A realization of $B_n$ defines a random split of the data into training and
+validation subsets such that if
 $$B_n(i) = 0, \ \ \text{i sample is in the training set}$$
 $$B_n(i) = 1, \ \ \text{i sample is in the validation set.}$$
 We can further define $P_{n, B_n}^0$ and $P_{n, B_n}^1$ as the empirical
@@ -214,11 +218,12 @@ maybe it gets annoying for time-series examples. just a thought...
 
 ## Cross-validation schemes in `origami`
 
-A variety of different partitioning schemes exist, each tailored to the
-salient details of the problem of interest, including data size, prevalence of
-the outcome, and dependence structure (between units or across time). 
-In the following, we describe different cross-validation schemes available in the
-`origami` package, and we go on to demonstrate their use in practical data analysis examples.
+A variety of different partitioning schemes exist, each tailored to the salient
+details of the problem of interest, including data size, prevalence of the
+outcome, and dependence structure (between units or across time). In the
+following, we describe different cross-validation schemes available in the
+`origami` package, and we go on to demonstrate their use in practical data
+analysis examples.
 
 ### WASH Benefits Study Example {-}
 
@@ -249,222 +254,24 @@ washb_data <- fread(
 )
 ```
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> whz </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> tr </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> fracode </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> month </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> aged </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> sex </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momage </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momedu </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momheight </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> hfiacat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Nlt18 </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Ncomp </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> watmin </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> elec </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> floor </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> walls </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> roof </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_wardrobe </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_table </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chair </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_khat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chouki </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_tv </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_refrig </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_bike </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_moto </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_sewmach </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_mobile </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 0.00 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 268 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 30 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.4 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.16 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 286 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.8 </td>
-   <td style="text-align:left;"> Moderately Food Insecure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.05 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 264 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.2 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.26 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 252 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.2 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.59 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 336 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.9 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.51 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 304 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 20 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.2 </td>
-   <td style="text-align:left;"> Severely Food Insecure </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-</tbody>
-</table></div>
+
+\begin{tabular}{r|l|l|r|r|l|r|l|r|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat & Nlt18 & Ncomp & watmin & elec & floor & walls & roof & asset\_wardrobe & asset\_table & asset\_chair & asset\_khat & asset\_chouki & asset\_tv & asset\_refrig & asset\_bike & asset\_moto & asset\_sewmach & asset\_mobile\\
+\hline
+0.00 & Control & N05265 & 9 & 268 & male & 30 & Primary (1-5y) & 146.4 & Food Secure & 3 & 11 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.16 & Control & N05265 & 9 & 286 & male & 25 & Primary (1-5y) & 148.8 & Moderately Food Insecure & 2 & 4 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.05 & Control & N08002 & 9 & 264 & male & 25 & Primary (1-5y) & 152.2 & Food Secure & 1 & 10 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.26 & Control & N08002 & 9 & 252 & female & 28 & Primary (1-5y) & 140.2 & Food Secure & 3 & 5 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1\\
+\hline
+-0.59 & Control & N06531 & 9 & 336 & female & 19 & Secondary (>5y) & 150.9 & Food Secure & 2 & 7 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-0.51 & Control & N06531 & 9 & 304 & male & 20 & Secondary (>5y) & 154.2 & Severely Food Insecure & 0 & 3 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+\end{tabular}
 
 Above is a look at the first 30 of the data.
 
@@ -834,10 +641,9 @@ and validation folds?
 -->
 
 <!--
-RP: 
-Should we add stratified cross-validation and clustered cross-validation examples
-with origami?
-I think these are both pretty common
+RP:
+Should we add stratified cross-validation and clustered cross-validation
+examples with origami? I think these are both pretty common
 -->
 
 ### Cross-validation for Time-series Data
@@ -873,7 +679,9 @@ autoplot(AP) +
 t <- length(AP)
 ```
 
-<img src="05-origami_files/figure-html/plot_airpass-1.png" width="80%" style="display: block; margin: auto;" />
+
+
+\begin{center}\includegraphics[width=0.8\linewidth]{05-origami_files/figure-latex/plot_airpass-1} \end{center}
 
 #### Rolling origin
 
@@ -899,10 +707,14 @@ time points, including the original fifteen with which we initially started.
 Then, we evaluate its performance at a (temporal) distance ten time points
 ahead.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_origin.png" alt="Rolling origin CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-1)Rolling origin CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin} 
+
+}
+
+\caption{Rolling origin CV}(\#fig:unnamed-chunk-1)
+\end{figure}
 
 We illustrate the usage of the rolling origin cross-validation scheme with
 `origami` below, using the `folds_rolling_origin(n, first_window,
@@ -987,10 +799,14 @@ training sets comparable over time (and across folds), unlike under the rolling
 origin cross-validation scheme. We then evaluate the performance of the
 candidate learning algorithm on 10 time points in the future.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_window.png" alt="Rolling window CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-2)Rolling window CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window} 
+
+}
+
+\caption{Rolling window CV}(\#fig:unnamed-chunk-2)
+\end{figure}
 
 We demonstrate the usage of the rolling window cross-validation scheme with
 `origami` below, using the `folds_rolling_window(n, window_size,
@@ -1062,10 +878,14 @@ time, V, first_window, validation_size, gap, batch)` function. In the figure
 below, we show $V=2$ folds, alongside two time-series (rolling origin)
 cross-validation folds.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_origin_v_fold.png" alt="Rolling origin V-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-3)Rolling origin V-fold CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_origin_v_fold} 
+
+}
+
+\caption{Rolling origin V-fold CV}(\#fig:unnamed-chunk-3)
+\end{figure}
 
 #### Rolling window with $V$-fold
 
@@ -1077,10 +897,14 @@ through `origami` via the `folds_vfold_rolling_window_pooled(n, t, id, time, V,
 window_size, validation_size, gap, batch)` function. The figure below displays
 $V=2$ folds and two time-series (rolling window) cross-validation folds.
 
-<div class="figure" style="text-align: center">
-<img src="img/png/rolling_window_v_fold.png" alt="Rolling window V-fold CV" width="80%" />
-<p class="caption">(\#fig:unnamed-chunk-4)Rolling window V-fold CV</p>
-</div>
+\begin{figure}
+
+{\centering \includegraphics[width=0.8\linewidth]{img/png/rolling_window_v_fold} 
+
+}
+
+\caption{Rolling window V-fold CV}(\#fig:unnamed-chunk-4)
+\end{figure}
 
 ## General workflow of `origami`
 
@@ -1201,222 +1025,24 @@ covars <- colnames(washb_data)[-which(names(washb_data) == outcome)]
 
 Here's a look at the data:
 
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; "><table class="table" style="margin-left: auto; margin-right: auto;">
- <thead>
-  <tr>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> whz </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> tr </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> fracode </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> month </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> aged </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> sex </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momage </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momedu </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> momheight </th>
-   <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> hfiacat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Nlt18 </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> Ncomp </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> watmin </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> elec </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> floor </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> walls </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> roof </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_wardrobe </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_table </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chair </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_khat </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_chouki </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_tv </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_refrig </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_bike </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_moto </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_sewmach </th>
-   <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;"> asset_mobile </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:right;"> 0.00 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 268 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 30 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 146.4 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 11 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.16 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N05265 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 286 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 148.8 </td>
-   <td style="text-align:left;"> Moderately Food Insecure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 4 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.05 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 264 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 25 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 152.2 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 10 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -1.26 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N08002 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 252 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 28 </td>
-   <td style="text-align:left;"> Primary (1-5y) </td>
-   <td style="text-align:right;"> 140.2 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 5 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.59 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 336 </td>
-   <td style="text-align:left;"> female </td>
-   <td style="text-align:right;"> 19 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 150.9 </td>
-   <td style="text-align:left;"> Food Secure </td>
-   <td style="text-align:right;"> 2 </td>
-   <td style="text-align:right;"> 7 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-  <tr>
-   <td style="text-align:right;"> -0.51 </td>
-   <td style="text-align:left;"> Control </td>
-   <td style="text-align:left;"> N06531 </td>
-   <td style="text-align:right;"> 9 </td>
-   <td style="text-align:right;"> 304 </td>
-   <td style="text-align:left;"> male </td>
-   <td style="text-align:right;"> 20 </td>
-   <td style="text-align:left;"> Secondary (&gt;5y) </td>
-   <td style="text-align:right;"> 154.2 </td>
-   <td style="text-align:left;"> Severely Food Insecure </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 3 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 0 </td>
-   <td style="text-align:right;"> 1 </td>
-  </tr>
-</tbody>
-</table></div>
+
+\begin{tabular}{r|l|l|r|r|l|r|l|r|l|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r|r}
+\hline
+whz & tr & fracode & month & aged & sex & momage & momedu & momheight & hfiacat & Nlt18 & Ncomp & watmin & elec & floor & walls & roof & asset\_wardrobe & asset\_table & asset\_chair & asset\_khat & asset\_chouki & asset\_tv & asset\_refrig & asset\_bike & asset\_moto & asset\_sewmach & asset\_mobile\\
+\hline
+0.00 & Control & N05265 & 9 & 268 & male & 30 & Primary (1-5y) & 146.4 & Food Secure & 3 & 11 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 1 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.16 & Control & N05265 & 9 & 286 & male & 25 & Primary (1-5y) & 148.8 & Moderately Food Insecure & 2 & 4 & 0 & 1 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.05 & Control & N08002 & 9 & 264 & male & 25 & Primary (1-5y) & 152.2 & Food Secure & 1 & 10 & 0 & 0 & 0 & 1 & 1 & 0 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-1.26 & Control & N08002 & 9 & 252 & female & 28 & Primary (1-5y) & 140.2 & Food Secure & 3 & 5 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 1\\
+\hline
+-0.59 & Control & N06531 & 9 & 336 & female & 19 & Secondary (>5y) & 150.9 & Food Secure & 2 & 7 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+-0.51 & Control & N06531 & 9 & 304 & male & 20 & Secondary (>5y) & 154.2 & Severely Food Insecure & 0 & 3 & 1 & 1 & 0 & 1 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 1\\
+\hline
+\end{tabular}
 
 Let's remind ourselves of the covariates to be used in the prediction step:
 

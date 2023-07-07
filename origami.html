@@ -7,7 +7,7 @@
 <title>Chapter 5 Cross-validation | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <meta name="description" content="Ivana Malenica Based on the origami R package by Jeremy Coyle, Nima Hejazi, Ivana Malenica and Rachael Phillips. Learning Objectives By the end of this chapter you will be able to: Differentiate...">
-<meta name="generator" content="bookdown 0.26.3 with bs4_book()">
+<meta name="generator" content="bookdown 0.34.2 with bs4_book()">
 <meta property="og:title" content="Chapter 5 Cross-validation | Targeted Learning in R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://tlverse.org/tlverse-handbook/origami.html">
@@ -131,48 +131,48 @@ cross-validate the proposed function using the <code>origami</code> <code>R</cod
 using the the <code>origami</code> <code>R</code> package.</p></li>
 </ol>
 <!--
-RP: 
+RP:
 suggestion to modify some LOs (I am also open to not having LOs).
-LOs should be expressed in terms of the reader and use action verbs. 
+LOs should be expressed in terms of the reader and use action verbs.
 Some ideas for action verbs related to "understanding" are here, within
 "Action Verbs Aligned with Blooms Taxonomy" section:
 https://academiceffectiveness.gatech.edu/assessment-toolkit/developing-student-learning-outcome-statements
 Here's another helpful article:
 https://www.thoughtco.com/common-mistakes-when-writing-learning-objectives-7786
 
-As an example, for LO 2, it can be rephrased by thinking about the answers to 
-these questions and targeting the LO towards them. 
-What specifically does a reader need to understand about a loss, risk, CV? 
-Why is this important for the reader to understand?
+As an example, for LO 2, it can be rephrased by thinking about the answers to
+these questions and targeting the LO towards them. What specifically does a
+reader need to understand about a loss, risk, CV? Why is this important for the
+reader to understand?
 -->
 </div>
 <div id="introduction-2" class="section level2" number="5.1">
 <h2>
 <span class="header-section-number">5.1</span> Introduction<a class="anchor" aria-label="anchor" href="#introduction-2"><i class="fas fa-link"></i></a>
 </h2>
-<p>Following the <a href="roadmap.html#roadmap"><em>Roadmap for Targeted Learning</em></a>, we start to
-elaborate on the estimation step in the current chapter. In order to generate an
-estimate of the target parameter, we need to decide how to evaluate the quality
-of our estimation procedure’s performance. The performance, or error, of
-any algorithm (estimator) corresponds to its generalizability to independent
-datasets arising from the same data-generating process. Assessment of
-the performance of an algorithm is extremely important — it provides a
-quantitative measure of how well the algorithm performs, and it guides the
-choice of selecting among a set (or “library”) of algorithms. In order to
-assess the performance of an algorithm, or a library of them, we introduce the concept of a
-<strong>loss function</strong>, which defines the <strong>risk</strong> or the <strong>expected prediction error</strong>.<br>
-Our goal is to estimate the true performance (risk) of our estimator.
-In the next chapter, we elaborate on how to estimate the performance of a library
-of algorithms in order to choose the best-performing one. In the following, we propose a
-method to do so using the observed data and <strong>cross-validation</strong> procedures implemented
-in the <code>origami</code> package <span class="citation">(<a href="references.html#ref-coyle2018origami" role="doc-biblioref">Coyle and Hejazi 2018</a>; <a href="references.html#ref-coyle-cran-origami" role="doc-biblioref">Coyle et al., n.d.</a>)</span>.</p>
+<p>Following the <a href="roadmap.html#roadmap"><em>Roadmap for Targeted Learning</em></a>, we start to elaborate
+on the estimation step in the current chapter. In order to generate an estimate
+of the target parameter, we need to decide how to evaluate the quality of our
+estimation procedure’s performance. The performance, or error, of any algorithm
+(estimator) corresponds to its generalizability to independent datasets arising
+from the same data-generating process. Assessment of the performance of an
+algorithm is extremely important — it provides a quantitative measure of how
+well the algorithm performs, and it guides the choice of selecting among a set
+(or “library”) of algorithms. In order to assess the performance of an
+algorithm, or a library of them, we introduce the concept of a <strong>loss
+function</strong>, which defines the <strong>risk</strong> or the <strong>expected prediction error</strong>.
+Our goal is to estimate the true performance (risk) of our estimator. In the
+next chapter, we elaborate on how to estimate the performance of a library of
+algorithms in order to choose the best-performing one. In the following, we
+propose a method to do so using the observed data and <strong>cross-validation</strong>
+procedures implemented in the <code>origami</code> package <span class="citation">(<a href="references.html#ref-coyle-cran-origami" role="doc-biblioref">Coyle <em>et al.</em>, n.d.</a>; <a href="references.html#ref-coyle2018origami" role="doc-biblioref">Coyle and Hejazi, 2018</a>)</span>.</p>
 </div>
 <div id="background" class="section level2" number="5.2">
 <h2>
 <span class="header-section-number">5.2</span> Background<a class="anchor" aria-label="anchor" href="#background"><i class="fas fa-link"></i></a>
 </h2>
-<p>Ideally, in a data-rich scenario (i.e., one with unlimited observations), we would
-split our dataset into three parts:</p>
+<p>Ideally, in a data-rich scenario (i.e., one with unlimited observations), we
+would split our dataset into three parts:</p>
 <ol style="list-style-type: decimal">
 <li>the training set,</li>
 <li>the validation set, and</li>
@@ -180,8 +180,8 @@ split our dataset into three parts:</p>
 </ol>
 <p>The training set is used to fit algorithm(s) of interest; we evaluate the
 performance of the fit(s) on a validation set, which can be used to estimate
-prediction error (e.g., for algorithm tuning or selection). The final error of the
-selected algorithm is obtained by using the test (or holdout) set, which is
+prediction error (e.g., for algorithm tuning or selection). The final error of
+the selected algorithm is obtained by using the test (or holdout) set, which is
 kept entirely separate such that the algorithms never encounter these
 observations until the final model evaluation step. One might wonder, with
 training data readily available, why not use the training error to evaluate the
@@ -194,19 +194,19 @@ for use in training by too much. In the absence of a large dataset and a
 designated test set, we must resort to methods that estimate the algorithm’s
 true performance by efficient sample re-use. Re-sampling methods, like the
 bootstrap, involve repeatedly sampling from the training set and fitting the
-algorithms to these samples. While often computationally
-intensive, re-sampling methods are particularly useful for evaluating an
-algorithm and selecting among a set of them. In addition, they provide
-more insight on the variability and robustness of a fitted algorithm, relative
-to fitting an algorithm only once to all of the training data.</p>
+algorithms to these samples. While often computationally intensive, re-sampling
+methods are particularly useful for evaluating an algorithm and selecting among
+a set of them. In addition, they provide more insight on the variability and
+robustness of a fitted algorithm, relative to fitting an algorithm only once to
+all of the training data.</p>
 <!--
 RP:
-What is meant by "scarce", "by too much", "large dataset" here? We also might 
-want to use CV even when we have thousands of observations, so our assessment of
-the algorithm isn't hinging on a single split. Is the data's size the motivating 
-reason for re-sampling? 
-Ah-ha! I knew you had it somewhere! I think the (some of) message that you're 
-getting across in the paragraph around L380 should be included here. 
+What is meant by "scarce", "by too much", "large dataset" here? We also might
+want to use CV even when we have thousands of observations, so our assessment
+of the algorithm isn't hinging on a single split. Is the data's size the
+motivating reason for re-sampling? Ah-ha! I knew you had it somewhere! I think
+the (some of) message that you're getting across in the paragraph around L380
+should be included here.
 -->
 <div id="introducing-cross-validation" class="section level3" number="5.2.1">
 <h3>
@@ -226,13 +226,13 @@ properties. The asymptotic optimality results state that the cross-validated
 selector performs (in terms of risk) asymptotically as well as an optimal oracle
 selector — a hypothetical procedure with free access to the true, unknown
 data-generating distribution. For further details on the theoretical results, we
-suggest consulting <span class="citation">van der Laan and Dudoit (<a href="references.html#ref-vdl2003unified" role="doc-biblioref">2003</a>)</span>, <span class="citation">van der Laan, Dudoit, and Keles (<a href="references.html#ref-vdl2004asymptotic" role="doc-biblioref">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics" role="doc-biblioref">2005</a>)</span>
-and <span class="citation">van der Vaart, Dudoit, and van der Laan (<a href="references.html#ref-vaart2006oracle" role="doc-biblioref">2006</a>)</span>.</p>
+suggest consulting <span class="citation">van der Laan and Dudoit (<a href="references.html#ref-vdl2003unified" role="doc-biblioref">2003</a>)</span>, <span class="citation">van der Laan <em>et al.</em> (<a href="references.html#ref-vdl2004asymptotic" role="doc-biblioref">2004</a>)</span>, <span class="citation">Dudoit and van der Laan (<a href="references.html#ref-dudoit2005asymptotics" role="doc-biblioref">2005</a>)</span>
+and <span class="citation">van der Vaart <em>et al.</em> (<a href="references.html#ref-vaart2006oracle" role="doc-biblioref">2006</a>)</span>.</p>
 <p>The <code>origami</code> package provides a suite of tools for cross-validation. In the
-following, we describe different types of cross-validation schemes readily available
-in <code>origami</code>, introduce the general structure of the <code>origami</code> package, and demonstrate
-the use of these procedures in various applied settings.
-—</p>
+following, we describe different types of cross-validation schemes readily
+available in <code>origami</code>, introduce the general structure of the <code>origami</code>
+package, and demonstrate the use of these procedures in various applied
+settings.</p>
 </div>
 </div>
 <div id="estimation-roadmap-how-does-it-all-fit-together" class="section level2" number="5.3">
@@ -241,16 +241,16 @@ the use of these procedures in various applied settings.
 </h2>
 <p>Similarly to how we defined the <a href="roadmap.html#roadmap"><em>Roadmap for Targeted Learning</em></a>, we
 can define the <strong>Estimation Roadmap</strong> as a guide for the estimation process. In
-particular, the unified loss-based estimation framework <span class="citation">(<a href="references.html#ref-vdl2003unified" role="doc-biblioref">van der Laan and Dudoit 2003</a>; <a href="references.html#ref-vdl2004asymptotic" role="doc-biblioref">van der Laan, Dudoit, and Keles 2004</a>; <a href="references.html#ref-dudoit2005asymptotics" role="doc-biblioref">Dudoit and van der Laan 2005</a>; <a href="references.html#ref-vaart2006oracle" role="doc-biblioref">van der Vaart, Dudoit, and van der Laan 2006</a>; <a href="references.html#ref-vdl2007super" role="doc-biblioref">van der Laan, Polley, and Hubbard 2007</a>)</span>,
+particular, the unified loss-based estimation framework <span class="citation">(<a href="references.html#ref-dudoit2005asymptotics" role="doc-biblioref">Dudoit and van der Laan, 2005</a>; <a href="references.html#ref-vdl2004asymptotic" role="doc-biblioref">van der Laan <em>et al.</em>, 2004</a>, <a href="references.html#ref-vdl2007super" role="doc-biblioref">2007</a>; <a href="references.html#ref-vdl2003unified" role="doc-biblioref">van der Laan and Dudoit, 2003</a>; <a href="references.html#ref-vaart2006oracle" role="doc-biblioref">van der Vaart <em>et al.</em>, 2006</a>)</span>,
 which relies on cross-validation for estimator construction,
 selection, and performance assessment, consists of three main steps:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Loss function</strong>:
 Define the target parameter as the minimizer of the expected loss (risk) for a
 full data loss function chosen to represent the desired performance measure. By
-full data, we refer to the complete data including missingness process, for example.
-Map the full data loss function into an observed data loss function, having
-the same expected value and leading to an estimator of risk.</p></li>
+full data, we refer to the complete data including missingness process, for
+example. Map the full data loss function into an observed data loss function,
+having the same expected value and leading to an estimator of risk.</p></li>
 <li><p><strong>Algorithms</strong>:
 Construct a finite collection of candidate estimators of the parameter of
 interest.</p></li>
@@ -265,31 +265,35 @@ the overall performance of the resulting estimator.</p></li>
 <span class="header-section-number">5.4</span> Example: Cross-validation and Prediction<a class="anchor" aria-label="anchor" href="#example-cross-validation-and-prediction"><i class="fas fa-link"></i></a>
 </h2>
 <p>Having introduced the <a href="roadmap.html#roadmap">Estimation Roadmap</a>, we can more precisely
-define our objective using prediction as an example.
-Let the observed data be defined as <span class="math inline">\(O = (W, Y)\)</span>, where a unit
-specific data structure can be written as <span class="math inline">\(O_i = (W_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>.
-We denote <span class="math inline">\(Y_i\)</span> as the outcome/dependent variable of interest, and <span class="math inline">\(W_i\)</span> as a
-<span class="math inline">\(p\)</span>-dimensional set of covariate (predictor) variables. We assume
-the <span class="math inline">\(n\)</span> units are independent, or conditionally independent, and identically
-distributed. Let <span class="math inline">\(\psi_0(W)\)</span> denote the target parameter of interest, the
-quantity we wish to estimate (estimand). For this example, we are interested in estimating the
-conditional expectation of the outcome given the covariates, <span class="math inline">\(\psi_0(W) = \E(Y \mid W)\)</span>. Following the <a href="roadmap.html#roadmap">Estimation Roadmap</a>, we choose the
-appropriate loss function, <span class="math inline">\(L\)</span>, such that <span class="math inline">\(\psi_0(W) = \text{argmin}_{\psi} \E_0[L(O, \psi(W))]\)</span>. Note that <span class="math inline">\(\psi_0(W)\)</span>, the true target parameter, is a
-minimizer of the risk (expected value of the chosen loss function).
-The appropriate loss function for conditional expectation with continuous outcome
-could be a mean squared error, for example. Then we can define <span class="math inline">\(L\)</span> as
-<span class="math inline">\(L(O, \psi(W)) = (Y_i -\psi(W_i)^2\)</span>. Note that there can be many different algorithms which
-estimate the estimand (many different <span class="math inline">\(\psi\)</span>s). How do we know how well each of the candidate
-estimators of <span class="math inline">\(\psi_0(W)\)</span> are doing? To pick the best-performing
-candidate estimator and assess its overall performance, we
-use cross-validation. Observations in the training set are used to fit
-(or train) the estimator, while those in validation set are used to assess
-the risk of (or validate) it.</p>
+define our objective using prediction as an example. Let the observed data be
+defined as <span class="math inline">\(O = (W, Y)\)</span>, where a unit specific data structure can be written as
+<span class="math inline">\(O_i = (W_i, Y_i)\)</span>, for <span class="math inline">\(i = 1, \ldots, n\)</span>. We denote <span class="math inline">\(Y_i\)</span> as the
+outcome/dependent variable of interest, and <span class="math inline">\(W_i\)</span> as a <span class="math inline">\(p\)</span>-dimensional set of
+covariate (predictor) variables. We assume the <span class="math inline">\(n\)</span> units are independent, or
+conditionally independent, and identically distributed. Let <span class="math inline">\(\psi_0(W)\)</span> denote
+the target parameter of interest, the quantity we wish to estimate (estimand).
+For this example, we are interested in estimating the conditional expectation of
+the outcome given the covariates, <span class="math inline">\(\psi_0(W) = \E(Y \mid W)\)</span>. Following the
+<a href="roadmap.html#roadmap">Estimation Roadmap</a>, we choose the appropriate loss function, <span class="math inline">\(L\)</span>,
+such that <span class="math inline">\(\psi_0(W) = \text{argmin}_{\psi} \E_0[L(O, \psi(W))]\)</span>. Note that
+<span class="math inline">\(\psi_0(W)\)</span>, the true target parameter, is a minimizer of the risk (expected
+value of the chosen loss function). The appropriate loss function for
+conditional expectation with continuous outcome could be a mean squared error,
+for example. Then we can define <span class="math inline">\(L\)</span> as <span class="math inline">\(L(O, \psi(W)) = (Y_i -\psi(W_i)^2\)</span>. Note
+that there can be many different algorithms which estimate the estimand (many
+different <span class="math inline">\(\psi\)</span>s). How do we know how well each of the candidate estimators of
+<span class="math inline">\(\psi_0(W)\)</span> are doing? To pick the best-performing candidate estimator and
+assess its overall performance, we use cross-validation. Observations in the
+training set are used to fit (or train) the estimator, while those in validation
+set are used to assess the risk of (or validate) it.</p>
 <p>Next, we introduce notation flexible enough to represent any cross-validation
 scheme. In particular, we define a <strong>split vector</strong>, <span class="math inline">\(B_n = (B_n(i): i = 1, \ldots, n) \in \{0,1\}^n\)</span>.
-#Note that such a split vector is independent of the empirical distribution <span class="math inline">\(P_n\)</span>, as in <span class="math inline">\(B_n\)</span> is not a function of <span class="math inline">\(P_n\)</span>, but <span class="math inline">\(P_0\)</span>.
-A realization of <span class="math inline">\(B_n\)</span> defines a random split of the data into training and validation
-subsets such that if
+<!--
+Note that such a split vector is independent of the empirical distribution
+$P_n$, as in $B_n$ is not a function of $P_n$, but $P_0$.
+-->
+A realization of <span class="math inline">\(B_n\)</span> defines a random split of the data into training and
+validation subsets such that if
 <span class="math display">\[B_n(i) = 0, \ \ \text{i sample is in the training set}\]</span>
 <span class="math display">\[B_n(i) = 1, \ \ \text{i sample is in the validation set.}\]</span>
 We can further define <span class="math inline">\(P_{n, B_n}^0\)</span> and <span class="math inline">\(P_{n, B_n}^1\)</span> as the empirical
@@ -313,11 +317,12 @@ maybe it gets annoying for time-series examples. just a thought...
 <h2>
 <span class="header-section-number">5.5</span> Cross-validation schemes in <code>origami</code><a class="anchor" aria-label="anchor" href="#cross-validation-schemes-in-origami"><i class="fas fa-link"></i></a>
 </h2>
-<p>A variety of different partitioning schemes exist, each tailored to the
-salient details of the problem of interest, including data size, prevalence of
-the outcome, and dependence structure (between units or across time).
-In the following, we describe different cross-validation schemes available in the
-<code>origami</code> package, and we go on to demonstrate their use in practical data analysis examples.</p>
+<p>A variety of different partitioning schemes exist, each tailored to the salient
+details of the problem of interest, including data size, prevalence of the
+outcome, and dependence structure (between units or across time). In the
+following, we describe different cross-validation schemes available in the
+<code>origami</code> package, and we go on to demonstrate their use in practical data
+analysis examples.</p>
 <div id="wash-benefits-study-example" class="section level3 unnumbered">
 <h3>WASH Benefits Study Example<a class="anchor" aria-label="anchor" href="#wash-benefits-study-example"><i class="fas fa-link"></i></a>
 </h3>
@@ -1249,7 +1254,7 @@ random) new training and validation partitions of the dataset each time. In
 contrast to the Monte Carlo cross-validation scheme, the total number of sampled
 units in training and validation sets (i.e., the sizes of the two partitions)
 across folds is not held constant. Also, as the name suggests, sampling is
-performed with replacement (as in the bootstrap <span class="citation">(<a href="references.html#ref-davison1997bootstrap" role="doc-biblioref">Davison and Hinkley 1997</a>)</span>), hence
+performed with replacement (as in the bootstrap <span class="citation">(<a href="references.html#ref-davison1997bootstrap" role="doc-biblioref">Davison and Hinkley, 1997</a>)</span>), hence
 the exact same observational units may be included in multiple training sets.
 The proportion of observational units in the validation sets is a random
 variable, with expectation <span class="math inline">\(\sim 0.368\)</span>.
@@ -1298,10 +1303,9 @@ nh: should we comment briefly on the displayed structure of the training
 and validation folds?
 -->
 <!--
-RP: 
-Should we add stratified cross-validation and clustered cross-validation examples
-with origami?
-I think these are both pretty common
+RP:
+Should we add stratified cross-validation and clustered cross-validation
+examples with origami? I think these are both pretty common
 -->
 </div>
 </div>
@@ -1601,7 +1605,7 @@ containing whatever fold-specific outputs are desired.</p>
 <code>future_lapply()</code> (a parallelized variant of the same). In this way,
 <code><a href="http://tlverse.org/origami/reference/cross_validate.html">cross_validate()</a></code> can be easily parallelized by specifying a parallelization
 scheme (i.e., a <code>plan</code> from the <a href="https://Cran.R-project.org/package=future">future parallelization framework for
-<code>R</code></a> <span class="citation">(<a href="references.html#ref-bengtsson2021unifying" role="doc-biblioref">Bengtsson 2021</a>)</span>). The
+<code>R</code></a> <span class="citation">(<a href="references.html#ref-bengtsson2021unifying" role="doc-biblioref">Bengtsson, 2021</a>)</span>). The
 application of <code><a href="http://tlverse.org/origami/reference/cross_validate.html">cross_validate()</a></code> generates a list of results, matching the
 customized <code>list</code> specified in the relevant <code>cv_fun()</code>. As noted above, each
 call to <code>cv_fun()</code> itself returns a <code>list</code> of results, with different named
@@ -2457,7 +2461,7 @@ estimate of the linear regression model’s error is larger!</p>
 </h3>
 <p>To examine <code>origami</code> further, let’s return to our example analysis using the
 WASH Benefits dataset. Here, we will write a new <code>cv_fun()</code> function. As an
-example, we will use Breiman’s random forest algorithm <span class="citation">(<a href="references.html#ref-breiman2001random" role="doc-biblioref">Breiman 2001</a>)</span>,
+example, we will use Breiman’s random forest algorithm <span class="citation">(<a href="references.html#ref-breiman2001random" role="doc-biblioref">Breiman, 2001</a>)</span>,
 implemented in the <code><a href="https://rdrr.io/pkg/randomForest/man/randomForest.html">randomForest()</a></code> function (from the <code>randomForest</code> package):</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># make sure to load the package!</span>
@@ -2785,7 +2789,7 @@ performance of the learning algorithm.</li>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 16, 2023.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 07, 2023.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -2798,7 +2802,7 @@ performance of the learning algorithm.</li>
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');

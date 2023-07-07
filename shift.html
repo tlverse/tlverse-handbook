@@ -7,7 +7,7 @@
 <title>Chapter 9 Stochastic Treatment Regimes | Targeted Learning in R</title>
 <meta name="author" content="Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard">
 <meta name="description" content="Nima Hejazi Featuring the tmle3shift R package.  Learning Objectives Differentiate stochastic treatment regimes from static, dynamic, and optimal dynamic treatment regimes. Describe how a...">
-<meta name="generator" content="bookdown 0.26.3 with bs4_book()">
+<meta name="generator" content="bookdown 0.34.2 with bs4_book()">
 <meta property="og:title" content="Chapter 9 Stochastic Treatment Regimes | Targeted Learning in R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="https://tlverse.org/tlverse-handbook/shift.html">
@@ -150,7 +150,7 @@ cannot easily be applied. Notably, the resultant causal effects conveniently are
 endowed with an interpretation echoing that of ordinary regression adjustment.</p>
 <p>In the next chapter, we will introduce two alternative uses of stochastic
 interventions – a recently formulated intervention applicable to binary
-treatment variables <span class="citation">(<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">Kennedy 2019</a>)</span> and the definition of causal
+treatment variables <span class="citation">(<a href="references.html#ref-kennedy2019nonparametric" role="doc-biblioref">Kennedy, 2019</a>)</span> and the definition of causal
 effects in the presence of post-treatment, or mediating, variables. Here, we
 will focus on the tools provided in the <a href="https://github.com/tlverse/tmle3shift"><code>tmle3shift</code> R
 package</a>, which exposes targeted minimum
@@ -158,7 +158,7 @@ loss-based estimators of the causal effects of stochastic interventions that
 additively shift the observed value of the treatment variable. More
 comprehensive, technical presentations of some aspects of the material in this
 chapter appear in <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2012population" role="doc-biblioref">2012</a>)</span>, <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">2018</a>)</span>,
-<span class="citation">Hejazi et al. (<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">2020</a>)</span>, and <span class="citation">Hejazi (<a href="references.html#ref-hejazi2021semiparametric" role="doc-biblioref">2021</a>)</span>.</p>
+<span class="citation">Hejazi, van der Laan, <em>et al.</em> (<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">2020</a>)</span>, and <span class="citation">Hejazi (<a href="references.html#ref-hejazi2021semiparametric" role="doc-biblioref">2021</a>)</span>.</p>
 </div>
 <div id="data-structure-and-notation-1" class="section level2" number="9.2">
 <h2>
@@ -236,11 +236,11 @@ total effects of such stochastic interventions.</p>
 density <span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span>, in practice, it is often chosen based on
 knowledge of the natural (or pre-intervention) density <span class="math inline">\(g(A \mid W)\)</span>. When
 <span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span> is <em>piecewise smooth invertible</em> (more below)
-<span class="citation">(<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">Haneuse and Rotnitzky 2013</a>)</span>, there is a direct correspondence between the
+<span class="citation">(<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">Haneuse and Rotnitzky, 2013</a>)</span>, there is a direct correspondence between the
 post-intervention density <span class="math inline">\(g_{A_{\delta}}(A \mid W)\)</span> and a function <span class="math inline">\(d(A, W; \delta)\)</span> that maps an observed pair <span class="math inline">\(\{A, W\}\)</span> to the post-intervention quantity
 <span class="math inline">\(A_{\delta}\)</span>. In such cases, the stochastic intervention, defined by <span class="math inline">\(d(A, W; \delta)\)</span>, is said to depend on the natural value of treatment and has been
-termed a <em>modified treatment policy</em> (MTP) <span class="citation">(<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">Haneuse and Rotnitzky 2013</a>; <a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">Dı́az and van der Laan 2018</a>; <a href="references.html#ref-hejazi2021semiparametric" role="doc-biblioref">Hejazi 2021</a>)</span>. <span class="citation">Haneuse and Rotnitzky (<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">2013</a>)</span> and
-<span class="citation">Young, Hernán, and Robins (<a href="references.html#ref-young2014identification" role="doc-biblioref">2014</a>)</span> provide detailed discussions contrasting the
+termed a <em>modified treatment policy</em> (MTP) <span class="citation">(<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">Dı́az and van der Laan, 2018</a>; <a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">Haneuse and Rotnitzky, 2013</a>; <a href="references.html#ref-hejazi2021semiparametric" role="doc-biblioref">Hejazi, 2021</a>)</span>. <span class="citation">Haneuse and Rotnitzky (<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">2013</a>)</span> and
+<span class="citation">Young <em>et al.</em> (<a href="references.html#ref-young2014identification" role="doc-biblioref">2014</a>)</span> provide detailed discussions contrasting the
 interpretations of the causal effects under modified treatment policies and
 general stochastic interventions.</p>
 <div class="definition">
@@ -277,7 +277,7 @@ result of a clinic policy encouraging individuals to consume <span class="math i
 vitamin pills (<span class="math inline">\(A \delta\)</span>) than they would normally be recommended (<span class="math inline">\(A\)</span>) based
 on their baseline characteristics <span class="math inline">\(W\)</span>. This class of stochastic interventions
 was introduced by <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2012population" role="doc-biblioref">2012</a>)</span> and has been further discussed in
-<span class="citation">Haneuse and Rotnitzky (<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">2013</a>)</span>, <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">2018</a>)</span>, <span class="citation">Hejazi et al. (<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">2020</a>)</span>, and
+<span class="citation">Haneuse and Rotnitzky (<a href="references.html#ref-haneuse2013estimation" role="doc-biblioref">2013</a>)</span>, <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2018stochastic" role="doc-biblioref">2018</a>)</span>, <span class="citation">Hejazi, van der Laan, <em>et al.</em> (<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">2020</a>)</span>, and
 <span class="citation">Hejazi (<a href="references.html#ref-hejazi2021semiparametric" role="doc-biblioref">2021</a>)</span>. This class of interventions may be expressed as a
 general stochastic intervention, as per <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2012population" role="doc-biblioref">2012</a>)</span>, by considering the
 random draw <span class="math inline">\(\P_{A_{\delta}}(g_{0, A})(A = a \mid W) = g_{0,A}(a - \delta(W) \mid W)\)</span>.</p>
@@ -405,7 +405,7 @@ computed
 allowing for Wald-style confidence intervals at coverage level <span class="math inline">\((1 - \alpha)\)</span> to
 be computed as <span class="math inline">\(\psi_n \pm z_{(1 - \alpha/2)} \cdot \sigma_n / \sqrt{n}\)</span>. Under
 certain conditions, the resampling based on the bootstrap may also be used to
-compute <span class="math inline">\(\sigma_n^2\)</span> <span class="citation">(<a href="references.html#ref-vdl2011targeted" role="doc-biblioref">van der Laan and Rose 2011</a>)</span>.</p>
+compute <span class="math inline">\(\sigma_n^2\)</span> <span class="citation">(<a href="references.html#ref-vdl2011targeted" role="doc-biblioref">van der Laan and Rose, 2011</a>)</span>.</p>
 <!--
 Recall that the asymptotic distribution of TML estimators has been studied
 thoroughly:
@@ -422,7 +422,7 @@ readily admits the conclusion that
 $\psi_n - \psi_0 = (P_n - P_0) \cdot D(P_0) + R(\hat{P}^{\star}, P_0)$.
 
 Under the additional condition that the remainder term $R(\hat{P}^{\star},
-P_0)$ decays as $o_P \left( \frac{1}{\sqrt{n}} \right),$ we have that $$\psi_n
+P_0)$ decays as $o_P \left( \frac{1}{\sqrt{n}} \right)$, we have that $$\psi_n
 - \psi_0 = (P_n - P_0) \cdot D(P_0) + o_P \left( \frac{1}{\sqrt{n}} \right),$$
 which, by a central limit theorem, establishes a Gaussian limiting distribution
 for the estimator:
@@ -498,7 +498,7 @@ to conditional density estimation; a list of such learners may be extracted from
 <span id="cb161-4"><a href="shift.html#cb161-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">5</span>] <span class="st">"Lrnr_solnp_density"</span>         </span></code></pre></div>
 <p>To proceed, we’ll select two of the above learners, <code>Lrnr_haldensify</code> for using
 the highly adaptive lasso for conditional density estimation, based on an
-algorithm given by <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2011super" role="doc-biblioref">2011</a>)</span> and implemented in <span class="citation">Hejazi, Benkeser, and van der Laan (<a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">2022</a>)</span>, and
+algorithm given by <span class="citation">Dı́az and van der Laan (<a href="references.html#ref-diaz2011super" role="doc-biblioref">2011</a>)</span> and implemented in <span class="citation">Hejazi, Benkeser, <em>et al.</em> (<a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">2022</a>)</span>, and
 semiparametric location-scale conditional density estimators implemented in the
 <a href="https://github.com/tlverse/sl3"><code>sl3</code> package</a>. A Super Learner may be
 constructed by pooling estimates from each of these modified conditional density
@@ -730,7 +730,7 @@ displays the results from computing our TML estimator.</p>
 </h3>
 <p>It can be challenging to select a value of the shift parameter <span class="math inline">\(\delta\)</span> in
 advance. One solution is to specify a <em>grid</em> of such shifts <span class="math inline">\(\delta\)</span> to be used
-in defining a set of related stochastic interventions <span class="citation">(<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">Hejazi et al. 2020</a>)</span>.
+in defining a set of related stochastic interventions <span class="citation">(<a href="references.html#ref-hejazi2020efficient" role="doc-biblioref">Hejazi, van der Laan, <em>et al.</em>, 2020</a>)</span>.
 When we consider estimating the counterfactual mean <span class="math inline">\(\psi_n\)</span> under several
 choices of <span class="math inline">\(\delta\)</span>, a single summary measure of these estimated quantities can
 be established through working marginal structural models (MSMs). Summarizing
@@ -894,7 +894,7 @@ just as we did in a previous example:</p>
 <p>Prior to running our analysis, we’ll modify the <code>learner_list</code> object we had
 created such that the density estimation procedure we rely on will be only the
 location-scale conditional density estimation procedure, as the nonparametric
-conditional density approach based on the highly adaptive lasso <span class="citation">(<a href="references.html#ref-diaz2011super" role="doc-biblioref">Dı́az and van der Laan 2011</a>; <a href="references.html#ref-benkeser2016hal" role="doc-biblioref">Benkeser and van der Laan 2016</a>; <a href="references.html#ref-coyle2020hal9001" role="doc-biblioref">Coyle et al. 2022</a>; <a href="references.html#ref-hejazi2020hal9001" role="doc-biblioref">Hejazi, Coyle, and van der Laan 2020</a>; <a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">Hejazi, Benkeser, and van der Laan 2022</a>)</span>
+conditional density approach based on the highly adaptive lasso <span class="citation">(<a href="references.html#ref-benkeser2016hal" role="doc-biblioref">Benkeser and van der Laan, 2016</a>; <a href="references.html#ref-coyle2020hal9001" role="doc-biblioref">Coyle <em>et al.</em>, 2022</a>; <a href="references.html#ref-diaz2011super" role="doc-biblioref">Dı́az and van der Laan, 2011</a>; <a href="references.html#ref-hejazi2020hal9001" role="doc-biblioref">Hejazi, Coyle, <em>et al.</em>, 2020</a>; <a href="references.html#ref-hejazi2020haldensify" role="doc-biblioref">Hejazi, Benkeser, <em>et al.</em>, 2022</a>)</span>
 is currently unable to accommodate larger datasets.</p>
 <div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># we need to turn on cross-validation for the HOSE learner</span>
@@ -1087,7 +1087,7 @@ nonparametric model $\M$ by solving the efficient influence function.
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on May 16, 2023.</p>
+    <p>"<strong>Targeted Learning in R</strong>: Causal Data Science with the tlverse Software Ecosystem" was written by Mark van der Laan, Jeremy Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, Alan Hubbard. It was last built on July 07, 2023.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
@@ -1100,7 +1100,7 @@ nonparametric model $\M$ by solving the efficient influence function.
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:")
       if (/^https?:/.test(src))
         src = src.replace(/^https?:/, '');
