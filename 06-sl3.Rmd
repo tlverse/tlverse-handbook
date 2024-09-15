@@ -16,9 +16,9 @@ Coyle, Nima Hejazi, Ivana Malenica, Rachael Phillips, and Oleg Sofrygin_.
 <!--
 IM:
 Since we introduced the concept of loss & risk in the previous chapter, it
-should be ok use it instead of "performance metric". I might be a bit confusing
-to change notation many times. Define base learner Shouldn't objective 4 be
-before talking about screeners ect?
+should be ok to use it instead of "performance metric". It might be a bit confusing
+to change notation many times. Define base learner. Shouldn't objective 4 be
+before talking about screeners etc?
 -->
 
 By the end of this chapter you will be able to:
@@ -528,7 +528,7 @@ Our first option to get CV predictions, `cv_preds_option1`, used the
 This function only exists for learner fits that are cross-validated in `sl3`, 
 like those in `Lrnr_sl`. In addition to supplying `fold_number = "validation"` 
 in `predict_fold`, we can set `fold_number = "full"` to obtain predictions from 
-learners fit to the entire analytic dataset (i.e., all of the data supplied to 
+learners fit to the entire dataset (i.e., all of the data supplied to 
 `make_sl3_Task`). For instance, below we show that `glm_preds` we calculated 
 above can also be obtained by setting `fold_number = "full"`.
 
@@ -554,7 +554,7 @@ training).
 
 <!--
 IM: 
-Is this part really necessary?
+Is this part necessary? Perhaps we can have something like an appendix? 
 -->
 
 ```{r cv-predictions-long}
@@ -676,6 +676,12 @@ tr_intervention_task <- make_sl3_Task(
 # equal to "Nutrition + WSH"
 counterfactual_pred <- sl_fit$predict(tr_intervention_task)
 ```
+
+<!--
+IM:
+Perhaps this is also not necessary as we talk about dynamic interventions in the 
+next chapter. 
+-->
 
 Note that this type of intervention, where every subject receives the same 
 intervention, is referred to as "static". Interventions that vary depending on 
@@ -929,6 +935,11 @@ if (knitr::is_latex_output()) {
 ```
 ### Revere-cross-validated predictive performance of Super Learner
 
+<!--
+IM:
+This should be very optional, maybe in the "appendix"
+-->
+
 We can also use so-called "revere", to obtain a partial CV risk for the SL,
 where the SL candidate learner fits are cross-validated but the meta-learner fit
 is not. It takes essentially no extra time to calculate a revere-CV
@@ -1030,21 +1041,20 @@ forest) is used as the meta-learner, then the revere-CV risk estimate of the
 resulting SL will be a worse approximation of the CV risk estimate. This is 
 because more flexible learners are more likely to overfit. When simple 
 parametric regressions are used as a meta-learner, like what we considered in 
-our SL (NNLS with `Lrnr_nnls`), and like all of the default meta-learners in 
-`sl3`, then the revere-CV risk is a quick way to examine an approximation of 
-the CV risk estimate of the SL and it can thought of as a ballpark lower bound 
-on it. This idea holds in our example; that is, with the simple NNLS 
+our SL (NNLS with `Lrnr_nnls`, the default meta-learner), then the revere-CV risk is
+a quick way to examine an approximation of 
+the CV risk estimate of the SL. It can be thought of as a ballpark lower bound 
+on the CV risk estimate. This notion holds in our example; that is, with the simple NNLS 
 meta-learner the revere risk estimate of the SL (`r round(sl_revere_risk, 4)`) 
 is very close to, and slightly lower than, the CV risk estimate for the SL 
 (`r round(cv_sl_fit$cv_risk[nrow(cv_sl_fit$cv_risk),2], 4)`). 
 
 ## Discrete Super Learner
 
-From the glossary (Table 1) entry for discrete SL (dSL) in @rvp2022super, 
-the dSL is "a SL that uses a winner-take-all meta-learner called
+Discrete SL (dSL) is a SL that uses a winner-take-all meta-learner called
 the cross-validated selector. The dSL is therefore identical to the candidate
 with the best cross-validated performance; its predictions will be the same as
-this candidate’s predictions". The cross-validated selector is 
+this candidate’s predictions. The cross-validated selector is 
 `Lrnr_cv_selector` in `sl3` (see `Lrnr_cv_selector` documentation for more 
 detail) and a dSL is instantiated in `sl3` by using `Lrnr_cv_selector` as the 
 meta-learner in `Lrnr_sl`.
@@ -1101,10 +1111,6 @@ earth_pred <- dSL_fit$learner_fits$Lrnr_earth_2_3_backward_0_1_0_0$predict(task)
 identical(dSL_pred, earth_pred)
 ```
 
-<!--
-IM: 
-Seems like an overkill 
--->
 
 ### Including ensemble Super Learner(s) as candidate(s) in discrete Super Learner
 
@@ -1113,17 +1119,18 @@ showed how to do this with `cv_sl` above. We have also seen that when we
 include a learner as a candidate in the SL (in `sl3` terms, when we include a 
 learner in the `Stack` passed to `Lrnr_sl` as `learners`), we are able to 
 examine its CV risk. Also, when we use the dSL, the candidate that achieved the 
-lowest CV risk defines the resulting SL. We therefore can use the dSL automate 
+lowest CV risk defines the resulting SL. We therefore can use the dSL to automate 
 a procedure for obtaining a final SL that represents the candidate with the 
-best cross-validated predictive performance. When the ensemble SL (eSL) and 
+best cross-validated predictive performance. 
+
+The ensemble SL (eSL) is a SL that uses any parametric or non-parametric algorithm as its 
+meta-learner. Therefore, the eSL is defined by a combination of multiple 
+candidates; its predictions are defined by a combination of multiple candidates’ 
+predictions. When the eSL and 
 its candidate learners are considered in a dSL as candidates, the eSL’s CV 
 performance can be compared to that from the learners from which it was 
 constructed, and the final SL will be the candidate that achieved the lowest CV 
-risk. From the glossary (Table 1) entry for eSL in @rvp2022super, an 
-eSL is "a SL that uses any parametric or non-parametric algorithm as its 
-meta-learner. Therefore, the eSL is defined by a combination of multiple 
-candidates; its predictions are defined by a combination of multiple candidates’ 
-predictions." In the following, we show how to include the eSL, and multiple 
+risk. In the following, we show how to include the eSL, and multiple 
 eSLs, as candidates in the dSL. 
 
 Recall the SL object, `sl`, defined in section 2:
@@ -1163,10 +1170,10 @@ between including the eSL as a candidate in the dSL and calling `cv_sl` is that
 the former automates a procedure for the final SL to be the learner that 
 achieved the best CV predictive performance, i.e., lowest CV risk. If the eSL 
 outperforms any other candidate, the dSL will end up selecting it and the 
-resulting SL will be the eSL. As mentioned in @rvp2022super, "another advantage 
+resulting SL will be the eSL. Another advantage 
 of this approach is that multiple eSLs that use more flexible meta-learner 
 methods (e.g., non-parametric machine learning algorithms like HAL) can be 
-evaluated simultaneously." 
+evaluated simultaneously.
 
 Below, we show how multiple eSLs can be included as candidates in a dSL:
 ```{r make-sl-discrete-multi-esl}
@@ -1363,7 +1370,7 @@ quantification.
 
 ### Character and categorical covariates
 
-First any character covariates are converted to factors. Then all factor
+First, any character covariates are converted to factors. Then all factor
 covariates are one-hot encoded, i.e., the levels of a factor become a set of
 binary indicators. For example, the factor `cats` and it's one-hot encoding are
 shown below:
@@ -1466,7 +1473,7 @@ stack_pretty_names
 
 Customized learners can be created over a grid of tuning parameters. For 
 highly flexible learners that require careful tuning, it is oftentimes 
-very helpful to consider different tuning parameter specifications. However, 
+helpful to consider different tuning parameter specifications. However, 
 this is time consuming, so computational feasibility should be considered. 
 Also, when the effective sample size is small, highly flexible learners 
 will likely not perform well since they typically require a lot of data to fit 
@@ -1475,8 +1482,8 @@ and step-by-step guidelines for tailoring the SL specification to perform well
 for the prediction task at hand. 
 
 <!--
-IM: 
-...
+IM:
+Some general wisdom would be nice here too
 -->
 
 We show two ways to customize learners over a grid of tuning parameters. The 
@@ -1535,16 +1542,11 @@ lrnr_nnet_autotune <- Lrnr_caret$new(method = "nnet", name = "NNET_autotune")
 
 ## Learners with Interactions and `formula` Interface
 
-As described in in @rvp2022super, if it’s known/possible that there are 
-interactions among covariates then we can include learners that pick up on that 
+If it’s known/possible that there are 
+interactions among covariates, then we can include learners that pick up on that 
 explicitly (e.g., by including in the library a parametric regression learner 
 with interactions specified in a formula) or implicitly (e.g., by including in 
 the library tree-based algorithms that learn interactions empirically). 
-
-<!--
-IM: 
-...
--->
 
 One way to define interaction terms among covariates in `sl3` is with a 
 `formula`. The argument exists in `Lrnr_base`, which is inherited by every 
@@ -1579,11 +1581,11 @@ IM:
 ...
 -->
 
-As stated in @rvp2022super, "covariate screening is essential when the 
+Covariate screening is essential when the 
 dimensionality of the data is very large, and it can be practically useful in 
 any SL or machine learning application. Screening of covariates that considers 
 associations with the outcome must be cross validated to avoid biasing the 
-estimate of an algorithm’s predictive performance". By including 
+estimate of an algorithm’s predictive performance. By including 
 screener-learner couplings as additional candidates in the SL library, we are
 cross validating the screening of covariates. Covariates retained in each CV 
 fold may vary. 
