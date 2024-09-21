@@ -417,16 +417,15 @@ library(dagitty)
 library(ggdag)
 
 # make DAG by specifying dependence structure
-dag <- dagitty(
-  "dag {
-    W -> A
-    W -> Y
-    A -> Y
-    W -> A -> Y
-  }"
-)
-exposures(dag) <- c("A")
-outcomes(dag) <- c("Y")
+dag <- dagitty("dag{
+    W -> A ;
+    W -> Y ;
+    A -> Y ;
+    W -> A -> Y ;
+    W [confounders]
+    A [exposure]
+    Y [outcome]
+  }")
 tidy_dag <- tidy_dagitty(dag)
 
 # visualize DAG
